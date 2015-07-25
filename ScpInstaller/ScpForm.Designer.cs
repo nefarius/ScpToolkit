@@ -30,8 +30,6 @@
         {
             this.btnUninstall = new System.Windows.Forms.Button();
             this.btnInstall = new System.Windows.Forms.Button();
-            this.InstallWorker = new System.ComponentModel.BackgroundWorker();
-            this.UninstallWorker = new System.ComponentModel.BackgroundWorker();
             this.tbOutput = new System.Windows.Forms.TextBox();
             this.pbRunning = new System.Windows.Forms.ProgressBar();
             this.btnExit = new System.Windows.Forms.Button();
@@ -63,16 +61,6 @@
             this.btnInstall.Text = "&Install";
             this.btnInstall.UseVisualStyleBackColor = true;
             this.btnInstall.Click += new System.EventHandler(this.btnInstall_Click);
-            // 
-            // InstallWorker
-            // 
-            this.InstallWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.InstallWorker_DoWork);
-            this.InstallWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.InstallWorker_RunWorkerCompleted);
-            // 
-            // UninstallWorker
-            // 
-            this.UninstallWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.UninstallWorker_DoWork);
-            this.UninstallWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.UninstallWorker_RunWorkerCompleted);
             // 
             // tbOutput
             // 
@@ -193,7 +181,6 @@
             this.Name = "ScpForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "SCP Driver Installer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScpForm_Close);
             this.Load += new System.EventHandler(this.ScpForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -204,8 +191,6 @@
 
         private System.Windows.Forms.Button btnUninstall;
         private System.Windows.Forms.Button btnInstall;
-        private System.ComponentModel.BackgroundWorker InstallWorker;
-        private System.ComponentModel.BackgroundWorker UninstallWorker;
         private System.Windows.Forms.TextBox tbOutput;
         private System.Windows.Forms.ProgressBar pbRunning;
         private System.Windows.Forms.Button btnExit;
