@@ -5,13 +5,14 @@ using System.ServiceProcess;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Reflection;
-
+using log4net;
 using ScpControl;
 
 namespace ScpService 
 {
     public partial class Ds3Service : ServiceBase 
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected ScpDevice.ServiceControlHandlerEx m_ControlHandler;
 
         protected String m_Log           = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName + "\\" + Assembly.GetExecutingAssembly().GetName().Name + ".log";
