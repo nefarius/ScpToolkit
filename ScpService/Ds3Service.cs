@@ -15,7 +15,6 @@ namespace ScpService
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected ScpDevice.ServiceControlHandlerEx m_ControlHandler;
 
-        protected String m_Log           = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName + "\\" + Assembly.GetExecutingAssembly().GetName().Name + ".log";
         protected IntPtr m_ServiceHandle = IntPtr.Zero;
         protected IntPtr m_Ds3Notify     = IntPtr.Zero;
         protected IntPtr m_Ds4Notify     = IntPtr.Zero;
@@ -31,10 +30,7 @@ namespace ScpService
 
         protected override void OnStart(String[] args) 
         {
-            EventLog.WriteEntry("Scarlet.Crush Productions DS3 Service Started", System.Diagnostics.EventLogEntryType.Information, 1);
-
-            try { if (File.Exists(m_Log)) File.Delete(m_Log); }
-            catch { }
+            Log.Info("Scarlet.Crush Productions DS3 Service Started");
 
             OnDebug(this, new DebugEventArgs(String.Format("++ {0} {1}", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version.ToString())));
 
@@ -58,7 +54,7 @@ namespace ScpService
             rootHub.Stop();
             rootHub.Close();
 
-            EventLog.WriteEntry("Scarlet.Crush Productions DS3 Service Stopped", System.Diagnostics.EventLogEntryType.Information, 2);
+            Log.Info("Scarlet.Crush Productions DS3 Service Stopped");
         }
 
         protected Int32 ServiceControlHandler(Int32 Control, Int32 Type, IntPtr Data, IntPtr Context) 
@@ -77,14 +73,14 @@ namespace ScpService
                     {
                         case ScpDevice.PBT_APMSUSPEND:
 
-                            EventLog.WriteEntry("Scp DS3 Service Suspending", System.Diagnostics.EventLogEntryType.Information, 3);
+                            Log.Info("Scp DS3 Service Suspending");
 
                             rootHub.Suspend();
                             break;
 
                         case ScpDevice.PBT_APMRESUMEAUTOMATIC:
 
-                            EventLog.WriteEntry("Scp DS3 Service Resuming", System.Diagnostics.EventLogEntryType.Information, 4);
+                            Log.Info("Scp DS3 Service Resuming");
 
                             m_Timer.Change(10000, Timeout.Infinite);
                             break;
@@ -129,7 +125,7 @@ namespace ScpService
 
                                         rootHub.Pad[(Byte) Pad].Pair(Master);
 
-                                        EventLog.WriteEntry(String.Format("Paired DS3 [{0}] To BTH Dongle [{1}]", rootHub.Pad[(Byte) Pad].Local, rootHub.Master), System.Diagnostics.EventLogEntryType.Information, 6);
+                                        Log.InfoFormat("Paired DS3 [{0}] To BTH Dongle [{1}]", rootHub.Pad[(Byte) Pad].Local, rootHub.Master);
                                     }
                                 }
                             }
@@ -141,30 +137,19 @@ namespace ScpService
             return 0;   // NO_ERROR
         }
 
-        protected void OnTimer(object State) 
+        private void OnTimer(object State) 
         {
             lock (this)
             {
                 rootHub.Resume();
 
-                EventLog.WriteEntry("Scp DS3 Service Resumed", System.Diagnostics.EventLogEntryType.Information, 5);
+                Log.Info("Scp DS3 Service Resumed");
             }
         }
 
-        protected void OnDebug(object sender, DebugEventArgs e) 
+        private void OnDebug(object sender, DebugEventArgs e) 
         {
-            lock (rootHub)
-            {
-                try
-                {
-                    using (StreamWriter fs = new StreamWriter(m_Log, true))
-                    {
-                        fs.Write(String.Format("{0} {1}\r\n", e.Time.ToString("yyyy-MM-dd HH:mm:ss.fff"), e.Data));
-                        fs.Flush();
-                   }
-                }
-                catch { }
-            }
+            Log.Debug(e.Data);
         }
     }
 }
