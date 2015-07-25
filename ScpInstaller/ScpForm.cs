@@ -1,14 +1,14 @@
 ﻿using System;
-using System.IO;
-using System.Windows.Forms;
-using System.Threading;
-using System.Reflection;
-using System.Xml;
-using System.ServiceProcess;
-using System.Configuration.Install;
 using System.Collections;
+using System.Configuration.Install;
+using System.IO;
+using System.Reflection;
+using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using log4net;
+using ScpDriver.Properties;
 using ScpDriver.Utilities;
 
 namespace ScpDriver
@@ -16,34 +16,58 @@ namespace ScpDriver
     public partial class ScpForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private String DS3_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
-
-        private Cursor _saved;
+        private readonly string[] _desc = {"SUCCESS", "INFO   ", "WARNING", "ERROR  "};
+        private readonly string DS3_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
+        private readonly string InfPath = @".\System\";
+        private readonly string ScpService = "SCP DS3 Service";
         private Difx _installer;
-
-        private Boolean Bus_Device_Configured = false;
-        private Boolean Bus_Driver_Configured = false;
-        private Boolean DS3_Driver_Configured = false;
-        private Boolean BTH_Driver_Configured = false;
-        private Boolean Scp_Service_Configured = false;
-
-        private Boolean Reboot = false;
+        private Cursor _saved;
+        private bool BTH_Driver_Configured;
+        private bool Bus_Device_Configured;
+        private bool Bus_Driver_Configured;
+        private bool DS3_Driver_Configured;
+        private bool Reboot;
+        private bool Scp_Service_Configured;
         private OsType Valid = OsType.Invalid;
-        private String InfPath = @".\System\";
-        private String ScpService = "SCP DS3 Service";
 
-        private readonly string[] _desc = { "SUCCESS", "INFO   ", "WARNING", "ERROR  " };
-
-        private void Logger(DifxLog Event, Int32 error, String description)
+        public ScpForm()
         {
-            Log.InfoFormat("{0} - {1}", _desc[(Int32)Event], description);
+            InitializeComponent();
+
+            try
+            {
+                // get absolute path to XML file
+                var cfgFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    Assembly.GetExecutingAssembly().GetName().Name + ".xml");
+                // deserialize file content
+                var cfg = ScpDriver.Deserialize(cfgFile);
+
+                // set display options
+                cbService.Checked = cbService.Visible = bool.Parse(cfg.Service);
+                cbBluetooth.Checked = cbBluetooth.Visible = bool.Parse(cfg.Bluetooth);
+                cbDS3.Checked = cbDS3.Visible = bool.Parse(cfg.DualShock3);
+                cbBus.Checked = cbBus.Visible = bool.Parse(cfg.VirtualBus);
+
+                // Don't install Service if Bus not Enabled
+                if (!bool.Parse(cfg.VirtualBus))
+                    cbService.Checked = cbService.Visible = bool.Parse(cfg.VirtualBus);
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Couldn't load configuration: {0}", ex);
+            }
+        }
+
+        private void Logger(DifxLog Event, int error, string description)
+        {
+            Log.InfoFormat("{0} - {1}", _desc[(int) Event], description);
         }
 
         private static bool Start(string service)
         {
             try
             {
-                ServiceController sc = new ServiceController("SCP DS3 Service");
+                var sc = new ServiceController("SCP DS3 Service");
 
                 if (sc.Status == ServiceControllerStatus.Stopped)
                 {
@@ -64,7 +88,7 @@ namespace ScpDriver
         {
             try
             {
-                ServiceController sc = new ServiceController("SCP DS3 Service");
+                var sc = new ServiceController("SCP DS3 Service");
 
                 if (sc.Status == ServiceControllerStatus.Running)
                 {
@@ -79,61 +103,6 @@ namespace ScpDriver
             }
 
             return false;
-        }
-
-        protected Boolean Configuration()
-        {
-            Boolean Loaded = true, Enabled = true;
-
-            try
-            {
-                String m_File = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + Assembly.GetExecutingAssembly().GetName().Name + ".xml";
-                XmlDocument m_Xdoc = new XmlDocument();
-                XmlNode Item;
-
-                m_Xdoc.Load(m_File);
-
-                try
-                {
-                    Item = m_Xdoc.SelectSingleNode("/ScpDriver/Service"); Boolean.TryParse(Item.InnerText, out Enabled);
-                    cbService.Checked = cbService.Visible = Enabled;
-                }
-                catch { }
-
-                try
-                {
-                    Item = m_Xdoc.SelectSingleNode("/ScpDriver/Bluetooth"); Boolean.TryParse(Item.InnerText, out Enabled);
-                    cbBluetooth.Checked = cbBluetooth.Visible = Enabled;
-                }
-                catch { }
-
-                try
-                {
-                    Item = m_Xdoc.SelectSingleNode("/ScpDriver/DualShock3"); Boolean.TryParse(Item.InnerText, out Enabled);
-                    cbDS3.Checked = cbDS3.Visible = Enabled;
-                }
-                catch { }
-
-                try
-                {
-                    Item = m_Xdoc.SelectSingleNode("/ScpDriver/VirtualBus"); Boolean.TryParse(Item.InnerText, out Enabled);
-                    cbBus.Checked = cbBus.Visible = Enabled;
-
-                    // Don't install Service if Bus not Enabled
-                    if (!Enabled) cbService.Checked = cbService.Visible = Enabled;
-                }
-                catch { }
-            }
-            catch { Loaded = false; }
-
-            return Loaded;
-        }
-
-        public ScpForm()
-        {
-            InitializeComponent();
-
-            Configuration();
         }
 
         private void ScpForm_Load(object sender, EventArgs e)
@@ -163,7 +132,7 @@ namespace ScpDriver
                 Log.InfoFormat("Selected {0} configuration", Valid);
             }
 
-            Icon = Properties.Resources.Scp_All;
+            Icon = Resources.Scp_All;
         }
 
         private async void btnInstall_Click(object sender, EventArgs e)
@@ -191,14 +160,14 @@ namespace ScpDriver
 
             await Task.Run(() =>
             {
-                String DevPath = String.Empty, InstanceId = String.Empty;
+                string DevPath = string.Empty, InstanceId = string.Empty;
 
                 try
                 {
-                    UInt32 Result = 0;
-                    Boolean RebootRequired = false;
+                    uint Result = 0;
+                    var RebootRequired = false;
 
-                    DifxFlags Flags = DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT;
+                    var Flags = DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT;
 
                     if (cbForce.Checked) Flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
 
@@ -236,7 +205,7 @@ namespace ScpDriver
                     if (cbService.Checked)
                     {
                         IDictionary State = new Hashtable();
-                        AssemblyInstaller Service =
+                        var Service =
                             new AssemblyInstaller(Directory.GetCurrentDirectory() + @"\ScpService.exe", null);
 
                         State.Clear();
@@ -317,17 +286,17 @@ namespace ScpDriver
 
             await Task.Run(() =>
             {
-                String DevPath = String.Empty, InstanceId = String.Empty;
+                string DevPath = string.Empty, InstanceId = string.Empty;
 
                 try
                 {
-                    UInt32 Result = 0;
-                    Boolean RebootRequired = false;
+                    uint Result = 0;
+                    var RebootRequired = false;
 
                     if (cbService.Checked)
                     {
                         IDictionary State = new Hashtable();
-                        AssemblyInstaller Service =
+                        var Service =
                             new AssemblyInstaller(Directory.GetCurrentDirectory() + @"\ScpService.exe", null);
 
                         State.Clear();
@@ -398,11 +367,11 @@ namespace ScpDriver
                 Log.Info(" [Reboot Required]");
 
             Log.Info("-- Uninstall Summary --");
-            
+
             if (Scp_Service_Configured)
                 Log.Info("SCP DS3 Service uninstalled");
 
-            if (Bus_Device_Configured) 
+            if (Bus_Device_Configured)
                 Log.Info("Bus Device uninstalled");
 
             if (Bus_Driver_Configured)

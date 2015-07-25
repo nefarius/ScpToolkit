@@ -18,32 +18,16 @@ namespace ScpDriver
         private string _virtualBusField;
 
         /// <remarks />
-        public string Service
-        {
-            get { return _serviceField; }
-            set { _serviceField = value; }
-        }
+        public string Service { get; set; }
 
         /// <remarks />
-        public string Bluetooth
-        {
-            get { return _bluetoothField; }
-            set { _bluetoothField = value; }
-        }
+        public string Bluetooth { get; set; }
 
         /// <remarks />
-        public string DualShock3
-        {
-            get { return _dualShock3Field; }
-            set { _dualShock3Field = value; }
-        }
+        public string DualShock3 { get; set; }
 
         /// <remarks />
-        public string VirtualBus
-        {
-            get { return _virtualBusField; }
-            set { _virtualBusField = value; }
-        }
+        public string VirtualBus { get; set; }
 
         public static ScpDriver Deserialize(string file)
         {
