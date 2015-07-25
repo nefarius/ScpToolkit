@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration.Install;
+using System.Reflection;
 using System.ServiceProcess;
 
 namespace ScpService 
@@ -8,14 +10,36 @@ namespace ScpService
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main() 
+        private static void Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-			{ 
-				new Ds3Service() 
-			};
-            ServiceBase.Run(ServicesToRun);
+            if (Environment.UserInteractive)
+            {
+                try
+                {
+                    var parameter = string.Concat(args);
+                    switch (parameter)
+                    {
+                        case "--install":
+                            ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
+                            break;
+                        case "--uninstall":
+                            ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
+                            break;
+                    }
+                }
+                catch
+                {
+                }
+            }
+            else
+            {
+                ServiceBase[] ServicesToRun;
+                ServicesToRun = new ServiceBase[]
+                {
+                    new Ds3Service(), 
+                };
+                ServiceBase.Run(ServicesToRun);
+            }
         }
     }
 }
