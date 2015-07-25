@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DDECF06E-BE48-4610-8BF8-4AE5140D9F0C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ScpControl</RootNamespace>
+    <AssemblyName>ScpControl</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BthConnection.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BthConnection.Designer.cs">
+      <DependentUpon>BthConnection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BthDevice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BthDevice.Designer.cs">
+      <DependentUpon>BthDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BthDongle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BthDongle.Designer.cs">
+      <DependentUpon>BthDongle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BthDs3.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BthDs3.Designer.cs">
+      <DependentUpon>BthDs3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BthDs4.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BthDs4.Designer.cs">
+      <DependentUpon>BthDs4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BthHub.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BthHub.Designer.cs">
+      <DependentUpon>BthHub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\CommonInfo.cs" />
+    <Compile Include="ScpMapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScpMapper.Designer.cs">
+      <DependentUpon>ScpMapper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScpPadState.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScpPadState.Designer.cs">
+      <DependentUpon>ScpPadState.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScpProxy.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScpProxy.Designer.cs">
+      <DependentUpon>ScpProxy.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScpTimer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScpTimer.Designer.cs">
+      <DependentUpon>ScpTimer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UsbDevice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UsbDevice.Designer.cs">
+      <DependentUpon>UsbDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UsbDs4.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UsbDs4.Designer.cs">
+      <DependentUpon>UsbDs4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RootHub.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RootHub.Designer.cs">
+      <DependentUpon>RootHub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BusDevice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BusDevice.Designer.cs">
+      <DependentUpon>BusDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScpDevice.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScpDevice.Designer.cs">
+      <DependentUpon>ScpDevice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScpHub.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ScpHub.Designer.cs">
+      <DependentUpon>ScpHub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScpUtil.cs" />
+    <Compile Include="UsbDs3.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UsbDs3.Designer.cs">
+      <DependentUpon>UsbDs3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UsbHub.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UsbHub.Designer.cs">
+      <DependentUpon>UsbHub.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XmlMapper.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="XmlMapper.Designer.cs">
+      <DependentUpon>XmlMapper.cs</DependentUpon>
+    </Compile>
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BthDongle.resx">
+      <DependentUpon>BthDongle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScpMapper.resx">
+      <DependentUpon>ScpMapper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScpPadState.resx">
+      <DependentUpon>ScpPadState.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ScpProxy.resx">
+      <DependentUpon>ScpProxy.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UsbDevice.resx">
+      <DependentUpon>UsbDevice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UsbDs4.resx">
+      <DependentUpon>UsbDs4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RootHub.resx">
+      <DependentUpon>RootHub.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UsbDs3.resx">
+      <DependentUpon>UsbDs3.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ScpMapper.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>Copy /Y /B $(SolutionDir)\Common\Properties\Info.cs $(ProjectDir)\Properties\CommonInfo.cs &gt; nul:
+</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

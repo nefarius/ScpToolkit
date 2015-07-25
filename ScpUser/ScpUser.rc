@@ -1,0 +1,50 @@
+#include "resource.h"
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+1                       ICON                    "ARPIcon.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,5,2,138
+ PRODUCTVERSION 2,5,2,138
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "080904b0"
+        BEGIN
+            VALUE "CompanyName", "Scarlet.Crush Productions"
+            VALUE "FileDescription", "SCPUser Managed Application"
+            VALUE "FileVersion", "2.5.2.138"
+            VALUE "InternalName", "SCPUser.exe"
+            VALUE "LegalCopyright", "Copyright (C) Scarlet.Crush Productions 2012, 2013, 2014"
+            VALUE "OriginalFilename", "SCPUser.exe"
+            VALUE "ProductName", "SCPUser Managed Application"
+            VALUE "ProductVersion", "2.5.2.138"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x809, 1200
+    END
+END
+
+/////////////////////////////////////////////////////////////////////////////

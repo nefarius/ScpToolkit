@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- ScpMapper Configuration Data. 20/03/2014 21:01:49 -->
+<ScpMapper>
+  <Description>SCP Mapping File</Description>
+  <Version>1.2.2.175</Version>
+  <Active>Default</Active>
+  <Mapping>
+    <Profile>
+      <Name>Default</Name>
+      <Type>Global</Type>
+      <Value />
+      <DS3>
+        <Button />
+        <Axis />
+      </DS3>
+      <DS4>
+        <Button />
+        <Axis />
+      </DS4>
+    </Profile>
+    <Profile>
+      <Name>Fast Triggers</Name>
+      <Type>Global</Type>
+      <Value />
+      <DS3>
+        <Button />
+        <Axis>
+          <L2>None</L2>
+          <R2>None</R2>
+        </Axis>
+      </DS3>
+      <DS4>
+        <Button />
+        <Axis>
+          <L2>None</L2>
+          <R2>None</R2>
+        </Axis>
+      </DS4>
+    </Profile>
+    <Profile>
+      <Name>LR Swap</Name>
+      <Type>Global</Type>
+      <Value />
+      <DS3>
+        <Button>
+          <L3>R3</L3>
+          <R3>L3</R3>
+          <L2>R2</L2>
+          <R2>L2</R2>
+          <L1>R1</L1>
+          <R1>L1</R1>
+        </Button>
+        <Axis>
+          <L2>R2</L2>
+          <R2>L2</R2>
+          <L1>R1</L1>
+          <R1>L1</R1>
+        </Axis>
+      </DS3>
+      <DS4>
+        <Button>
+          <L1>R1</L1>
+          <R1>L1</R1>
+          <L2>R2</L2>
+          <R2>L2</R2>
+          <L3>R3</L3>
+          <R3>L3</R3>
+        </Button>
+        <Axis>
+          <L2>R2</L2>
+          <R2>L2</R2>
+        </Axis>
+      </DS4>
+    </Profile>
+    <Profile>
+      <Name>Map Triggers</Name>
+      <Type>Global</Type>
+      <Value />
+      <DS3>
+        <Button>
+          <L3>L2</L3>
+          <R3>R2</R3>
+          <L2>L3</L2>
+          <R2>R3</R2>
+        </Button>
+        <Axis>
+          <L2>None</L2>
+          <R2>None</R2>
+        </Axis>
+      </DS3>
+      <DS4>
+        <Button>
+          <L2>L3</L2>
+          <R2>R3</R2>
+          <L3>L2</L3>
+          <R3>R2</R3>
+        </Button>
+        <Axis>
+          <L2>None</L2>
+          <R2>None</R2>
+        </Axis>
+      </DS4>
+    </Profile>
+    <Profile>
+      <Name>TB Swap</Name>
+      <Type>Global</Type>
+      <Value />
+      <DS3>
+        <Button>
+          <L2>L1</L2>
+          <R2>R1</R2>
+          <L1>L2</L1>
+          <R1>R2</R1>
+        </Button>
+        <Axis>
+          <L2>None</L2>
+          <R2>None</R2>
+          <L1>None</L1>
+          <R1>None</R1>
+        </Axis>
+      </DS3>
+      <DS4>
+        <Button>
+          <L1>L2</L1>
+          <R1>R2</R1>
+          <L2>L1</L2>
+          <R2>R1</R2>
+        </Button>
+        <Axis>
+          <L2>None</L2>
+          <R2>None</R2>
+        </Axis>
+      </DS4>
+    </Profile>
+  </Mapping>
+</ScpMapper>

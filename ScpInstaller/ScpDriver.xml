@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- ScpDriver Configuration Data. 20/02/2014 17:13:16 -->
+
+<ScpDriver>
+  <Service>True</Service>
+  <Bluetooth>True</Bluetooth>
+  <DualShock3>True</DualShock3>
+  <VirtualBus>True</VirtualBus>
+</ScpDriver>

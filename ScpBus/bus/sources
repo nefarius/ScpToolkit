@@ -1,0 +1,15 @@
+TARGETNAME = ScpVBus
+TARGETTYPE = DRIVER
+
+INCLUDES = ..\inc
+
+MSC_WARNING_LEVEL = /W4 /WX
+
+TARGETLIBS = $(DDK_LIB_PATH)\wdmsec.lib \
+             $(DDK_LIB_PATH)\ntstrsafe.lib
+
+SOURCES = busenum.rc \
+          busenum.c \
+          pnp.c \
+          power.c \
+          buspdo.c
