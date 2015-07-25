@@ -7,6 +7,7 @@ namespace ScpDriver.Utilities
 {
     public class TextBoxAppender : AppenderSkeleton
     {
+        private Form _form;
         private TextBox _textBox;
         public string FormName { get; set; }
         public string TextBoxName { get; set; }
@@ -19,17 +20,31 @@ namespace ScpDriver.Utilities
                     string.IsNullOrEmpty(TextBoxName))
                     return;
 
-                var form = Application.OpenForms[FormName];
-                if (form == null)
+                // get desired Form from config
+                _form = Application.OpenForms[FormName];
+                if (_form == null)
                     return;
 
-                _textBox = form.Controls[TextBoxName] as TextBox;
+                // get desired TextBox control from config
+                _textBox = _form.Controls[TextBoxName] as TextBox;
                 if (_textBox == null)
                     return;
 
-                form.FormClosing += (s, e) => _textBox = null;
+                _form.FormClosing += (s, e) => _textBox = null;
             }
 
+            // check if called outside of main GUI thread
+            if (_textBox.InvokeRequired)
+            {
+                if (_form != null)
+                {
+                    // queue method invokation on main thread
+                    _form.Invoke(new Action<LoggingEvent>(Append), loggingEvent);
+                    return;
+                }
+            }
+
+            // append message to TextBox control
             _textBox.AppendText(string.Format("{0} - {1}{2}", loggingEvent.TimeStamp, loggingEvent.RenderedMessage,
                 Environment.NewLine));
         }

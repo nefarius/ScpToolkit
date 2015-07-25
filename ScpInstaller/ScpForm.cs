@@ -37,22 +37,9 @@ namespace ScpDriver
 
         protected String[] Desc = new String[] { "SUCCESS", "INFO   ", "WARNING", "ERROR  " };
 
-        protected void Logger(DifxLog Event, Int32 Error, String Description)
+        private void Logger(DifxLog Event, Int32 error, String description)
         {
-            if (tbOutput.InvokeRequired)
-            {
-                Difx.LogEventHandler d = new Difx.LogEventHandler(Logger);
-                Invoke(d, new object[] { Event, Error, Description });
-            }
-            else
-            {
-                StringBuilder sb = new StringBuilder();
-
-                sb.AppendFormat("{0} - {1}", Desc[(Int32)Event], Description);
-                sb.AppendLine();
-
-                tbOutput.AppendText(sb.ToString());
-            }
+            Log.InfoFormat("{0} - {1}", Desc[(Int32)Event], description);
         }
 
         protected Boolean Start(String Service)
@@ -137,7 +124,6 @@ namespace ScpDriver
             return Loaded;
         }
 
-
         public ScpForm()
         {
             InitializeComponent();
@@ -145,8 +131,7 @@ namespace ScpDriver
             Configuration();
         }
 
-
-        protected void ScpForm_Load(object sender, EventArgs e)
+        private void ScpForm_Load(object sender, EventArgs e)
         {
             Log.InfoFormat("SCP Driver Installer {0} [{1}]", Application.ProductVersion, DateTime.Now);
 
@@ -176,14 +161,13 @@ namespace ScpDriver
             Icon = Properties.Resources.Scp_All;
         }
 
-        protected void ScpForm_Close(object sender, FormClosingEventArgs e)
+        private void ScpForm_Close(object sender, FormClosingEventArgs e)
         {
-            try { File.AppendAllLines("ScpDriver.log", tbOutput.Lines); }
-            catch { }
+            Log.Info("Closing main form");
         }
 
 
-        protected void btnInstall_Click(object sender, EventArgs e)
+        private void btnInstall_Click(object sender, EventArgs e)
         {
             Saved = Cursor;
             Cursor = Cursors.WaitCursor;
@@ -227,7 +211,6 @@ namespace ScpDriver
         {
             Close();
         }
-
 
         protected void InstallWorker_DoWork(object sender, DoWorkEventArgs e)
         {
