@@ -39,7 +39,7 @@ namespace ScpDriver
             Log.InfoFormat("{0} - {1}", _desc[(Int32)Event], description);
         }
 
-        protected Boolean Start(String Service)
+        private static bool Start(string service)
         {
             try
             {
@@ -47,16 +47,20 @@ namespace ScpDriver
 
                 if (sc.Status == ServiceControllerStatus.Stopped)
                 {
-                    sc.Start(); Thread.Sleep(1000);
+                    sc.Start();
+                    Thread.Sleep(1000);
                     return true;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Couldn't start service: {0}", ex);
+            }
 
             return false;
         }
 
-        protected Boolean Stop(String Service)
+        private static bool Stop(string service)
         {
             try
             {
@@ -64,11 +68,15 @@ namespace ScpDriver
 
                 if (sc.Status == ServiceControllerStatus.Running)
                 {
-                    sc.Stop(); Thread.Sleep(1000);
+                    sc.Stop();
+                    Thread.Sleep(1000);
                     return true;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Couldn't stop service: {0}", ex);
+            }
 
             return false;
         }
