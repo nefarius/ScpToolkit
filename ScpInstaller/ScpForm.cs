@@ -15,10 +15,11 @@ using System.ServiceProcess;
 using System.Configuration.Install;
 using System.Collections;
 using System.Collections.Specialized;
+using ScpDriver.Utilities;
 
 namespace ScpDriver 
 {
-    public enum OSType { INVALID, XP, VISTA, WIN7, WIN8, WIN81, DEFAULT };
+    
 
     public partial class ScpForm : Form 
     {
@@ -34,7 +35,7 @@ namespace ScpDriver
         protected Boolean Scp_Service_Configured = false;
 
         protected Boolean Reboot  = false;
-        protected OSType  Valid   = OSType.INVALID;
+        protected OsType  Valid   = OsType.Invalid;
         protected String  InfPath = @".\System\";
         protected String  ScpService = "SCP DS3 Service";
 
@@ -59,121 +60,7 @@ namespace ScpDriver
         }
 
 
-        protected String OSInfo() 
-        {
-            String Info = String.Empty;
-
-            try
-            {
-                using (ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM  Win32_OperatingSystem"))
-                {
-                    foreach (ManagementObject mo in mos.Get())
-                    {
-                        try
-                        {
-                            Info = Regex.Replace(mo.GetPropertyValue("Caption").ToString(), "[^A-Za-z0-9 ]", "").Trim();
-
-                            try
-                            {
-                                Object spv = mo.GetPropertyValue("ServicePackMajorVersion");
-
-                                if (spv != null && spv.ToString() != "0")
-                                {
-                                    Info += " Service Pack " + spv.ToString();
-                                }
-                            }
-                            catch { }
-
-                            Info = String.Format("{0} ({1} {2})", Info, System.Environment.OSVersion.Version.ToString(), System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"));
-
-                        }
-                        catch { }
-
-                        mo.Dispose();
-                    }
-                }
-            }
-            catch { }
-
-            return Info;
-        }
-
-        protected OSType OSParse(String Info) 
-        {
-            OSType Valid = OSType.INVALID;
-
-            try
-            {
-                String Architecture = System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE").ToUpper().Trim();
-
-                if (Environment.Is64BitOperatingSystem == Environment.Is64BitProcess && (Architecture == "X86" || Architecture == "AMD64"))
-                {
-                    Valid = OSType.DEFAULT;
-
-                    if (!String.IsNullOrEmpty(Info))
-                    {
-                        String[] Token = Info.Split(new char[] { ' ' });
-
-                        if (Token[0].ToUpper().Trim() == "MICROSOFT" && Token[1].ToUpper().Trim() == "WINDOWS")
-                        {
-                            switch (Token[2].ToUpper().Trim())
-                            {
-                                case "XP":
-
-                                    if (!System.Environment.Is64BitOperatingSystem) Valid = OSType.XP;
-                                    break;
-
-                                case "VISTA":
-
-                                    Valid = OSType.VISTA;
-                                    break;
-
-                                case "7":
-
-                                    Valid = OSType.WIN7;
-                                    break;
-
-                                case "8":
-
-                                    Valid = OSType.WIN8;
-                                    break;
-
-                                case "81":
-
-                                    Valid = OSType.WIN81;
-                                    break;
-
-                                case "SERVER":
-
-                                    switch (Token[3].ToUpper().Trim())
-                                    {
-                                        case "2008":
-
-                                            if (Token[4].ToUpper().Trim() == "R2")
-                                            {
-                                                Valid = OSType.WIN7;
-                                            }
-                                            else
-                                            {
-                                                Valid = OSType.VISTA;
-                                            }
-                                            break;
-
-                                        case "2012":
-
-                                            Valid = OSType.WIN8;
-                                            break;
-                                    }
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-            catch { }
-
-            return Valid;
-        }
+        
 
 
         protected Boolean Start(String Service) 
@@ -273,8 +160,8 @@ namespace ScpDriver
             Installer = Difx.Factory();
             Installer.onLogEvent += Logger;
 
-            String Info = OSInfo();
-            Valid = OSParse(Info);
+            String Info = OsInfoHelper.OsInfo();
+            Valid = OsInfoHelper.OsParse(Info);
 
             sb.Append("Detected - ");
             sb.Append(Info);
@@ -283,7 +170,7 @@ namespace ScpDriver
             tbOutput.AppendText(sb.ToString());
             sb.Clear();
 
-            if (Valid == OSType.INVALID)
+            if (Valid == OsType.Invalid)
             {
                 btnInstall.Enabled    = false;
                 btnUninstall.Enabled  = false;

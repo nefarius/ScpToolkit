@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\OsInfoHelper.cs" />
     <EmbeddedResource Include="ScpForm.resx">
       <DependentUpon>ScpForm.cs</DependentUpon>
     </EmbeddedResource>
