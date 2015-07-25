@@ -110,28 +110,28 @@ namespace ScpService
 
                                 var Class = "{" + new Guid(deviceInterface.dbcc_classguid).ToString().ToUpper() + "}";
 
-                                var Path = new string(deviceInterface.dbcc_name);
-                                Path = Path.Substring(0, Path.IndexOf('\0')).ToUpper();
+                                var path = new string(deviceInterface.dbcc_name);
+                                path = path.Substring(0, path.IndexOf('\0')).ToUpper();
 
-                                var Pad = rootHub.Notify((ScpDevice.Notified) Type, Class, Path);
+                                var pad = rootHub.Notify((ScpDevice.Notified) Type, Class, path);
 
-                                if (Pad != DsPadId.None)
+                                if (pad != DsPadId.None)
                                 {
-                                    if (rootHub.Pairable && (rootHub.Master != rootHub.Pad[(byte) Pad].Remote))
+                                    if (rootHub.Pairable && (rootHub.Master != rootHub.Pad[(byte) pad].Remote))
                                     {
-                                        var Master = new byte[6];
-                                        var Parts = rootHub.Master.Split(new[] {":"},
+                                        var master = new byte[6];
+                                        var parts = rootHub.Master.Split(new[] {":"},
                                             StringSplitOptions.RemoveEmptyEntries);
 
-                                        for (var Part = 0; Part < Master.Length; Part++)
+                                        for (var Part = 0; Part < master.Length; Part++)
                                         {
-                                            Master[Part] = byte.Parse(Parts[Part], NumberStyles.HexNumber);
+                                            master[Part] = byte.Parse(parts[Part], NumberStyles.HexNumber);
                                         }
 
-                                        rootHub.Pad[(byte) Pad].Pair(Master);
+                                        rootHub.Pad[(byte) pad].Pair(master);
 
                                         Log.InfoFormat("Paired DS3 [{0}] To BTH Dongle [{1}]",
-                                            rootHub.Pad[(byte) Pad].Local, rootHub.Master);
+                                            rootHub.Pad[(byte) pad].Local, rootHub.Master);
                                     }
                                 }
                             }
@@ -143,7 +143,7 @@ namespace ScpService
             return 0; // NO_ERROR
         }
 
-        private void OnTimer(object State)
+        private void OnTimer(object state)
         {
             lock (this)
             {
