@@ -2,13 +2,16 @@
 using System.Configuration.Install;
 using System.Reflection;
 using System.ServiceProcess;
+using log4net;
 
-namespace ScpService 
+namespace ScpService
 {
-    static class Program 
+    internal static class Program
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
-        /// The main entry point for the application.
+        ///     The main entry point for the application.
         /// </summary>
         private static void Main(string[] args)
         {
@@ -20,15 +23,20 @@ namespace ScpService
                     switch (parameter)
                     {
                         case "--install":
-                            ManagedInstallerClass.InstallHelper(new[] { Assembly.GetExecutingAssembly().Location });
+                            Log.Info("Installing Scp Dsx Service");
+                            ManagedInstallerClass.InstallHelper(new[] {Assembly.GetExecutingAssembly().Location});
+                            Log.Info("Service installed successfully");
                             break;
                         case "--uninstall":
-                            ManagedInstallerClass.InstallHelper(new[] { "/u", Assembly.GetExecutingAssembly().Location });
+                            Log.Info("Uninstalling Scp Dsx Service");
+                            ManagedInstallerClass.InstallHelper(new[] {"/u", Assembly.GetExecutingAssembly().Location});
+                            Log.Info("Service uninstalled successfully");
                             break;
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Log.ErrorFormat("Couldn't (un)install service: {0}", ex);
                 }
             }
             else
@@ -36,7 +44,7 @@ namespace ScpService
                 ServiceBase[] ServicesToRun;
                 ServicesToRun = new ServiceBase[]
                 {
-                    new Ds3Service(), 
+                    new Ds3Service()
                 };
                 ServiceBase.Run(ServicesToRun);
             }
