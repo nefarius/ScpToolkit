@@ -155,13 +155,18 @@ namespace ScpServer
 
                             ScpDevice.DEV_BROADCAST_HDR hdr;
 
-                            hdr = (ScpDevice.DEV_BROADCAST_HDR) Marshal.PtrToStructure(m.LParam, typeof(ScpDevice.DEV_BROADCAST_HDR));
+                            hdr =
+                                (ScpDevice.DEV_BROADCAST_HDR)
+                                    Marshal.PtrToStructure(m.LParam, typeof (ScpDevice.DEV_BROADCAST_HDR));
 
                             if (hdr.dbch_devicetype == ScpDevice.DBT_DEVTYP_DEVICEINTERFACE)
                             {
                                 ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M deviceInterface;
 
-                                deviceInterface = (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M) Marshal.PtrToStructure(m.LParam, typeof(ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
+                                deviceInterface =
+                                    (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M)
+                                        Marshal.PtrToStructure(m.LParam,
+                                            typeof (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
 
                                 String Class = "{" + new Guid(deviceInterface.dbcc_classguid).ToString().ToUpper() + "}";
 
@@ -174,7 +179,10 @@ namespace ScpServer
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error while processing window messages: {0}", ex);
+            }
 
             base.WndProc(ref m);
         }
@@ -208,8 +216,7 @@ namespace ScpServer
         {
             Log.Debug(e.Data);
         }
-
-
+        
         private void lvDebug_Enter(object sender, EventArgs e) 
         {
             ThemeUtil.UpdateFocus(lvDebug.Handle);
