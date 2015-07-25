@@ -4,40 +4,30 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Collections.Generic;
 using System.Reflection;
+using log4net;
 
-namespace ScpControl 
+namespace ScpControl
 {
-    public partial class XmlMapper : Component 
-    {        
-        public event EventHandler<DebugEventArgs> Debug = null;
-
-        protected virtual void LogDebug(String Data) 
-        {
-            DebugEventArgs args = new DebugEventArgs(Data);
-
-            if (Debug != null)
-            {
-                Debug(this, args);
-            }
-        }
-
-        protected Profile    m_Empty  = new Profile(true, DsMatch.None.ToString(), DsMatch.Global.ToString(), String.Empty);
+    public partial class XmlMapper : Component
+    {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected Profile m_Empty = new Profile(true, DsMatch.None.ToString(), DsMatch.Global.ToString(), String.Empty);
         protected ProfileMap m_Mapper = new ProfileMap();
 
         protected Ds3ButtonAxisMap Ds3ButtonAxis = new Ds3ButtonAxisMap();
         protected Ds4ButtonAxisMap Ds4ButtonAxis = new Ds4ButtonAxisMap();
 
         protected volatile Boolean m_Remapping = false;
-        protected volatile String  m_Active = String.Empty, m_Version = String.Empty, m_Description = String.Empty;
+        protected volatile String m_Active = String.Empty, m_Version = String.Empty, m_Description = String.Empty;
 
-        protected Profile Find(String Mac, Int32 PadId) 
+        protected Profile Find(String Mac, Int32 PadId)
         {
             Profile Found = m_Empty;
-            String  Pad   = ((DsPadId) PadId).ToString();
+            String Pad = ((DsPadId)PadId).ToString();
 
             DsMatch Current = DsMatch.None, Target = DsMatch.None;
 
-            foreach(Profile Item in m_Mapper.Values)
+            foreach (Profile Item in m_Mapper.Values)
             {
                 Target = Item.Usage(Pad, Mac);
 
@@ -50,7 +40,7 @@ namespace ScpControl
             return Found;
         }
 
-        protected void CreateTextNode(XmlDocument Doc, XmlNode Node, String Name, String Text) 
+        protected void CreateTextNode(XmlDocument Doc, XmlNode Node, String Name, String Text)
         {
             XmlNode Item = Doc.CreateNode(XmlNodeType.Element, Name, null);
 
@@ -66,66 +56,67 @@ namespace ScpControl
         }
 
 
-        public XmlMapper() 
+        public XmlMapper()
         {
             InitializeComponent();
 
-            Ds3ButtonAxis[Ds3Button.L1      ] = Ds3Axis.L1;
-            Ds3ButtonAxis[Ds3Button.L2      ] = Ds3Axis.L2;
-            Ds3ButtonAxis[Ds3Button.R1      ] = Ds3Axis.R1;
-            Ds3ButtonAxis[Ds3Button.R2      ] = Ds3Axis.R2;
+            Ds3ButtonAxis[Ds3Button.L1] = Ds3Axis.L1;
+            Ds3ButtonAxis[Ds3Button.L2] = Ds3Axis.L2;
+            Ds3ButtonAxis[Ds3Button.R1] = Ds3Axis.R1;
+            Ds3ButtonAxis[Ds3Button.R2] = Ds3Axis.R2;
 
             Ds3ButtonAxis[Ds3Button.Triangle] = Ds3Axis.Triangle;
-            Ds3ButtonAxis[Ds3Button.Circle  ] = Ds3Axis.Circle;
-            Ds3ButtonAxis[Ds3Button.Cross   ] = Ds3Axis.Cross;
-            Ds3ButtonAxis[Ds3Button.Square  ] = Ds3Axis.Square;
+            Ds3ButtonAxis[Ds3Button.Circle] = Ds3Axis.Circle;
+            Ds3ButtonAxis[Ds3Button.Cross] = Ds3Axis.Cross;
+            Ds3ButtonAxis[Ds3Button.Square] = Ds3Axis.Square;
 
-            Ds3ButtonAxis[Ds3Button.Up      ] = Ds3Axis.Up;
-            Ds3ButtonAxis[Ds3Button.Right   ] = Ds3Axis.Right;
-            Ds3ButtonAxis[Ds3Button.Down    ] = Ds3Axis.Down;
-            Ds3ButtonAxis[Ds3Button.Left    ] = Ds3Axis.Left;
+            Ds3ButtonAxis[Ds3Button.Up] = Ds3Axis.Up;
+            Ds3ButtonAxis[Ds3Button.Right] = Ds3Axis.Right;
+            Ds3ButtonAxis[Ds3Button.Down] = Ds3Axis.Down;
+            Ds3ButtonAxis[Ds3Button.Left] = Ds3Axis.Left;
 
-            Ds4ButtonAxis[Ds4Button.L2      ] = Ds4Axis.L2;
-            Ds4ButtonAxis[Ds4Button.R2      ] = Ds4Axis.R2;
+            Ds4ButtonAxis[Ds4Button.L2] = Ds4Axis.L2;
+            Ds4ButtonAxis[Ds4Button.R2] = Ds4Axis.R2;
         }
 
-        public XmlMapper(IContainer container) 
+        public XmlMapper(IContainer container)
         {
             container.Add(this);
 
             InitializeComponent();
 
-            Ds3ButtonAxis[Ds3Button.L1      ] = Ds3Axis.L1;
-            Ds3ButtonAxis[Ds3Button.L2      ] = Ds3Axis.L2;
-            Ds3ButtonAxis[Ds3Button.R1      ] = Ds3Axis.R1;
-            Ds3ButtonAxis[Ds3Button.R2      ] = Ds3Axis.R2;
+            Ds3ButtonAxis[Ds3Button.L1] = Ds3Axis.L1;
+            Ds3ButtonAxis[Ds3Button.L2] = Ds3Axis.L2;
+            Ds3ButtonAxis[Ds3Button.R1] = Ds3Axis.R1;
+            Ds3ButtonAxis[Ds3Button.R2] = Ds3Axis.R2;
 
             Ds3ButtonAxis[Ds3Button.Triangle] = Ds3Axis.Triangle;
-            Ds3ButtonAxis[Ds3Button.Circle  ] = Ds3Axis.Circle;
-            Ds3ButtonAxis[Ds3Button.Cross   ] = Ds3Axis.Cross;
-            Ds3ButtonAxis[Ds3Button.Square  ] = Ds3Axis.Square;
+            Ds3ButtonAxis[Ds3Button.Circle] = Ds3Axis.Circle;
+            Ds3ButtonAxis[Ds3Button.Cross] = Ds3Axis.Cross;
+            Ds3ButtonAxis[Ds3Button.Square] = Ds3Axis.Square;
 
-            Ds3ButtonAxis[Ds3Button.Up      ] = Ds3Axis.Up;
-            Ds3ButtonAxis[Ds3Button.Right   ] = Ds3Axis.Right;
-            Ds3ButtonAxis[Ds3Button.Down    ] = Ds3Axis.Down;
-            Ds3ButtonAxis[Ds3Button.Left    ] = Ds3Axis.Left;
+            Ds3ButtonAxis[Ds3Button.Up] = Ds3Axis.Up;
+            Ds3ButtonAxis[Ds3Button.Right] = Ds3Axis.Right;
+            Ds3ButtonAxis[Ds3Button.Down] = Ds3Axis.Down;
+            Ds3ButtonAxis[Ds3Button.Left] = Ds3Axis.Left;
 
-            Ds4ButtonAxis[Ds4Button.L2      ] = Ds4Axis.L2;
-            Ds4ButtonAxis[Ds4Button.R2      ] = Ds4Axis.R2;
+            Ds4ButtonAxis[Ds4Button.L2] = Ds4Axis.L2;
+            Ds4ButtonAxis[Ds4Button.R2] = Ds4Axis.R2;
         }
 
 
-        public virtual Boolean Initialize(XmlDocument Map) 
+        public virtual Boolean Initialize(XmlDocument Map)
         {
             try
             {
-                m_Remapping = false; m_Mapper.Clear();
+                m_Remapping = false;
+                m_Mapper.Clear();
 
                 XmlNode Node = Map.SelectSingleNode("/ScpMapper");
 
                 m_Description = Node.SelectSingleNode("Description").FirstChild.Value;
-                m_Version     = Node.SelectSingleNode("Version"    ).FirstChild.Value;
-                m_Active      = Node.SelectSingleNode("Active"     ).FirstChild.Value;
+                m_Version = Node.SelectSingleNode("Version").FirstChild.Value;
+                m_Active = Node.SelectSingleNode("Active").FirstChild.Value;
 
                 foreach (XmlNode ProfileNode in Node.SelectNodes("Mapping/Profile"))
                 {
@@ -134,107 +125,93 @@ namespace ScpControl
 
                     String Qualifier = String.Empty;
 
-                    try
-                    {
-                        XmlNode QualifierNode = ProfileNode.SelectSingleNode("Value");
+                    XmlNode QualifierNode = ProfileNode.SelectSingleNode("Value");
 
-                        if (QualifierNode.HasChildNodes)
-                        {
-                            Qualifier = QualifierNode.FirstChild.Value;
-                        }
+                    if (QualifierNode.HasChildNodes)
+                    {
+                        Qualifier = QualifierNode.FirstChild.Value;
                     }
-                    catch { }
+
 
                     Profile Profile = new Profile(Name == m_Active, Name, Type, Qualifier);
 
-                    try
+                    foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS3/Button"))
                     {
-                        foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS3/Button"))
+                        foreach (XmlNode Item in Mapping.ChildNodes)
                         {
-                            foreach (XmlNode Item in Mapping.ChildNodes)
-                            {
-                                Ds3Button Target = (Ds3Button) Enum.Parse(typeof(Ds3Button), Item.ParentNode.Name);
-                                Ds3Button Mapped = (Ds3Button) Enum.Parse(typeof(Ds3Button), Item.Value);
+                            Ds3Button Target = (Ds3Button)Enum.Parse(typeof(Ds3Button), Item.ParentNode.Name);
+                            Ds3Button Mapped = (Ds3Button)Enum.Parse(typeof(Ds3Button), Item.Value);
 
-                                Profile.Ds3Button[Target] = Mapped;
-                            }
+                            Profile.Ds3Button[Target] = Mapped;
                         }
                     }
-                    catch { }
 
-                    try
+                    foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS3/Axis"))
                     {
-                        foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS3/Axis"))
+                        foreach (XmlNode Item in Mapping.ChildNodes)
                         {
-                            foreach (XmlNode Item in Mapping.ChildNodes)
-                            {
-                                Ds3Axis Target = (Ds3Axis) Enum.Parse(typeof(Ds3Axis), Item.ParentNode.Name);
-                                Ds3Axis Mapped = (Ds3Axis) Enum.Parse(typeof(Ds3Axis), Item.Value);
+                            Ds3Axis Target = (Ds3Axis)Enum.Parse(typeof(Ds3Axis), Item.ParentNode.Name);
+                            Ds3Axis Mapped = (Ds3Axis)Enum.Parse(typeof(Ds3Axis), Item.Value);
 
-                                Profile.Ds3Axis[Target] = Mapped;
-                            }
+                            Profile.Ds3Axis[Target] = Mapped;
                         }
                     }
-                    catch { }
 
-                    try
+                    foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS4/Button"))
                     {
-                        foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS4/Button"))
+                        foreach (XmlNode Item in Mapping.ChildNodes)
                         {
-                            foreach (XmlNode Item in Mapping.ChildNodes)
-                            {
-                                Ds4Button Target = (Ds4Button) Enum.Parse(typeof(Ds4Button), Item.ParentNode.Name);
-                                Ds4Button Mapped = (Ds4Button) Enum.Parse(typeof(Ds4Button), Item.Value);
+                            Ds4Button Target = (Ds4Button)Enum.Parse(typeof(Ds4Button), Item.ParentNode.Name);
+                            Ds4Button Mapped = (Ds4Button)Enum.Parse(typeof(Ds4Button), Item.Value);
 
-                                Profile.Ds4Button[Target] = Mapped;
-                            }
+                            Profile.Ds4Button[Target] = Mapped;
                         }
                     }
-                    catch { }
 
-                    try
+                    foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS4/Axis"))
                     {
-                        foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS4/Axis"))
+                        foreach (XmlNode Item in Mapping.ChildNodes)
                         {
-                            foreach (XmlNode Item in Mapping.ChildNodes)
-                            {
-                                Ds4Axis Target = (Ds4Axis) Enum.Parse(typeof(Ds4Axis), Item.ParentNode.Name);
-                                Ds4Axis Mapped = (Ds4Axis) Enum.Parse(typeof(Ds4Axis), Item.Value);
+                            Ds4Axis Target = (Ds4Axis)Enum.Parse(typeof(Ds4Axis), Item.ParentNode.Name);
+                            Ds4Axis Mapped = (Ds4Axis)Enum.Parse(typeof(Ds4Axis), Item.Value);
 
-                                Profile.Ds4Axis[Target] = Mapped;
-                            }
+                            Profile.Ds4Axis[Target] = Mapped;
                         }
                     }
-                    catch { }
 
                     m_Mapper[Profile.Name] = Profile;
                 }
 
-                Int32 Mappings = m_Mapper[m_Active].Ds3Button.Count + m_Mapper[m_Active].Ds3Axis.Count + m_Mapper[m_Active].Ds4Button.Count + m_Mapper[m_Active].Ds4Axis.Count;
-                LogDebug(String.Format("## Mapper.Initialize() - Profiles [{0}] Active [{1}] Mappings [{2}]", m_Mapper.Count, m_Active, Mappings));
+                Int32 Mappings = m_Mapper[m_Active].Ds3Button.Count + m_Mapper[m_Active].Ds3Axis.Count +
+                                 m_Mapper[m_Active].Ds4Button.Count + m_Mapper[m_Active].Ds4Axis.Count;
+                Log.DebugFormat("## Mapper.Initialize() - Profiles [{0}] Active [{1}] Mappings [{2}]", m_Mapper.Count,
+                    m_Active, Mappings);
 
                 m_Remapping = true;
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Error in XML Initialize: {0}", ex);
+            }
 
             return m_Remapping;
         }
 
-        public virtual Boolean Shutdown() 
+        public virtual Boolean Shutdown()
         {
             m_Remapping = false;
 
-            LogDebug("## Mapper.Shutdown()");
+            Log.Debug("## Mapper.Shutdown()");
             return true;
         }
 
-        public virtual Boolean Construct(ref XmlDocument Map) 
+        public virtual Boolean Construct(ref XmlDocument Map)
         {
             Boolean Constructed = true;
 
             try
             {
-                XmlNode     Node;
+                XmlNode Node;
                 XmlDocument Doc = new XmlDocument();
 
                 Node = Doc.CreateXmlDeclaration("1.0", "utf-8", String.Empty);
@@ -246,7 +223,7 @@ namespace ScpControl
                 Node = Doc.CreateNode(XmlNodeType.Element, "ScpMapper", null);
                 {
                     CreateTextNode(Doc, Node, "Description", "SCP Mapping File");
-                    CreateTextNode(Doc, Node, "Version",     Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                    CreateTextNode(Doc, Node, "Version", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
                     XmlNode Mapping = Doc.CreateNode(XmlNodeType.Element, "Mapping", null);
                     {
@@ -256,8 +233,8 @@ namespace ScpControl
 
                             XmlNode Profile = Doc.CreateNode(XmlNodeType.Element, "Profile", null);
                             {
-                                CreateTextNode(Doc, Profile, "Name",  Item.Name);
-                                CreateTextNode(Doc, Profile, "Type",  Item.Type);
+                                CreateTextNode(Doc, Profile, "Name", Item.Name);
+                                CreateTextNode(Doc, Profile, "Type", Item.Type);
                                 CreateTextNode(Doc, Profile, "Value", Item.Qualifier);
 
                                 XmlNode Ds3 = Doc.CreateNode(XmlNodeType.Element, DsModel.DS3.ToString(), null);
@@ -308,11 +285,11 @@ namespace ScpControl
                         }
                     }
                     Node.AppendChild(Mapping);
-                    
+
                 }
                 Doc.AppendChild(Node);
 
-                Map = Doc;                
+                Map = Doc;
             }
             catch { Constructed = false; }
 
@@ -320,7 +297,7 @@ namespace ScpControl
         }
 
 
-        public virtual Boolean Remap(DsModel Type, Int32 Pad, String Mac, Byte[] Input, Byte[] Output) 
+        public virtual Boolean Remap(DsModel Type, Int32 Pad, String Mac, Byte[] Input, Byte[] Output)
         {
             Boolean Mapped = false;
 
@@ -341,7 +318,7 @@ namespace ScpControl
         }
 
 
-        public virtual Boolean RemapDs3(Profile Map, Byte[] Input, Byte[] Output) 
+        public virtual Boolean RemapDs3(Profile Map, Byte[] Input, Byte[] Output)
         {
             Boolean Mapped = false;
 
@@ -354,12 +331,12 @@ namespace ScpControl
                 Ds3Button Out = In;
 
                 foreach (Ds3Button Item in Map.Ds3Button.Keys) if ((Out & Item) != Ds3Button.None) Out ^= Item;
-                foreach (Ds3Button Item in Map.Ds3Button.Keys) if ((In  & Item) != Ds3Button.None) Out |= Map.Ds3Button[Item];
+                foreach (Ds3Button Item in Map.Ds3Button.Keys) if ((In & Item) != Ds3Button.None) Out |= Map.Ds3Button[Item];
 
-                Output[10] = (Byte)((UInt32) Out >>  0 & 0xFF);
-                Output[11] = (Byte)((UInt32) Out >>  8 & 0xFF);
-                Output[12] = (Byte)((UInt32) Out >> 16 & 0xFF);
-                Output[13] = (Byte)((UInt32) Out >> 24 & 0xFF);
+                Output[10] = (Byte)((UInt32)Out >> 0 & 0xFF);
+                Output[11] = (Byte)((UInt32)Out >> 8 & 0xFF);
+                Output[12] = (Byte)((UInt32)Out >> 16 & 0xFF);
+                Output[13] = (Byte)((UInt32)Out >> 24 & 0xFF);
 
                 // Map Axis
                 foreach (Ds3Axis Item in Map.Ds3Axis.Keys)
@@ -369,12 +346,12 @@ namespace ScpControl
                         case Ds3Axis.LX:
                         case Ds3Axis.LY:
                         case Ds3Axis.RX:
-                        case Ds3Axis.RY: 
-                            Output[(UInt32) Item] = 127; // Centred
+                        case Ds3Axis.RY:
+                            Output[(UInt32)Item] = 127; // Centred
                             break;
 
                         default:
-                            Output[(UInt32) Item] =   0;
+                            Output[(UInt32)Item] = 0;
                             break;
                     }
                 }
@@ -383,16 +360,16 @@ namespace ScpControl
                 {
                     if (Map.Ds3Axis[Item] != Ds3Axis.None)
                     {
-                        Output[(UInt32) Map.Ds3Axis[Item]] = Input[(UInt32) Item];
+                        Output[(UInt32)Map.Ds3Axis[Item]] = Input[(UInt32)Item];
                     }
                 }
 
                 // Fix up Button-Axis Relations
                 foreach (Ds3Button Key in Ds3ButtonAxis.Keys)
                 {
-                    if ((Out & Key) != Ds3Button.None && Output[(UInt32) Ds3ButtonAxis[Key]] == 0)
+                    if ((Out & Key) != Ds3Button.None && Output[(UInt32)Ds3ButtonAxis[Key]] == 0)
                     {
-                        Output[(UInt32) Ds3ButtonAxis[Key]] = 0xFF;
+                        Output[(UInt32)Ds3ButtonAxis[Key]] = 0xFF;
                     }
                 }
 
@@ -403,7 +380,7 @@ namespace ScpControl
             return Mapped;
         }
 
-        public virtual Boolean RemapDs4(Profile Map, Byte[] Input, Byte[] Output) 
+        public virtual Boolean RemapDs4(Profile Map, Byte[] Input, Byte[] Output)
         {
             Boolean Mapped = false;
 
@@ -416,11 +393,11 @@ namespace ScpControl
                 Ds4Button Out = In;
 
                 foreach (Ds4Button Item in Map.Ds4Button.Keys) if ((Out & Item) != Ds4Button.None) Out ^= Item;
-                foreach (Ds4Button Item in Map.Ds4Button.Keys) if ((In  & Item) != Ds4Button.None) Out |= Map.Ds4Button[Item];
+                foreach (Ds4Button Item in Map.Ds4Button.Keys) if ((In & Item) != Ds4Button.None) Out |= Map.Ds4Button[Item];
 
-                Output[13] = (Byte)((UInt32) Out >>  0 & 0xFF);
-                Output[14] = (Byte)((UInt32) Out >>  8 & 0xFF);
-                Output[15] = (Byte)((UInt32) Out >> 16 & 0xFF);
+                Output[13] = (Byte)((UInt32)Out >> 0 & 0xFF);
+                Output[14] = (Byte)((UInt32)Out >> 8 & 0xFF);
+                Output[15] = (Byte)((UInt32)Out >> 16 & 0xFF);
 
                 // Map Axis
                 foreach (Ds4Axis Item in Map.Ds4Axis.Keys)
@@ -431,10 +408,10 @@ namespace ScpControl
                         case Ds4Axis.LY:
                         case Ds4Axis.RX:
                         case Ds4Axis.RY:
-                            Output[(UInt32) Item] = 127; // Centred
+                            Output[(UInt32)Item] = 127; // Centred
                             break;
                         default:
-                            Output[(UInt32) Item] = 0;
+                            Output[(UInt32)Item] = 0;
                             break;
                     }
                 }
@@ -443,16 +420,16 @@ namespace ScpControl
                 {
                     if (Map.Ds4Axis[Item] != Ds4Axis.None)
                     {
-                        Output[(UInt32) Map.Ds4Axis[Item]] = Input[(UInt32) Item];
+                        Output[(UInt32)Map.Ds4Axis[Item]] = Input[(UInt32)Item];
                     }
                 }
 
                 // Fix up Button-Axis Relations
                 foreach (Ds4Button Key in Ds4ButtonAxis.Keys)
                 {
-                    if ((Out & Key) != Ds4Button.None && Output[(UInt32) Ds4ButtonAxis[Key]] == 0)
+                    if ((Out & Key) != Ds4Button.None && Output[(UInt32)Ds4ButtonAxis[Key]] == 0)
                     {
-                        Output[(UInt32) Ds4ButtonAxis[Key]] = 0xFF;
+                        Output[(UInt32)Ds4ButtonAxis[Key]] = 0xFF;
                     }
                 }
 
@@ -465,9 +442,9 @@ namespace ScpControl
         }
 
 
-        public virtual String[] Profiles 
+        public virtual String[] Profiles
         {
-            get 
+            get
             {
                 Int32 Index = 0;
                 String[] List = new String[m_Mapper.Count];
@@ -481,12 +458,12 @@ namespace ScpControl
             }
         }
 
-        public virtual String   Active   
+        public virtual String Active
         {
             get { return m_Active; }
         }
 
-        public virtual ProfileMap Map    
+        public virtual ProfileMap Map
         {
             get { return m_Mapper; }
         }

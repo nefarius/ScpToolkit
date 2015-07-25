@@ -145,18 +145,17 @@ namespace ScpControl
 
                 if (SendTransfer(0x21, 0x09, 0x0313, Buffer, ref Transfered))
                 {
-                    LogDebug(String.Format("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, Remote));
+                    Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, Remote);
                 }
                 else
                 {
-                    LogDebug(String.Format("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", Local, Remote));
+                    Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", Local, Remote);
                 }
             }
 
             return base.Start();
         }
-
-
+        
         public override Boolean Rumble(Byte Large, Byte Small) 
         {
             lock (this)
@@ -184,11 +183,11 @@ namespace ScpControl
                     m_Master[Index] = Master[Index];
                 }
 
-                LogDebug(String.Format("++ Paired DS4 [{0}] To BTH Dongle [{1}]", Local, Remote));
+                Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", Local, Remote);
                 return true;
             }
 
-            LogDebug(String.Format("++ Pair Failed [{0}]", Local));
+            Log.DebugFormat("++ Pair Failed [{0}]", Local);
             return false;
         }
 

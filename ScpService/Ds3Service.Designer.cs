@@ -34,7 +34,6 @@
             // 
             // rootHub
             // 
-            this.rootHub.Debug += new System.EventHandler<ScpControl.DebugEventArgs>(this.OnDebug);
             // 
             // Ds3Service
             // 
@@ -42,7 +41,6 @@
             this.CanHandlePowerEvent = true;
             this.CanShutdown = true;
             this.ServiceName = "Ds3Service";
-
         }
 
         #endregion

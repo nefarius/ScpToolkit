@@ -14,7 +14,6 @@ namespace ScpControl
         protected Boolean  m_IsDisconnect = false;
         protected DateTime m_Last = DateTime.Now, m_Tick = DateTime.Now, m_Disconnect = DateTime.Now;
 
-        public event EventHandler<DebugEventArgs>  Debug  = null;
         public event EventHandler<ReportEventArgs> Report = null;
 
         protected Byte[] m_Buffer = new Byte[64];
@@ -92,17 +91,6 @@ namespace ScpControl
             if (Report != null) Report(this, m_ReportArgs);
         }
 
-        protected virtual void LogDebug(String Data) 
-        {
-            DebugEventArgs args = new DebugEventArgs(Data);
-
-            if (Debug != null)
-            {
-                Debug(this, args);
-            }
-        }
-
-
         protected virtual void Process(DateTime Now) 
         {
         }
@@ -154,7 +142,7 @@ namespace ScpControl
                 tmUpdate.Enabled = true;
 
                 Rumble(0, 0);
-                LogDebug(String.Format("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote));
+                Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote);
             }
 
             return State == DsState.Connected;
@@ -219,7 +207,7 @@ namespace ScpControl
             Int32  Transfered = 0;
             Byte[] Buffer = new Byte[64];
 
-            LogDebug("-- USB Device : HID_Worker_Thread Starting");
+            Log.Debug("-- USB Device : HID_Worker_Thread Starting");
 
             while (IsActive)
             {
@@ -233,7 +221,7 @@ namespace ScpControl
                 catch { }
             }
 
-            LogDebug("-- USB Device : HID_Worker_Thread Exiting");
+            Log.Debug("-- USB Device : HID_Worker_Thread Exiting");
         }
 
         protected void On_Timer(object sender, EventArgs e) 

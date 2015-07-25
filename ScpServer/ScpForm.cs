@@ -211,11 +211,6 @@ namespace ScpServer
 
             btnClear.Enabled = lvDebug.Items.Count > 0;
         }
-
-        private void On_Debug(object sender, ScpControl.DebugEventArgs e) 
-        {
-            Log.Debug(e.Data);
-        }
         
         private void lvDebug_Enter(object sender, EventArgs e) 
         {

@@ -5,11 +5,13 @@ using System.IO;
 using System.Xml;
 using System.Reflection;
 using System.Threading;
+using log4net;
 
 namespace ScpControl
 {
     public partial class ScpMapper : Component
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected XmlDocument   m_Map      = new XmlDocument();
         protected static String m_FileName = "ScpMapper.xml";
         protected static String m_FilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + m_FileName;
@@ -23,27 +25,6 @@ namespace ScpControl
         {
             get { return m_Started; }
         }
-
-        public event EventHandler<DebugEventArgs> Debug = null;
-
-        protected virtual void LogDebug(String Data) 
-        {
-            DebugEventArgs args = new DebugEventArgs(Data);
-
-            if (Debug != null)
-            {
-                Debug(this, args);
-            }
-        }
-
-        protected virtual void OnDebug(object sender, DebugEventArgs e) 
-        {
-            if (Debug != null)
-            {
-                Debug(this, e);
-            }
-        }
-
 
         protected void OnCreated(object sender, FileSystemEventArgs e) 
         {
@@ -117,7 +98,7 @@ namespace ScpControl
 
                     m_Watcher.EnableRaisingEvents = m_Started = userMapper.Initialize(m_Map);
                 }
-                catch (Exception e) { LogDebug(String.Format("-- Mapper.Start  [{0}]", e.Message)); }
+                catch (Exception e) { Log.DebugFormat("-- Mapper.Start  [{0}]", e.Message); }
             }
 
             return m_Started;
@@ -133,7 +114,7 @@ namespace ScpControl
 
                     userMapper.Shutdown();
                 }
-                catch (Exception e) { LogDebug(String.Format("-- Mapper.Stop   [{0}]", e.Message)); }
+                catch (Exception e) { Log.DebugFormat("-- Mapper.Stop   [{0}]", e.Message); }
             }
 
             return !m_Started;
@@ -166,7 +147,7 @@ namespace ScpControl
 
                     m_Watcher.EnableRaisingEvents = Updated = userMapper.Initialize(m_Map);
                 }
-                catch (Exception e) { LogDebug(String.Format("-- Mapper.Reload [{0}]", e.Message)); }
+                catch (Exception e) { Log.ErrorFormat("-- Mapper.Reload [{0}]", e.Message); }
             }
 
             return Updated;
@@ -183,7 +164,7 @@ namespace ScpControl
                 {
                     Mapped = userMapper.Remap(Type, PadId, MacAddr, Input, Output);
                 }
-                catch { }
+                catch (Exception ex) { Log.ErrorFormat("Unexpected error in Remap: {0}", ex); }
             }
 
             return Mapped;

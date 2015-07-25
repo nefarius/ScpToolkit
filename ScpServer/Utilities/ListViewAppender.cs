@@ -45,7 +45,7 @@ namespace ScpServer.Utilities
                         _form.Invoke(new Action<LoggingEvent>(Append), loggingEvent);
                         return;
                     }
-                    catch (ObjectDisposedException ex) { return; }
+                    catch (ObjectDisposedException) { return; }
                 }
             }
 

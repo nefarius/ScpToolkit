@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows.Forms;
 
 using System.Runtime.InteropServices;
+using log4net;
 using Microsoft.Win32.SafeHandles;
 
 namespace ScpControl 
 {
     public partial class ScpDevice : Component 
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public virtual Boolean IsActive 
         {
             get { return m_IsActive; }

@@ -1,25 +1,19 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
+using log4net;
 
 namespace ScpControl 
 {
     public partial class ScpHub : Component 
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected IntPtr m_Reference = IntPtr.Zero;
         protected volatile Boolean m_Started = false;
 
-        public event EventHandler<DebugEventArgs>   Debug   = null;
         public event EventHandler<ArrivalEventArgs> Arrival = null;
         public event EventHandler<ReportEventArgs>  Report  = null;
 
-        protected virtual Boolean LogDebug(String Data) 
-        {
-            DebugEventArgs args = new DebugEventArgs(Data);
-
-            On_Debug(this, args);
-
-            return true;
-        }
         protected virtual Boolean LogArrival(IDsDevice Arrived) 
         {
             ArrivalEventArgs args = new ArrivalEventArgs(Arrived);
@@ -94,11 +88,6 @@ namespace ScpControl
             }
 
             return DsPadId.None;
-        }
-
-        protected virtual void On_Debug(object sender, DebugEventArgs e)     
-        {
-            if (Debug != null) Debug(sender, e);
         }
 
         protected virtual void On_Arrival(object sender, ArrivalEventArgs e) 

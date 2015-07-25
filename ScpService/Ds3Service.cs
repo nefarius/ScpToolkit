@@ -30,9 +30,8 @@ namespace ScpService
         {
             Log.Info("Scarlet.Crush Productions DS3 Service Started");
 
-            OnDebug(this,
-                new DebugEventArgs(string.Format("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
-                    Assembly.GetExecutingAssembly().GetName().Version)));
+            Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
+                    Assembly.GetExecutingAssembly().GetName().Version);
 
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
@@ -151,11 +150,6 @@ namespace ScpService
 
                 Log.Info("Scp DS3 Service Resumed");
             }
-        }
-
-        private void OnDebug(object sender, DebugEventArgs e)
-        {
-            Log.Debug(e.Data);
         }
     }
 }

@@ -27,19 +27,6 @@ namespace ScpControl
             return Index + m_Offset + 1;
         }
 
-        public event EventHandler<DebugEventArgs> Debug = null;
-
-        protected virtual void LogDebug(String Data) 
-        {
-            DebugEventArgs args = new DebugEventArgs(Data);
-
-            if (Debug != null)
-            {
-                Debug(this, args);
-            }
-        }
-
-
         protected virtual Int32 Scale(Int32 Value, Boolean Flip) 
         {
             Value -= 0x80; if (Value == -128) Value = -127;
@@ -69,19 +56,18 @@ namespace ScpControl
 
             InitializeComponent();
         }
-
-
+        
         public override Boolean Open(Int32 Instance = 0) 
         {
             if (State == DsState.Disconnected)
             {
                 m_Offset = Instance * BusWidth;
 
-                LogDebug(String.Format("-- Bus Open   : Offset {0}", m_Offset));
+                Log.DebugFormat("-- Bus Open   : Offset {0}", m_Offset);
 
                 if (!base.Open(0))
                 {
-                    LogDebug(String.Format("-- Bus Open   : Failed!!", m_Offset));
+                    Log.DebugFormat("-- Bus Open   : Failed!!", m_Offset);
                 }
             }
 
@@ -94,7 +80,7 @@ namespace ScpControl
             {
                 m_Path = DevicePath;
 
-                LogDebug(String.Format("-- Bus Open   : Path {0}", m_Path));
+                Log.DebugFormat("-- Bus Open   : Path {0}", m_Path);
 
                 if (GetDeviceHandle(m_Path))
                 {
@@ -335,7 +321,7 @@ namespace ScpControl
                         {
                             m_Plugged.Add(Serial); retVal = true;
 
-                            LogDebug(String.Format("-- Bus Plugin : Serial {0}", Serial));
+                            Log.DebugFormat("-- Bus Plugin : Serial {0}", Serial);
                         }
                     }
                     else retVal = true;
@@ -373,7 +359,7 @@ namespace ScpControl
                         {
                             m_Plugged.Remove(Serial); retVal = true;
 
-                            LogDebug(String.Format("-- Bus Unplug : Serial {0}", Serial));
+                            Log.DebugFormat("-- Bus Unplug : Serial {0}", Serial);
                         }
                     }
                     else retVal = true;

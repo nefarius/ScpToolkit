@@ -78,12 +78,6 @@ namespace ScpControl
         {
             InitializeComponent();
 
-            scpMap.Debug += new EventHandler<DebugEventArgs>(On_Debug);
-
-            bthHub.Debug += new EventHandler<DebugEventArgs>(On_Debug);
-            usbHub.Debug += new EventHandler<DebugEventArgs>(On_Debug);
-            scpBus.Debug += new EventHandler<DebugEventArgs>(On_Debug);
-
             bthHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
             usbHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
 
@@ -95,12 +89,6 @@ namespace ScpControl
         {
             container.Add(this);
             InitializeComponent();
-
-            scpMap.Debug += new EventHandler<DebugEventArgs>(On_Debug);
-
-            bthHub.Debug += new EventHandler<DebugEventArgs>(On_Debug);
-            usbHub.Debug += new EventHandler<DebugEventArgs>(On_Debug);
-            scpBus.Debug += new EventHandler<DebugEventArgs>(On_Debug);
 
             bthHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
             usbHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
@@ -114,8 +102,8 @@ namespace ScpControl
         {
             bool Opened = false;
 
-            LogDebug(String.Format("++ {0} {1}", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-            LogDebug(String.Format("++ {0}", OSInfo()));
+            Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version);
+            Log.DebugFormat("++ {0}", OSInfo());
 
             scpMap.Open();
 
@@ -190,13 +178,13 @@ namespace ScpControl
             usbHub.Suspend();
             bthHub.Suspend();
 
-            LogDebug("++ Suspended");
+            Log.Debug("++ Suspended");
             return true;
         }
 
         public override Boolean Resume()  
         {
-            LogDebug("++ Resumed");
+            Log.Debug("++ Resumed");
 
             scpBus.Resume();
             for (Int32 Index = 0; Index < m_Pad.Length; Index++)
@@ -249,7 +237,7 @@ namespace ScpControl
 
             m_Server = new UdpClient(m_ServerEp);
 
-            LogDebug("-- Controller : UDP_Worker_Thread Starting");
+            Log.Debug("-- Controller : UDP_Worker_Thread Starting");
 
             while (m_Started)
             {
@@ -414,7 +402,7 @@ namespace ScpControl
                 catch { }
            }
 
-            LogDebug("-- Controller : UDP_Worker_Thread Exiting");
+            Log.Debug("-- Controller : UDP_Worker_Thread Exiting");
         }
 
 
@@ -468,7 +456,7 @@ namespace ScpControl
                 {
                     scpBus.Plugin((int) Arrived.PadId + 1);
 
-                    LogDebug(String.Format("++ Plugin Port #{0} for [{1}]", (int) Arrived.PadId + 1, Arrived.Local));
+                    Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int) Arrived.PadId + 1, Arrived.Local);
                 }
                 e.Handled = bFound;
             }

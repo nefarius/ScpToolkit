@@ -33,8 +33,6 @@
             // 
             // userMapper
             // 
-            this.userMapper.Debug += new System.EventHandler<DebugEventArgs>(this.OnDebug);
-
        }
 
         #endregion

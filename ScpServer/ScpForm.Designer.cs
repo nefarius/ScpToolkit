@@ -298,7 +298,6 @@
             // 
             // rootHub
             // 
-            this.rootHub.Debug += new System.EventHandler<ScpControl.DebugEventArgs>(this.On_Debug);
             // 
             // ScpForm
             // 

@@ -39,7 +39,6 @@ namespace ScpControl
             Device = new BthDongle();
 
             Device.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
-            Device.Debug   += new EventHandler<DebugEventArgs>  (On_Debug);
             Device.Report  += new EventHandler<ReportEventArgs> (On_Report);
             
             if (!Device.Open()) Device.Close();
@@ -98,7 +97,7 @@ namespace ScpControl
 
         public override DsPadId Notify(ScpDevice.Notified Notification, String Class, String Path) 
         {
-            LogDebug(String.Format("++ Notify [{0}] [{1}] [{2}]", Notification, Class, Path));
+            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", Notification, Class, Path);
 
             switch (Notification)
             {
@@ -110,13 +109,12 @@ namespace ScpControl
 
                             if (Arrived.Open(Path))
                             {
-                                LogDebug(String.Format("-- Device Arrival [{0}]", Arrived.Local));
+                                Log.DebugFormat("-- Device Arrival [{0}]", Arrived.Local);
 
                                 Device.Close();
                                 Device = Arrived;
 
                                 Device.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
-                                Device.Debug   += new EventHandler<DebugEventArgs>  (On_Debug  );
                                 Device.Report  += new EventHandler<ReportEventArgs> (On_Report );
 
                                 if (m_Started) Device.Start();
@@ -133,7 +131,7 @@ namespace ScpControl
 
                     if (Device.Path == Path)
                     {
-                        LogDebug(String.Format("-- Device Removal [{0}]", Device.Local));
+                        Log.DebugFormat("-- Device Removal [{0}]", Device.Local);
 
                         Device.Stop();
                     }

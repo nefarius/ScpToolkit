@@ -127,11 +127,11 @@ namespace ScpControl
                     m_Master[Index] = Master[Index];
                 }
 
-                LogDebug(String.Format("++ Paired DS3 [{0}] To BTH Dongle [{1}]", Local, Remote));
+                Log.DebugFormat("++ Paired DS3 [{0}] To BTH Dongle [{1}]", Local, Remote);
                 return true;
             }
 
-            LogDebug(String.Format("++ Pair Failed [{0}]", Local));
+            Log.DebugFormat("++ Pair Failed [{0}]", Local);
             return false;
         }
 
@@ -185,7 +185,7 @@ namespace ScpControl
                 {
                     if ((Now - m_Disconnect).TotalMilliseconds >= 2000)
                     {
-                        LogDebug("++ Quick Disconnect Triggered");
+                        Log.Debug("++ Quick Disconnect Triggered");
 
                         Shutdown();
                         return;

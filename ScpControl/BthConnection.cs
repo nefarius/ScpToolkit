@@ -1,10 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
+using log4net;
 
 namespace ScpControl 
 {
     public partial class BthConnection : Component, IEquatable<BthConnection>, IComparable<BthConnection> 
     {
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected static UInt16 m_DCID = 0x40;
 
         protected BthHandle   m_HCI_Handle;

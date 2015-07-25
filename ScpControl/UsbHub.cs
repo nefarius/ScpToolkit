@@ -50,7 +50,6 @@ namespace ScpControl
                     {
                         if (LogArrival(Current))
                         {
-                            Current.Debug  += new EventHandler<DebugEventArgs> (On_Debug);
                             Current.Report += new EventHandler<ReportEventArgs>(On_Report);
 
                             Device[Index++] = Current;
@@ -73,7 +72,6 @@ namespace ScpControl
                     {
                         if (LogArrival(Current))
                         {
-                            Current.Debug  += new EventHandler<DebugEventArgs> (On_Debug);
                             Current.Report += new EventHandler<ReportEventArgs>(On_Report);
 
                             Device[Index++] = Current;
@@ -158,7 +156,7 @@ namespace ScpControl
 
         public override DsPadId Notify(ScpDevice.Notified Notification, String Class, String Path) 
         {
-            LogDebug(String.Format("++ Notify [{0}] [{1}] [{2}]", Notification, Class, Path));
+            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", Notification, Class, Path);
 
             switch (Notification)
             {
@@ -166,12 +164,12 @@ namespace ScpControl
                     {
                         UsbDevice Arrived = new UsbDevice();
 
-                        if (Class.ToUpper() == UsbDs3.USB_CLASS_GUID.ToUpper()) { Arrived = new UsbDs3(); LogDebug("-- DS3 Arrival Event"); }
-                        if (Class.ToUpper() == UsbDs4.USB_CLASS_GUID.ToUpper()) { Arrived = new UsbDs4(); LogDebug("-- DS4 Arrival Event"); }
+                        if (Class.ToUpper() == UsbDs3.USB_CLASS_GUID.ToUpper()) { Arrived = new UsbDs3(); Log.Debug("-- DS3 Arrival Event"); }
+                        if (Class.ToUpper() == UsbDs4.USB_CLASS_GUID.ToUpper()) { Arrived = new UsbDs4(); Log.Debug("-- DS4 Arrival Event"); }
 
                         if (Arrived.Open(Path))
                         {
-                            LogDebug(String.Format("-- Device Arrival [{0}]", Arrived.Local));
+                            Log.DebugFormat("-- Device Arrival [{0}]", Arrived.Local);
 
                             if (LogArrival(Arrived))
                             {
@@ -186,7 +184,6 @@ namespace ScpControl
                                 }
                                 else
                                 {
-                                    Arrived.Debug  += new EventHandler<DebugEventArgs> (On_Debug );
                                     Arrived.Report += new EventHandler<ReportEventArgs>(On_Report);
 
                                     Device[(Byte) Arrived.PadId].Close();
@@ -208,7 +205,7 @@ namespace ScpControl
                         {
                             if (Device[Index].State == DsState.Connected && Path == Device[Index].Path)
                             {
-                                LogDebug(String.Format("-- Device Removal [{0}]", Device[Index].Local));
+                                Log.DebugFormat("-- Device Removal [{0}]", Device[Index].Local);
 
                                 Device[Index].Stop();
                             }

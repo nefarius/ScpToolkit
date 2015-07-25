@@ -7,7 +7,6 @@ namespace ScpControl
 {
     public partial class BthDevice : BthConnection, IDsDevice 
     {
-        public event EventHandler<DebugEventArgs>  Debug  = null;
         public event EventHandler<ReportEventArgs> Report = null;
 
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
@@ -57,8 +56,7 @@ namespace ScpControl
             get { return (DsPadId) m_ControllerId; }
             set { m_ControllerId = (Byte) value; }
         }
-
-
+        
         protected virtual void Publish() 
         {
             m_ReportArgs.Report[0] = m_ControllerId;
@@ -66,17 +64,6 @@ namespace ScpControl
 
             if (Report != null) Report(this, m_ReportArgs);
         }
-
-        protected virtual void LogDebug(String Data) 
-        {
-            DebugEventArgs args = new DebugEventArgs(Data);
-
-            if (Debug != null)
-            {
-                Debug(this, args);
-            }
-        }
-
 
         public BthDevice() 
         {
@@ -97,8 +84,7 @@ namespace ScpControl
             m_Device = Device;
             m_Master = Master;
         }
-
-
+        
         public virtual Boolean Start() 
         {
             Array.Copy(m_Local, 0, m_ReportArgs.Report, (Int32) DsOffset.Address, m_Local.Length);
@@ -219,7 +205,7 @@ namespace ScpControl
                 {
                     if ((Now - m_Idle).TotalMilliseconds >= Global.IdleTimeout)
                     {
-                        LogDebug("++ Idle Disconnect Triggered");
+                        Log.Debug("++ Idle Disconnect Triggered");
 
                         m_IsDisconnect = false;
                         m_IsIdle = false;
@@ -232,7 +218,7 @@ namespace ScpControl
                 {
                     if ((Now - m_Disconnect).TotalMilliseconds >= 2000)
                     {
-                        LogDebug("++ Quick Disconnect Triggered");
+                        Log.Debug("++ Quick Disconnect Triggered");
 
                         m_IsDisconnect = false;
                         m_IsIdle = false;
