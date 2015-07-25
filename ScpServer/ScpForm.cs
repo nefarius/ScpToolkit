@@ -3,51 +3,20 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection;
-
+using log4net;
 using ScpControl;
 
 namespace ScpServer 
 {
     public partial class ScpForm : Form 
     {
-        protected String m_Log = Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName + "\\" + Assembly.GetExecutingAssembly().GetName().Name + ".log";
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        delegate void LogDebugDelegate(DateTime Time, String Data);
+        private IntPtr m_Ds3Notify = IntPtr.Zero;
+        private IntPtr m_Ds4Notify = IntPtr.Zero;
+        private IntPtr m_BthNotify = IntPtr.Zero;
 
-        protected void LogDebug(DateTime Time, String Data) 
-        {
-            if (lvDebug.InvokeRequired)
-            {
-                LogDebugDelegate d = new LogDebugDelegate(LogDebug);
-                try
-                {
-                    this.Invoke(d, new Object[] { Time, Data });
-                }
-                catch { }
-            }
-            else
-            {
-                String Posted = Time.ToString("yyyy-MM-dd HH:mm:ss.fff");
-
-                lvDebug.Items.Add(new ListViewItem(new String[] { Posted, Data })).EnsureVisible();
-
-                try
-                {
-                    using (StreamWriter fs = new StreamWriter(m_Log, true))
-                    {
-                        fs.Write(String.Format("{0} {1}\r\n", Posted, Data));
-                        fs.Flush();
-                    }
-                }
-                catch { }
-            }
-        }
-
-        protected IntPtr m_Ds3Notify = IntPtr.Zero;
-        protected IntPtr m_Ds4Notify = IntPtr.Zero;
-        protected IntPtr m_BthNotify = IntPtr.Zero;
-
-        protected RadioButton[] Pad = new RadioButton[4];
+        private RadioButton[] Pad = new RadioButton[4];
 
         public ScpForm() 
         {
@@ -60,7 +29,7 @@ namespace ScpServer
             Pad[3] = rbPad_4;
         }
 
-        protected void Form_Load(object sender, EventArgs e) 
+        private void Form_Load(object sender, EventArgs e) 
         {
             Icon = Properties.Resources.Scp_All;
 
@@ -68,13 +37,13 @@ namespace ScpServer
             ScpDevice.RegisterNotify(Handle, new Guid(UsbDs4.USB_CLASS_GUID   ), ref m_Ds4Notify);
             ScpDevice.RegisterNotify(Handle, new Guid(BthDongle.BTH_CLASS_GUID), ref m_BthNotify);
 
-            LogDebug(DateTime.Now, String.Format("++ {0}  {1}", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version.ToString()));
+            Log.DebugFormat("{0} [{1}]", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version);
 
             tmrUpdate.Enabled = true;
             btnStart_Click(sender, e);
         }
 
-        protected void Form_Close(object sender, FormClosingEventArgs e) 
+        private void Form_Close(object sender, FormClosingEventArgs e) 
         {
             rootHub.Stop();
             rootHub.Close();
@@ -84,7 +53,7 @@ namespace ScpServer
             if (m_BthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_BthNotify);
         }
 
-        protected void btnStart_Click(object sender, EventArgs e) 
+        private void btnStart_Click(object sender, EventArgs e) 
         {
             if (rootHub.Open() && rootHub.Start())
             {
@@ -93,7 +62,7 @@ namespace ScpServer
             }
         }
 
-        protected void btnStop_Click(object sender, EventArgs e) 
+        private void btnStop_Click(object sender, EventArgs e) 
         {
             if (rootHub.Stop())
             {
@@ -102,12 +71,12 @@ namespace ScpServer
             }
         }
 
-        protected void btnClear_Click(object sender, EventArgs e) 
+        private void btnClear_Click(object sender, EventArgs e) 
         {
             lvDebug.Items.Clear();
         }
 
-        protected void btnMotor_Click(object sender, EventArgs e) 
+        private void btnMotor_Click(object sender, EventArgs e) 
         {
             Button Target = (Button) sender;
             Byte Left = 0x00, Right = 0x00;
@@ -128,7 +97,7 @@ namespace ScpServer
             }
         }
 
-        protected void btnPair_Click(object sender, EventArgs e) 
+        private void btnPair_Click(object sender, EventArgs e) 
         {
             for (Int32 Index = 0; Index < Pad.Length; Index++)
             {
@@ -210,7 +179,7 @@ namespace ScpServer
             base.WndProc(ref m);
         }
 
-        protected void tmrUpdate_Tick(object sender, EventArgs e) 
+        private void tmrUpdate_Tick(object sender, EventArgs e) 
         {
             Boolean bSelected = false, bDisconnect = false, bPair = false;
 
@@ -235,18 +204,18 @@ namespace ScpServer
             btnClear.Enabled = lvDebug.Items.Count > 0;
         }
 
-        protected void On_Debug(object sender, ScpControl.DebugEventArgs e) 
+        private void On_Debug(object sender, ScpControl.DebugEventArgs e) 
         {
-            LogDebug(e.Time, e.Data);
+            Log.Debug(e.Data);
         }
 
 
-        protected void lvDebug_Enter(object sender, EventArgs e) 
+        private void lvDebug_Enter(object sender, EventArgs e) 
         {
             ThemeUtil.UpdateFocus(lvDebug.Handle);
         }
 
-        protected void Button_Enter(object sender, EventArgs e) 
+        private void Button_Enter(object sender, EventArgs e) 
         {
             ThemeUtil.UpdateFocus(((Button) sender).Handle);
         }
