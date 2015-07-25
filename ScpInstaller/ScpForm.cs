@@ -64,7 +64,7 @@ namespace ScpDriver
         {
             try
             {
-                var sc = new ServiceController("SCP DS3 Service");
+                var sc = new ServiceController(service);
 
                 if (sc.Status == ServiceControllerStatus.Stopped)
                 {
@@ -85,7 +85,7 @@ namespace ScpDriver
         {
             try
             {
-                var sc = new ServiceController("SCP DS3 Service");
+                var sc = new ServiceController(service);
 
                 if (sc.Status == ServiceControllerStatus.Running)
                 {
@@ -202,15 +202,15 @@ namespace ScpDriver
 
                     if (cbService.Checked)
                     {
-                        IDictionary State = new Hashtable();
-                        var Service =
+                        IDictionary state = new Hashtable();
+                        var service =
                             new AssemblyInstaller(Directory.GetCurrentDirectory() + @"\ScpService.exe", null);
 
-                        State.Clear();
-                        Service.UseNewContext = true;
+                        state.Clear();
+                        service.UseNewContext = true;
 
-                        Service.Install(State);
-                        Service.Commit(State);
+                        service.Install(state);
+                        service.Commit(state);
 
                         if (Start(Settings.Default.ScpServiceName))
                             Logger(DifxLog.DIFXAPI_INFO, 0, Settings.Default.ScpServiceName + " Started.");
