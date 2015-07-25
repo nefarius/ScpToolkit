@@ -12,11 +12,6 @@ namespace ScpDriver
     [XmlRoot(Namespace = "", IsNullable = false)]
     public class ScpDriver
     {
-        private string _bluetoothField;
-        private string _dualShock3Field;
-        private string _serviceField;
-        private string _virtualBusField;
-
         /// <remarks />
         public string Service { get; set; }
 
