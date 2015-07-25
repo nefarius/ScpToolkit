@@ -1,55 +1,55 @@
 ﻿using System;
-using System.ComponentModel;
-using System.IO;
-using System.ServiceProcess;
-using System.Runtime.InteropServices;
-using System.Threading;
+using System.Globalization;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.ServiceProcess;
+using System.Threading;
 using log4net;
 using ScpControl;
 
-namespace ScpService 
+namespace ScpService
 {
-    public partial class Ds3Service : ServiceBase 
+    public partial class Ds3Service : ServiceBase
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected ScpDevice.ServiceControlHandlerEx m_ControlHandler;
+        private IntPtr _mBthNotify = IntPtr.Zero;
+        private ScpDevice.ServiceControlHandlerEx _mControlHandler;
+        private IntPtr _mDs3Notify = IntPtr.Zero;
+        private IntPtr _mDs4Notify = IntPtr.Zero;
+        private IntPtr _mServiceHandle = IntPtr.Zero;
+        private readonly Timer _mTimer;
 
-        protected IntPtr m_ServiceHandle = IntPtr.Zero;
-        protected IntPtr m_Ds3Notify     = IntPtr.Zero;
-        protected IntPtr m_Ds4Notify     = IntPtr.Zero;
-        protected IntPtr m_BthNotify     = IntPtr.Zero;
-        protected Timer  m_Timer;
-
-        public Ds3Service() 
+        public Ds3Service()
         {
             InitializeComponent();
 
-            m_Timer = new Timer(OnTimer, null, Timeout.Infinite, Timeout.Infinite);
+            _mTimer = new Timer(OnTimer, null, Timeout.Infinite, Timeout.Infinite);
         }
 
-        protected override void OnStart(String[] args) 
+        protected override void OnStart(string[] args)
         {
             Log.Info("Scarlet.Crush Productions DS3 Service Started");
 
-            OnDebug(this, new DebugEventArgs(String.Format("++ {0} {1}", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version.ToString())));
+            OnDebug(this,
+                new DebugEventArgs(string.Format("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
+                    Assembly.GetExecutingAssembly().GetName().Version)));
 
-            m_ControlHandler = new ScpDevice.ServiceControlHandlerEx(ServiceControlHandler);
-            m_ServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, m_ControlHandler, IntPtr.Zero);
+            _mControlHandler = ServiceControlHandler;
+            _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
             rootHub.Open();
             rootHub.Start();
 
-            ScpDevice.RegisterNotify(m_ServiceHandle, new Guid(UsbDs3.USB_CLASS_GUID),    ref m_Ds3Notify, false);
-            ScpDevice.RegisterNotify(m_ServiceHandle, new Guid(UsbDs4.USB_CLASS_GUID),    ref m_Ds4Notify, false);
-            ScpDevice.RegisterNotify(m_ServiceHandle, new Guid(BthDongle.BTH_CLASS_GUID), ref m_BthNotify, false);
+            ScpDevice.RegisterNotify(_mServiceHandle, new Guid(UsbDs3.USB_CLASS_GUID), ref _mDs3Notify, false);
+            ScpDevice.RegisterNotify(_mServiceHandle, new Guid(UsbDs4.USB_CLASS_GUID), ref _mDs4Notify, false);
+            ScpDevice.RegisterNotify(_mServiceHandle, new Guid(BthDongle.BTH_CLASS_GUID), ref _mBthNotify, false);
         }
 
-        protected override void OnStop() 
+        protected override void OnStop()
         {
-            if (m_Ds3Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_Ds3Notify);
-            if (m_Ds4Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_Ds4Notify);
-            if (m_BthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_BthNotify);
+            if (_mDs3Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mDs3Notify);
+            if (_mDs4Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mDs4Notify);
+            if (_mBthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mBthNotify);
 
             rootHub.Stop();
             rootHub.Close();
@@ -57,14 +57,14 @@ namespace ScpService
             Log.Info("Scarlet.Crush Productions DS3 Service Stopped");
         }
 
-        protected Int32 ServiceControlHandler(Int32 Control, Int32 Type, IntPtr Data, IntPtr Context) 
+        private int ServiceControlHandler(int Control, int Type, IntPtr Data, IntPtr Context)
         {
             switch (Control)
             {
                 case ScpDevice.SERVICE_CONTROL_STOP:
                 case ScpDevice.SERVICE_CONTROL_SHUTDOWN:
 
-                    base.Stop();
+                    Stop();
                     break;
 
                 case ScpDevice.SERVICE_CONTROL_POWEREVENT:
@@ -82,7 +82,7 @@ namespace ScpService
 
                             Log.Info("Scp DS3 Service Resuming");
 
-                            m_Timer.Change(10000, Timeout.Infinite);
+                            _mTimer.Change(10000, Timeout.Infinite);
                             break;
                     }
                     break;
@@ -96,36 +96,42 @@ namespace ScpService
 
                             ScpDevice.DEV_BROADCAST_HDR hdr;
 
-                            hdr = (ScpDevice.DEV_BROADCAST_HDR) Marshal.PtrToStructure(Data, typeof(ScpDevice.DEV_BROADCAST_HDR));
+                            hdr =
+                                (ScpDevice.DEV_BROADCAST_HDR)
+                                    Marshal.PtrToStructure(Data, typeof (ScpDevice.DEV_BROADCAST_HDR));
 
                             if (hdr.dbch_devicetype == ScpDevice.DBT_DEVTYP_DEVICEINTERFACE)
                             {
                                 ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M deviceInterface;
 
-                                deviceInterface = (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M) Marshal.PtrToStructure(Data, typeof(ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
+                                deviceInterface =
+                                    (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M)
+                                        Marshal.PtrToStructure(Data, typeof (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
 
-                                String Class = "{" + new Guid(deviceInterface.dbcc_classguid).ToString().ToUpper() + "}";
+                                var Class = "{" + new Guid(deviceInterface.dbcc_classguid).ToString().ToUpper() + "}";
 
-                                String Path = new String(deviceInterface.dbcc_name);
+                                var Path = new string(deviceInterface.dbcc_name);
                                 Path = Path.Substring(0, Path.IndexOf('\0')).ToUpper();
 
-                                DsPadId Pad = rootHub.Notify((ScpDevice.Notified) Type, Class, Path);
+                                var Pad = rootHub.Notify((ScpDevice.Notified) Type, Class, Path);
 
                                 if (Pad != DsPadId.None)
                                 {
-                                    if (rootHub.Pairable && (rootHub.Master != rootHub.Pad[(Byte) Pad].Remote))
+                                    if (rootHub.Pairable && (rootHub.Master != rootHub.Pad[(byte) Pad].Remote))
                                     {
-                                        Byte[]   Master = new Byte[6];
-                                        String[] Parts  = rootHub.Master.Split(new String[] { ":" }, StringSplitOptions.RemoveEmptyEntries);
+                                        var Master = new byte[6];
+                                        var Parts = rootHub.Master.Split(new[] {":"},
+                                            StringSplitOptions.RemoveEmptyEntries);
 
-                                        for (Int32 Part = 0; Part < Master.Length; Part++)
+                                        for (var Part = 0; Part < Master.Length; Part++)
                                         {
-                                            Master[Part] = Byte.Parse(Parts[Part], System.Globalization.NumberStyles.HexNumber);
+                                            Master[Part] = byte.Parse(Parts[Part], NumberStyles.HexNumber);
                                         }
 
-                                        rootHub.Pad[(Byte) Pad].Pair(Master);
+                                        rootHub.Pad[(byte) Pad].Pair(Master);
 
-                                        Log.InfoFormat("Paired DS3 [{0}] To BTH Dongle [{1}]", rootHub.Pad[(Byte) Pad].Local, rootHub.Master);
+                                        Log.InfoFormat("Paired DS3 [{0}] To BTH Dongle [{1}]",
+                                            rootHub.Pad[(byte) Pad].Local, rootHub.Master);
                                     }
                                 }
                             }
@@ -134,10 +140,10 @@ namespace ScpService
                     break;
             }
 
-            return 0;   // NO_ERROR
+            return 0; // NO_ERROR
         }
 
-        private void OnTimer(object State) 
+        private void OnTimer(object State)
         {
             lock (this)
             {
@@ -147,7 +153,7 @@ namespace ScpService
             }
         }
 
-        private void OnDebug(object sender, DebugEventArgs e) 
+        private void OnDebug(object sender, DebugEventArgs e)
         {
             Log.Debug(e.Data);
         }
