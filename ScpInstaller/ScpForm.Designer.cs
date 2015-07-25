@@ -43,7 +43,7 @@
             // btnUninstall
             // 
             this.btnUninstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUninstall.Location = new System.Drawing.Point(416, 377);
+            this.btnUninstall.Location = new System.Drawing.Point(516, 377);
             this.btnUninstall.Name = "btnUninstall";
             this.btnUninstall.Size = new System.Drawing.Size(75, 23);
             this.btnUninstall.TabIndex = 3;
@@ -54,7 +54,7 @@
             // btnInstall
             // 
             this.btnInstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInstall.Location = new System.Drawing.Point(335, 377);
+            this.btnInstall.Location = new System.Drawing.Point(435, 377);
             this.btnInstall.Name = "btnInstall";
             this.btnInstall.Size = new System.Drawing.Size(75, 23);
             this.btnInstall.TabIndex = 2;
@@ -74,7 +74,7 @@
             this.tbOutput.Name = "tbOutput";
             this.tbOutput.ReadOnly = true;
             this.tbOutput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbOutput.Size = new System.Drawing.Size(559, 335);
+            this.tbOutput.Size = new System.Drawing.Size(659, 335);
             this.tbOutput.TabIndex = 4;
             this.tbOutput.TabStop = false;
             this.tbOutput.WordWrap = false;
@@ -85,13 +85,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbRunning.Location = new System.Drawing.Point(13, 354);
             this.pbRunning.Name = "pbRunning";
-            this.pbRunning.Size = new System.Drawing.Size(559, 17);
+            this.pbRunning.Size = new System.Drawing.Size(659, 17);
             this.pbRunning.TabIndex = 5;
             // 
             // btnExit
             // 
             this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExit.Location = new System.Drawing.Point(497, 377);
+            this.btnExit.Location = new System.Drawing.Point(597, 377);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 23);
             this.btnExit.TabIndex = 0;
@@ -166,7 +166,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 412);
+            this.ClientSize = new System.Drawing.Size(684, 412);
             this.Controls.Add(this.cbBus);
             this.Controls.Add(this.cbDS3);
             this.Controls.Add(this.cbForce);
