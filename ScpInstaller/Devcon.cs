@@ -1,43 +1,47 @@
 ﻿using System;
-using System.Text;
 using System.Runtime.InteropServices;
 
-namespace ScpDriver 
+namespace ScpDriver
 {
-    public class Devcon 
+    public class Devcon
     {
-        public static Boolean Find(Guid Target, ref String Path, ref String InstanceId, Int32 Instance = 0) 
+        public static bool Find(Guid Target, ref string Path, ref string InstanceId, int Instance = 0)
         {
-            IntPtr detailDataBuffer = IntPtr.Zero;
-            IntPtr deviceInfoSet    = IntPtr.Zero;
+            var detailDataBuffer = IntPtr.Zero;
+            var deviceInfoSet = IntPtr.Zero;
 
             try
             {
                 SP_DEVINFO_DATA deviceInterfaceData = new SP_DEVINFO_DATA(), da = new SP_DEVINFO_DATA();
-                Int32 bufferSize = 0, memberIndex = 0;
+                int bufferSize = 0, memberIndex = 0;
 
-                deviceInfoSet = SetupDiGetClassDevs(ref Target, IntPtr.Zero, IntPtr.Zero, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+                deviceInfoSet = SetupDiGetClassDevs(ref Target, IntPtr.Zero, IntPtr.Zero,
+                    DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
                 deviceInterfaceData.cbSize = da.cbSize = Marshal.SizeOf(deviceInterfaceData);
 
-                while (SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref Target, memberIndex, ref deviceInterfaceData))
+                while (SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref Target, memberIndex,
+                    ref deviceInterfaceData))
                 {
-                    SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, IntPtr.Zero, 0, ref bufferSize, ref da);
+                    SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, IntPtr.Zero, 0,
+                        ref bufferSize, ref da);
                     {
                         detailDataBuffer = Marshal.AllocHGlobal(bufferSize);
 
-                        Marshal.WriteInt32(detailDataBuffer, (IntPtr.Size == 4) ? (4 + Marshal.SystemDefaultCharSize) : 8);
+                        Marshal.WriteInt32(detailDataBuffer,
+                            (IntPtr.Size == 4) ? (4 + Marshal.SystemDefaultCharSize) : 8);
 
-                        if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, detailDataBuffer, bufferSize, ref bufferSize, ref da))
+                        if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, detailDataBuffer,
+                            bufferSize, ref bufferSize, ref da))
                         {
-                            IntPtr pDevicePathName = detailDataBuffer + 4;
+                            var pDevicePathName = detailDataBuffer + 4;
 
                             Path = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
 
                             if (memberIndex == Instance)
                             {
-                                Int32  nBytes = 256;
-                                IntPtr ptrInstanceBuf = Marshal.AllocHGlobal(nBytes);
+                                var nBytes = 256;
+                                var ptrInstanceBuf = Marshal.AllocHGlobal(nBytes);
 
                                 CM_Get_Device_ID(da.Flags, ptrInstanceBuf, nBytes, 0);
                                 InstanceId = Marshal.PtrToStringAuto(ptrInstanceBuf).ToUpper();
@@ -52,11 +56,6 @@ namespace ScpDriver
                     memberIndex++;
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("{0} {1}", ex.HelpLink, ex.Message);
-                throw;
-            }
             finally
             {
                 if (deviceInfoSet != IntPtr.Zero)
@@ -68,72 +67,77 @@ namespace ScpDriver
             return false;
         }
 
-        public static Boolean Create(String ClassName, Guid ClassGuid, String Node) 
+        public static bool Create(string ClassName, Guid ClassGuid, string Node)
         {
-            IntPtr DeviceInfoSet = (IntPtr)(-1);
-            SP_DEVINFO_DATA DeviceInfoData = new SP_DEVINFO_DATA();
+            var deviceInfoSet = (IntPtr) (-1);
+            var deviceInfoData = new SP_DEVINFO_DATA();
 
             try
             {
-                DeviceInfoSet = SetupDiCreateDeviceInfoList(ref ClassGuid, IntPtr.Zero);
+                deviceInfoSet = SetupDiCreateDeviceInfoList(ref ClassGuid, IntPtr.Zero);
 
-                if (DeviceInfoSet == (IntPtr)(-1))
+                if (deviceInfoSet == (IntPtr) (-1))
                 {
                     return false;
                 }
 
-                DeviceInfoData.cbSize = Marshal.SizeOf(DeviceInfoData);
+                deviceInfoData.cbSize = Marshal.SizeOf(deviceInfoData);
 
-                if (!SetupDiCreateDeviceInfo(DeviceInfoSet, ClassName, ref ClassGuid, null, IntPtr.Zero, DICD_GENERATE_ID, ref DeviceInfoData))
+                if (
+                    !SetupDiCreateDeviceInfo(deviceInfoSet, ClassName, ref ClassGuid, null, IntPtr.Zero,
+                        DICD_GENERATE_ID, ref deviceInfoData))
                 {
                     return false;
                 }
 
-                if (!SetupDiSetDeviceRegistryProperty(DeviceInfoSet, ref DeviceInfoData, SPDRP_HARDWAREID, Node, Node.Length * 2))
+                if (
+                    !SetupDiSetDeviceRegistryProperty(deviceInfoSet, ref deviceInfoData, SPDRP_HARDWAREID, Node,
+                        Node.Length*2))
                 {
                     return false;
                 }
 
-                if (!SetupDiCallClassInstaller(DIF_REGISTERDEVICE, DeviceInfoSet, ref DeviceInfoData))
+                if (!SetupDiCallClassInstaller(DIF_REGISTERDEVICE, deviceInfoSet, ref deviceInfoData))
                 {
                     return false;
                 }
             }
-            catch { }
             finally
             {
-                if (DeviceInfoSet != (IntPtr)(-1))
+                if (deviceInfoSet != (IntPtr) (-1))
                 {
-                    SetupDiDestroyDeviceInfoList(DeviceInfoSet);
+                    SetupDiDestroyDeviceInfoList(deviceInfoSet);
                 }
             }
 
             return true;
         }
 
-        public static Boolean Remove(Guid ClassGuid, String Path, String InstanceId) 
+        public static bool Remove(Guid ClassGuid, string Path, string InstanceId)
         {
-            IntPtr deviceInfoSet = IntPtr.Zero;
+            var deviceInfoSet = IntPtr.Zero;
 
             try
             {
-                SP_DEVINFO_DATA deviceInterfaceData = new SP_DEVINFO_DATA();
+                var deviceInterfaceData = new SP_DEVINFO_DATA();
 
                 deviceInterfaceData.cbSize = Marshal.SizeOf(deviceInterfaceData);
-                deviceInfoSet = SetupDiGetClassDevs(ref ClassGuid, IntPtr.Zero, IntPtr.Zero, DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
+                deviceInfoSet = SetupDiGetClassDevs(ref ClassGuid, IntPtr.Zero, IntPtr.Zero,
+                    DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
                 if (SetupDiOpenDeviceInfo(deviceInfoSet, InstanceId, IntPtr.Zero, 0, ref deviceInterfaceData))
                 {
-                    SP_REMOVEDEVICE_PARAMS props = new SP_REMOVEDEVICE_PARAMS();
+                    var props = new SP_REMOVEDEVICE_PARAMS();
 
                     props.ClassInstallHeader = new SP_CLASSINSTALL_HEADER();
                     props.ClassInstallHeader.cbSize = Marshal.SizeOf(props.ClassInstallHeader);
                     props.ClassInstallHeader.InstallFunction = DIF_REMOVE;
 
-                    props.Scope     = DI_REMOVEDEVICE_GLOBAL;
+                    props.Scope = DI_REMOVEDEVICE_GLOBAL;
                     props.HwProfile = 0x00;
 
-                    if (SetupDiSetClassInstallParams(deviceInfoSet, ref deviceInterfaceData, ref props, Marshal.SizeOf(props)))
+                    if (SetupDiSetClassInstallParams(deviceInfoSet, ref deviceInterfaceData, ref props,
+                        Marshal.SizeOf(props)))
                     {
                         return SetupDiCallClassInstaller(DIF_REMOVE, deviceInfoSet, ref deviceInterfaceData);
                     }
@@ -141,8 +145,7 @@ namespace ScpDriver
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} {1}", ex.HelpLink, ex.Message);
-                throw;
+                throw ex;
             }
             finally
             {
@@ -156,75 +159,90 @@ namespace ScpDriver
         }
 
         #region Constant and Structure Definitions
-        protected const Int32 DIGCF_PRESENT          = 0x0002;
-        protected const Int32 DIGCF_DEVICEINTERFACE  = 0x0010;
 
-        protected const Int32 DICD_GENERATE_ID       = 0x0001;
-        protected const Int32 SPDRP_HARDWAREID       = 0x0001;
+        protected const int DIGCF_PRESENT = 0x0002;
+        protected const int DIGCF_DEVICEINTERFACE = 0x0010;
 
-        protected const Int32 DIF_REMOVE             = 0x0005;
-        protected const Int32 DIF_REGISTERDEVICE     = 0x0019;
+        protected const int DICD_GENERATE_ID = 0x0001;
+        protected const int SPDRP_HARDWAREID = 0x0001;
 
-        protected const Int32 DI_REMOVEDEVICE_GLOBAL = 0x0001;
+        protected const int DIF_REMOVE = 0x0005;
+        protected const int DIF_REGISTERDEVICE = 0x0019;
+
+        protected const int DI_REMOVEDEVICE_GLOBAL = 0x0001;
 
         [StructLayout(LayoutKind.Sequential)]
-        protected struct SP_DEVINFO_DATA 
+        protected struct SP_DEVINFO_DATA
         {
-            internal Int32  cbSize;
-            internal Guid   ClassGuid;
-            internal Int32  Flags;
+            internal int cbSize;
+            internal Guid ClassGuid;
+            internal int Flags;
             internal IntPtr Reserved;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        protected struct SP_CLASSINSTALL_HEADER 
+        protected struct SP_CLASSINSTALL_HEADER
         {
-            internal Int32 cbSize;
-            internal Int32 InstallFunction;
+            internal int cbSize;
+            internal int InstallFunction;
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        protected struct SP_REMOVEDEVICE_PARAMS 
+        protected struct SP_REMOVEDEVICE_PARAMS
         {
             internal SP_CLASSINSTALL_HEADER ClassInstallHeader;
-            internal Int32 Scope;
-            internal Int32 HwProfile;
+            internal int Scope;
+            internal int HwProfile;
         }
+
         #endregion
 
         #region Interop Definitions
+
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         protected static extern IntPtr SetupDiCreateDeviceInfoList(ref Guid ClassGuid, IntPtr hwndParent);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiDestroyDeviceInfoList(IntPtr DeviceInfoSet);
+        protected static extern bool SetupDiDestroyDeviceInfoList(IntPtr DeviceInfoSet);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiCreateDeviceInfo(IntPtr DeviceInfoSet, String DeviceName, ref Guid ClassGuid, String DeviceDescription, IntPtr hwndParent, Int32 CreationFlags, ref SP_DEVINFO_DATA DeviceInfoData);
+        protected static extern bool SetupDiCreateDeviceInfo(IntPtr DeviceInfoSet, string DeviceName, ref Guid ClassGuid,
+            string DeviceDescription, IntPtr hwndParent, int CreationFlags, ref SP_DEVINFO_DATA DeviceInfoData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiSetDeviceRegistryProperty(IntPtr DeviceInfoSet, ref SP_DEVINFO_DATA DeviceInfoData, Int32 Property, [MarshalAs(UnmanagedType.LPWStr)] String PropertyBuffer, Int32 PropertyBufferSize);
+        protected static extern bool SetupDiSetDeviceRegistryProperty(IntPtr DeviceInfoSet,
+            ref SP_DEVINFO_DATA DeviceInfoData, int Property, [MarshalAs(UnmanagedType.LPWStr)] string PropertyBuffer,
+            int PropertyBufferSize);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiCallClassInstaller(Int32 InstallFunction, IntPtr DeviceInfoSet, ref SP_DEVINFO_DATA DeviceInfoData);
+        protected static extern bool SetupDiCallClassInstaller(int InstallFunction, IntPtr DeviceInfoSet,
+            ref SP_DEVINFO_DATA DeviceInfoData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern IntPtr SetupDiGetClassDevs(ref Guid ClassGuid, IntPtr Enumerator, IntPtr hwndParent, Int32 Flags);
+        protected static extern IntPtr SetupDiGetClassDevs(ref Guid ClassGuid, IntPtr Enumerator, IntPtr hwndParent,
+            int Flags);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiEnumDeviceInterfaces(IntPtr DeviceInfoSet, IntPtr DeviceInfoData, ref System.Guid InterfaceClassGuid, Int32 MemberIndex, ref SP_DEVINFO_DATA DeviceInterfaceData);
+        protected static extern bool SetupDiEnumDeviceInterfaces(IntPtr DeviceInfoSet, IntPtr DeviceInfoData,
+            ref Guid InterfaceClassGuid, int MemberIndex, ref SP_DEVINFO_DATA DeviceInterfaceData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiGetDeviceInterfaceDetail(IntPtr DeviceInfoSet, ref SP_DEVINFO_DATA DeviceInterfaceData, IntPtr DeviceInterfaceDetailData, Int32 DeviceInterfaceDetailDataSize, ref Int32 RequiredSize, ref SP_DEVINFO_DATA DeviceInfoData);
+        protected static extern bool SetupDiGetDeviceInterfaceDetail(IntPtr DeviceInfoSet,
+            ref SP_DEVINFO_DATA DeviceInterfaceData, IntPtr DeviceInterfaceDetailData, int DeviceInterfaceDetailDataSize,
+            ref int RequiredSize, ref SP_DEVINFO_DATA DeviceInfoData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Int32 CM_Get_Device_ID(Int32 DevInst, IntPtr Buffer, Int32 BufferLen, Int32 Flags);
+        protected static extern int CM_Get_Device_ID(int DevInst, IntPtr Buffer, int BufferLen, int Flags);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiOpenDeviceInfo(IntPtr DeviceInfoSet, String DeviceInstanceId, IntPtr hwndParent, Int32 Flags, ref SP_DEVINFO_DATA DeviceInfoData);
+        protected static extern bool SetupDiOpenDeviceInfo(IntPtr DeviceInfoSet, string DeviceInstanceId,
+            IntPtr hwndParent, int Flags, ref SP_DEVINFO_DATA DeviceInfoData);
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        protected static extern Boolean SetupDiSetClassInstallParams(IntPtr DeviceInfoSet, ref SP_DEVINFO_DATA DeviceInterfaceData, ref SP_REMOVEDEVICE_PARAMS ClassInstallParams, Int32 ClassInstallParamsSize);
+        protected static extern bool SetupDiSetClassInstallParams(IntPtr DeviceInfoSet,
+            ref SP_DEVINFO_DATA DeviceInterfaceData, ref SP_REMOVEDEVICE_PARAMS ClassInstallParams,
+            int ClassInstallParamsSize);
+
         #endregion
     }
 }
