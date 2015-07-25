@@ -70,8 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\CommonInfo.cs" />
-    <Compile Include="Devcon.cs" />
-    <Compile Include="Difx.cs" />
+    <Compile Include="Driver\Devcon.cs" />
+    <Compile Include="Driver\Difx.cs" />
     <Compile Include="ScpDriver.cs" />
     <Compile Include="ScpForm.cs">
       <SubType>Form</SubType>

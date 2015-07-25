@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace ScpDriver 
+namespace ScpDriver.Driver
 {
     [Flags]
     public enum DifxFlags 
@@ -22,6 +22,9 @@ namespace ScpDriver
         DIFXAPI_ERROR   = 3,
     }
 
+    /// <summary>
+    ///     Driver Install Frameworks API (DIFxAPI)
+    /// </summary>
     public class Difx 
     {
         public delegate void DIFLOGCALLBACK(
@@ -73,18 +76,21 @@ namespace ScpDriver
 
             if (Environment.Is64BitProcess)
             {
-                RetVal = new Difx_64();
+                RetVal = new Difx64();
             }
             else
             {
-                RetVal = new Difx_32();
+                RetVal = new Difx32();
             }
 
             return RetVal;
         }
     }
 
-    public class Difx_32 : Difx 
+    /// <summary>
+    ///     Driver Install Frameworks API (DIFxAPI) for x86 platform.
+    /// </summary>
+    public class Difx32 : Difx 
     {
         [DllImport(@".\DIFxApi\x86\DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Winapi)]
         private static extern UInt32 DriverPackagePreinstall(
@@ -111,7 +117,7 @@ namespace ScpDriver
         [DllImport(@".\DIFxApi\x86\DIFxAPI.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern void SetDifxLogCallback(DIFLOGCALLBACK LogCallback, IntPtr CallbackContext);
 
-        public Difx_32() 
+        public Difx32() 
         {
             SetDifxLogCallback(m_LogCallback, IntPtr.Zero);
         }
@@ -132,7 +138,10 @@ namespace ScpDriver
         }
     }
 
-    public class Difx_64 : Difx 
+    /// <summary>
+    ///     Driver Install Frameworks API (DIFxAPI) for x64 platform.
+    /// </summary>
+    public class Difx64 : Difx 
     {
         [DllImport(@".\DIFxApi\amd64\DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Winapi)]
         private static extern UInt32 DriverPackagePreinstall(
@@ -160,7 +169,7 @@ namespace ScpDriver
         public static extern void SetDifxLogCallback(DIFLOGCALLBACK LogCallback, IntPtr CallbackContext);
 
                 
-        public Difx_64() 
+        public Difx64() 
         {
             SetDifxLogCallback(m_LogCallback, IntPtr.Zero);
         }

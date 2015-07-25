@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace ScpDriver
+namespace ScpDriver.Driver
 {
     public class Devcon
     {
