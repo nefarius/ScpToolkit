@@ -22,5 +22,32 @@ namespace ScpDriver.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("f679f562-3164-42ce-a4db-e7ddbe723909")]
+        public global::System.Guid Ds3BusClassGuid {
+            get {
+                return ((global::System.Guid)(this["Ds3BusClassGuid"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(".\\System\\")]
+        public string InfFilePath {
+            get {
+                return ((string)(this["InfFilePath"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("SCP DS3 Service")]
+        public string ScpServiceName {
+            get {
+                return ((string)(this["ScpServiceName"]));
+            }
+        }
     }
 }
