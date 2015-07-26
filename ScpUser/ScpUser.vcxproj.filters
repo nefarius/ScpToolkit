@@ -52,6 +52,8 @@
     <None Include="ARPIcon.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="ScpUser_x64.props" />
+    <None Include="ScpUser_x86.props" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SCPPad.resX">
