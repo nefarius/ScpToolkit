@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Configuration.Install;
 using System.IO;
 using System.Reflection;
@@ -17,7 +18,7 @@ namespace ScpDriver
     public partial class ScpForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly string[] _desc = {"SUCCESS", "INFO   ", "WARNING", "ERROR  "};
+        private readonly string[] _desc = { "SUCCESS", "INFO   ", "WARNING", "ERROR  " };
         private Difx _installer;
         private Cursor _saved;
         private bool BTH_Driver_Configured;
@@ -58,7 +59,7 @@ namespace ScpDriver
 
         private void Logger(DifxLog Event, int error, string description)
         {
-            Log.InfoFormat("{0} - {1}", _desc[(int) Event], description);
+            Log.InfoFormat("{0} - {1}", _desc[(int)Event], description);
         }
 
         private static bool Start(string service)
@@ -93,6 +94,24 @@ namespace ScpDriver
                     sc.Stop();
                     Thread.Sleep(1000);
                     return true;
+                }
+            }
+            catch (InvalidOperationException iopex)
+            {
+                if (!(iopex.InnerException is Win32Exception))
+                {
+                    Log.ErrorFormat("Win32-Exception occured: {0}", iopex);
+                    return false;
+                }
+
+                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
+                {
+                    case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
+                        Log.Warn("Service doesn't exist, maybe it was uninstalled before");
+                        break;
+                    default:
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -167,7 +186,7 @@ namespace ScpDriver
 
                     var flags = DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT;
 
-                    if (cbForce.Checked) 
+                    if (cbForce.Checked)
                         flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
 
                     if (cbBus.Checked)
@@ -182,21 +201,24 @@ namespace ScpDriver
                             }
                         }
 
-                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"), flags, out rebootRequired);
+                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"), flags,
+                            out rebootRequired);
                         Reboot |= rebootRequired;
                         if (result == 0) Bus_Driver_Configured = true;
                     }
 
                     if (cbBluetooth.Checked)
                     {
-                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"), flags, out rebootRequired);
+                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"), flags,
+                            out rebootRequired);
                         Reboot |= rebootRequired;
                         if (result == 0) BTH_Driver_Configured = true;
                     }
 
                     if (cbDS3.Checked)
                     {
-                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"), flags, out rebootRequired);
+                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"), flags,
+                            out rebootRequired);
                         Reboot |= rebootRequired;
                         if (result == 0) DS3_Driver_Configured = true;
                     }
@@ -218,6 +240,18 @@ namespace ScpDriver
                         else Reboot = true;
 
                         Scp_Service_Configured = true;
+                    }
+                }
+                catch (Win32Exception w32Ex)
+                {
+                    switch (w32Ex.NativeErrorCode)
+                    {
+                        case 1073: // ERROR_SERVICE_EXISTS
+                            Log.WarnFormat("Service already exists, skipping installation...");
+                            break;
+                        default:
+                            Log.ErrorFormat("Win32-Error during installation: {0}", w32Ex);
+                            break;
                     }
                 }
                 catch (Exception ex)
@@ -313,7 +347,8 @@ namespace ScpDriver
 
                     if (cbBluetooth.Checked)
                     {
-                        result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"), DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
+                        result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"),
+                            DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
                             out rebootRequired);
                         Reboot |= rebootRequired;
                         if (result == 0) BTH_Driver_Configured = true;
@@ -321,7 +356,8 @@ namespace ScpDriver
 
                     if (cbDS3.Checked)
                     {
-                        result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"), DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
+                        result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"),
+                            DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
                             out rebootRequired);
                         Reboot |= rebootRequired;
                         if (result == 0) DS3_Driver_Configured = true;
@@ -334,7 +370,8 @@ namespace ScpDriver
                             Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Removed");
                             Bus_Device_Configured = true;
 
-                            _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"), DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
+                            _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"),
+                                DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
                                 out rebootRequired);
                             Reboot |= rebootRequired;
                         }
@@ -342,6 +379,24 @@ namespace ScpDriver
                         {
                             Logger(DifxLog.DIFXAPI_ERROR, 0, "Virtual Bus Removal Failure");
                         }
+                    }
+                }
+                catch (InstallException instex)
+                {
+                    if (!(instex.InnerException is Win32Exception))
+                    {
+                        Log.ErrorFormat("Error during uninstallation: {0}", instex);
+                        return;
+                    }
+
+                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
+                    {
+                        case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
+                            Log.Warn("Service doesn't exist, maybe it was uninstalled before");
+                            break;
+                        default:
+                            Log.ErrorFormat("Win32-Error during uninstallation: {0}", (Win32Exception)instex.InnerException);
+                            break;
                     }
                 }
                 catch (Exception ex)
