@@ -42,14 +42,14 @@ namespace ScpDriver
                 var cfg = ScpDriver.Deserialize(cfgFile);
 
                 // set display options
-                cbService.Checked = cbService.Visible = bool.Parse(cfg.Service);
-                cbBluetooth.Checked = cbBluetooth.Visible = bool.Parse(cfg.Bluetooth);
-                cbDS3.Checked = cbDS3.Visible = bool.Parse(cfg.DualShock3);
-                cbBus.Checked = cbBus.Visible = bool.Parse(cfg.VirtualBus);
+                cbService.Checked = cbService.Visible = cfg.UseService;
+                cbBluetooth.Checked = cbBluetooth.Visible =cfg.UseBluetooth;
+                cbDS3.Checked = cbDS3.Visible = cfg.UseDualShock3;
+                cbBus.Checked = cbBus.Visible = cfg.UseVirtualBus;
 
                 // Don't install Service if Bus not Enabled
-                if (!bool.Parse(cfg.VirtualBus))
-                    cbService.Checked = cbService.Visible = bool.Parse(cfg.VirtualBus);
+                if (!cfg.UseVirtualBus)
+                    cbService.Checked = cbService.Visible = cfg.UseVirtualBus;
             }
             catch (Exception ex)
             {
