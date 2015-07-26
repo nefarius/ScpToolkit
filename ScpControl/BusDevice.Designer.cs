@@ -1,6 +1,6 @@
 ﻿namespace ScpControl
 {
-    partial class BusDevice
+    sealed partial class BusDevice
     {
         /// <summary>
         /// Required designer variable.

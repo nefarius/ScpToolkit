@@ -1,66 +1,66 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
 
-namespace ScpControl 
+namespace ScpControl
 {
-    public partial class BusDevice : ScpDevice 
+    public sealed partial class BusDevice : ScpDevice
     {
-        public const String SCP_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
+        private const string SCP_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
+        public const int ReportSize = 28;
+        public const int RumbleSize = 8;
+        private const int BusWidth = 4;
+        private readonly List<int> m_Plugged = new List<int>();
+        private int m_Offset;
+        private DsState m_State = DsState.Disconnected;
 
-        public const Int32 ReportSize = 28;
-        public const Int32 RumbleSize =  8;
-        public const Int32 BusWidth   =  4;
-
-        protected DsState m_State = DsState.Disconnected;
-        public DsState State 
-        {
-            get { return m_State; }
-        }
-
-        protected Int32 m_Offset = 0;
-        protected List<Int32> m_Plugged = new List<Int32>();
-
-        protected virtual Int32 IndexToSerial(Byte Index) 
-        {
-            return Index + m_Offset + 1;
-        }
-
-        protected virtual Int32 Scale(Int32 Value, Boolean Flip) 
-        {
-            Value -= 0x80; if (Value == -128) Value = -127;
-
-            if (Flip) Value *= -1;
-
-            return (Int32)((float) Value * 258.00787401574803149606299212599f);
-        }
-
-        protected virtual Boolean DeadZone(Int32 R, Int32 X, Int32 Y) 
-        {
-            X -= 0x80; if (X == -128) X = -127;
-            Y -= 0x80; if (Y == -128) Y = -127;
-
-            return R * R >= X * X + Y * Y;
-        }
-
-
-        public BusDevice() : base(SCP_BUS_CLASS_GUID) 
+        public BusDevice() : base(SCP_BUS_CLASS_GUID)
         {
             InitializeComponent();
         }
 
-        public BusDevice(IContainer container) : base(SCP_BUS_CLASS_GUID) 
+        public BusDevice(IContainer container) : base(SCP_BUS_CLASS_GUID)
         {
             container.Add(this);
 
             InitializeComponent();
         }
-        
-        public override Boolean Open(Int32 instance = 0) 
+
+        public DsState State
+        {
+            get { return m_State; }
+        }
+
+        private int IndexToSerial(byte Index)
+        {
+            return Index + m_Offset + 1;
+        }
+
+        private int Scale(int Value, bool Flip)
+        {
+            Value -= 0x80;
+            if (Value == -128) Value = -127;
+
+            if (Flip) Value *= -1;
+
+            return (int) (Value*258.00787401574803149606299212599f);
+        }
+
+        private bool DeadZone(int R, int X, int Y)
+        {
+            X -= 0x80;
+            if (X == -128) X = -127;
+            Y -= 0x80;
+            if (Y == -128) Y = -127;
+
+            return R*R >= X*X + Y*Y;
+        }
+
+        public override bool Open(int instance = 0)
         {
             if (State == DsState.Disconnected)
             {
-                m_Offset = instance * BusWidth;
+                m_Offset = instance*BusWidth;
 
                 Log.DebugFormat("-- Bus Open   : Offset {0}", m_Offset);
 
@@ -73,7 +73,7 @@ namespace ScpControl
             return State == DsState.Reserved;
         }
 
-        public override Boolean Open(String devicePath)  
+        public override bool Open(string devicePath)
         {
             if (State == DsState.Disconnected)
             {
@@ -91,7 +91,7 @@ namespace ScpControl
             return State == DsState.Reserved;
         }
 
-        public override Boolean Start() 
+        public override bool Start()
         {
             if (State == DsState.Reserved)
             {
@@ -101,15 +101,15 @@ namespace ScpControl
             return State == DsState.Connected;
         }
 
-        public override Boolean Stop()  
+        public override bool Stop()
         {
             if (State == DsState.Connected)
             {
-                Queue<Int32> Items = new Queue<Int32>();
+                var Items = new Queue<int>();
 
                 lock (m_Plugged)
                 {
-                    foreach (Int32 Serial in m_Plugged) Items.Enqueue(Serial - m_Offset);
+                    foreach (var serial in m_Plugged) Items.Enqueue(serial - m_Offset);
                 }
 
                 while (Items.Count > 0) Unplug(Items.Dequeue());
@@ -120,7 +120,7 @@ namespace ScpControl
             return State == DsState.Reserved;
         }
 
-        public override Boolean Close() 
+        public override bool Close()
         {
             if (base.Stop())
             {
@@ -138,149 +138,152 @@ namespace ScpControl
             return State == DsState.Disconnected;
         }
 
-
-        public virtual Boolean Suspend() 
+        public bool Suspend()
         {
             return Stop();
         }
 
-        public virtual Boolean Resume()  
+        public bool Resume()
         {
             return Start();
         }
 
-
-        public virtual Int32 Parse(Byte[] Input, Byte[] Output, DsModel Type = DsModel.DS3) 
+        public int Parse(byte[] Input, byte[] Output, DsModel Type = DsModel.DS3)
         {
-            Int32 Serial = IndexToSerial(Input[0]);
+            var serial = IndexToSerial(Input[0]);
 
-            for (Int32 Index = 0; Index < ReportSize; Index++) Output[Index] = 0x00;
+            for (var index = 0; index < ReportSize; index++) Output[index] = 0x00;
 
             Output[0] = 0x1C;
-            Output[4] = (Byte)((Serial >>  0) & 0xFF);
-            Output[5] = (Byte)((Serial >>  8) & 0xFF);
-            Output[6] = (Byte)((Serial >> 16) & 0xFF);
-            Output[7] = (Byte)((Serial >> 24) & 0xFF);
+            Output[4] = (byte) ((serial >> 0) & 0xFF);
+            Output[5] = (byte) ((serial >> 8) & 0xFF);
+            Output[6] = (byte) ((serial >> 16) & 0xFF);
+            Output[7] = (byte) ((serial >> 24) & 0xFF);
             Output[9] = 0x14;
 
-            X360Button XButton = X360Button.None;
+            var xButton = X360Button.None;
 
             if (Input[1] == 0x02) // Pad is active
             {
                 switch (Type)
                 {
                     case DsModel.DS3:
+                    {
+                        var buttons =
+                            (Ds3Button) ((Input[10] << 0) | (Input[11] << 8) | (Input[12] << 16) | (Input[13] << 24));
+
+                        if (buttons.HasFlag(Ds3Button.Select)) xButton |= X360Button.Back;
+                        if (buttons.HasFlag(Ds3Button.Start)) xButton |= X360Button.Start;
+
+                        if (buttons.HasFlag(Ds3Button.Up)) xButton |= X360Button.Up;
+                        if (buttons.HasFlag(Ds3Button.Right)) xButton |= X360Button.Right;
+                        if (buttons.HasFlag(Ds3Button.Down)) xButton |= X360Button.Down;
+                        if (buttons.HasFlag(Ds3Button.Left)) xButton |= X360Button.Left;
+
+                        if (buttons.HasFlag(Ds3Button.L1)) xButton |= X360Button.LB;
+                        if (buttons.HasFlag(Ds3Button.R1)) xButton |= X360Button.RB;
+
+                        if (buttons.HasFlag(Ds3Button.Triangle)) xButton |= X360Button.Y;
+                        if (buttons.HasFlag(Ds3Button.Circle)) xButton |= X360Button.B;
+                        if (buttons.HasFlag(Ds3Button.Cross)) xButton |= X360Button.A;
+                        if (buttons.HasFlag(Ds3Button.Square)) xButton |= X360Button.X;
+
+                        if (buttons.HasFlag(Ds3Button.PS)) xButton |= X360Button.Guide;
+
+                        if (buttons.HasFlag(Ds3Button.L3)) xButton |= X360Button.LS;
+                        if (buttons.HasFlag(Ds3Button.R3)) xButton |= X360Button.RS;
+
+                        Output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
+                        Output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
+
+                        Output[(uint) X360Axis.LT] = Input[(uint) Ds3Axis.L2];
+                        Output[(uint) X360Axis.RT] = Input[(uint) Ds3Axis.R2];
+
+                        if (!DeadZone(Global.DeadZoneL, Input[(uint) Ds3Axis.LX], Input[(uint) Ds3Axis.LY]))
+                            // Left Stick DeadZone
                         {
-                            Ds3Button Buttons = (Ds3Button)((Input[10] << 0) | (Input[11] << 8) | (Input[12] << 16) | (Input[13] << 24));
+                            var thumbLx = +Scale(Input[(uint) Ds3Axis.LX], Global.FlipLX);
+                            var thumbLy = -Scale(Input[(uint) Ds3Axis.LY], Global.FlipLY);
 
-                            if (Buttons.HasFlag(Ds3Button.Select  )) XButton |= X360Button.Back; 
-                            if (Buttons.HasFlag(Ds3Button.Start   )) XButton |= X360Button.Start;
+                            Output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
+                            Output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
 
-                            if (Buttons.HasFlag(Ds3Button.Up      )) XButton |= X360Button.Up;
-                            if (Buttons.HasFlag(Ds3Button.Right   )) XButton |= X360Button.Right;
-                            if (Buttons.HasFlag(Ds3Button.Down    )) XButton |= X360Button.Down;
-                            if (Buttons.HasFlag(Ds3Button.Left    )) XButton |= X360Button.Left;
-
-                            if (Buttons.HasFlag(Ds3Button.L1      )) XButton |= X360Button.LB;
-                            if (Buttons.HasFlag(Ds3Button.R1      )) XButton |= X360Button.RB;
-
-                            if (Buttons.HasFlag(Ds3Button.Triangle)) XButton |= X360Button.Y;
-                            if (Buttons.HasFlag(Ds3Button.Circle  )) XButton |= X360Button.B;
-                            if (Buttons.HasFlag(Ds3Button.Cross   )) XButton |= X360Button.A;
-                            if (Buttons.HasFlag(Ds3Button.Square  )) XButton |= X360Button.X;
-
-                            if (Buttons.HasFlag(Ds3Button.PS      )) XButton |= X360Button.Guide;
-
-                            if (Buttons.HasFlag(Ds3Button.L3      )) XButton |= X360Button.LS;
-                            if (Buttons.HasFlag(Ds3Button.R3      )) XButton |= X360Button.RS;
-
-                            Output[(UInt32) X360Axis.BT_Lo] = (Byte)((UInt32) XButton >> 0 & 0xFF);
-                            Output[(UInt32) X360Axis.BT_Hi] = (Byte)((UInt32) XButton >> 8 & 0xFF);
-
-                            Output[(UInt32) X360Axis.LT   ] = Input[(UInt32) Ds3Axis.L2];
-                            Output[(UInt32) X360Axis.RT   ] = Input[(UInt32) Ds3Axis.R2];
-
-                            if (!DeadZone(Global.DeadZoneL, Input[(UInt32) Ds3Axis.LX], Input[(UInt32) Ds3Axis.LY]))   // Left Stick DeadZone
-                            {
-                                Int32 ThumbLX = +Scale(Input[(UInt32) Ds3Axis.LX], Global.FlipLX);
-                                Int32 ThumbLY = -Scale(Input[(UInt32) Ds3Axis.LY], Global.FlipLY);
-
-                                Output[(UInt32) X360Axis.LX_Lo] = (Byte)((ThumbLX >> 0) & 0xFF); // LX
-                                Output[(UInt32) X360Axis.LX_Hi] = (Byte)((ThumbLX >> 8) & 0xFF);
-
-                                Output[(UInt32) X360Axis.LY_Lo] = (Byte)((ThumbLY >> 0) & 0xFF); // LY
-                                Output[(UInt32) X360Axis.LY_Hi] = (Byte)((ThumbLY >> 8) & 0xFF);
-                            }
-
-                            if (!DeadZone(Global.DeadZoneR, Input[(UInt32) Ds3Axis.RX], Input[(UInt32) Ds3Axis.RY]))   // Right Stick DeadZone
-                            {
-                                Int32 ThumbRX = +Scale(Input[(UInt32) Ds3Axis.RX], Global.FlipRX);
-                                Int32 ThumbRY = -Scale(Input[(UInt32) Ds3Axis.RY], Global.FlipRY);
-
-                                Output[(UInt32) X360Axis.RX_Lo] = (Byte)((ThumbRX >> 0) & 0xFF); // RX
-                                Output[(UInt32) X360Axis.RX_Hi] = (Byte)((ThumbRX >> 8) & 0xFF);
-
-                                Output[(UInt32) X360Axis.RY_Lo] = (Byte)((ThumbRY >> 0) & 0xFF); // RY
-                                Output[(UInt32) X360Axis.RY_Hi] = (Byte)((ThumbRY >> 8) & 0xFF);
-                            }
+                            Output[(uint) X360Axis.LY_Lo] = (byte) ((thumbLy >> 0) & 0xFF); // LY
+                            Output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
+
+                        if (!DeadZone(Global.DeadZoneR, Input[(uint) Ds3Axis.RX], Input[(uint) Ds3Axis.RY]))
+                            // Right Stick DeadZone
+                        {
+                            var thumbRx = +Scale(Input[(uint) Ds3Axis.RX], Global.FlipRX);
+                            var thumbRy = -Scale(Input[(uint) Ds3Axis.RY], Global.FlipRY);
+
+                            Output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
+                            Output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
+
+                            Output[(uint) X360Axis.RY_Lo] = (byte) ((thumbRy >> 0) & 0xFF); // RY
+                            Output[(uint) X360Axis.RY_Hi] = (byte) ((thumbRy >> 8) & 0xFF);
+                        }
+                    }
                         break;
 
                     case DsModel.DS4:
+                    {
+                        var buttons = (Ds4Button) ((Input[13] << 0) | (Input[14] << 8) | (Input[15] << 16));
+
+                        if (buttons.HasFlag(Ds4Button.Share)) xButton |= X360Button.Back;
+                        if (buttons.HasFlag(Ds4Button.Options)) xButton |= X360Button.Start;
+
+                        if (buttons.HasFlag(Ds4Button.Up)) xButton |= X360Button.Up;
+                        if (buttons.HasFlag(Ds4Button.Right)) xButton |= X360Button.Right;
+                        if (buttons.HasFlag(Ds4Button.Down)) xButton |= X360Button.Down;
+                        if (buttons.HasFlag(Ds4Button.Left)) xButton |= X360Button.Left;
+
+                        if (buttons.HasFlag(Ds4Button.L1)) xButton |= X360Button.LB;
+                        if (buttons.HasFlag(Ds4Button.R1)) xButton |= X360Button.RB;
+
+                        if (buttons.HasFlag(Ds4Button.Triangle)) xButton |= X360Button.Y;
+                        if (buttons.HasFlag(Ds4Button.Circle)) xButton |= X360Button.B;
+                        if (buttons.HasFlag(Ds4Button.Cross)) xButton |= X360Button.A;
+                        if (buttons.HasFlag(Ds4Button.Square)) xButton |= X360Button.X;
+
+                        if (buttons.HasFlag(Ds4Button.PS)) xButton |= X360Button.Guide;
+
+                        if (buttons.HasFlag(Ds4Button.L3)) xButton |= X360Button.LS;
+                        if (buttons.HasFlag(Ds4Button.R3)) xButton |= X360Button.RS;
+
+                        Output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
+                        Output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
+
+                        Output[(uint) X360Axis.LT] = Input[(uint) Ds4Axis.L2];
+                        Output[(uint) X360Axis.RT] = Input[(uint) Ds4Axis.R2];
+
+                        if (!DeadZone(Global.DeadZoneL, Input[(uint) Ds4Axis.LX], Input[(uint) Ds4Axis.LY]))
+                            // Left Stick DeadZone
                         {
-                            Ds4Button Buttons = (Ds4Button)((Input[13] << 0) | (Input[14] << 8) | (Input[15] << 16));
+                            var thumbLx = +Scale(Input[(uint) Ds4Axis.LX], Global.FlipLX);
+                            var thumbLy = -Scale(Input[(uint) Ds4Axis.LY], Global.FlipLY);
 
-                            if (Buttons.HasFlag(Ds4Button.Share   )) XButton |= X360Button.Back; 
-                            if (Buttons.HasFlag(Ds4Button.Options )) XButton |= X360Button.Start;
+                            Output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
+                            Output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
 
-                            if (Buttons.HasFlag(Ds4Button.Up      )) XButton |= X360Button.Up;
-                            if (Buttons.HasFlag(Ds4Button.Right   )) XButton |= X360Button.Right;
-                            if (Buttons.HasFlag(Ds4Button.Down    )) XButton |= X360Button.Down;
-                            if (Buttons.HasFlag(Ds4Button.Left    )) XButton |= X360Button.Left;
-
-                            if (Buttons.HasFlag(Ds4Button.L1      )) XButton |= X360Button.LB;
-                            if (Buttons.HasFlag(Ds4Button.R1      )) XButton |= X360Button.RB;
-
-                            if (Buttons.HasFlag(Ds4Button.Triangle)) XButton |= X360Button.Y;
-                            if (Buttons.HasFlag(Ds4Button.Circle  )) XButton |= X360Button.B;
-                            if (Buttons.HasFlag(Ds4Button.Cross   )) XButton |= X360Button.A;
-                            if (Buttons.HasFlag(Ds4Button.Square  )) XButton |= X360Button.X;
-
-                            if (Buttons.HasFlag(Ds4Button.PS      )) XButton |= X360Button.Guide;
-
-                            if (Buttons.HasFlag(Ds4Button.L3      )) XButton |= X360Button.LS;
-                            if (Buttons.HasFlag(Ds4Button.R3      )) XButton |= X360Button.RS;
-
-                            Output[(UInt32) X360Axis.BT_Lo] = (Byte)((UInt32) XButton >> 0 & 0xFF);
-                            Output[(UInt32) X360Axis.BT_Hi] = (Byte)((UInt32) XButton >> 8 & 0xFF);
-
-                            Output[(UInt32) X360Axis.LT   ] = Input[(UInt32) Ds4Axis.L2];
-                            Output[(UInt32) X360Axis.RT   ] = Input[(UInt32) Ds4Axis.R2];
-
-                            if (!DeadZone(Global.DeadZoneL, Input[(UInt32) Ds4Axis.LX], Input[(UInt32) Ds4Axis.LY]))   // Left Stick DeadZone
-                            {
-                                Int32 ThumbLX = +Scale(Input[(UInt32) Ds4Axis.LX], Global.FlipLX);
-                                Int32 ThumbLY = -Scale(Input[(UInt32) Ds4Axis.LY], Global.FlipLY);
-
-                                Output[(UInt32) X360Axis.LX_Lo] = (Byte)((ThumbLX >> 0) & 0xFF); // LX
-                                Output[(UInt32) X360Axis.LX_Hi] = (Byte)((ThumbLX >> 8) & 0xFF);
-
-                                Output[(UInt32) X360Axis.LY_Lo] = (Byte)((ThumbLY >> 0) & 0xFF); // LY
-                                Output[(UInt32) X360Axis.LY_Hi] = (Byte)((ThumbLY >> 8) & 0xFF);
-                            }
-
-                            if (!DeadZone(Global.DeadZoneR, Input[(UInt32) Ds4Axis.RX], Input[(UInt32) Ds4Axis.RY]))   // Right Stick DeadZone
-                            {
-                                Int32 ThumbRX = +Scale(Input[(UInt32) Ds4Axis.RX], Global.FlipRX);
-                                Int32 ThumbRY = -Scale(Input[(UInt32) Ds4Axis.RY], Global.FlipRY);
-
-                                Output[(UInt32) X360Axis.RX_Lo] = (Byte)((ThumbRX >> 0) & 0xFF); // RX
-                                Output[(UInt32) X360Axis.RX_Hi] = (Byte)((ThumbRX >> 8) & 0xFF);
-
-                                Output[(UInt32) X360Axis.RY_Lo] = (Byte)((ThumbRY >> 0) & 0xFF); // RY
-                                Output[(UInt32) X360Axis.RY_Hi] = (Byte)((ThumbRY >> 8) & 0xFF);
-                            }
+                            Output[(uint) X360Axis.LY_Lo] = (byte) ((thumbLy >> 0) & 0xFF); // LY
+                            Output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
+
+                        if (!DeadZone(Global.DeadZoneR, Input[(uint) Ds4Axis.RX], Input[(uint) Ds4Axis.RY]))
+                            // Right Stick DeadZone
+                        {
+                            var thumbRx = +Scale(Input[(uint) Ds4Axis.RX], Global.FlipRX);
+                            var thumbRy = -Scale(Input[(uint) Ds4Axis.RY], Global.FlipRY);
+
+                            Output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
+                            Output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
+
+                            Output[(uint) X360Axis.RY_Lo] = (byte) ((thumbRy >> 0) & 0xFF); // RY
+                            Output[(uint) X360Axis.RY_Hi] = (byte) ((thumbRy >> 8) & 0xFF);
+                        }
+                    }
                         break;
                 }
             }
@@ -288,39 +291,40 @@ namespace ScpControl
             return Input[0];
         }
 
-
-        public virtual Boolean Plugin(Int32 Serial) 
+        public bool Plugin(int serial)
         {
-            Boolean retVal = false;
+            var retVal = false;
 
-            if (Serial < 1 || Serial > BusWidth) return retVal;
+            if (serial < 1 || serial > BusWidth) return retVal;
 
-            Serial += m_Offset;
+            serial += m_Offset;
 
             if (State == DsState.Connected)
             {
                 lock (m_Plugged)
                 {
-                    if (!m_Plugged.Contains(Serial))
+                    if (!m_Plugged.Contains(serial))
                     {
-                        Int32 Transfered = 0;
-                        Byte[] Buffer = new Byte[16];
+                        var transfered = 0;
+                        var buffer = new byte[16];
 
-                        Buffer[0] = 0x10;
-                        Buffer[1] = 0x00;
-                        Buffer[2] = 0x00;
-                        Buffer[3] = 0x00;
+                        buffer[0] = 0x10;
+                        buffer[1] = 0x00;
+                        buffer[2] = 0x00;
+                        buffer[3] = 0x00;
 
-                        Buffer[4] = (Byte)((Serial >>  0) & 0xFF);
-                        Buffer[5] = (Byte)((Serial >>  8) & 0xFF);
-                        Buffer[6] = (Byte)((Serial >> 16) & 0xFF);
-                        Buffer[7] = (Byte)((Serial >> 24) & 0xFF);
+                        buffer[4] = (byte) ((serial >> 0) & 0xFF);
+                        buffer[5] = (byte) ((serial >> 8) & 0xFF);
+                        buffer[6] = (byte) ((serial >> 16) & 0xFF);
+                        buffer[7] = (byte) ((serial >> 24) & 0xFF);
 
-                        if (DeviceIoControl(m_FileHandle, 0x2A4000, Buffer, Buffer.Length, null, 0, ref Transfered, IntPtr.Zero))
+                        if (DeviceIoControl(m_FileHandle, 0x2A4000, buffer, buffer.Length, null, 0, ref transfered,
+                            IntPtr.Zero))
                         {
-                            m_Plugged.Add(Serial); retVal = true;
+                            m_Plugged.Add(serial);
+                            retVal = true;
 
-                            Log.DebugFormat("-- Bus Plugin : Serial {0}", Serial);
+                            Log.DebugFormat("-- Bus Plugin : Serial {0}", serial);
                         }
                     }
                     else retVal = true;
@@ -330,35 +334,37 @@ namespace ScpControl
             return retVal;
         }
 
-        public virtual Boolean Unplug(Int32 Serial) 
+        public bool Unplug(int serial)
         {
-            Boolean retVal = false;
-            Serial += m_Offset;
+            var retVal = false;
+            serial += m_Offset;
 
             if (State == DsState.Connected)
             {
                 lock (m_Plugged)
                 {
-                    if (m_Plugged.Contains(Serial))
+                    if (m_Plugged.Contains(serial))
                     {
-                        Int32 Transfered = 0;
-                        Byte[] Buffer = new Byte[16];
+                        var transfered = 0;
+                        var buffer = new byte[16];
 
-                        Buffer[0] = 0x10;
-                        Buffer[1] = 0x00;
-                        Buffer[2] = 0x00;
-                        Buffer[3] = 0x00;
+                        buffer[0] = 0x10;
+                        buffer[1] = 0x00;
+                        buffer[2] = 0x00;
+                        buffer[3] = 0x00;
 
-                        Buffer[4] = (Byte)((Serial >>  0) & 0xFF);
-                        Buffer[5] = (Byte)((Serial >>  8) & 0xFF);
-                        Buffer[6] = (Byte)((Serial >> 16) & 0xFF);
-                        Buffer[7] = (Byte)((Serial >> 24) & 0xFF);
+                        buffer[4] = (byte) ((serial >> 0) & 0xFF);
+                        buffer[5] = (byte) ((serial >> 8) & 0xFF);
+                        buffer[6] = (byte) ((serial >> 16) & 0xFF);
+                        buffer[7] = (byte) ((serial >> 24) & 0xFF);
 
-                        if (DeviceIoControl(m_FileHandle, 0x2A4004, Buffer, Buffer.Length, null, 0, ref Transfered, IntPtr.Zero))
+                        if (DeviceIoControl(m_FileHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered,
+                            IntPtr.Zero))
                         {
-                            m_Plugged.Remove(Serial); retVal = true;
+                            m_Plugged.Remove(serial);
+                            retVal = true;
 
-                            Log.DebugFormat("-- Bus Unplug : Serial {0}", Serial);
+                            Log.DebugFormat("-- Bus Unplug : Serial {0}", serial);
                         }
                     }
                     else retVal = true;
@@ -368,13 +374,15 @@ namespace ScpControl
             return retVal;
         }
 
-        public virtual Boolean Report(Byte[] Input, Byte[] Output) 
+        public bool Report(byte[] input, byte[] output)
         {
             if (State == DsState.Connected)
             {
-                Int32 Transfered = 0;
+                var transfered = 0;
 
-                return DeviceIoControl(m_FileHandle, 0x2A400C, Input, Input.Length, Output, Output.Length, ref Transfered, IntPtr.Zero) && Transfered > 0;
+                return
+                    DeviceIoControl(m_FileHandle, 0x2A400C, input, input.Length, output, output.Length, ref transfered,
+                        IntPtr.Zero) && transfered > 0;
             }
 
             return false;
