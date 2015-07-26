@@ -1,6 +1,6 @@
 ﻿namespace ScpControl
 {
-    partial class ScpProxy
+    sealed partial class ScpProxy
     {
         /// <summary> 
         /// Required designer variable.
@@ -39,7 +39,7 @@
 
         #endregion
 
-        protected System.ComponentModel.BackgroundWorker NativeFeed_Worker;
+        private System.ComponentModel.BackgroundWorker NativeFeed_Worker;
 
     }
 }

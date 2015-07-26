@@ -9,88 +9,18 @@ using log4net;
 
 namespace ScpControl
 {
-    public partial class ScpProxy : Component
+    public sealed partial class ScpProxy : Component
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static Char[] m_Delim = new Char[] { '^' };
-
-        private IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
-        private UdpClient m_Server = new UdpClient();
-
-        private IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
+        private static readonly char[] m_Delim = {'^'};
+        private readonly IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
+        private readonly XmlMapper m_Mapper = new XmlMapper();
+        private readonly UdpClient m_Server = new UdpClient();
+        private readonly IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+        private bool m_Active;
         private UdpClient m_Client = new UdpClient();
-
         private XmlDocument m_Map = new XmlDocument();
-        private XmlMapper m_Mapper = new XmlMapper();
-        private Boolean m_Active = false;
 
-        public event EventHandler<DsPacket> Packet = null;
-
-
-        public virtual XmlMapper Mapper
-        {
-            get { return m_Mapper; }
-        }
-
-        public virtual String Active
-        {
-            get
-            {
-                String Active = String.Empty;
-
-                try
-                {
-                    Byte[] Send = { 0, 6 };
-
-                    if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
-                    {
-                        IPEndPoint ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                        Byte[] Buffer = m_Server.Receive(ref ReferenceEp);
-
-                        if (Buffer.Length > 0)
-                        {
-                            String Data = Encoding.Unicode.GetString(Buffer);
-                            String[] Split = Data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
-
-                            Active = Split[0];
-                        }
-                    }
-                }
-                catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
-
-                return Active;
-            }
-        }
-
-        public virtual Boolean Enabled
-        {
-            get
-            {
-                Boolean Native = false;
-
-                try
-                {
-                    Byte[] Send = { 0, 3 };
-
-                    if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
-                    {
-                        IPEndPoint ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                        Byte[] Buffer = m_Server.Receive(ref ReferenceEp);
-
-                        if (Buffer.Length > 0)
-                        {
-                            Native = Buffer[13] == 0;
-                        }
-                    }
-                }
-                catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
-
-                return Native;
-            }
-        }
-        
         public ScpProxy()
         {
             InitializeComponent();
@@ -103,7 +33,79 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        public virtual Boolean Start()
+        public XmlMapper Mapper
+        {
+            get { return m_Mapper; }
+        }
+
+        public string Active
+        {
+            get
+            {
+                var Active = string.Empty;
+
+                try
+                {
+                    byte[] Send = {0, 6};
+
+                    if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
+                    {
+                        var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
+
+                        var Buffer = m_Server.Receive(ref ReferenceEp);
+
+                        if (Buffer.Length > 0)
+                        {
+                            var Data = Encoding.Unicode.GetString(Buffer);
+                            var Split = Data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+
+                            Active = Split[0];
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                }
+
+                return Active;
+            }
+        }
+
+        public bool Enabled
+        {
+            get
+            {
+                var Native = false;
+
+                try
+                {
+                    byte[] Send = {0, 3};
+
+                    if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
+                    {
+                        var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
+
+                        var Buffer = m_Server.Receive(ref ReferenceEp);
+
+                        if (Buffer.Length > 0)
+                        {
+                            Native = Buffer[13] == 0;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                }
+
+                return Native;
+            }
+        }
+
+        public event EventHandler<DsPacket> Packet;
+
+        public bool Start()
         {
             try
             {
@@ -116,12 +118,15 @@ namespace ScpControl
                     m_Active = true;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return m_Active;
         }
 
-        public virtual Boolean Stop()
+        public bool Stop()
         {
             try
             {
@@ -131,28 +136,31 @@ namespace ScpControl
                     m_Active = false;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return !m_Active;
         }
-        
-        public virtual Boolean Load()
+
+        public bool Load()
         {
-            Boolean Loaded = false;
+            var Loaded = false;
 
             try
             {
-                Byte[] Buffer = { 0, 0x08 };
+                byte[] Buffer = {0, 0x08};
 
                 if (m_Server.Send(Buffer, Buffer.Length, m_ServerEp) == Buffer.Length)
                 {
-                    IPEndPoint ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
+                    var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
                     Buffer = m_Server.Receive(ref ReferenceEp);
 
                     if (Buffer.Length > 0)
                     {
-                        String Data = Encoding.UTF8.GetString(Buffer);
+                        var Data = Encoding.UTF8.GetString(Buffer);
 
                         m_Map.LoadXml(Data);
 
@@ -162,14 +170,17 @@ namespace ScpControl
 
                 Loaded = true;
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return Loaded;
         }
 
-        public virtual Boolean Save()
+        public bool Save()
         {
-            Boolean Saved = false;
+            var Saved = false;
 
             try
             {
@@ -177,8 +188,8 @@ namespace ScpControl
                 {
                     if (m_Mapper.Construct(ref m_Map))
                     {
-                        Byte[] Data = Encoding.UTF8.GetBytes(m_Map.InnerXml);
-                        Byte[] Buffer = new Byte[Data.Length + 2];
+                        var Data = Encoding.UTF8.GetBytes(m_Map.InnerXml);
+                        var Buffer = new byte[Data.Length + 2];
 
                         Buffer[1] = 0x09;
                         Array.Copy(Data, 0, Buffer, 2, Data.Length);
@@ -188,21 +199,24 @@ namespace ScpControl
                     }
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return Saved;
         }
-        
-        public virtual Boolean Select(Profile Target)
+
+        public bool Select(Profile Target)
         {
-            Boolean Selected = false;
+            var Selected = false;
 
             try
             {
                 if (m_Active)
                 {
-                    Byte[] Data = Encoding.Unicode.GetBytes(Target.Name);
-                    Byte[] Send = new Byte[Data.Length + 2];
+                    var Data = Encoding.Unicode.GetBytes(Target.Name);
+                    var Send = new byte[Data.Length + 2];
 
                     Send[1] = 0x07;
                     Array.Copy(Data, 0, Send, 2, Data.Length);
@@ -213,88 +227,114 @@ namespace ScpControl
                     Selected = true;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return Selected;
         }
 
-        public virtual DsDetail Detail(DsPadId Pad)
+        public DsDetail Detail(DsPadId Pad)
         {
             DsDetail Detail = null;
 
             try
             {
-                Byte[] Buffer = { (Byte)Pad, 0x0A };
+                byte[] Buffer = {(byte) Pad, 0x0A};
 
                 if (m_Server.Send(Buffer, Buffer.Length, m_ServerEp) == Buffer.Length)
                 {
-                    IPEndPoint ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
+                    var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
                     Buffer = m_Server.Receive(ref ReferenceEp);
 
                     if (Buffer.Length > 0)
                     {
-                        Byte[] Local = new Byte[6]; Array.Copy(Buffer, 5, Local, 0, Local.Length);
+                        var Local = new byte[6];
+                        Array.Copy(Buffer, 5, Local, 0, Local.Length);
 
-                        Detail = new DsDetail((DsPadId)Buffer[0], (DsState)Buffer[1], (DsModel)Buffer[2], Local, (DsConnection)Buffer[3], (DsBattery)Buffer[4]);
+                        Detail = new DsDetail((DsPadId) Buffer[0], (DsState) Buffer[1], (DsModel) Buffer[2], Local,
+                            (DsConnection) Buffer[3], (DsBattery) Buffer[4]);
                     }
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return Detail;
         }
-        
-        public virtual Boolean Rumble(DsPadId Pad, Byte Large, Byte Small)
+
+        public bool Rumble(DsPadId Pad, byte Large, byte Small)
         {
-            Boolean Rumbled = false;
+            var Rumbled = false;
 
             try
             {
                 if (m_Active)
                 {
-                    Byte[] Buffer = { (Byte)Pad, 0x01, Large, Small };
+                    byte[] Buffer = {(byte) Pad, 0x01, Large, Small};
 
                     m_Server.Send(Buffer, Buffer.Length, m_ServerEp);
                     Rumbled = true;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return Rumbled;
         }
 
-        public virtual Boolean Remap(String Target, DsPacket Packet)
+        public bool Remap(string Target, DsPacket Packet)
         {
-            Boolean Remapped = false;
+            var Remapped = false;
 
             try
             {
                 if (m_Active)
                 {
-                    Byte[] Output = new Byte[Packet.Native.Length];
+                    var Output = new byte[Packet.Native.Length];
 
                     switch (Packet.Detail.Model)
                     {
-                        case DsModel.DS3: if (m_Mapper.RemapDs3(m_Mapper.Map[Target], Packet.Native, Output)) { Array.Copy(Output, Packet.Native, Output.Length); Packet.Remapped(); } break;
-                        case DsModel.DS4: if (m_Mapper.RemapDs4(m_Mapper.Map[Target], Packet.Native, Output)) { Array.Copy(Output, Packet.Native, Output.Length); Packet.Remapped(); } break;
+                        case DsModel.DS3:
+                            if (m_Mapper.RemapDs3(m_Mapper.Map[Target], Packet.Native, Output))
+                            {
+                                Array.Copy(Output, Packet.Native, Output.Length);
+                                Packet.Remapped();
+                            }
+                            break;
+                        case DsModel.DS4:
+                            if (m_Mapper.RemapDs4(m_Mapper.Map[Target], Packet.Native, Output))
+                            {
+                                Array.Copy(Output, Packet.Native, Output.Length);
+                                Packet.Remapped();
+                            }
+                            break;
                     }
 
                     Remapped = true;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             return Remapped;
         }
-        
-        public virtual Boolean SetDefault(Profile Profile)
+
+        public bool SetDefault(Profile Profile)
         {
-            Boolean Set = true;
+            var Set = true;
 
             try
             {
-                foreach (Profile Item in m_Mapper.Map.Values)
+                foreach (var Item in m_Mapper.Map.Values)
                 {
                     Item.Default = false;
                 }
@@ -309,11 +349,11 @@ namespace ScpControl
 
             return Set;
         }
-        
-        protected virtual void NativeFeed_Worker_DoWork(object sender, DoWorkEventArgs e)
+
+        private void NativeFeed_Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            DsPacket Packet = new DsPacket();
-            Byte[] Buffer = new Byte[ReportEventArgs.Length];
+            var Packet = new DsPacket();
+            var Buffer = new byte[ReportEventArgs.Length];
 
             while (!NativeFeed_Worker.CancellationPending)
             {
@@ -322,14 +362,16 @@ namespace ScpControl
                     m_Client.Client.Receive(Buffer);
                     LogPacket(Packet.Load(Buffer));
                 }
-                catch { }
+                catch
+                {
+                }
             }
 
             m_Client.Close();
             e.Cancel = true;
         }
 
-        protected virtual void LogPacket(DsPacket Data)
+        private void LogPacket(DsPacket Data)
         {
             if (Packet != null)
             {
@@ -340,111 +382,114 @@ namespace ScpControl
 
     public class DsPacket : EventArgs
     {
-        protected Int32 m_Packet;
-        protected DsDetail m_Detail = new DsDetail();
-        protected Byte[] m_Native = new Byte[96];
-        protected Byte[] m_Local = new Byte[6];
-        protected Ds3Button m_Ds3Button = Ds3Button.None;
-        protected Ds4Button m_Ds4Button = Ds4Button.None;
+        private DsDetail m_Detail = new DsDetail();
+        private Ds3Button m_Ds3Button = Ds3Button.None;
+        private Ds4Button m_Ds4Button = Ds4Button.None;
+        private byte[] m_Local = new byte[6];
+        private byte[] m_Native = new byte[96];
+        private int m_Packet;
 
-        internal DsPacket() { }
-
-        internal DsPacket Load(Byte[] Native)
+        internal DsPacket()
         {
-            Array.Copy(Native, (Int32)DsOffset.Address, m_Local, 0, m_Local.Length);
+        }
+
+        internal byte[] Native
+        {
+            get { return m_Native; }
+        }
+
+        public DsDetail Detail
+        {
+            get { return m_Detail; }
+        }
+
+        internal DsPacket Load(byte[] Native)
+        {
+            Array.Copy(Native, (int) DsOffset.Address, m_Local, 0, m_Local.Length);
 
             m_Detail.Load(
-                    (DsPadId)Native[(Int32)DsOffset.Pad],
-                    (DsState)Native[(Int32)DsOffset.State],
-                    (DsModel)Native[(Int32)DsOffset.Model],
-                    m_Local,
-                    (DsConnection)Native[(Int32)DsOffset.Connection],
-                    (DsBattery)Native[(Int32)DsOffset.Battery]
-                    );
+                (DsPadId) Native[(int) DsOffset.Pad],
+                (DsState) Native[(int) DsOffset.State],
+                (DsModel) Native[(int) DsOffset.Model],
+                m_Local,
+                (DsConnection) Native[(int) DsOffset.Connection],
+                (DsBattery) Native[(int) DsOffset.Battery]
+                );
 
-            m_Packet = (Int32)(Native[4] << 0 | Native[5] << 8 | Native[6] << 16 | Native[7] << 24);
+            m_Packet = Native[4] << 0 | Native[5] << 8 | Native[6] << 16 | Native[7] << 24;
             Array.Copy(Native, m_Native, m_Native.Length);
 
             switch (m_Detail.Model)
             {
-                case DsModel.DS3: m_Ds3Button = (Ds3Button)((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24)); break;
-                case DsModel.DS4: m_Ds4Button = (Ds4Button)((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16)); break;
+                case DsModel.DS3:
+                    m_Ds3Button =
+                        (Ds3Button) ((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24));
+                    break;
+                case DsModel.DS4:
+                    m_Ds4Button = (Ds4Button) ((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16));
+                    break;
             }
 
             return this;
-        }
-        
-        internal Byte[] Native
-        {
-            get { return m_Native; }
         }
 
         internal void Remapped()
         {
             switch (m_Detail.Model)
             {
-                case DsModel.DS3: m_Ds3Button = (Ds3Button)((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24)); break;
-                case DsModel.DS4: m_Ds4Button = (Ds4Button)((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16)); break;
+                case DsModel.DS3:
+                    m_Ds3Button =
+                        (Ds3Button) ((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24));
+                    break;
+                case DsModel.DS4:
+                    m_Ds4Button = (Ds4Button) ((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16));
+                    break;
             }
         }
-        
-        public DsDetail Detail
-        {
-            get { return m_Detail; }
-        }
-        
-        public Boolean Button(Ds3Button Flag)
+
+        public bool Button(Ds3Button Flag)
         {
             if (m_Detail.Model != DsModel.DS3) throw new InvalidEnumArgumentException();
 
             return m_Ds3Button.HasFlag(Flag);
         }
 
-        public Boolean Button(Ds4Button Flag)
+        public bool Button(Ds4Button Flag)
         {
             if (m_Detail.Model != DsModel.DS4) throw new InvalidEnumArgumentException();
 
             return m_Ds4Button.HasFlag(Flag);
         }
-        
-        public Byte Axis(Ds3Axis Offset)
+
+        public byte Axis(Ds3Axis Offset)
         {
             if (m_Detail.Model != DsModel.DS3) throw new InvalidEnumArgumentException();
 
-            return Native[(Int32)Offset];
+            return Native[(int) Offset];
         }
 
-        public Byte Axis(Ds4Axis Offset)
+        public byte Axis(Ds4Axis Offset)
         {
             if (m_Detail.Model != DsModel.DS4) throw new InvalidEnumArgumentException();
 
-            return Native[(Int32)Offset];
+            return Native[(int) Offset];
         }
     }
 
     public class DsDetail
     {
-        protected DsPadId m_Serial;
-        protected DsModel m_Model;
-        protected Byte[] m_Local = new Byte[6];
-        protected DsConnection m_Mode;
-        protected DsBattery m_Charge;
-        protected DsState m_State;
+        private DsBattery m_Charge;
+        private byte[] m_Local = new byte[6];
+        private DsConnection m_Mode;
+        private DsModel m_Model;
+        private DsPadId m_Serial;
+        private DsState m_State;
 
-        internal DsDetail() { }
-
-        internal DsDetail(DsPadId PadId, DsState State, DsModel Model, Byte[] Mac, DsConnection Mode, DsBattery Level)
+        internal DsDetail()
         {
-            m_Serial = PadId;
-            m_State = State;
-            m_Model = Model;
-            m_Mode = Mode;
-            m_Charge = Level;
-
-            Array.Copy(Mac, m_Local, m_Local.Length);
         }
 
-        internal DsDetail Load(DsPadId PadId, DsState State, DsModel Model, Byte[] Mac, DsConnection Mode, DsBattery Level)
+        internal DsDetail(DsPadId PadId, DsState State, DsModel Model, byte[] Mac, DsConnection Mode, DsBattery Level)
         {
             m_Serial = PadId;
             m_State = State;
@@ -453,8 +498,6 @@ namespace ScpControl
             m_Charge = Level;
 
             Array.Copy(Mac, m_Local, m_Local.Length);
-
-            return this;
         }
 
         public DsPadId Pad
@@ -472,9 +515,13 @@ namespace ScpControl
             get { return m_Model; }
         }
 
-        public String Local
+        public string Local
         {
-            get { return String.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2], m_Local[3], m_Local[4], m_Local[5]); }
+            get
+            {
+                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
+                    m_Local[3], m_Local[4], m_Local[5]);
+            }
         }
 
         public DsConnection Mode
@@ -485,6 +532,20 @@ namespace ScpControl
         public DsBattery Charge
         {
             get { return m_Charge; }
+        }
+
+        internal DsDetail Load(DsPadId PadId, DsState State, DsModel Model, byte[] Mac, DsConnection Mode,
+            DsBattery Level)
+        {
+            m_Serial = PadId;
+            m_State = State;
+            m_Model = Model;
+            m_Mode = Mode;
+            m_Charge = Level;
+
+            Array.Copy(Mac, m_Local, m_Local.Length);
+
+            return this;
         }
     }
 }
