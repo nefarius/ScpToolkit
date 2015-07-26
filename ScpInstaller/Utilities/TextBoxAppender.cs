@@ -45,8 +45,8 @@ namespace ScpDriver.Utilities
             }
 
             // append message to TextBox control
-            _textBox.AppendText(string.Format("{0} - {1}{2}", loggingEvent.TimeStamp, loggingEvent.RenderedMessage,
-                Environment.NewLine));
+            _textBox.AppendText(string.Format("{0} [{3}] - {1}{2}", loggingEvent.TimeStamp, loggingEvent.RenderedMessage,
+                Environment.NewLine, loggingEvent.Level));
         }
     }
 }

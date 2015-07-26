@@ -43,7 +43,7 @@ namespace ScpDriver
 
                 // set display options
                 cbService.Checked = cbService.Visible = cfg.UseService;
-                cbBluetooth.Checked = cbBluetooth.Visible =cfg.UseBluetooth;
+                cbBluetooth.Checked = cbBluetooth.Visible = cfg.UseBluetooth;
                 cbDS3.Checked = cbDS3.Visible = cfg.UseDualShock3;
                 cbBus.Checked = cbBus.Visible = cfg.UseVirtualBus;
 
@@ -57,9 +57,21 @@ namespace ScpDriver
             }
         }
 
-        private void Logger(DifxLog Event, int error, string description)
+        private static void Logger(DifxLog Event, int error, string description)
         {
-            Log.InfoFormat("{0} - {1}", _desc[(int)Event], description);
+            switch (Event)
+            {
+                case DifxLog.DIFXAPI_ERROR:
+                    Log.Error(description);
+                    break;
+                case DifxLog.DIFXAPI_INFO:
+                case DifxLog.DIFXAPI_SUCCESS:
+                    Log.Info(description);
+                    break;
+                case DifxLog.DIFXAPI_WARNING:
+                    Log.Warn(description);
+                    break;
+            }
         }
 
         private static bool Start(string service)
