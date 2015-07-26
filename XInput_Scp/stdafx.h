@@ -3,6 +3,7 @@
 
 #define STRICT
 #define WIN32_LEAN_AND_MEAN
+// necessary to support Windows XP
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <windows.h>
 #include <basetyps.h>
