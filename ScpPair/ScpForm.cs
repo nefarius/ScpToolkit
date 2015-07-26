@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Drawing;
+using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ScpControl;
-using System.Runtime.InteropServices;
+using ScpPair.Properties;
 
 namespace ScpPair 
 {
@@ -29,7 +30,7 @@ namespace ScpPair
 
                     for (Int32 Index = 0; Index < 6 && Ok; Index++)
                     {
-                        if (Split[Index].Length != 2 || !Byte.TryParse(Split[Index], System.Globalization.NumberStyles.HexNumber, null, out Master[Index]))
+                        if (Split[Index].Length != 2 || !Byte.TryParse(Split[Index], NumberStyles.HexNumber, null, out Master[Index]))
                         {
                             Ok = false;
                         }
@@ -55,7 +56,7 @@ namespace ScpPair
 
         private void Form_Load(object sender, EventArgs e) 
         {
-            Icon = Properties.Resources.Scp_All;
+            Icon = Resources.Scp_All;
 
             if (usbDevice.Open()) usbDevice.Start();
 
