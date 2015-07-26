@@ -164,7 +164,7 @@ namespace ScpControl
             Publish();
         }
 
-        public override Boolean Rumble(Byte Large, Byte Small) 
+        public override Boolean Rumble(Byte large, Byte small) 
         {
             lock (this)
             {
@@ -175,8 +175,8 @@ namespace ScpControl
                 }
                 else
                 {
-                    m_Report[4] = (Byte)(Small > 0 ? 0x01 : 0x00);
-                    m_Report[6] = Large;
+                    m_Report[4] = (Byte)(small > 0 ? 0x01 : 0x00);
+                    m_Report[6] = large;
                 }
 
                 if (!m_Blocked && Global.Latency == 0)

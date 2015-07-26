@@ -152,23 +152,23 @@ namespace ScpControl
             return base.Start();
         }
         
-        public override Boolean Rumble(Byte Large, Byte Small) 
+        public override Boolean Rumble(Byte large, Byte small) 
         {
             lock (this)
             {
                 Int32 Transfered = 0;
 
-                m_Report[4] = (Byte)(Small);
-                m_Report[5] = (Byte)(Large);
+                m_Report[4] = (Byte)(small);
+                m_Report[5] = (Byte)(large);
 
                 return WriteIntPipe(m_Report, m_Report.Length, ref Transfered);
             }
         }
 
-        public override Boolean Pair(Byte[] Master) 
+        public override Boolean Pair(Byte[] master) 
         {
             Int32 Transfered = 0;
-            Byte[] Buffer = { 0x13, Master[5], Master[4], Master[3], Master[2], Master[1], Master[0], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            Byte[] Buffer = { 0x13, master[5], master[4], master[3], master[2], master[1], master[0], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
             Array.Copy(Global.BD_Link, 0, Buffer, 7, Global.BD_Link.Length);
 
@@ -176,7 +176,7 @@ namespace ScpControl
             {
                 for (Int32 Index = 0; Index < m_Master.Length; Index++)
                 {
-                    m_Master[Index] = Master[Index];
+                    m_Master[Index] = master[Index];
                 }
 
                 Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", Local, Remote);
@@ -242,15 +242,15 @@ namespace ScpControl
             Publish();
         }
 
-        protected override void Process(DateTime Now) 
+        protected override void Process(DateTime now) 
         {
             lock (this)
             {
-                if ((Now - m_Last).TotalMilliseconds >= 500)
+                if ((now - m_Last).TotalMilliseconds >= 500)
                 {
                     Int32 Transfered = 0;
 
-                    m_Last = Now;
+                    m_Last = now;
 
                     if (!Global.DisableLightBar)
                     {

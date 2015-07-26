@@ -133,12 +133,12 @@ namespace ScpControl
         }
 
 
-        public virtual Boolean Rumble(Byte Large, Byte Small) 
+        public virtual Boolean Rumble(Byte large, Byte small) 
         {
             return false;
         }
 
-        public virtual Boolean Pair(Byte[] Master) 
+        public virtual Boolean Pair(Byte[] master) 
         {
             return false;
         }

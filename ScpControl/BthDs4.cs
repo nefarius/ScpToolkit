@@ -207,7 +207,7 @@ namespace ScpControl
             Publish();
         }
 
-        public override Boolean Rumble(Byte Large, Byte Small) 
+        public override Boolean Rumble(Byte large, Byte small) 
         {
             lock (this)
             {
@@ -218,8 +218,8 @@ namespace ScpControl
                 }
                 else
                 {
-                    m_Report[7] = (Byte)(Small);
-                    m_Report[8] = (Byte)(Large);
+                    m_Report[7] = (Byte)(small);
+                    m_Report[8] = (Byte)(large);
                 }
 
                 if (!m_Blocked)

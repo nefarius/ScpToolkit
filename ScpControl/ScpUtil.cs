@@ -327,9 +327,9 @@ namespace ScpControl
 
         Boolean Start();
 
-        Boolean Rumble(Byte Large, Byte Small);
+        Boolean Rumble(Byte large, Byte small);
 
-        Boolean Pair(Byte[] Master);
+        Boolean Pair(Byte[] master);
 
         Boolean Disconnect();
     }
@@ -461,12 +461,12 @@ namespace ScpControl
             return true;
         }
 
-        public bool Rumble(Byte Left, Byte Right) 
+        public bool Rumble(Byte large, Byte small) 
         {
             return true;
         }
 
-        public bool Pair(Byte[] Master) 
+        public bool Pair(Byte[] master) 
         {
             return true;
         }

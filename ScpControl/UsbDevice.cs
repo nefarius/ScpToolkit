@@ -88,7 +88,7 @@ namespace ScpControl
             if (Report != null) Report(this, m_ReportArgs);
         }
 
-        protected virtual void Process(DateTime Now) 
+        protected virtual void Process(DateTime now) 
         {
         }
 
@@ -229,12 +229,12 @@ namespace ScpControl
             }
         }
         
-        public virtual Boolean Rumble(Byte Large, Byte Small) 
+        public virtual Boolean Rumble(Byte large, Byte small) 
         {
             return false;
         }
 
-        public virtual Boolean Pair(Byte[] Master) 
+        public virtual Boolean Pair(Byte[] master) 
         {
             return false;
         }
