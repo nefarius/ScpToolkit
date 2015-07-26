@@ -11,12 +11,9 @@ namespace ScpMonitor
     public partial class SettingsForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected Char[] m_Delim = new Char[] { '^' };
-
-        private IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
-        private UdpClient m_Server = new UdpClient();
-
-        private Byte[] m_Buffer = new Byte[17];
+        private readonly byte[] m_Buffer = new byte[17];
+        private readonly UdpClient m_Server = new UdpClient();
+        private readonly IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
 
         public SettingsForm()
         {
@@ -40,9 +37,9 @@ namespace ScpMonitor
 
                 if (m_Server.Send(m_Buffer, m_Buffer.Length, m_ServerEp) == m_Buffer.Length)
                 {
-                    IPEndPoint ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
+                    var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
-                    Byte[] Buffer = m_Server.Receive(ref ReferenceEp);
+                    var Buffer = m_Server.Receive(ref ReferenceEp);
 
                     tbIdle.Value = Buffer[2];
                     cbLX.Checked = Buffer[3] == 1;
@@ -61,7 +58,10 @@ namespace ScpMonitor
                     cbForce.Checked = Buffer[16] == 1;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -73,28 +73,29 @@ namespace ScpMonitor
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                e.Cancel = true; Hide();
+                e.Cancel = true;
+                Hide();
             }
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             m_Buffer[1] = 0x04;
-            m_Buffer[2] = (Byte)tbIdle.Value;
-            m_Buffer[3] = (Byte)(cbLX.Checked ? 0x01 : 0x00);
-            m_Buffer[4] = (Byte)(cbLY.Checked ? 0x01 : 0x00);
-            m_Buffer[5] = (Byte)(cbRX.Checked ? 0x01 : 0x00);
-            m_Buffer[6] = (Byte)(cbRY.Checked ? 0x01 : 0x00);
-            m_Buffer[7] = (Byte)(cbLED.Checked ? 0x01 : 0x00);
-            m_Buffer[8] = (Byte)(cbRumble.Checked ? 0x01 : 0x00);
-            m_Buffer[9] = (Byte)(cbTriggers.Checked ? 0x01 : 0x00);
-            m_Buffer[10] = (Byte)tbLatency.Value;
-            m_Buffer[11] = (Byte)tbLeft.Value;
-            m_Buffer[12] = (Byte)tbRight.Value;
-            m_Buffer[13] = (Byte)(cbNative.Checked ? 0x01 : 0x00);
-            m_Buffer[14] = (Byte)(cbSSP.Checked ? 0x01 : 0x00);
-            m_Buffer[15] = (Byte)tbBrightness.Value;
-            m_Buffer[16] = (Byte)(cbForce.Checked ? 0x01 : 0x00);
+            m_Buffer[2] = (byte) tbIdle.Value;
+            m_Buffer[3] = (byte) (cbLX.Checked ? 0x01 : 0x00);
+            m_Buffer[4] = (byte) (cbLY.Checked ? 0x01 : 0x00);
+            m_Buffer[5] = (byte) (cbRX.Checked ? 0x01 : 0x00);
+            m_Buffer[6] = (byte) (cbRY.Checked ? 0x01 : 0x00);
+            m_Buffer[7] = (byte) (cbLED.Checked ? 0x01 : 0x00);
+            m_Buffer[8] = (byte) (cbRumble.Checked ? 0x01 : 0x00);
+            m_Buffer[9] = (byte) (cbTriggers.Checked ? 0x01 : 0x00);
+            m_Buffer[10] = (byte) tbLatency.Value;
+            m_Buffer[11] = (byte) tbLeft.Value;
+            m_Buffer[12] = (byte) tbRight.Value;
+            m_Buffer[13] = (byte) (cbNative.Checked ? 0x01 : 0x00);
+            m_Buffer[14] = (byte) (cbSSP.Checked ? 0x01 : 0x00);
+            m_Buffer[15] = (byte) tbBrightness.Value;
+            m_Buffer[16] = (byte) (cbForce.Checked ? 0x01 : 0x00);
 
             m_Server.Send(m_Buffer, m_Buffer.Length, m_ServerEp);
             Hide();
@@ -107,7 +108,7 @@ namespace ScpMonitor
 
         private void tbIdle_ValueChanged(object sender, EventArgs e)
         {
-            Int32 Value = tbIdle.Value;
+            var Value = tbIdle.Value;
 
             if (Value == 0)
             {
@@ -119,28 +120,28 @@ namespace ScpMonitor
             }
             else
             {
-                lblIdle.Text = String.Format("Idle Timeout : {0} minutes", Value);
+                lblIdle.Text = string.Format("Idle Timeout : {0} minutes", Value);
             }
         }
 
         private void tbLatency_ValueChanged(object sender, EventArgs e)
         {
-            Int32 Value = tbLatency.Value << 4;
+            var Value = tbLatency.Value << 4;
 
-            lblLatency.Text = String.Format("DS3 Rumble Latency : {0} ms", Value);
+            lblLatency.Text = string.Format("DS3 Rumble Latency : {0} ms", Value);
         }
 
         private void tbBrightness_ValueChanged(object sender, EventArgs e)
         {
-            Int32 Value = tbBrightness.Value;
+            var Value = tbBrightness.Value;
 
             if (Value == 0)
             {
-                lblBrightness.Text = String.Format("DS4 Light Bar Brighness : Disabled", Value);
+                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : Disabled", Value);
             }
             else
             {
-                lblBrightness.Text = String.Format("DS4 Light Bar Brighness : {0}", Value);
+                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : {0}", Value);
             }
         }
     }
