@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Drawing;
-using System.Text;
+using System.Drawing.Design;
 using System.Windows.Forms;
-
 using ScpControl;
 
 namespace ScpMonitor 
 {
     public partial class ProfileProperties : Form 
     {
-        protected Profile         m_Profile;
-        protected Boolean         m_Saved = false;
-        protected PropEditProfile m_Editor;
+        private Profile         m_Profile;
+        private Boolean         m_Saved = false;
+        private PropEditProfile m_Editor;
 
         public Profile Profile 
         {
@@ -38,7 +35,7 @@ namespace ScpMonitor
             propGrid.SelectedObject = m_Editor = new PropEditProfile(Pad, Mac);
         }
 
-        protected void Form_Load(object sender, EventArgs e) 
+        private void Form_Load(object sender, EventArgs e) 
         {
             Location = new Point(Owner.Location.X + Owner.Width, Owner.Location.Y);
             Height   = Owner.Height;
@@ -68,7 +65,7 @@ namespace ScpMonitor
             }
         }
 
-        protected void btnSave_Click(object sender, EventArgs e) 
+        private void btnSave_Click(object sender, EventArgs e) 
         {
             m_Profile = new Profile(m_Profile.Default, m_Editor.Name, m_Editor.Type.ToString(), m_Editor.Target);
 
@@ -96,25 +93,25 @@ namespace ScpMonitor
             Close();
         }
 
-        protected void btnClose_Click(object sender, EventArgs e) 
+        private void btnClose_Click(object sender, EventArgs e) 
         {
             Close();
         }
     }
 
-    public class PropEditProfile 
+    public sealed class PropEditProfile 
     {
-        protected String  m_Name;
-        protected DsMatch m_Type;
-        protected DsPadId m_Pad;
-        protected String  m_Mac;
-        protected String  m_Qualifier;
+        private String  m_Name;
+        private DsMatch m_Type;
+        private DsPadId m_Pad;
+        private String  m_Mac;
+        private String  m_Qualifier;
 
-        protected Ds3AxisCollection m_Ds3Axis = new Ds3AxisCollection();
-        protected Ds4AxisCollection m_Ds4Axis = new Ds4AxisCollection();
+        private Ds3AxisCollection m_Ds3Axis = new Ds3AxisCollection();
+        private Ds4AxisCollection m_Ds4Axis = new Ds4AxisCollection();
 
-        protected Ds3ButtonCollection m_Ds3Button = new Ds3ButtonCollection();
-        protected Ds4ButtonCollection m_Ds4Button = new Ds4ButtonCollection();
+        private Ds3ButtonCollection m_Ds3Button = new Ds3ButtonCollection();
+        private Ds4ButtonCollection m_Ds4Button = new Ds4ButtonCollection();
 
         public PropEditProfile(DsPadId Pad, String Mac) 
         {
@@ -123,14 +120,14 @@ namespace ScpMonitor
         }
 
         [Category("Details")]
-        public virtual String Name 
+        public String Name 
         {
             get { return m_Name; }
             set { m_Name = value; }
         }
 
         [Category("Details")]
-        public virtual DsMatch Type 
+        public DsMatch Type 
         {
             get { return m_Type; }
             set 
@@ -149,7 +146,7 @@ namespace ScpMonitor
         }
 
         [Category("Details")]
-        public virtual String Target 
+        public String Target 
         {
             get { return m_Qualifier; }
             internal set { m_Qualifier = value; }
@@ -286,7 +283,7 @@ namespace ScpMonitor
     }
 
     [DisplayName("DS3 Axis Mapper")]
-    [Editor(typeof(Ds3AxisCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+    [Editor(typeof(Ds3AxisCollectionEditor), typeof(UITypeEditor))]
     public class Ds3AxisCollection : CollectionBase 
     {
         public Ds3AxisMap this[Int32 Index] 
@@ -306,7 +303,7 @@ namespace ScpMonitor
     }
 
     [DisplayName("DS4 Axis Mapper")]
-    [Editor(typeof(Ds4AxisCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+    [Editor(typeof(Ds4AxisCollectionEditor), typeof(UITypeEditor))]
     public class Ds4AxisCollection : CollectionBase 
     {
         public Ds4AxisMap this[Int32 Index] 
@@ -326,7 +323,7 @@ namespace ScpMonitor
     }
 
     [DisplayName("DS3 Button Mapper")]
-    [Editor(typeof(Ds3ButtonCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+    [Editor(typeof(Ds3ButtonCollectionEditor), typeof(UITypeEditor))]
     public class Ds3ButtonCollection : CollectionBase 
     {
         public Ds3ButtonMap this[Int32 Index] 
@@ -346,7 +343,7 @@ namespace ScpMonitor
     }
 
     [DisplayName("DS4 Button Mapper")]
-    [Editor(typeof(Ds4ButtonCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
+    [Editor(typeof(Ds4ButtonCollectionEditor), typeof(UITypeEditor))]
     public class Ds4ButtonCollection : CollectionBase 
     {
         public Ds4ButtonMap this[Int32 Index] 
