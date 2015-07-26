@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Reflection;
+using log4net;
 
-namespace ScpControl 
+namespace ScpControl
 {
-    public partial class ScpPadState : Component 
+    public partial class ScpPadState : Component
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected ScpProxy m_Proxy = null;
 
-        protected const Int32 Centre       = 127;
-        protected const Int32 Accelerate   =  75;
-        protected const Int32 Repeat_Delay =  40;
-        protected const Int32 Repeat_Rate  =   5;
+        protected const Int32 Centre = 127;
+        protected const Int32 Accelerate = 75;
+        protected const Int32 Repeat_Delay = 40;
+        protected const Int32 Repeat_Rate = 5;
 
         protected DsPadId m_Pad = DsPadId.One;
 
@@ -20,22 +23,22 @@ namespace ScpControl
         protected Int32 m_vx = 0, m_vy = 0;
         protected Int32 m_dx = 0, m_dy = 0;
 
-        public ScpProxy Proxy 
+        public ScpProxy Proxy
         {
             get { return m_Proxy; }
             set { m_Proxy = value; Proxy.Packet += Sample; }
         }
 
-        public DsPadId Pad 
+        public DsPadId Pad
         {
             get { return m_Pad; }
             set { lock (this) { m_Pad = value; } }
         }
 
-        public Boolean Enabled 
+        public Boolean Enabled
         {
             get { return tmUpdate.Enabled; }
-            set 
+            set
             {
                 if (tmUpdate.Enabled != value)
                 {
@@ -46,7 +49,7 @@ namespace ScpControl
                         if (!value)
                         {
                             try { Reset(); }
-                            catch { }
+                            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
                         }
                     }
                 }
@@ -54,31 +57,31 @@ namespace ScpControl
         }
 
 
-        public Int32 Threshold 
+        public Int32 Threshold
         {
             get { return m_Threshold; }
             set { lock (this) { m_Threshold = value; } }
         }
 
-        public Int32 ScaleX 
+        public Int32 ScaleX
         {
             get { return m_vx; }
             set { lock (this) { m_vx = value; } }
         }
 
-        public Int32 ScaleY 
+        public Int32 ScaleY
         {
             get { return m_vy; }
             set { lock (this) { m_vy = value; } }
         }
 
 
-        public ScpPadState() 
+        public ScpPadState()
         {
             InitializeComponent();
         }
 
-        public ScpPadState(IContainer container) 
+        public ScpPadState(IContainer container)
         {
             container.Add(this);
 
@@ -86,7 +89,7 @@ namespace ScpControl
         }
 
 
-        public virtual void Sample(object sender, DsPacket Packet) 
+        public virtual void Sample(object sender, DsPacket Packet)
         {
             lock (this)
             {
@@ -99,40 +102,40 @@ namespace ScpControl
                             case DsModel.DS3:
 
                                 try { SampleDs3(Packet); }
-                                catch { };
+                                catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
                                 break;
 
                             case DsModel.DS4:
 
                                 try { SampleDs4(Packet); }
-                                catch { }
+                                catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
                                 break;
                         }
                     }
                     else
                     {
                         try { Reset(); }
-                        catch { }
+                        catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
                     }
                 }
             }
         }
 
 
-        protected virtual void SampleDs3(DsPacket Packet) 
+        protected virtual void SampleDs3(DsPacket Packet)
         {
             m_dx = Mouse(Packet.Axis(Ds3Axis.RX), m_vx);
             m_dy = Mouse(Packet.Axis(Ds3Axis.RY), m_vy);
         }
 
-        protected virtual void SampleDs4(DsPacket Packet) 
+        protected virtual void SampleDs4(DsPacket Packet)
         {
             m_dx = Mouse(Packet.Axis(Ds4Axis.RX), m_vx);
             m_dy = Mouse(Packet.Axis(Ds4Axis.RY), m_vy);
         }
 
 
-        protected virtual void Rumble(Byte Large, Byte Small) 
+        protected virtual void Rumble(Byte Large, Byte Small)
         {
             if (Proxy != null)
             {
@@ -140,18 +143,18 @@ namespace ScpControl
             }
         }
 
-        protected virtual void Reset() 
+        protected virtual void Reset()
         {
             m_dx = m_dy = 0;
         }
 
-        protected virtual void Timer() 
+        protected virtual void Timer()
         {
             if (m_dx != 0 || m_dy != 0) KbmPost.Move(m_dx, m_dy);
         }
 
 
-        protected virtual Int32   Mouse (Int32   Old, Int32   Scale) 
+        protected virtual Int32 Mouse(Int32 Old, Int32 Scale)
         {
             Int32 New = 0;
 
@@ -161,21 +164,21 @@ namespace ScpControl
             return New;
         }
 
-        protected virtual Boolean Mouse (Boolean Old, Boolean New,   KbmPost.MouseButtons Button) 
+        protected virtual Boolean Mouse(Boolean Old, Boolean New, KbmPost.MouseButtons Button)
         {
             if (Old != New) KbmPost.Button(Button, New);
 
             return New;
         }
 
-        protected virtual Boolean Button(Boolean Old, Boolean New,   Keys Key, Boolean Extended) 
+        protected virtual Boolean Button(Boolean Old, Boolean New, Keys Key, Boolean Extended)
         {
             if (Old != New) KbmPost.Key(Key, Extended, New);
 
             return New;
         }
 
-        protected virtual Int32   Repeat(Boolean Old, Int32   Count, Keys Key, Boolean Extended) 
+        protected virtual Int32 Repeat(Boolean Old, Int32 Count, Keys Key, Boolean Extended)
         {
             if (Old)
             {
@@ -193,13 +196,13 @@ namespace ScpControl
             return Count;
         }
 
-        protected virtual Boolean Macro (Boolean Old, Boolean New,   Keys[] Keys) 
+        protected virtual Boolean Macro(Boolean Old, Boolean New, Keys[] Keys)
         {
             if (!Old && New)
             {
-                foreach(Keys Key in Keys)
+                foreach (Keys Key in Keys)
                 {
-                    KbmPost.Key(Key, false, true );
+                    KbmPost.Key(Key, false, true);
                     KbmPost.Key(Key, false, false);
                 }
             }
@@ -207,14 +210,14 @@ namespace ScpControl
             return New;
         }
 
-        protected virtual Boolean Wheel (Boolean Old, Boolean New,   Boolean Vertical, Boolean Direction) 
+        protected virtual Boolean Wheel(Boolean Old, Boolean New, Boolean Vertical, Boolean Direction)
         {
             if (!Old && New) KbmPost.Wheel(Vertical, Direction ? 1 : -1);
 
             return New;
         }
 
-        protected virtual Boolean Toggle(Boolean Old, Boolean New,   ref Boolean Target) 
+        protected virtual Boolean Toggle(Boolean Old, Boolean New, ref Boolean Target)
         {
             if (!Old && New) Target = !Target;
 
@@ -222,12 +225,12 @@ namespace ScpControl
         }
 
 
-        internal virtual void tmUpdate_Tick(object sender, EventArgs e) 
+        internal virtual void tmUpdate_Tick(object sender, EventArgs e)
         {
             lock (this)
             {
                 try { Timer(); }
-                catch { }
+                catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
             }
         }
     }
