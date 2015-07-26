@@ -1,6 +1,6 @@
 ﻿namespace ScpControl
 {
-    partial class UsbDs4
+    sealed partial class UsbDs4
     {
         /// <summary>
         /// Required designer variable.

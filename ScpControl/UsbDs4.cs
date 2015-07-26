@@ -1,32 +1,88 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace ScpControl 
+namespace ScpControl
 {
-    public partial class UsbDs4 : UsbDevice 
+    public sealed partial class UsbDs4 : UsbDevice
     {
-        public static String USB_CLASS_GUID = "{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}";
+        private const int R = 6; // Led Offsets
+        private const int G = 7; // Led Offsets
+        private const int B = 8; // Led Offsets
+        public static string USB_CLASS_GUID = "{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}";
+        private byte m_Brightness = Global.Brightness;
+        private bool m_DisableLightBar;
 
-        protected Boolean m_DisableLightBar = false;
-        protected Byte    m_Brightness = Global.Brightness;
-
-        protected const Int32 R = 6, G = 7, B = 8;  // Led Offsets
-
-        protected Byte[] m_Report = 
+        private byte[] m_Report =
         {
             0x05,
-            0xFF, 0x00, 0x00, 0x00, 0x00, 
+            0xFF, 0x00, 0x00, 0x00, 0x00,
             0xFF, 0xFF, 0xFF, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00, 
-	        0x00, 
+            0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00
         };
 
-        protected virtual Byte MapBattery(Byte Value) 
+        public UsbDs4() : base(USB_CLASS_GUID)
         {
-            Byte Mapped = (Byte) DsBattery.None;
+            InitializeComponent();
+        }
+
+        public UsbDs4(IContainer container) : base(USB_CLASS_GUID)
+        {
+            container.Add(this);
+
+            InitializeComponent();
+        }
+
+        public override DsPadId PadId
+        {
+            get { return (DsPadId) m_ControllerId; }
+            set
+            {
+                m_ControllerId = (byte) value;
+                m_ReportArgs.Pad = PadId;
+
+                switch (value)
+                {
+                    case DsPadId.One: // Blue
+                        m_Report[R] = 0x00;
+                        m_Report[G] = 0x00;
+                        m_Report[B] = m_Brightness;
+                        break;
+                    case DsPadId.Two: // Green
+                        m_Report[R] = 0x00;
+                        m_Report[G] = m_Brightness;
+                        m_Report[B] = 0x00;
+                        break;
+                    case DsPadId.Three: // Yellow
+                        m_Report[R] = m_Brightness;
+                        m_Report[G] = m_Brightness;
+                        m_Report[B] = 0x00;
+                        break;
+                    case DsPadId.Four: // Cyan
+                        m_Report[R] = 0x00;
+                        m_Report[G] = m_Brightness;
+                        m_Report[B] = m_Brightness;
+                        break;
+                    case DsPadId.None: // Red
+                        m_Report[R] = m_Brightness;
+                        m_Report[G] = 0x00;
+                        m_Report[B] = 0x00;
+                        break;
+                }
+
+                if (Global.DisableLightBar)
+                {
+                    m_Report[R] = m_Report[G] = m_Report[B] = m_Report[12] = m_Report[13] = 0x00;
+                }
+            }
+        }
+
+        private byte MapBattery(byte Value)
+        {
+            var mapped = (byte) DsBattery.None;
 
             switch (Value)
             {
@@ -41,105 +97,55 @@ namespace ScpControl
                 case 0x18:
                 case 0x19:
                 case 0x1A:
-                    Mapped = (Byte) DsBattery.Charging;
+                    mapped = (byte) DsBattery.Charging;
                     break;
                 case 0x1B:
-                    Mapped = (Byte) DsBattery.Charged;
+                    mapped = (byte) DsBattery.Charged;
                     break;
             }
 
-            return Mapped;
+            return mapped;
         }
 
-        public override DsPadId PadId 
-        {
-            get { return (DsPadId) m_ControllerId; }
-            set 
-            {
-                m_ControllerId = (Byte) value;
-                m_ReportArgs.Pad = PadId;
-
-                switch (value)
-                {
-                    case DsPadId.One:      // Blue
-                        m_Report[R] = 0x00;
-                        m_Report[G] = 0x00;
-                        m_Report[B] = m_Brightness;
-                        break;
-                    case DsPadId.Two:      // Green
-                        m_Report[R] = 0x00;
-                        m_Report[G] = m_Brightness;
-                        m_Report[B] = 0x00;
-                        break;
-                    case DsPadId.Three:    // Yellow
-                        m_Report[R] = m_Brightness;
-                        m_Report[G] = m_Brightness;
-                        m_Report[B] = 0x00;
-                        break;
-                    case DsPadId.Four:     // Cyan
-                        m_Report[R] = 0x00;
-                        m_Report[G] = m_Brightness;
-                        m_Report[B] = m_Brightness;
-                        break;
-                    case DsPadId.None:     // Red
-                        m_Report[R] = m_Brightness;
-                        m_Report[G] = 0x00;
-                        m_Report[B] = 0x00;
-                        break;
-                }
-
-                if (Global.DisableLightBar)
-                {
-                    m_Report[R] = m_Report[G] = m_Report[B] = m_Report[12] = m_Report[13] = 0x00;
-                }
-            }
-        }
-        
-        public UsbDs4() : base(USB_CLASS_GUID) 
-        {
-            InitializeComponent();
-        }
-
-        public UsbDs4(IContainer container) : base(USB_CLASS_GUID) 
-        {
-            container.Add(this);
-
-            InitializeComponent();
-        }
-        
-        public override Boolean Open(String devicePath) 
+        public override bool Open(string devicePath)
         {
             if (base.Open(devicePath))
             {
                 m_State = DsState.Reserved;
                 GetDeviceInstance(ref m_Instance);
 
-                Int32 Transfered = 0;
+                var Transfered = 0;
 
                 if (SendTransfer(0xA1, 0x01, 0x0312, m_Buffer, ref Transfered))
                 {
-                    m_Master = new Byte[] { m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10] };
-                    m_Local  = new Byte[] { m_Buffer[ 6], m_Buffer[ 5], m_Buffer[ 4], m_Buffer[ 3], m_Buffer[ 2], m_Buffer[ 1] };
+                    m_Master = new[]
+                    {m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10]};
+                    m_Local = new[] {m_Buffer[6], m_Buffer[5], m_Buffer[4], m_Buffer[3], m_Buffer[2], m_Buffer[1]};
                 }
 
-                m_Mac = String.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2], m_Local[3], m_Local[4], m_Local[5]);
+                m_Mac = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
+                    m_Local[3], m_Local[4], m_Local[5]);
             }
 
             return State == DsState.Reserved;
         }
 
-        public override Boolean Start() 
+        public override bool Start()
         {
-            m_Model = (Byte) DsModel.DS4;
+            m_Model = (byte) DsModel.DS4;
 
             if (Global.Repair)
             {
-                Int32  Transfered = 0;
-                Byte[] Buffer = { 0x13, m_Master[5], m_Master[4], m_Master[3], m_Master[2], m_Master[1], m_Master[0], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+                var transfered = 0;
+                byte[] buffer =
+                {
+                    0x13, m_Master[5], m_Master[4], m_Master[3], m_Master[2], m_Master[1], m_Master[0],
+                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+                };
 
-                Array.Copy(Global.BD_Link, 0, Buffer, 7, Global.BD_Link.Length);
+                Array.Copy(Global.BD_Link, 0, buffer, 7, Global.BD_Link.Length);
 
-                if (SendTransfer(0x21, 0x09, 0x0313, Buffer, ref Transfered))
+                if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
                 {
                     Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, Remote);
                 }
@@ -151,30 +157,34 @@ namespace ScpControl
 
             return base.Start();
         }
-        
-        public override Boolean Rumble(Byte large, Byte small) 
+
+        public override bool Rumble(byte large, byte small)
         {
             lock (this)
             {
-                Int32 Transfered = 0;
+                var transfered = 0;
 
-                m_Report[4] = (Byte)(small);
-                m_Report[5] = (Byte)(large);
+                m_Report[4] = small;
+                m_Report[5] = large;
 
-                return WriteIntPipe(m_Report, m_Report.Length, ref Transfered);
+                return WriteIntPipe(m_Report, m_Report.Length, ref transfered);
             }
         }
 
-        public override Boolean Pair(Byte[] master) 
+        public override bool Pair(byte[] master)
         {
-            Int32 Transfered = 0;
-            Byte[] Buffer = { 0x13, master[5], master[4], master[3], master[2], master[1], master[0], 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-
-            Array.Copy(Global.BD_Link, 0, Buffer, 7, Global.BD_Link.Length);
-
-            if (SendTransfer(0x21, 0x09, 0x0313, Buffer, ref Transfered))
+            var transfered = 0;
+            byte[] buffer =
             {
-                for (Int32 Index = 0; Index < m_Master.Length; Index++)
+                0x13, master[5], master[4], master[3], master[2], master[1], master[0], 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+            };
+
+            Array.Copy(Global.BD_Link, 0, buffer, 7, Global.BD_Link.Length);
+
+            if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
+            {
+                for (var Index = 0; Index < m_Master.Length; Index++)
                 {
                     m_Master[Index] = master[Index];
                 }
@@ -186,8 +196,8 @@ namespace ScpControl
             Log.DebugFormat("++ Pair Failed [{0}]", Local);
             return false;
         }
-        
-        protected override void Parse(Byte[] Report) 
+
+        protected override void Parse(byte[] Report)
         {
             if (Report[0] != 0x01) return;
 
@@ -195,60 +205,60 @@ namespace ScpControl
 
             m_ReportArgs.Report[2] = m_BatteryStatus = MapBattery(Report[30]);
 
-            m_ReportArgs.Report[4] = (Byte)(m_Packet >>  0 & 0xFF);
-            m_ReportArgs.Report[5] = (Byte)(m_Packet >>  8 & 0xFF);
-            m_ReportArgs.Report[6] = (Byte)(m_Packet >> 16 & 0xFF);
-            m_ReportArgs.Report[7] = (Byte)(m_Packet >> 24 & 0xFF);
+            m_ReportArgs.Report[4] = (byte) (m_Packet >> 0 & 0xFF);
+            m_ReportArgs.Report[5] = (byte) (m_Packet >> 8 & 0xFF);
+            m_ReportArgs.Report[6] = (byte) (m_Packet >> 16 & 0xFF);
+            m_ReportArgs.Report[7] = (byte) (m_Packet >> 24 & 0xFF);
 
-            Ds4Button Buttons = (Ds4Button)((Report[5] << 0) | (Report[6] << 8) | (Report[7] << 16));
+            var buttons = (Ds4Button) ((Report[5] << 0) | (Report[6] << 8) | (Report[7] << 16));
 
             //++ Convert HAT to DPAD
             Report[5] &= 0xF0;
 
-            switch ((UInt32) Buttons & 0xF) 
+            switch ((uint) buttons & 0xF)
             {
                 case 0:
-                    Report[5] |= (Byte)(Ds4Button.Up);
+                    Report[5] |= (byte) (Ds4Button.Up);
                     break;
                 case 1:
-                    Report[5] |= (Byte)(Ds4Button.Up | Ds4Button.Right);
+                    Report[5] |= (byte) (Ds4Button.Up | Ds4Button.Right);
                     break;
                 case 2:
-                    Report[5] |= (Byte)(Ds4Button.Right);
+                    Report[5] |= (byte) (Ds4Button.Right);
                     break;
                 case 3:
-                    Report[5] |= (Byte)(Ds4Button.Right | Ds4Button.Down);
+                    Report[5] |= (byte) (Ds4Button.Right | Ds4Button.Down);
                     break;
                 case 4:
-                    Report[5] |= (Byte)(Ds4Button.Down);
+                    Report[5] |= (byte) (Ds4Button.Down);
                     break;
                 case 5:
-                    Report[5] |= (Byte)(Ds4Button.Down | Ds4Button.Left);
+                    Report[5] |= (byte) (Ds4Button.Down | Ds4Button.Left);
                     break;
                 case 6:
-                    Report[5] |= (Byte)(Ds4Button.Left);
+                    Report[5] |= (byte) (Ds4Button.Left);
                     break;
                 case 7:
-                    Report[5] |= (Byte)(Ds4Button.Left | Ds4Button.Up);
+                    Report[5] |= (byte) (Ds4Button.Left | Ds4Button.Up);
                     break;
             }
             //--
 
-            for (int Index = 8; Index < 72; Index++)
+            for (var index = 8; index < 72; index++)
             {
-                m_ReportArgs.Report[Index] = Report[Index - 8];
+                m_ReportArgs.Report[index] = Report[index - 8];
             }
 
             Publish();
         }
 
-        protected override void Process(DateTime now) 
+        protected override void Process(DateTime now)
         {
             lock (this)
             {
                 if ((now - m_Last).TotalMilliseconds >= 500)
                 {
-                    Int32 Transfered = 0;
+                    var transfered = 0;
 
                     m_Last = now;
 
@@ -276,9 +286,9 @@ namespace ScpControl
                         PadId = PadId;
                     }
 
-                    WriteIntPipe(m_Report, m_Report.Length, ref Transfered);
+                    WriteIntPipe(m_Report, m_Report.Length, ref transfered);
                 }
             }
         }
-   }
+    }
 }
