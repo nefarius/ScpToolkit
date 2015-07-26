@@ -128,7 +128,7 @@ namespace ScpControl
         }
 
 
-        public virtual void Parse(Byte[] Report) 
+        public virtual void Parse(Byte[] report) 
         {
         }
 
@@ -150,7 +150,7 @@ namespace ScpControl
         }
 
 
-        public virtual Boolean InitReport(Byte[] Report) 
+        public virtual Boolean InitReport(Byte[] report) 
         {
             return true;
         }
@@ -189,7 +189,7 @@ namespace ScpControl
             }
         }
 
-        protected virtual void Process(DateTime Now) 
+        protected virtual void Process(DateTime now) 
         {
         }
 
