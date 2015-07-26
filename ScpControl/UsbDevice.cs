@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text;
 using System.ComponentModel;
-using System.Threading;
 
 namespace ScpControl 
 {
@@ -81,8 +79,7 @@ namespace ScpControl
             get { return m_IsDisconnect; }
             set { m_IsDisconnect = value; }
         }
-
-
+        
         protected virtual void Publish() 
         {
             m_ReportArgs.Report[0] = m_ControllerId;
@@ -105,8 +102,7 @@ namespace ScpControl
 
             return RestartDevice(m_Instance);
         }
-
-
+        
         protected UsbDevice(String Guid) : base(Guid) 
         {
             InitializeComponent();
@@ -124,8 +120,7 @@ namespace ScpControl
 
             InitializeComponent();
         }
-
-
+        
         public override Boolean Start() 
         {
             if (IsActive)
@@ -200,8 +195,7 @@ namespace ScpControl
 
             throw new Exception();
         }
-
-
+        
         protected void HID_Worker_Thread(object sender, DoWorkEventArgs e) 
         {
             Int32  Transfered = 0;
@@ -218,7 +212,10 @@ namespace ScpControl
                         Parse(Buffer);
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                }
             }
 
             Log.Debug("-- USB Device : HID_Worker_Thread Exiting");
@@ -231,8 +228,7 @@ namespace ScpControl
                 Process(DateTime.Now);
             }
         }
-
-
+        
         public virtual Boolean Rumble(Byte Large, Byte Small) 
         {
             return false;
