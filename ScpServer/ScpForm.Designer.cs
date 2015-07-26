@@ -51,6 +51,7 @@
             this.rbPad_2 = new System.Windows.Forms.RadioButton();
             this.rbPad_1 = new System.Windows.Forms.RadioButton();
             this.rootHub = new ScpControl.RootHub(this.components);
+            this.chLevel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pnlButton.SuspendLayout();
             this.pnlDebug.SuspendLayout();
             this.pnlStatus.SuspendLayout();
@@ -61,13 +62,14 @@
             // 
             this.lvDebug.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.chTime,
+            this.chLevel,
             this.chData});
             this.lvDebug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvDebug.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lvDebug.FullRowSelect = true;
             this.lvDebug.Location = new System.Drawing.Point(0, 0);
             this.lvDebug.Name = "lvDebug";
-            this.lvDebug.Size = new System.Drawing.Size(769, 370);
+            this.lvDebug.Size = new System.Drawing.Size(794, 370);
             this.lvDebug.TabIndex = 0;
             this.lvDebug.UseCompatibleStateImageBehavior = false;
             this.lvDebug.View = System.Windows.Forms.View.Details;
@@ -100,14 +102,14 @@
             this.pnlButton.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlButton.Location = new System.Drawing.Point(0, 476);
             this.pnlButton.Name = "pnlButton";
-            this.pnlButton.Size = new System.Drawing.Size(769, 35);
+            this.pnlButton.Size = new System.Drawing.Size(794, 35);
             this.pnlButton.TabIndex = 10;
             // 
             // btnClear
             // 
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClear.Enabled = false;
-            this.btnClear.Location = new System.Drawing.Point(520, 6);
+            this.btnClear.Location = new System.Drawing.Point(545, 6);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(75, 23);
             this.btnClear.TabIndex = 9;
@@ -180,7 +182,7 @@
             // 
             this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStop.Enabled = false;
-            this.btnStop.Location = new System.Drawing.Point(682, 6);
+            this.btnStop.Location = new System.Drawing.Point(707, 6);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(75, 23);
             this.btnStop.TabIndex = 2;
@@ -192,7 +194,7 @@
             // btnStart
             // 
             this.btnStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStart.Location = new System.Drawing.Point(601, 6);
+            this.btnStart.Location = new System.Drawing.Point(626, 6);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(75, 23);
             this.btnStart.TabIndex = 1;
@@ -217,7 +219,7 @@
             this.pnlDebug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlDebug.Location = new System.Drawing.Point(0, 106);
             this.pnlDebug.Name = "pnlDebug";
-            this.pnlDebug.Size = new System.Drawing.Size(769, 370);
+            this.pnlDebug.Size = new System.Drawing.Size(794, 370);
             this.pnlDebug.TabIndex = 11;
             // 
             // pnlStatus
@@ -227,7 +229,7 @@
             this.pnlStatus.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlStatus.Location = new System.Drawing.Point(0, 0);
             this.pnlStatus.Name = "pnlStatus";
-            this.pnlStatus.Size = new System.Drawing.Size(769, 106);
+            this.pnlStatus.Size = new System.Drawing.Size(794, 106);
             this.pnlStatus.TabIndex = 9;
             // 
             // gpPads
@@ -240,7 +242,7 @@
             this.gpPads.Controls.Add(this.rbPad_1);
             this.gpPads.Location = new System.Drawing.Point(300, -4);
             this.gpPads.Name = "gpPads";
-            this.gpPads.Size = new System.Drawing.Size(465, 104);
+            this.gpPads.Size = new System.Drawing.Size(490, 104);
             this.gpPads.TabIndex = 1;
             this.gpPads.TabStop = false;
             // 
@@ -296,18 +298,19 @@
             this.rbPad_1.Text = "Pad 1 : Disconnected";
             this.rbPad_1.UseVisualStyleBackColor = true;
             // 
-            // rootHub
+            // chLevel
             // 
+            this.chLevel.Text = "Level";
             // 
             // ScpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(769, 511);
+            this.ClientSize = new System.Drawing.Size(794, 511);
             this.Controls.Add(this.pnlDebug);
             this.Controls.Add(this.pnlButton);
             this.Controls.Add(this.pnlStatus);
-            this.MinimumSize = new System.Drawing.Size(785, 550);
+            this.MinimumSize = new System.Drawing.Size(810, 550);
             this.Name = "ScpForm";
             this.Text = "SCP Server";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Close);
@@ -346,6 +349,7 @@
         private System.Windows.Forms.RadioButton rbPad_1;
         private System.Windows.Forms.Button btnClear;
         private ScpControl.RootHub rootHub;
+        private System.Windows.Forms.ColumnHeader chLevel;
     }
 }
 

@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.IO;
-using System.Runtime.InteropServices;
+using System.Globalization;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using log4net;
 using ScpControl;
+using ScpServer.Properties;
 
 namespace ScpServer 
 {
@@ -31,13 +32,13 @@ namespace ScpServer
 
         private void Form_Load(object sender, EventArgs e) 
         {
-            Icon = Properties.Resources.Scp_All;
+            Icon = Resources.Scp_All;
 
             ScpDevice.RegisterNotify(Handle, new Guid(UsbDs3.USB_CLASS_GUID   ), ref m_Ds3Notify);
             ScpDevice.RegisterNotify(Handle, new Guid(UsbDs4.USB_CLASS_GUID   ), ref m_Ds4Notify);
             ScpDevice.RegisterNotify(Handle, new Guid(BthDongle.BTH_CLASS_GUID), ref m_BthNotify);
 
-            Log.DebugFormat("{0} [{1}]", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version);
+            Log.DebugFormat("++ {0} [{1}]", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version);
 
             tmrUpdate.Enabled = true;
             btnStart_Click(sender, e);
@@ -108,7 +109,7 @@ namespace ScpServer
 
                     for (Int32 Part = 0; Part < Master.Length; Part++)
                     {
-                        Master[Part] = Byte.Parse(Parts[Part], System.Globalization.NumberStyles.HexNumber);
+                        Master[Part] = Byte.Parse(Parts[Part], NumberStyles.HexNumber);
                     }
 
                     rootHub.Pad[Index].Pair(Master);

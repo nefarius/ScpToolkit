@@ -45,12 +45,17 @@ namespace ScpServer.Utilities
                         _form.Invoke(new Action<LoggingEvent>(Append), loggingEvent);
                         return;
                     }
-                    catch (ObjectDisposedException) { return; }
+                    catch (ObjectDisposedException)
+                    {
+                        return;
+                    }
                 }
             }
 
             // append message to ListView control
-            _listView.Items.Add(new ListViewItem(new[] { loggingEvent.TimeStamp.ToString(), loggingEvent.RenderedMessage }))
+            _listView.Items.Add(
+                new ListViewItem(new[]
+                {loggingEvent.TimeStamp.ToString(), loggingEvent.Level.ToString(), loggingEvent.RenderedMessage}))
                 .EnsureVisible();
         }
     }
