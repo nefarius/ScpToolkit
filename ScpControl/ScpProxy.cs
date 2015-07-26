@@ -1,32 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Xml;
-using System.Text;
-
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
+using System.Xml;
 using log4net;
 
 namespace ScpControl
 {
     public partial class ScpProxy : Component
     {
-        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected static Char[] m_Delim = new Char[] { '^' };
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static Char[] m_Delim = new Char[] { '^' };
 
-        protected IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
-        protected UdpClient m_Server = new UdpClient();
+        private IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+        private UdpClient m_Server = new UdpClient();
 
-        protected IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
-        protected UdpClient m_Client = new UdpClient();
+        private IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
+        private UdpClient m_Client = new UdpClient();
 
-        protected XmlDocument m_Map = new XmlDocument();
-        protected XmlMapper m_Mapper = new XmlMapper();
-        protected Boolean m_Active = false;
+        private XmlDocument m_Map = new XmlDocument();
+        private XmlMapper m_Mapper = new XmlMapper();
+        private Boolean m_Active = false;
 
         public event EventHandler<DsPacket> Packet = null;
 
@@ -94,8 +90,7 @@ namespace ScpControl
                 return Native;
             }
         }
-
-
+        
         public ScpProxy()
         {
             InitializeComponent();
@@ -140,8 +135,7 @@ namespace ScpControl
 
             return !m_Active;
         }
-
-
+        
         public virtual Boolean Load()
         {
             Boolean Loaded = false;
@@ -198,8 +192,7 @@ namespace ScpControl
 
             return Saved;
         }
-
-
+        
         public virtual Boolean Select(Profile Target)
         {
             Boolean Selected = false;
@@ -251,8 +244,7 @@ namespace ScpControl
 
             return Detail;
         }
-
-
+        
         public virtual Boolean Rumble(DsPadId Pad, Byte Large, Byte Small)
         {
             Boolean Rumbled = false;
@@ -295,8 +287,7 @@ namespace ScpControl
 
             return Remapped;
         }
-
-
+        
         public virtual Boolean SetDefault(Profile Profile)
         {
             Boolean Set = true;
@@ -318,8 +309,7 @@ namespace ScpControl
 
             return Set;
         }
-
-
+        
         protected virtual void NativeFeed_Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             DsPacket Packet = new DsPacket();
@@ -383,8 +373,7 @@ namespace ScpControl
 
             return this;
         }
-
-
+        
         internal Byte[] Native
         {
             get { return m_Native; }
@@ -398,14 +387,12 @@ namespace ScpControl
                 case DsModel.DS4: m_Ds4Button = (Ds4Button)((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16)); break;
             }
         }
-
-
+        
         public DsDetail Detail
         {
             get { return m_Detail; }
         }
-
-
+        
         public Boolean Button(Ds3Button Flag)
         {
             if (m_Detail.Model != DsModel.DS3) throw new InvalidEnumArgumentException();
@@ -419,8 +406,7 @@ namespace ScpControl
 
             return m_Ds4Button.HasFlag(Flag);
         }
-
-
+        
         public Byte Axis(Ds3Axis Offset)
         {
             if (m_Detail.Model != DsModel.DS3) throw new InvalidEnumArgumentException();
