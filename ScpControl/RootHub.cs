@@ -9,6 +9,7 @@ using System.Threading;
 using System.Management;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using ScpControl.Utilities;
 
 namespace ScpControl 
 {
@@ -103,7 +104,7 @@ namespace ScpControl
             bool Opened = false;
 
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version);
-            Log.DebugFormat("++ {0}", OSInfo());
+            Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
 
             scpMap.Open();
 
@@ -501,46 +502,6 @@ namespace ScpControl
             }
 
             if (!Global.DisableNative) m_Client.Send(e.Report, e.Report.Length, m_ClientEp);
-        }
-
-
-        protected String OSInfo() 
-        {
-            String Info = String.Empty;
-
-            try
-            {
-                using (ManagementObjectSearcher mos = new ManagementObjectSearcher("SELECT * FROM  Win32_OperatingSystem"))
-                {
-                    foreach (ManagementObject mo in mos.Get())
-                    {
-                        try
-                        {
-                            Info = Regex.Replace(mo.GetPropertyValue("Caption").ToString(), "[^A-Za-z0-9 ]", "").Trim();
-
-                            try
-                            {
-                                Object spv = mo.GetPropertyValue("ServicePackMajorVersion");
-
-                                if (spv != null && spv.ToString() != "0")
-                                {
-                                    Info += " Service Pack " + spv.ToString();
-                                }
-                            }
-                            catch { }
-
-                            Info = String.Format("{0} ({1} {2})", Info, System.Environment.OSVersion.Version.ToString(), System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"));
-
-                        }
-                        catch { }
-
-                        mo.Dispose();
-                    }
-                }
-            }
-            catch { }
-
-            return Info;
         }
     }
 }

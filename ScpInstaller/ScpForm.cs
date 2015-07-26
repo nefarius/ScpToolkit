@@ -8,9 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
+using ScpControl.Utilities;
 using ScpDriver.Driver;
 using ScpDriver.Properties;
-using ScpDriver.Utilities;
 
 namespace ScpDriver
 {

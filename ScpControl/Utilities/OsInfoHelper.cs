@@ -3,7 +3,7 @@ using System.Linq;
 using System.Management;
 using System.Text.RegularExpressions;
 
-namespace ScpDriver.Utilities
+namespace ScpControl.Utilities
 {
     public enum OsType
     {

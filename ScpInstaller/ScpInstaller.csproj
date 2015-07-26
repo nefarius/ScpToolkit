@@ -81,7 +81,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utilities\OsInfoHelper.cs" />
     <Compile Include="Utilities\TextBoxAppender.cs" />
     <EmbeddedResource Include="ScpForm.resx">
       <DependentUpon>ScpForm.cs</DependentUpon>
@@ -115,7 +114,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ScpControl\ScpControl.csproj">
+      <Project>{ddecf06e-be48-4610-8bf8-4ae5140d9f0c}</Project>
+      <Name>ScpControl</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>Copy /Y /B $(SolutionDir)\Common\Properties\Info.cs $(ProjectDir)\Properties\CommonInfo.cs &gt; nul:
