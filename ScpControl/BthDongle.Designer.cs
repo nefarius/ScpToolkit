@@ -1,6 +1,6 @@
 ﻿namespace ScpControl
 {
-    partial class BthDongle
+    sealed partial class BthDongle
     {
         /// <summary>
         /// Required designer variable.
