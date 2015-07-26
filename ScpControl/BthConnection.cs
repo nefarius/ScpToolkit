@@ -197,7 +197,7 @@ namespace ScpControl
                     return m_L2CAP_Cmd_Handle[0].Bytes;
                 }
             }
-            catch { }
+            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
 
             try
             {
@@ -206,7 +206,7 @@ namespace ScpControl
                     return m_L2CAP_Int_Handle[0].Bytes;
                 }
             }
-            catch { }
+            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
 
             try
             {
@@ -215,7 +215,7 @@ namespace ScpControl
                     return m_L2CAP_Svc_Handle[0].Bytes;
                 }
             }
-            catch { }
+            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
 
             throw new Exception("L2CAP SCID Not Found");
         }
