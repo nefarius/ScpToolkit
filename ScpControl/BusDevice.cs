@@ -56,11 +56,11 @@ namespace ScpControl
             InitializeComponent();
         }
         
-        public override Boolean Open(Int32 Instance = 0) 
+        public override Boolean Open(Int32 instance = 0) 
         {
             if (State == DsState.Disconnected)
             {
-                m_Offset = Instance * BusWidth;
+                m_Offset = instance * BusWidth;
 
                 Log.DebugFormat("-- Bus Open   : Offset {0}", m_Offset);
 
@@ -73,11 +73,11 @@ namespace ScpControl
             return State == DsState.Reserved;
         }
 
-        public override Boolean Open(String DevicePath)  
+        public override Boolean Open(String devicePath)  
         {
             if (State == DsState.Disconnected)
             {
-                m_Path = DevicePath;
+                m_Path = devicePath;
 
                 Log.DebugFormat("-- Bus Open   : Path {0}", m_Path);
 

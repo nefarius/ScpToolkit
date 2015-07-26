@@ -47,9 +47,9 @@ namespace ScpControl
             InitializeComponent();
         }
         
-        public override Boolean Open(String DevicePath) 
+        public override Boolean Open(String devicePath) 
         {
-            if (base.Open(DevicePath))
+            if (base.Open(devicePath))
             {
                 m_State = DsState.Reserved;
                 GetDeviceInstance(ref m_Instance);

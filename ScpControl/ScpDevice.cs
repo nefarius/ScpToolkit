@@ -19,8 +19,7 @@ namespace ScpControl
         {
             get { return m_Path; }
         }
-
-
+        
         public ScpDevice() 
         {
             InitializeComponent();
@@ -33,29 +32,28 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        public ScpDevice(String Class) 
+        public ScpDevice(string Class) 
         {
             InitializeComponent();
 
             this.m_Class = new Guid(Class);
         }
-
-
-        public virtual Boolean Open(Int32 Instance = 0) 
+        
+        public virtual bool Open(int instance = 0) 
         {
-            String DevicePath = String.Empty;
+            var devicePath = string.Empty;
 
-            if (Find(m_Class, ref DevicePath, Instance))
+            if (Find(m_Class, ref devicePath, instance))
             {
-                Open(DevicePath);
+                Open(devicePath);
             }
 
             return m_IsActive;
         }
 
-        public virtual Boolean Open(String DevicePath)  
+        public virtual bool Open(string devicePath)  
         {
-            m_Path = DevicePath.ToUpper();
+            m_Path = devicePath.ToUpper();
 
             if (GetDeviceHandle(m_Path))
             {
@@ -80,13 +78,12 @@ namespace ScpControl
             return m_IsActive;
         }
 
-
-        public virtual Boolean Start() 
+        public virtual bool Start() 
         {
             return m_IsActive;
         }
 
-        public virtual Boolean Stop()  
+        public virtual bool Stop()  
         {
             m_IsActive = false;
 
@@ -110,11 +107,10 @@ namespace ScpControl
             return true;
         }
 
-        public virtual Boolean Close() 
+        public virtual bool Close() 
         {
             return Stop();
         }
-
 
         public virtual Boolean ReadIntPipe  (Byte[] Buffer, Int32 Length, ref Int32 Transfered) 
         {

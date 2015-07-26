@@ -75,9 +75,9 @@ namespace ScpControl
         }
 
 
-        public override Boolean Open(int Instance = 0) 
+        public override Boolean Open(int instance = 0) 
         {
-            if (base.Open(Instance))
+            if (base.Open(instance))
             {
                 m_State = DsState.Reserved;
             }
@@ -85,9 +85,9 @@ namespace ScpControl
             return State == DsState.Reserved;
         }
 
-        public override Boolean Open(String Path) 
+        public override Boolean Open(String devicePath) 
         {
-            if (base.Open(Path))
+            if (base.Open(devicePath))
             {
                 m_State = DsState.Reserved;
             }
