@@ -9,27 +9,27 @@ using ScpControl.Utilities;
 
 namespace ScpControl
 {
-    public partial class RootHub : ScpHub
+    public sealed partial class RootHub : ScpHub
     {
-        protected BthHub bthHub = new BthHub();
-        protected Cache[] m_Cache = {new Cache(), new Cache(), new Cache(), new Cache()};
-        protected UdpClient m_Client = new UdpClient();
-        protected IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
-        protected byte[][] m_Native = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
+        private BthHub bthHub = new BthHub();
+        private Cache[] m_Cache = {new Cache(), new Cache(), new Cache(), new Cache()};
+        private UdpClient m_Client = new UdpClient();
+        private IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
+        private byte[][] m_Native = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
 
-        protected IDsDevice[] m_Pad =
+        private IDsDevice[] m_Pad =
         {
             new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
             new DsNull(DsPadId.Four)
         };
 
-        protected string[] m_Reserved = {string.Empty, string.Empty, string.Empty, string.Empty};
-        protected UdpClient m_Server = new UdpClient();
-        protected IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
-        protected volatile bool m_Suspended;
-        protected byte[][] m_XInput = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
-        protected BusDevice scpBus = new BusDevice();
-        protected UsbHub usbHub = new UsbHub();
+        private string[] m_Reserved = {string.Empty, string.Empty, string.Empty, string.Empty};
+        private UdpClient m_Server = new UdpClient();
+        private IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+        private volatile bool m_Suspended;
+        private byte[][] m_XInput = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
+        private BusDevice scpBus = new BusDevice();
+        private UsbHub usbHub = new UsbHub();
 
         public RootHub()
         {
@@ -201,7 +201,7 @@ namespace ScpControl
             return DsPadId.None;
         }
 
-        protected virtual void UDP_Worker_Thread(object sender, DoWorkEventArgs e)
+        private void UDP_Worker_Thread(object sender, DoWorkEventArgs e)
         {
             var sb = new StringBuilder();
 
@@ -495,7 +495,7 @@ namespace ScpControl
             if (!Global.DisableNative) m_Client.Send(e.Report, e.Report.Length, m_ClientEp);
         }
 
-        protected class Cache
+        private class Cache
         {
             private byte[] m_Mapped = new byte[ReportEventArgs.Length];
             private byte[] m_Report = new byte[BusDevice.ReportSize];

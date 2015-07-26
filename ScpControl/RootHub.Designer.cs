@@ -1,6 +1,6 @@
 ﻿namespace ScpControl
 {
-    partial class RootHub
+    sealed partial class RootHub
     {
         /// <summary>
         /// Required designer variable.
