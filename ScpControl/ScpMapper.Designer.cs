@@ -1,6 +1,6 @@
 ﻿namespace ScpControl
 {
-    partial class ScpMapper
+    sealed partial class ScpMapper
     {
         /// <summary> 
         /// Required designer variable.

@@ -1,63 +1,27 @@
 ﻿using System;
 using System.ComponentModel;
-
 using System.IO;
-using System.Xml;
 using System.Reflection;
 using System.Threading;
+using System.Xml;
 using log4net;
 
 namespace ScpControl
 {
-    public partial class ScpMapper : Component
+    public sealed partial class ScpMapper : Component
     {
-        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected XmlDocument m_Map = new XmlDocument();
-        protected static String m_FileName = "ScpMapper.xml";
-        protected static String m_FilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + m_FileName;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static string m_FileName = "ScpMapper.xml";
 
-        protected FileSystemWatcher m_Watcher = new FileSystemWatcher(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), m_FileName);
-        protected DateTime m_Last = DateTime.Now;
+        private static string m_FilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" +
+                                             m_FileName;
 
+        private DateTime m_Last = DateTime.Now;
+        private XmlDocument m_Map = new XmlDocument();
+        private bool m_Started;
 
-        protected Boolean m_Started = false;
-        public Boolean Started
-        {
-            get { return m_Started; }
-        }
-
-        protected void OnCreated(object sender, FileSystemEventArgs e)
-        {
-            Thread.Sleep(1000); Start();
-            m_Last = DateTime.Now;
-        }
-
-        protected void OnChanged(object sender, FileSystemEventArgs e)
-        {
-            if ((DateTime.Now - m_Last).TotalMilliseconds < 100) return;
-
-            Thread.Sleep(1000); Reload();
-            m_Last = DateTime.Now;
-        }
-
-        protected void OnDeleted(object sender, FileSystemEventArgs e)
-        {
-            Stop();
-        }
-
-        protected void OnRenamed(object sender, RenamedEventArgs e)
-        {
-            if (e.Name == m_FilePath)
-            {
-                Thread.Sleep(1000); Start();
-                m_Last = DateTime.Now;
-            }
-            else
-            {
-                Stop();
-            }
-        }
-
+        private FileSystemWatcher m_Watcher =
+            new FileSystemWatcher(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), m_FileName);
 
         public ScpMapper()
         {
@@ -71,112 +35,17 @@ namespace ScpControl
             InitializeComponent();
         }
 
-
-        public virtual Boolean Open()
+        public bool Started
         {
-            m_Watcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
-
-            m_Watcher.Created += OnCreated;
-            m_Watcher.Changed += OnChanged;
-            m_Watcher.Deleted += OnDeleted;
-            m_Watcher.Renamed += OnRenamed;
-
-            return true;
+            get { return m_Started; }
         }
 
-        public virtual Boolean Start()
-        {
-            if (!m_Started)
-            {
-                try
-                {
-                    m_Watcher.EnableRaisingEvents = true;
-
-                    m_Map = new XmlDocument();
-
-                    m_Map.Load(m_FilePath);
-
-                    m_Watcher.EnableRaisingEvents = m_Started = userMapper.Initialize(m_Map);
-                }
-                catch (Exception e) { Log.DebugFormat("-- Mapper.Start  [{0}]", e.Message); }
-            }
-
-            return m_Started;
-        }
-
-        public virtual Boolean Stop()
-        {
-            if (m_Started)
-            {
-                try
-                {
-                    m_Started = false;
-
-                    userMapper.Shutdown();
-                }
-                catch (Exception e) { Log.DebugFormat("-- Mapper.Stop   [{0}]", e.Message); }
-            }
-
-            return !m_Started;
-        }
-
-        public virtual Boolean Close()
-        {
-            m_Watcher.EnableRaisingEvents = false;
-
-            m_Watcher.Created -= OnCreated;
-            m_Watcher.Changed -= OnChanged;
-            m_Watcher.Deleted -= OnDeleted;
-            m_Watcher.Renamed -= OnRenamed;
-
-            return true;
-        }
-
-
-        public virtual Boolean Reload()
-        {
-            Boolean Updated = false;
-
-            if (m_Started)
-            {
-                try
-                {
-                    m_Map = new XmlDocument();
-
-                    m_Map.Load(m_FilePath);
-
-                    m_Watcher.EnableRaisingEvents = Updated = userMapper.Initialize(m_Map);
-                }
-                catch (Exception e) { Log.ErrorFormat("-- Mapper.Reload [{0}]", e.Message); }
-            }
-
-            return Updated;
-        }
-
-
-        public virtual Boolean Remap(DsModel Type, Int32 PadId, String MacAddr, Byte[] Input, Byte[] Output)
-        {
-            Boolean Mapped = false;
-
-            if (m_Started)
-            {
-                try
-                {
-                    Mapped = userMapper.Remap(Type, PadId, MacAddr, Input, Output);
-                }
-                catch (Exception ex) { Log.ErrorFormat("Unexpected error in Remap: {0}", ex); }
-            }
-
-            return Mapped;
-        }
-
-
-        public virtual String[] Profiles
+        public string[] Profiles
         {
             get { return userMapper.Profiles; }
         }
 
-        public virtual String Active
+        public string Active
         {
             get { return userMapper.Active; }
             set
@@ -191,12 +60,15 @@ namespace ScpControl
                         m_Map.SelectSingleNode("/ScpMapper/Active").FirstChild.Value = value;
                         m_Map.Save(m_FilePath);
                     }
-                    catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+                    catch (Exception ex)
+                    {
+                        Log.ErrorFormat("Unexpected error: {0}", ex);
+                    }
                 }).Start();
             }
         }
 
-        public virtual String Xml
+        public string Xml
         {
             get { return m_Map.InnerXml; }
             set
@@ -211,10 +83,160 @@ namespace ScpControl
                         m_Map.LoadXml(value);
                         m_Map.Save(m_FilePath);
                     }
-                    catch (XmlException) { }
-                    catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+                    catch (XmlException)
+                    {
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ErrorFormat("Unexpected error: {0}", ex);
+                    }
                 }).Start();
             }
+        }
+
+        private void OnCreated(object sender, FileSystemEventArgs e)
+        {
+            Thread.Sleep(1000);
+            Start();
+            m_Last = DateTime.Now;
+        }
+
+        private void OnChanged(object sender, FileSystemEventArgs e)
+        {
+            if ((DateTime.Now - m_Last).TotalMilliseconds < 100) return;
+
+            Thread.Sleep(1000);
+            Reload();
+            m_Last = DateTime.Now;
+        }
+
+        private void OnDeleted(object sender, FileSystemEventArgs e)
+        {
+            Stop();
+        }
+
+        private void OnRenamed(object sender, RenamedEventArgs e)
+        {
+            if (e.Name == m_FilePath)
+            {
+                Thread.Sleep(1000);
+                Start();
+                m_Last = DateTime.Now;
+            }
+            else
+            {
+                Stop();
+            }
+        }
+
+        public bool Open()
+        {
+            m_Watcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
+                                     NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite |
+                                     NotifyFilters.Security | NotifyFilters.Size;
+
+            m_Watcher.Created += OnCreated;
+            m_Watcher.Changed += OnChanged;
+            m_Watcher.Deleted += OnDeleted;
+            m_Watcher.Renamed += OnRenamed;
+
+            return true;
+        }
+
+        public bool Start()
+        {
+            if (!m_Started)
+            {
+                try
+                {
+                    m_Watcher.EnableRaisingEvents = true;
+
+                    m_Map = new XmlDocument();
+
+                    m_Map.Load(m_FilePath);
+
+                    m_Watcher.EnableRaisingEvents = m_Started = userMapper.Initialize(m_Map);
+                }
+                catch (Exception e)
+                {
+                    Log.DebugFormat("-- Mapper.Start  [{0}]", e.Message);
+                }
+            }
+
+            return m_Started;
+        }
+
+        public bool Stop()
+        {
+            if (m_Started)
+            {
+                try
+                {
+                    m_Started = false;
+
+                    userMapper.Shutdown();
+                }
+                catch (Exception e)
+                {
+                    Log.DebugFormat("-- Mapper.Stop   [{0}]", e.Message);
+                }
+            }
+
+            return !m_Started;
+        }
+
+        public bool Close()
+        {
+            m_Watcher.EnableRaisingEvents = false;
+
+            m_Watcher.Created -= OnCreated;
+            m_Watcher.Changed -= OnChanged;
+            m_Watcher.Deleted -= OnDeleted;
+            m_Watcher.Renamed -= OnRenamed;
+
+            return true;
+        }
+
+        public bool Reload()
+        {
+            var Updated = false;
+
+            if (m_Started)
+            {
+                try
+                {
+                    m_Map = new XmlDocument();
+
+                    m_Map.Load(m_FilePath);
+
+                    m_Watcher.EnableRaisingEvents = Updated = userMapper.Initialize(m_Map);
+                }
+                catch (Exception e)
+                {
+                    Log.ErrorFormat("-- Mapper.Reload [{0}]", e.Message);
+                }
+            }
+
+            return Updated;
+        }
+
+        public bool Remap(DsModel Type, int PadId, string MacAddr, byte[] Input, byte[] Output)
+        {
+            var Mapped = false;
+
+            if (m_Started)
+            {
+                try
+                {
+                    Mapped = userMapper.Remap(Type, PadId, MacAddr, Input, Output);
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Unexpected error in Remap: {0}", ex);
+                }
+            }
+
+            return Mapped;
         }
     }
 }
