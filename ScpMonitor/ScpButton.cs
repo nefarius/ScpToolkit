@@ -1,23 +1,24 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 
 namespace ScpMonitor
 {
     [DesignTimeVisible(true), ToolboxItem(true)]
     public partial class ScpButton : Button
     {
-        protected enum State { Normal, Hover, Clicked }
-
+        private readonly Color m_HoverColor = Color.DodgerBlue;
+        private Color m_NormalColor = Color.Silver;
         protected State m_State = State.Normal;
 
-        protected Color m_NormalColor = Color.Silver;
-        protected Color m_HoverColor  = Color.DodgerBlue;
+        public ScpButton()
+        {
+            InitializeComponent();
+        }
 
-        public Boolean Glassy 
+        public bool Glassy
         {
             get { return m_NormalColor == Color.Black; }
             set
@@ -30,62 +31,57 @@ namespace ScpMonitor
             }
         }
 
-        public ScpButton() 
+        private static GraphicsPath CreateRoundRectangle(Rectangle Rectangle, int Radius)
         {
-            InitializeComponent();
-        }
+            var gp = new GraphicsPath();
 
-        protected static GraphicsPath CreateRoundRectangle(Rectangle Rectangle, int Radius) 
-        {
-            GraphicsPath gp = new GraphicsPath();
+            var l = Rectangle.Left;
+            var t = Rectangle.Top;
+            var w = Rectangle.Width;
+            var h = Rectangle.Height;
+            var d = Radius << 1;
 
-            int l = Rectangle.Left;
-            int t = Rectangle.Top;
-            int w = Rectangle.Width;
-            int h = Rectangle.Height;
-            int d = Radius << 1;
-
-            gp.AddArc(l, t, d, d, 180, 90);                       // top left
-            gp.AddLine(l + Radius, t, l + w - Radius, t);         // top
-            gp.AddArc(l + w - d, t, d, d, 270, 90);               // top right
-            gp.AddLine(l + w, t + Radius, l + w, t + h - Radius); // right
-            gp.AddArc(l + w - d, t + h - d, d, d, 0, 90);         // bottom right
-            gp.AddLine(l + w - Radius, t + h, l + Radius, t + h); // bottom
-            gp.AddArc(l, t + h - d, d, d, 90, 90);                // bottom left
-            gp.AddLine(l, t + h - Radius, l, t + Radius);         // left
-
-            gp.CloseFigure();
-            return gp;
-        }
-
-        protected static GraphicsPath CreateTopRoundRectangle(Rectangle Rectangle, int Radius) 
-        {
-            GraphicsPath gp = new GraphicsPath();
-
-            int l = Rectangle.Left;
-            int t = Rectangle.Top;
-            int w = Rectangle.Width;
-            int h = Rectangle.Height;
-            int d = Radius << 1;
-
-            gp.AddArc(l, t, d, d, 180, 90);               // topleft
+            gp.AddArc(l, t, d, d, 180, 90); // top left
             gp.AddLine(l + Radius, t, l + w - Radius, t); // top
-            gp.AddArc(l + w - d, t, d, d, 270, 90);       // topright
-            gp.AddLine(l + w, t + Radius, l + w, t + h);  // right
-            gp.AddLine(l + w, t + h, l, t + h);           // bottom
-            gp.AddLine(l, t + h, l, t + Radius);          // left
+            gp.AddArc(l + w - d, t, d, d, 270, 90); // top right
+            gp.AddLine(l + w, t + Radius, l + w, t + h - Radius); // right
+            gp.AddArc(l + w - d, t + h - d, d, d, 0, 90); // bottom right
+            gp.AddLine(l + w - Radius, t + h, l + Radius, t + h); // bottom
+            gp.AddArc(l, t + h - d, d, d, 90, 90); // bottom left
+            gp.AddLine(l, t + h - Radius, l, t + Radius); // left
 
             gp.CloseFigure();
             return gp;
         }
 
-        protected static GraphicsPath CreateBottomRadialPath(Rectangle Rectangle) 
+        private static GraphicsPath CreateTopRoundRectangle(Rectangle Rectangle, int Radius)
         {
-            GraphicsPath gp = new GraphicsPath();
+            var gp = new GraphicsPath();
+
+            var l = Rectangle.Left;
+            var t = Rectangle.Top;
+            var w = Rectangle.Width;
+            var h = Rectangle.Height;
+            var d = Radius << 1;
+
+            gp.AddArc(l, t, d, d, 180, 90); // topleft
+            gp.AddLine(l + Radius, t, l + w - Radius, t); // top
+            gp.AddArc(l + w - d, t, d, d, 270, 90); // topright
+            gp.AddLine(l + w, t + Radius, l + w, t + h); // right
+            gp.AddLine(l + w, t + h, l, t + h); // bottom
+            gp.AddLine(l, t + h, l, t + Radius); // left
+
+            gp.CloseFigure();
+            return gp;
+        }
+
+        private static GraphicsPath CreateBottomRadialPath(Rectangle Rectangle)
+        {
+            var gp = new GraphicsPath();
             RectangleF rf = Rectangle;
 
-            rf.X -= rf.Width * .35f;
-            rf.Y -= rf.Height * .15f;
+            rf.X -= rf.Width*.35f;
+            rf.Y -= rf.Height*.15f;
 
             rf.Width *= 1.7f;
             rf.Height *= 2.3f;
@@ -96,11 +92,11 @@ namespace ScpMonitor
             return gp;
         }
 
-        protected void Glassify(Rectangle Rectangle, PaintEventArgs e, Color Color, bool Pressed) 
+        private void Glassify(Rectangle Rectangle, PaintEventArgs e, Color Color, bool Pressed)
         {
-            using (GraphicsPath gp = CreateRoundRectangle(Rectangle, 2))
+            using (var gp = CreateRoundRectangle(Rectangle, 2))
             {
-                int opacity = 0x7f;
+                var opacity = 0x7f;
 
                 using (Brush brush = new SolidBrush(Color.FromArgb(opacity, Color)))
                 {
@@ -108,21 +104,21 @@ namespace ScpMonitor
                 }
             }
 
-            using (GraphicsPath clip = CreateRoundRectangle(Rectangle, 2))
+            using (var clip = CreateRoundRectangle(Rectangle, 2))
             {
                 e.Graphics.SetClip(clip, CombineMode.Intersect);
 
-                using (GraphicsPath gp = CreateBottomRadialPath(Rectangle))
+                using (var gp = CreateBottomRadialPath(Rectangle))
                 {
-                    using (PathGradientBrush brush = new PathGradientBrush(gp))
+                    using (var brush = new PathGradientBrush(gp))
                     {
-                        int opacity = (int)(0xB2 * .99f + .5f);
+                        var opacity = (int) (0xB2*.99f + .5f);
 
-                        RectangleF bounds = gp.GetBounds();
+                        var bounds = gp.GetBounds();
 
-                        brush.CenterPoint = new PointF((bounds.Left + bounds.Right) / 2f, (bounds.Top + bounds.Bottom) / 2f);
+                        brush.CenterPoint = new PointF((bounds.Left + bounds.Right)/2f, (bounds.Top + bounds.Bottom)/2f);
                         brush.CenterColor = Color.FromArgb(opacity, Color.White);
-                        brush.SurroundColors = new Color[] { Color.FromArgb(0, Color.White) };
+                        brush.SurroundColors = new[] {Color.FromArgb(0, Color.White)};
 
                         e.Graphics.FillPath(brush, gp);
                     }
@@ -131,69 +127,73 @@ namespace ScpMonitor
                 e.Graphics.ResetClip();
             }
 
-            Rectangle newRect = Rectangle; newRect.Height >>= 1;
+            var newRect = Rectangle;
+            newRect.Height >>= 1;
 
             if (newRect.Width > 0 && newRect.Height > 0)
             {
                 newRect.Height++;
 
-                using (GraphicsPath gp = CreateTopRoundRectangle(newRect, 2))
+                using (var gp = CreateTopRoundRectangle(newRect, 2))
                 {
-                    int opacity = Pressed ? (int)(.4f * 0x9 + .5f) : 0x99;
+                    var opacity = Pressed ? (int) (.4f*0x9 + .5f) : 0x99;
 
                     newRect.Height++;
 
-                    using (LinearGradientBrush brush = new LinearGradientBrush(newRect, Color.FromArgb(opacity, Color.White), Color.FromArgb(opacity / 3, Color.White), LinearGradientMode.Vertical))
+                    using (
+                        var brush = new LinearGradientBrush(newRect, Color.FromArgb(opacity, Color.White),
+                            Color.FromArgb(opacity/3, Color.White), LinearGradientMode.Vertical))
                     {
                         e.Graphics.FillPath(brush, gp);
                     }
                 }
             }
 
-            int Y = Rectangle.Y + Rectangle.Height - 1;
+            var Y = Rectangle.Y + Rectangle.Height - 1;
 
             // e.Graphics.DrawLine(new Pen(Color.Black), Rectangle.Left, Y, Rectangle.Right, Y);
         }
 
-        protected override void OnPaint(PaintEventArgs e) 
+        protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
             e.Graphics.Clear(Color.White);
 
-            SizeF textSize = e.Graphics.MeasureString(this.Text, base.Font);
+            var textSize = e.Graphics.MeasureString(Text, Font);
 
-            int textX = (int)(base.Size.Width  / 2) - (int)(textSize.Width  / 2);
-            int textY = (int)(base.Size.Height / 2) - (int)(textSize.Height / 2);
+            var textX = Size.Width/2 - (int) (textSize.Width/2);
+            var textY = Size.Height/2 - (int) (textSize.Height/2);
 
-            Rectangle newRect = new Rectangle(ClientRectangle.X - 1, ClientRectangle.Y - 1, ClientRectangle.Width + 1, ClientRectangle.Height + 1);
+            var newRect = new Rectangle(ClientRectangle.X - 1, ClientRectangle.Y - 1, ClientRectangle.Width + 1,
+                ClientRectangle.Height + 1);
 
             if (Enabled)
             {
                 switch (m_State)
                 {
                     case State.Normal:
-                        {
-                            Glassify(newRect, e, m_NormalColor, false);
+                    {
+                        Glassify(newRect, e, m_NormalColor, false);
 
-                            e.Graphics.DrawString(this.Text, base.Font, new SolidBrush(base.ForeColor), textX, textY);
-                        }
+                        e.Graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textX, textY);
+                    }
                         break;
 
                     case State.Hover:
-                        {
-                            Glassify(newRect, e, m_HoverColor, false);
+                    {
+                        Glassify(newRect, e, m_HoverColor, false);
 
-                            e.Graphics.DrawString(this.Text, base.Font, new SolidBrush(base.ForeColor), textX, textY);
-                        }
+                        e.Graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textX, textY);
+                    }
                         break;
 
                     case State.Clicked:
-                        {
-                            Glassify(newRect, e, m_HoverColor, true);
+                    {
+                        Glassify(newRect, e, m_HoverColor, true);
 
-                            e.Graphics.DrawRectangle(new Pen(m_HoverColor, 2), newRect);
-                            e.Graphics.DrawString(this.Text, base.Font, new SolidBrush(base.ForeColor), textX + 1, textY + 1);
-                        }
+                        e.Graphics.DrawRectangle(new Pen(m_HoverColor, 2), newRect);
+                        e.Graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textX + 1, textY + 1);
+                    }
                         break;
                 }
             }
@@ -201,40 +201,47 @@ namespace ScpMonitor
             {
                 Glassify(newRect, e, m_NormalColor, false);
 
-                e.Graphics.DrawString(this.Text, base.Font, new SolidBrush(base.ForeColor), textX, textY);
+                e.Graphics.DrawString(Text, Font, new SolidBrush(ForeColor), textX, textY);
             }
         }
 
-        protected override void OnMouseLeave(EventArgs e) 
+        protected override void OnMouseLeave(EventArgs e)
         {
             m_State = State.Normal;
 
-            this.Invalidate();
+            Invalidate();
             base.OnMouseLeave(e);
         }
 
-        protected override void OnMouseEnter(EventArgs e) 
+        protected override void OnMouseEnter(EventArgs e)
         {
             if (Enabled) m_State = State.Hover;
 
-            this.Invalidate();
+            Invalidate();
             base.OnMouseEnter(e);
         }
 
-        protected override void OnMouseUp(MouseEventArgs e) 
+        protected override void OnMouseUp(MouseEventArgs e)
         {
             if (Enabled) m_State = State.Hover;
 
-            this.Invalidate();
+            Invalidate();
             base.OnMouseUp(e);
         }
 
-        protected override void OnMouseDown(MouseEventArgs e) 
+        protected override void OnMouseDown(MouseEventArgs e)
         {
             if (Enabled) m_State = State.Clicked;
 
-            this.Invalidate();
+            Invalidate();
             base.OnMouseDown(e);
+        }
+
+        protected enum State
+        {
+            Normal,
+            Hover,
+            Clicked
         }
     }
 }
