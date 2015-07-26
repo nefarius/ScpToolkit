@@ -248,14 +248,14 @@ namespace ScpControl
 
                     switch (Buffer[1])
                     {
-                        case 0x00:      // Status Request
+                        case 0x00: // Status Request
 
                             if (!Global.DisableNative)
                             {
-                                Buffer[2] = (Byte)Pad[0].State;
-                                Buffer[3] = (Byte)Pad[1].State;
-                                Buffer[4] = (Byte)Pad[2].State;
-                                Buffer[5] = (Byte)Pad[3].State;
+                                Buffer[2] = (Byte) Pad[0].State;
+                                Buffer[3] = (Byte) Pad[1].State;
+                                Buffer[4] = (Byte) Pad[2].State;
+                                Buffer[5] = (Byte) Pad[3].State;
                             }
                             else
                             {
@@ -268,7 +268,7 @@ namespace ScpControl
                             m_Server.Send(Buffer, Buffer.Length, Remote);
                             break;
 
-                        case 0x01:      // Rumble Request
+                        case 0x01: // Rumble Request
 
                             Serial = Buffer[0];
 
@@ -284,121 +284,135 @@ namespace ScpControl
                             }
                             break;
 
-                        case 0x02:      // Status Data Request
-                            {
-                                sb.Clear();
-                                sb.Append(Dongle); sb.Append('^');
+                        case 0x02: // Status Data Request
+                        {
+                            sb.Clear();
+                            sb.Append(Dongle);
+                            sb.Append('^');
 
-                                sb.Append(Pad[0].ToString()); sb.Append('^');
-                                sb.Append(Pad[1].ToString()); sb.Append('^');
-                                sb.Append(Pad[2].ToString()); sb.Append('^');
-                                sb.Append(Pad[3].ToString()); sb.Append('^');
+                            sb.Append(Pad[0].ToString());
+                            sb.Append('^');
+                            sb.Append(Pad[1].ToString());
+                            sb.Append('^');
+                            sb.Append(Pad[2].ToString());
+                            sb.Append('^');
+                            sb.Append(Pad[3].ToString());
+                            sb.Append('^');
 
-                                Byte[] Data = Encoding.Unicode.GetBytes(sb.ToString());
+                            Byte[] Data = Encoding.Unicode.GetBytes(sb.ToString());
 
-                                m_Server.Send(Data, Data.Length, Remote);
-                            }
+                            m_Server.Send(Data, Data.Length, Remote);
+                        }
                             break;
 
-                        case 0x03:      // Config Read Request
-                            {
-                                Byte[] Data = Global.Packed;
+                        case 0x03: // Config Read Request
+                        {
+                            Byte[] Data = Global.Packed;
 
-                                m_Server.Send(Data, Data.Length, Remote);
-                            }
+                            m_Server.Send(Data, Data.Length, Remote);
+                        }
                             break;
 
-                        case 0x04:      // Config Write Request
-                            {
-                                Global.Packed = Buffer;
-                            }
+                        case 0x04: // Config Write Request
+                        {
+                            Global.Packed = Buffer;
+                        }
                             break;
 
-                        case 0x05:      // Pad Promote Request
-                            {
-                                Int32 Target = Buffer[2];
+                        case 0x05: // Pad Promote Request
+                        {
+                            Int32 Target = Buffer[2];
 
-                                lock (this)
+                            lock (this)
+                            {
+                                if (Pad[Target].State != DsState.Disconnected)
                                 {
-                                    if (Pad[Target].State != DsState.Disconnected)
-                                    {
-                                        IDsDevice Swap = Pad[Target];
-                                        Pad[Target] = Pad[Target - 1];
-                                        Pad[Target - 1] = Swap;
+                                    IDsDevice Swap = Pad[Target];
+                                    Pad[Target] = Pad[Target - 1];
+                                    Pad[Target - 1] = Swap;
 
-                                        Pad[Target].PadId = (DsPadId)(Target);
-                                        Pad[Target - 1].PadId = (DsPadId)(Target - 1);
+                                    Pad[Target].PadId = (DsPadId) (Target);
+                                    Pad[Target - 1].PadId = (DsPadId) (Target - 1);
 
-                                        m_Reserved[Target] = Pad[Target].Local;
-                                        m_Reserved[Target - 1] = Pad[Target - 1].Local;
-                                    }
+                                    m_Reserved[Target] = Pad[Target].Local;
+                                    m_Reserved[Target - 1] = Pad[Target - 1].Local;
                                 }
                             }
+                        }
                             break;
 
-                        case 0x06:      // Profile List
+                        case 0x06: // Profile List
+                        {
+                            sb.Clear();
+                            sb.Append(scpMap.Active);
+                            sb.Append('^');
+
+                            foreach (String Profile in scpMap.Profiles)
                             {
-                                sb.Clear();
-                                sb.Append(scpMap.Active); sb.Append('^');
-
-                                foreach (String Profile in scpMap.Profiles)
-                                {
-                                    sb.Append(Profile); sb.Append('^');
-                                }
-
-                                Byte[] Data = Encoding.Unicode.GetBytes(sb.ToString());
-
-                                m_Server.Send(Data, Data.Length, Remote);
+                                sb.Append(Profile);
+                                sb.Append('^');
                             }
+
+                            Byte[] Data = Encoding.Unicode.GetBytes(sb.ToString());
+
+                            m_Server.Send(Data, Data.Length, Remote);
+                        }
                             break;
 
-                        case 0x07:      // Set Active Profile
-                            {
-                                Byte[] Data = new Byte[Buffer.Length - 2];
+                        case 0x07: // Set Active Profile
+                        {
+                            Byte[] Data = new Byte[Buffer.Length - 2];
 
-                                Array.Copy(Buffer, 2, Data, 0, Data.Length);
+                            Array.Copy(Buffer, 2, Data, 0, Data.Length);
 
-                                scpMap.Active = Encoding.Unicode.GetString(Data);
-                            }
+                            scpMap.Active = Encoding.Unicode.GetString(Data);
+                        }
                             break;
 
-                        case 0x08:      // Get XML
-                            {
-                                Byte[] Data = Encoding.UTF8.GetBytes(scpMap.Xml);
+                        case 0x08: // Get XML
+                        {
+                            Byte[] Data = Encoding.UTF8.GetBytes(scpMap.Xml);
 
-                                m_Server.Send(Data, Data.Length, Remote);
-                            }
+                            m_Server.Send(Data, Data.Length, Remote);
+                        }
                             break;
 
-                        case 0x09:      // Set XML
-                            {
-                                Byte[] Data = new Byte[Buffer.Length - 2];
+                        case 0x09: // Set XML
+                        {
+                            Byte[] Data = new Byte[Buffer.Length - 2];
 
-                                Array.Copy(Buffer, 2, Data, 0, Data.Length);
+                            Array.Copy(Buffer, 2, Data, 0, Data.Length);
 
-                                scpMap.Xml = Encoding.UTF8.GetString(Data);
-                            }
+                            scpMap.Xml = Encoding.UTF8.GetString(Data);
+                        }
                             break;
 
-                        case 0x0A:      // Pad Detail
-                            {
+                        case 0x0A: // Pad Detail
+                        {
 
-                                Serial = Buffer[0];
+                            Serial = Buffer[0];
 
-                                Byte[] Data = new Byte[11];
-                                Byte[] Temp = Encoding.Unicode.GetBytes(m_Pad[Serial].Local);
+                            Byte[] Data = new Byte[11];
+                            Byte[] Temp = Encoding.Unicode.GetBytes(m_Pad[Serial].Local);
 
-                                Data[0] = Serial;
-                                Data[1] = (Byte) m_Pad[Serial].State;
-                                Data[2] = (Byte) m_Pad[Serial].Model;
-                                Data[3] = (Byte) m_Pad[Serial].Connection;
-                                Data[4] = (Byte) m_Pad[Serial].Battery;
-                                Array.Copy(m_Pad[Serial].BD_Address, 0, Data, 5, m_Pad[Serial].BD_Address.Length);
+                            Data[0] = Serial;
+                            Data[1] = (Byte) m_Pad[Serial].State;
+                            Data[2] = (Byte) m_Pad[Serial].Model;
+                            Data[3] = (Byte) m_Pad[Serial].Connection;
+                            Data[4] = (Byte) m_Pad[Serial].Battery;
+                            Array.Copy(m_Pad[Serial].BD_Address, 0, Data, 5, m_Pad[Serial].BD_Address.Length);
 
-                                m_Server.Send(Data, Data.Length, Remote);
-                            }
+                            m_Server.Send(Data, Data.Length, Remote);
+                        }
                             break;
                     }
+                }
+                catch (SocketException sex)
+                {
+                    if(sex.NativeErrorCode == 10004)
+                        break;
+
+                    Log.ErrorFormat("Socket exception: {0}", sex);
                 }
                 catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
            }

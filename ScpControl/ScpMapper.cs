@@ -12,7 +12,7 @@ namespace ScpControl
     public partial class ScpMapper : Component
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected XmlDocument   m_Map      = new XmlDocument();
+        protected XmlDocument m_Map = new XmlDocument();
         protected static String m_FileName = "ScpMapper.xml";
         protected static String m_FilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + m_FileName;
 
@@ -21,18 +21,18 @@ namespace ScpControl
 
 
         protected Boolean m_Started = false;
-        public Boolean Started 
+        public Boolean Started
         {
             get { return m_Started; }
         }
 
-        protected void OnCreated(object sender, FileSystemEventArgs e) 
+        protected void OnCreated(object sender, FileSystemEventArgs e)
         {
-            Thread.Sleep(1000);  Start();
+            Thread.Sleep(1000); Start();
             m_Last = DateTime.Now;
         }
 
-        protected void OnChanged(object sender, FileSystemEventArgs e) 
+        protected void OnChanged(object sender, FileSystemEventArgs e)
         {
             if ((DateTime.Now - m_Last).TotalMilliseconds < 100) return;
 
@@ -40,12 +40,12 @@ namespace ScpControl
             m_Last = DateTime.Now;
         }
 
-        protected void OnDeleted(object sender, FileSystemEventArgs e) 
+        protected void OnDeleted(object sender, FileSystemEventArgs e)
         {
             Stop();
-       }
+        }
 
-        protected void OnRenamed(object sender, RenamedEventArgs e)    
+        protected void OnRenamed(object sender, RenamedEventArgs e)
         {
             if (e.Name == m_FilePath)
             {
@@ -59,12 +59,12 @@ namespace ScpControl
         }
 
 
-        public ScpMapper() 
+        public ScpMapper()
         {
             InitializeComponent();
         }
 
-        public ScpMapper(IContainer container) 
+        public ScpMapper(IContainer container)
         {
             container.Add(this);
 
@@ -72,7 +72,7 @@ namespace ScpControl
         }
 
 
-        public virtual Boolean Open()  
+        public virtual Boolean Open()
         {
             m_Watcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
 
@@ -84,7 +84,7 @@ namespace ScpControl
             return true;
         }
 
-        public virtual Boolean Start() 
+        public virtual Boolean Start()
         {
             if (!m_Started)
             {
@@ -104,7 +104,7 @@ namespace ScpControl
             return m_Started;
         }
 
-        public virtual Boolean Stop()  
+        public virtual Boolean Stop()
         {
             if (m_Started)
             {
@@ -120,7 +120,7 @@ namespace ScpControl
             return !m_Started;
         }
 
-        public virtual Boolean Close() 
+        public virtual Boolean Close()
         {
             m_Watcher.EnableRaisingEvents = false;
 
@@ -133,7 +133,7 @@ namespace ScpControl
         }
 
 
-        public virtual Boolean Reload() 
+        public virtual Boolean Reload()
         {
             Boolean Updated = false;
 
@@ -154,7 +154,7 @@ namespace ScpControl
         }
 
 
-        public virtual Boolean Remap(DsModel Type, Int32 PadId, String MacAddr, Byte[] Input, Byte[] Output) 
+        public virtual Boolean Remap(DsModel Type, Int32 PadId, String MacAddr, Byte[] Input, Byte[] Output)
         {
             Boolean Mapped = false;
 
@@ -171,20 +171,23 @@ namespace ScpControl
         }
 
 
-        public virtual String[] Profiles 
+        public virtual String[] Profiles
         {
             get { return userMapper.Profiles; }
         }
 
-        public virtual String Active 
+        public virtual String Active
         {
             get { return userMapper.Active; }
-            set 
+            set
             {
                 new Thread(() =>
                 {
                     try
                     {
+                        if (string.IsNullOrEmpty(m_Map.InnerXml))
+                            return;
+
                         m_Map.SelectSingleNode("/ScpMapper/Active").FirstChild.Value = value;
                         m_Map.Save(m_FilePath);
                     }
@@ -193,18 +196,22 @@ namespace ScpControl
             }
         }
 
-        public virtual String Xml 
+        public virtual String Xml
         {
             get { return m_Map.InnerXml; }
-            set 
+            set
             {
                 new Thread(() =>
                 {
                     try
                     {
+                        if (string.IsNullOrEmpty(value))
+                            return;
+
                         m_Map.LoadXml(value);
                         m_Map.Save(m_FilePath);
                     }
+                    catch (XmlException) { }
                     catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
                 }).Start();
             }
