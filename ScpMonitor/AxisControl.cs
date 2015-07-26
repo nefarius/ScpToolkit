@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ScpMonitor 
@@ -50,7 +48,7 @@ namespace ScpMonitor
 
                     switch(m_Orientation)
                     {
-                        case ScpMonitor.Orientation.Left:
+                        case Orientation.Left:
                             {
                                 Size = new Size(115, 15);
 
@@ -64,7 +62,7 @@ namespace ScpMonitor
                             }
                             break;
 
-                        case ScpMonitor.Orientation.Right:
+                        case Orientation.Right:
                             {
                                 Size = new Size(115, 15);
 
@@ -78,7 +76,7 @@ namespace ScpMonitor
                             }
                             break;
 
-                        case ScpMonitor.Orientation.Top:
+                        case Orientation.Top:
                             {
                                 Size = new Size(25, 30);
 
@@ -92,7 +90,7 @@ namespace ScpMonitor
                             }
                             break;
 
-                        case ScpMonitor.Orientation.Bottom:
+                        case Orientation.Bottom:
                             {
                                 Size = new Size(25, 30);
 
