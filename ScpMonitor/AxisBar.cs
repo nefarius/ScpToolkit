@@ -1,47 +1,25 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace ScpMonitor
 {
     public partial class AxisBar : UserControl
     {
-        public AxisBar() 
+        private Color m_Colour = Color.Green;
+        private int m_Maximum = 100;
+        private int m_Minimum;
+        private int m_Value;
+
+        public AxisBar()
         {
             InitializeComponent();
         }
 
-        protected Int32 m_Minimum =   0;
-        protected Int32 m_Maximum = 100;
-        protected Int32 m_Value   =   0;
-        protected Color m_Colour  = Color.Green;
-
-        protected override void OnResize(EventArgs e) 
-        {
-            Invalidate();
-        }
-
-        protected override void OnPaint(PaintEventArgs e) 
-        {
-            using (Graphics gr = e.Graphics)
-            {
-                using (SolidBrush br = new SolidBrush(m_Colour))
-                {
-                    float     Fill = (float)(m_Value - m_Minimum) / (float)(m_Maximum - m_Minimum);
-                    Rectangle Rect = ClientRectangle;
-
-                    Rect.Width = (Int32)((float) Rect.Width * Fill);
-                    gr.FillRectangle(br, Rect);
-                }
-            }
-        }
-
-        public Int32 Minimum 
+        public int Minimum
         {
             get { return m_Minimum; }
-            set 
+            set
             {
                 if (value < 0 || value > m_Maximum)
                 {
@@ -61,10 +39,10 @@ namespace ScpMonitor
             }
         }
 
-        public Int32 Maximum 
+        public int Maximum
         {
             get { return m_Maximum; }
-            set 
+            set
             {
                 if (value < 0 || value < m_Minimum)
                 {
@@ -84,10 +62,10 @@ namespace ScpMonitor
             }
         }
 
-        public Int32 Value   
+        public int Value
         {
             get { return m_Value; }
-            set 
+            set
             {
                 if (value < m_Minimum || value > m_Maximum)
                 {
@@ -96,20 +74,21 @@ namespace ScpMonitor
 
                 if (m_Value != value)
                 {
-                    Rectangle newRect = ClientRectangle;
-                    Rectangle oldRect = ClientRectangle;
-                    Int32 oldValue    = m_Value;
+                    var newRect = ClientRectangle;
+                    var oldRect = ClientRectangle;
+                    var oldValue = m_Value;
                     float Fill;
 
                     m_Value = value;
 
-                    Fill = (float)(m_Value - m_Minimum) / (float)(m_Maximum - m_Minimum);
-                    newRect.Width = (int)((float)newRect.Width * Fill);
+                    Fill = (m_Value - m_Minimum)/(float) (m_Maximum - m_Minimum);
+                    newRect.Width = (int) (newRect.Width*Fill);
 
-                    Fill = (float)(oldValue - m_Minimum) / (float)(m_Maximum - m_Minimum);
-                    oldRect.Width = (int)((float)oldRect.Width * Fill);
+                    Fill = (oldValue - m_Minimum)/(float) (m_Maximum - m_Minimum);
+                    oldRect.Width = (int) (oldRect.Width*Fill);
 
-                    Rectangle Rect = new Rectangle(); Rect.Height = Height;
+                    var Rect = new Rectangle();
+                    Rect.Height = Height;
 
                     if (newRect.Width > oldRect.Width)
                     {
@@ -127,15 +106,35 @@ namespace ScpMonitor
             }
         }
 
-        public Color Color   
+        public Color Color
         {
             get { return m_Colour; }
-            set 
+            set
             {
                 if (m_Colour != value)
                 {
                     m_Colour = value;
                     Invalidate();
+                }
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            Invalidate();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            using (var gr = e.Graphics)
+            {
+                using (var br = new SolidBrush(m_Colour))
+                {
+                    var Fill = (m_Value - m_Minimum)/(float) (m_Maximum - m_Minimum);
+                    var Rect = ClientRectangle;
+
+                    Rect.Width = (int) (Rect.Width*Fill);
+                    gr.FillRectangle(br, Rect);
                 }
             }
         }
