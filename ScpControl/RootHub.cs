@@ -1,122 +1,98 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Text;
-
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-
-using System.Management;
-using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Text;
+using System.Threading;
 using ScpControl.Utilities;
 
-namespace ScpControl 
+namespace ScpControl
 {
-    public partial class RootHub : ScpHub 
+    public partial class RootHub : ScpHub
     {
-        protected class Cache 
-        {
-            protected Byte[] m_Report = new Byte[BusDevice.ReportSize];
-            protected Byte[] m_Rumble = new Byte[BusDevice.RumbleSize];
-            protected Byte[] m_Mapped = new Byte[ReportEventArgs.Length];
-
-            public Byte[] Report 
-            {
-                get { return m_Report; }
-            }
-
-            public Byte[] Rumble 
-            {
-                get { return m_Rumble; }
-            }
-
-            public Byte[] Mapped 
-            {
-                get { return m_Mapped; }
-            }
-        }
-        protected Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
-
-        protected volatile Boolean m_Suspended = false;
-
-        protected BthHub    bthHub = new BthHub();
-        protected UsbHub    usbHub = new UsbHub();
-        protected BusDevice scpBus = new BusDevice();
-
-        protected Byte[][] m_XInput = { new Byte[2] { 0, 0 }, new Byte[2] { 0, 0 }, new Byte[2] { 0, 0 }, new Byte[2] { 0, 0 }};
-        protected Byte[][] m_Native = { new Byte[2] { 0, 0 }, new Byte[2] { 0, 0 }, new Byte[2] { 0, 0 }, new Byte[2] { 0, 0 }};
-
-        protected IDsDevice[] m_Pad = { new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three), new DsNull(DsPadId.Four) };
-        protected String[] m_Reserved = new String[] { String.Empty, String.Empty, String.Empty, String.Empty };
-
-        protected IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
-        protected UdpClient  m_Server   = new UdpClient();
-
+        protected BthHub bthHub = new BthHub();
+        protected Cache[] m_Cache = {new Cache(), new Cache(), new Cache(), new Cache()};
+        protected UdpClient m_Client = new UdpClient();
         protected IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
-        protected UdpClient  m_Client   = new UdpClient();
+        protected byte[][] m_Native = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
 
-        public IDsDevice[] Pad 
+        protected IDsDevice[] m_Pad =
         {
-            get { return m_Pad; }
-        }
+            new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
+            new DsNull(DsPadId.Four)
+        };
 
-        public String  Dongle   
-        {
-            get { return bthHub.Dongle; }
-        }
-        public String  Master   
-        {
-            get { return bthHub.Master; }
-        }
-        public Boolean Pairable 
-        {
-            get { return m_Started && bthHub.Pairable; }
-        }
+        protected string[] m_Reserved = {string.Empty, string.Empty, string.Empty, string.Empty};
+        protected UdpClient m_Server = new UdpClient();
+        protected IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+        protected volatile bool m_Suspended;
+        protected byte[][] m_XInput = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
+        protected BusDevice scpBus = new BusDevice();
+        protected UsbHub usbHub = new UsbHub();
 
-
-        public RootHub() 
+        public RootHub()
         {
             InitializeComponent();
 
-            bthHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
-            usbHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
+            bthHub.Arrival += On_Arrival;
+            usbHub.Arrival += On_Arrival;
 
-            bthHub.Report += new EventHandler<ReportEventArgs>(On_Report);
-            usbHub.Report += new EventHandler<ReportEventArgs>(On_Report);
+            bthHub.Report += On_Report;
+            usbHub.Report += On_Report;
         }
 
-        public RootHub(IContainer container) 
+        public RootHub(IContainer container)
         {
             container.Add(this);
             InitializeComponent();
 
-            bthHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
-            usbHub.Arrival += new EventHandler<ArrivalEventArgs>(On_Arrival);
+            bthHub.Arrival += On_Arrival;
+            usbHub.Arrival += On_Arrival;
 
-            bthHub.Report += new EventHandler<ReportEventArgs>(On_Report);
-            usbHub.Report += new EventHandler<ReportEventArgs>(On_Report);
+            bthHub.Report += On_Report;
+            usbHub.Report += On_Report;
         }
 
-
-        public override Boolean Open()  
+        public IDsDevice[] Pad
         {
-            bool Opened = false;
+            get { return m_Pad; }
+        }
 
-            Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location, Assembly.GetExecutingAssembly().GetName().Version);
+        public string Dongle
+        {
+            get { return bthHub.Dongle; }
+        }
+
+        public string Master
+        {
+            get { return bthHub.Master; }
+        }
+
+        public bool Pairable
+        {
+            get { return m_Started && bthHub.Pairable; }
+        }
+
+        public override bool Open()
+        {
+            var opened = false;
+
+            Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
+                Assembly.GetExecutingAssembly().GetName().Version);
             Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
 
             scpMap.Open();
 
-            Opened |= scpBus.Open(Global.Bus);
-            Opened |= usbHub.Open();
-            Opened |= bthHub.Open();
+            opened |= scpBus.Open(Global.Bus);
+            opened |= usbHub.Open();
+            opened |= bthHub.Open();
 
             Global.Load();
-            return Opened;
+            return opened;
         }
 
-        public override Boolean Start() 
+        public override bool Start()
         {
             if (!m_Started)
             {
@@ -132,7 +108,7 @@ namespace ScpControl
             return m_Started;
         }
 
-        public override Boolean Stop()  
+        public override bool Stop()
         {
             if (m_Started)
             {
@@ -149,7 +125,7 @@ namespace ScpControl
             return !m_Started;
         }
 
-        public override Boolean Close() 
+        public override bool Close()
         {
             if (m_Started)
             {
@@ -168,12 +144,11 @@ namespace ScpControl
             return !m_Started;
         }
 
-
-        public override Boolean Suspend() 
+        public override bool Suspend()
         {
             m_Suspended = true;
 
-            for (Int32 Index = 0; Index < m_Pad.Length; Index++) m_Pad[Index].Disconnect();
+            for (var index = 0; index < m_Pad.Length; index++) m_Pad[index].Disconnect();
 
             scpBus.Suspend();
             usbHub.Suspend();
@@ -183,16 +158,16 @@ namespace ScpControl
             return true;
         }
 
-        public override Boolean Resume()  
+        public override bool Resume()
         {
             Log.Debug("++ Resumed");
 
             scpBus.Resume();
-            for (Int32 Index = 0; Index < m_Pad.Length; Index++)
+            for (var index = 0; index < m_Pad.Length; index++)
             {
-                if (m_Pad[Index].State != DsState.Disconnected)
+                if (m_Pad[index].State != DsState.Disconnected)
                 {
-                    scpBus.Plugin(Index + 1);
+                    scpBus.Plugin(index + 1);
                 }
             }
 
@@ -203,8 +178,7 @@ namespace ScpControl
             return true;
         }
 
-
-        public override DsPadId Notify(ScpDevice.Notified Notification, String Class, String Path) 
+        public override DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
         {
             if (!m_Suspended)
             {
@@ -227,14 +201,13 @@ namespace ScpControl
             return DsPadId.None;
         }
 
-        protected virtual void UDP_Worker_Thread(object sender, DoWorkEventArgs e)  
+        protected virtual void UDP_Worker_Thread(object sender, DoWorkEventArgs e)
         {
-            Byte Serial;
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             Thread.Sleep(1);
 
-            IPEndPoint Remote = new IPEndPoint(IPAddress.Loopback, 0);
+            var remote = new IPEndPoint(IPAddress.Loopback, 0);
 
             m_Server = new UdpClient(m_ServerEp);
 
@@ -244,42 +217,43 @@ namespace ScpControl
             {
                 try
                 {
-                    Byte[] Buffer = m_Server.Receive(ref Remote);
+                    var buffer = m_Server.Receive(ref remote);
 
-                    switch (Buffer[1])
+                    byte serial;
+                    switch (buffer[1])
                     {
                         case 0x00: // Status Request
 
                             if (!Global.DisableNative)
                             {
-                                Buffer[2] = (Byte) Pad[0].State;
-                                Buffer[3] = (Byte) Pad[1].State;
-                                Buffer[4] = (Byte) Pad[2].State;
-                                Buffer[5] = (Byte) Pad[3].State;
+                                buffer[2] = (byte) Pad[0].State;
+                                buffer[3] = (byte) Pad[1].State;
+                                buffer[4] = (byte) Pad[2].State;
+                                buffer[5] = (byte) Pad[3].State;
                             }
                             else
                             {
-                                Buffer[2] = 0;
-                                Buffer[3] = 0;
-                                Buffer[4] = 0;
-                                Buffer[5] = 0;
+                                buffer[2] = 0;
+                                buffer[3] = 0;
+                                buffer[4] = 0;
+                                buffer[5] = 0;
                             }
 
-                            m_Server.Send(Buffer, Buffer.Length, Remote);
+                            m_Server.Send(buffer, buffer.Length, remote);
                             break;
 
                         case 0x01: // Rumble Request
 
-                            Serial = Buffer[0];
+                            serial = buffer[0];
 
-                            if (Pad[Serial].State == DsState.Connected)
+                            if (Pad[serial].State == DsState.Connected)
                             {
-                                if (Buffer[2] != m_Native[Serial][0] || Buffer[3] != m_Native[Serial][1])
+                                if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
                                 {
-                                    m_Native[Serial][0] = Buffer[2];
-                                    m_Native[Serial][1] = Buffer[3];
+                                    m_Native[serial][0] = buffer[2];
+                                    m_Native[serial][1] = buffer[3];
 
-                                    Pad[Buffer[0]].Rumble(Buffer[2], Buffer[3]);
+                                    Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
                                 }
                             }
                             break;
@@ -290,52 +264,52 @@ namespace ScpControl
                             sb.Append(Dongle);
                             sb.Append('^');
 
-                            sb.Append(Pad[0].ToString());
+                            sb.Append(Pad[0]);
                             sb.Append('^');
-                            sb.Append(Pad[1].ToString());
+                            sb.Append(Pad[1]);
                             sb.Append('^');
-                            sb.Append(Pad[2].ToString());
+                            sb.Append(Pad[2]);
                             sb.Append('^');
-                            sb.Append(Pad[3].ToString());
+                            sb.Append(Pad[3]);
                             sb.Append('^');
 
-                            Byte[] Data = Encoding.Unicode.GetBytes(sb.ToString());
+                            var data = Encoding.Unicode.GetBytes(sb.ToString());
 
-                            m_Server.Send(Data, Data.Length, Remote);
+                            m_Server.Send(data, data.Length, remote);
                         }
                             break;
 
                         case 0x03: // Config Read Request
                         {
-                            Byte[] Data = Global.Packed;
+                            var Data = Global.Packed;
 
-                            m_Server.Send(Data, Data.Length, Remote);
+                            m_Server.Send(Data, Data.Length, remote);
                         }
                             break;
 
                         case 0x04: // Config Write Request
                         {
-                            Global.Packed = Buffer;
+                            Global.Packed = buffer;
                         }
                             break;
 
                         case 0x05: // Pad Promote Request
                         {
-                            Int32 Target = Buffer[2];
+                            int target = buffer[2];
 
                             lock (this)
                             {
-                                if (Pad[Target].State != DsState.Disconnected)
+                                if (Pad[target].State != DsState.Disconnected)
                                 {
-                                    IDsDevice Swap = Pad[Target];
-                                    Pad[Target] = Pad[Target - 1];
-                                    Pad[Target - 1] = Swap;
+                                    var swap = Pad[target];
+                                    Pad[target] = Pad[target - 1];
+                                    Pad[target - 1] = swap;
 
-                                    Pad[Target].PadId = (DsPadId) (Target);
-                                    Pad[Target - 1].PadId = (DsPadId) (Target - 1);
+                                    Pad[target].PadId = (DsPadId) (target);
+                                    Pad[target - 1].PadId = (DsPadId) (target - 1);
 
-                                    m_Reserved[Target] = Pad[Target].Local;
-                                    m_Reserved[Target - 1] = Pad[Target - 1].Local;
+                                    m_Reserved[target] = Pad[target].Local;
+                                    m_Reserved[target - 1] = Pad[target - 1].Local;
                                 }
                             }
                         }
@@ -347,101 +321,104 @@ namespace ScpControl
                             sb.Append(scpMap.Active);
                             sb.Append('^');
 
-                            foreach (String Profile in scpMap.Profiles)
+                            foreach (var profile in scpMap.Profiles)
                             {
-                                sb.Append(Profile);
+                                sb.Append(profile);
                                 sb.Append('^');
                             }
 
-                            Byte[] Data = Encoding.Unicode.GetBytes(sb.ToString());
+                            var data = Encoding.Unicode.GetBytes(sb.ToString());
 
-                            m_Server.Send(Data, Data.Length, Remote);
+                            m_Server.Send(data, data.Length, remote);
                         }
                             break;
 
                         case 0x07: // Set Active Profile
                         {
-                            Byte[] Data = new Byte[Buffer.Length - 2];
+                            var data = new byte[buffer.Length - 2];
 
-                            Array.Copy(Buffer, 2, Data, 0, Data.Length);
+                            Array.Copy(buffer, 2, data, 0, data.Length);
 
-                            scpMap.Active = Encoding.Unicode.GetString(Data);
+                            scpMap.Active = Encoding.Unicode.GetString(data);
                         }
                             break;
 
                         case 0x08: // Get XML
                         {
-                            Byte[] Data = Encoding.UTF8.GetBytes(scpMap.Xml);
+                            var data = Encoding.UTF8.GetBytes(scpMap.Xml);
 
-                            m_Server.Send(Data, Data.Length, Remote);
+                            m_Server.Send(data, data.Length, remote);
                         }
                             break;
 
                         case 0x09: // Set XML
                         {
-                            Byte[] Data = new Byte[Buffer.Length - 2];
+                            var data = new byte[buffer.Length - 2];
 
-                            Array.Copy(Buffer, 2, Data, 0, Data.Length);
+                            Array.Copy(buffer, 2, data, 0, data.Length);
 
-                            scpMap.Xml = Encoding.UTF8.GetString(Data);
+                            scpMap.Xml = Encoding.UTF8.GetString(data);
                         }
                             break;
 
                         case 0x0A: // Pad Detail
                         {
+                            serial = buffer[0];
 
-                            Serial = Buffer[0];
+                            var data = new byte[11];
+                            // TODO: investigate
+                            var temp = Encoding.Unicode.GetBytes(m_Pad[serial].Local);
+                            Log.DebugFormat("temp = {0}", temp);
 
-                            Byte[] Data = new Byte[11];
-                            Byte[] Temp = Encoding.Unicode.GetBytes(m_Pad[Serial].Local);
+                            data[0] = serial;
+                            data[1] = (byte) m_Pad[serial].State;
+                            data[2] = (byte) m_Pad[serial].Model;
+                            data[3] = (byte) m_Pad[serial].Connection;
+                            data[4] = (byte) m_Pad[serial].Battery;
+                            Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
 
-                            Data[0] = Serial;
-                            Data[1] = (Byte) m_Pad[Serial].State;
-                            Data[2] = (Byte) m_Pad[Serial].Model;
-                            Data[3] = (Byte) m_Pad[Serial].Connection;
-                            Data[4] = (Byte) m_Pad[Serial].Battery;
-                            Array.Copy(m_Pad[Serial].BD_Address, 0, Data, 5, m_Pad[Serial].BD_Address.Length);
-
-                            m_Server.Send(Data, Data.Length, Remote);
+                            m_Server.Send(data, data.Length, remote);
                         }
                             break;
                     }
                 }
                 catch (SocketException sex)
                 {
-                    if(sex.NativeErrorCode == 10004)
+                    if (sex.NativeErrorCode == 10004)
                         break;
 
                     Log.ErrorFormat("Socket exception: {0}", sex);
                 }
-                catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
-           }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                }
+            }
 
             Log.Debug("-- Controller : UDP_Worker_Thread Exiting");
         }
 
-
-        protected override void On_Arrival(object sender, ArrivalEventArgs e) 
+        protected override void On_Arrival(object sender, ArrivalEventArgs e)
         {
             lock (this)
             {
-                Boolean bFound = false;
-                IDsDevice Arrived = e.Device;
+                var bFound = false;
+                var arrived = e.Device;
 
-                for (Int32 Index = 0; Index < m_Pad.Length && !bFound; Index++)
+                for (var index = 0; index < m_Pad.Length && !bFound; index++)
                 {
-                    if (Arrived.Local == m_Reserved[Index])
+                    if (arrived.Local == m_Reserved[index])
                     {
-                        if (m_Pad[Index].State == DsState.Connected)
+                        if (m_Pad[index].State == DsState.Connected)
                         {
-                            if (m_Pad[Index].Connection == DsConnection.BTH)
+                            if (m_Pad[index].Connection == DsConnection.BTH)
                             {
-                                m_Pad[Index].Disconnect();
+                                m_Pad[index].Disconnect();
                             }
 
-                            if (m_Pad[Index].Connection == DsConnection.USB)
+                            if (m_Pad[index].Connection == DsConnection.USB)
                             {
-                                Arrived.Disconnect();
+                                arrived.Disconnect();
 
                                 e.Handled = false;
                                 return;
@@ -450,72 +427,94 @@ namespace ScpControl
 
                         bFound = true;
 
-                        Arrived.PadId = (DsPadId) Index;
-                        m_Pad[Index] = Arrived;
+                        arrived.PadId = (DsPadId) index;
+                        m_Pad[index] = arrived;
                     }
                 }
 
-                for (Int32 Index = 0; Index < m_Pad.Length && !bFound; Index++)
+                for (var index = 0; index < m_Pad.Length && !bFound; index++)
                 {
-                    if (m_Pad[Index].State == DsState.Disconnected)
+                    if (m_Pad[index].State == DsState.Disconnected)
                     {
                         bFound = true;
-                        m_Reserved[Index] = Arrived.Local;
+                        m_Reserved[index] = arrived.Local;
 
-                        Arrived.PadId = (DsPadId) Index;
-                        m_Pad[Index] = Arrived;
+                        arrived.PadId = (DsPadId) index;
+                        m_Pad[index] = arrived;
                     }
                 }
 
                 if (bFound)
                 {
-                    scpBus.Plugin((int) Arrived.PadId + 1);
+                    scpBus.Plugin((int) arrived.PadId + 1);
 
-                    Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int) Arrived.PadId + 1, Arrived.Local);
+                    Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int) arrived.PadId + 1, arrived.Local);
                 }
                 e.Handled = bFound;
             }
         }
 
-        protected override void On_Report(object sender, ReportEventArgs e)   
+        protected override void On_Report(object sender, ReportEventArgs e)
         {
-            Int32   Serial = e.Report[(Int32) DsOffset.Pad];
-            DsModel Model  = (DsModel) e.Report[(Int32) DsOffset.Model];
+            int serial = e.Report[(int) DsOffset.Pad];
+            var model = (DsModel) e.Report[(int) DsOffset.Model];
 
-            Byte[] Report = m_Cache[Serial].Report;
-            Byte[] Rumble = m_Cache[Serial].Rumble;
-            Byte[] Mapped = m_Cache[Serial].Mapped;
-            
-            if (scpMap.Remap(Model, Serial, m_Pad[Serial].Local, e.Report, Mapped))
+            var report = m_Cache[serial].Report;
+            var rumble = m_Cache[serial].Rumble;
+            var mapped = m_Cache[serial].Mapped;
+
+            if (scpMap.Remap(model, serial, m_Pad[serial].Local, e.Report, mapped))
             {
-                scpBus.Parse(Mapped, Report, Model);
+                scpBus.Parse(mapped, report, model);
             }
             else
             {
-                scpBus.Parse(e.Report, Report, Model);
+                scpBus.Parse(e.Report, report, model);
             }
 
-            if (scpBus.Report(Report, Rumble) && (DsState) e.Report[1] == DsState.Connected)
+            if (scpBus.Report(report, rumble) && (DsState) e.Report[1] == DsState.Connected)
             {
-                Byte Large = (Byte)(Rumble[3]);
-                Byte Small = (Byte)(Rumble[4]);
+                var Large = rumble[3];
+                var Small = rumble[4];
 
-                if (Rumble[1] == 0x08 && (Large != m_XInput[Serial][0] || Small != m_XInput[Serial][1]))
+                if (rumble[1] == 0x08 && (Large != m_XInput[serial][0] || Small != m_XInput[serial][1]))
                 {
-                    m_XInput[Serial][0] = Large;
-                    m_XInput[Serial][1] = Small;
+                    m_XInput[serial][0] = Large;
+                    m_XInput[serial][1] = Small;
 
-                    Pad[Serial].Rumble(Large, Small);
+                    Pad[serial].Rumble(Large, Small);
                 }
             }
 
             if ((DsState) e.Report[1] != DsState.Connected)
             {
-                m_XInput[Serial][0] = m_XInput[Serial][1] = 0;
-                m_Native[Serial][0] = m_Native[Serial][1] = 0;
+                m_XInput[serial][0] = m_XInput[serial][1] = 0;
+                m_Native[serial][0] = m_Native[serial][1] = 0;
             }
 
             if (!Global.DisableNative) m_Client.Send(e.Report, e.Report.Length, m_ClientEp);
+        }
+
+        protected class Cache
+        {
+            private byte[] m_Mapped = new byte[ReportEventArgs.Length];
+            private byte[] m_Report = new byte[BusDevice.ReportSize];
+            private byte[] m_Rumble = new byte[BusDevice.RumbleSize];
+
+            public byte[] Report
+            {
+                get { return m_Report; }
+            }
+
+            public byte[] Rumble
+            {
+                get { return m_Rumble; }
+            }
+
+            public byte[] Mapped
+            {
+                get { return m_Mapped; }
+            }
         }
     }
 }
