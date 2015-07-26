@@ -105,5 +105,6 @@
     <None Include="XInput_SCP.def">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Xinput_SCP_logger.conf" />
   </ItemGroup>
 </Project>
