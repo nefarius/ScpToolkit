@@ -3,112 +3,100 @@ using System.ComponentModel;
 using System.Reflection;
 using log4net;
 
-namespace ScpControl 
+namespace ScpControl
 {
-    public partial class BthConnection : Component, IEquatable<BthConnection>, IComparable<BthConnection> 
+    public partial class BthConnection : Component, IEquatable<BthConnection>, IComparable<BthConnection>
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected static UInt16 m_DCID = 0x40;
+        private static ushort m_DCID = 0x40;
+        protected BthHandle m_HCI_Handle;
+        private BthHandle[] m_L2CAP_Cmd_Handle = new BthHandle[2];
+        private BthHandle[] m_L2CAP_Int_Handle = new BthHandle[2];
+        private BthHandle[] m_L2CAP_Svc_Handle = new BthHandle[2];
+        protected byte[] m_Local = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        private DsModel m_Model = DsModel.DS3;
+        protected string m_Remote_Name = string.Empty, m_Mac = string.Empty;
 
-        protected BthHandle   m_HCI_Handle;
-        protected BthHandle[] m_L2CAP_Cmd_Handle = new BthHandle[2];
-        protected BthHandle[] m_L2CAP_Int_Handle = new BthHandle[2];
-        protected BthHandle[] m_L2CAP_Svc_Handle = new BthHandle[2];
-
-        protected Byte[] m_Local = new Byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        protected String m_Remote_Name = String.Empty, m_Mac = String.Empty;
-
-        public virtual BthHandle HCI_Handle 
-        {
-            get { return m_HCI_Handle; }
-        }
-
-        public virtual Byte[] BD_Address 
-        {
-            get { return m_Local; }
-            set { m_Local = value; m_Mac = String.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2], m_Local[3], m_Local[4], m_Local[5]); }
-        }
-
-        public virtual String Remote_Name 
-        {
-            get { return m_Remote_Name; }
-            set 
-            { 
-                m_Remote_Name = value;
-                if (m_Remote_Name == "Wireless Controller") m_Model = DsModel.DS4;
-            }
-        }
-
-        protected Boolean m_CanStartHid = false;
-        public virtual Boolean CanStartHid 
-        {
-            get { return m_CanStartHid; }
-            set { m_CanStartHid = value; }
-        }
-
-        protected Boolean m_CanStartSvc = false;
-        public virtual Boolean CanStartSvc 
-        {
-            get { return m_CanStartSvc; }
-            set { m_CanStartSvc = value; }
-        }
-
-        protected Boolean m_SvcStarted = false;
-        public virtual Boolean SvcStarted 
-        {
-            get { return m_SvcStarted; }
-            set { m_SvcStarted = value; }
-        }
-
-        protected Boolean m_ServiceBypass = false;
-        public virtual Boolean ServiceByPass 
-        {
-            get { return m_ServiceBypass; }
-            set { m_ServiceBypass = value; }
-        }
-
-        protected Boolean m_Started = false;
-        public virtual Boolean Started 
-        {
-            get { return m_Started;  }
-            set { m_Started = value; }
-        }
-
-
-        protected DsModel m_Model = DsModel.DS3;
-        public virtual DsModel Model 
-        {
-            get { return m_Model;  }
-        }
-
-        public static UInt16 DCID 
-        {
-            get { return m_DCID; }
-            set { if (value < 0xFFFF) m_DCID = value; else m_DCID = 0x40; }
-        }
-
-
-        public BthConnection() 
+        public BthConnection()
         {
             InitializeComponent();
         }
 
-        public BthConnection(IContainer container) 
+        public BthConnection(IContainer container)
         {
             container.Add(this);
 
             InitializeComponent();
         }
 
-        public BthConnection(BthHandle HCI_Handle) 
+        public BthConnection(BthHandle HCI_Handle)
         {
             InitializeComponent();
 
             m_HCI_Handle = HCI_Handle;
         }
 
+        public virtual BthHandle HCI_Handle
+        {
+            get { return m_HCI_Handle; }
+        }
 
-        public virtual Byte[] Set(L2CAP.PSM ConnectionType, Byte Lsb, Byte Msb, UInt16 Dcid = 0) 
+        public virtual byte[] BD_Address
+        {
+            get { return m_Local; }
+            set
+            {
+                m_Local = value;
+                m_Mac = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
+                    m_Local[3], m_Local[4], m_Local[5]);
+            }
+        }
+
+        public virtual string Remote_Name
+        {
+            get { return m_Remote_Name; }
+            set
+            {
+                m_Remote_Name = value;
+                if (m_Remote_Name == "Wireless Controller") m_Model = DsModel.DS4;
+            }
+        }
+
+        public virtual bool CanStartHid { get; set; }
+
+        public virtual bool CanStartSvc { get; set; }
+
+        public virtual bool SvcStarted { get; set; }
+
+        public virtual bool ServiceByPass { get; set; }
+
+        public virtual bool Started { get; set; }
+
+        public virtual DsModel Model
+        {
+            get { return m_Model; }
+        }
+
+        public static ushort DCID
+        {
+            get { return m_DCID; }
+            set
+            {
+                if (value < 0xFFFF) m_DCID = value;
+                else m_DCID = 0x40;
+            }
+        }
+
+        #region IComparable<ScpBthConnection> Members
+
+        public virtual int CompareTo(BthConnection other)
+        {
+            return m_HCI_Handle.CompareTo(other.m_HCI_Handle);
+        }
+
+        #endregion
+
+        public virtual byte[] Set(L2CAP.PSM ConnectionType, byte Lsb, byte Msb, ushort Dcid = 0)
         {
             switch (ConnectionType)
             {
@@ -130,7 +118,8 @@ namespace ScpControl
 
                 case L2CAP.PSM.HID_Service:
 
-                    SvcStarted = true; CanStartSvc = false;
+                    SvcStarted = true;
+                    CanStartSvc = false;
 
                     m_L2CAP_Svc_Handle[0] = new BthHandle(Lsb, Msb);
                     m_L2CAP_Svc_Handle[1] = new BthHandle(Dcid);
@@ -141,13 +130,12 @@ namespace ScpControl
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
-        public virtual Byte[] Set(L2CAP.PSM ConnectionType, Byte[] Handle) 
+        public virtual byte[] Set(L2CAP.PSM ConnectionType, byte[] Handle)
         {
             return Set(ConnectionType, Handle[0], Handle[1]);
         }
 
-
-        public virtual Byte[] Get_DCID(Byte Lsb, Byte Msb) 
+        public virtual byte[] Get_DCID(byte Lsb, byte Msb)
         {
             if (m_L2CAP_Cmd_Handle[0].Equals(Lsb, Msb))
             {
@@ -167,7 +155,7 @@ namespace ScpControl
             throw new Exception("L2CAP DCID Not Found");
         }
 
-        public virtual Byte[] Get_DCID(L2CAP.PSM ConnectionType) 
+        public virtual byte[] Get_DCID(L2CAP.PSM ConnectionType)
         {
             switch (ConnectionType)
             {
@@ -187,8 +175,7 @@ namespace ScpControl
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
-
-        public virtual Byte[] Get_SCID(Byte Lsb, Byte Msb) 
+        public virtual byte[] Get_SCID(byte Lsb, byte Msb)
         {
             try
             {
@@ -197,7 +184,10 @@ namespace ScpControl
                     return m_L2CAP_Cmd_Handle[0].Bytes;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             try
             {
@@ -206,7 +196,10 @@ namespace ScpControl
                     return m_L2CAP_Int_Handle[0].Bytes;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             try
             {
@@ -215,12 +208,15 @@ namespace ScpControl
                     return m_L2CAP_Svc_Handle[0].Bytes;
                 }
             }
-            catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
 
             throw new Exception("L2CAP SCID Not Found");
         }
 
-        public virtual Byte[] Get_SCID(L2CAP.PSM ConnectionType) 
+        public virtual byte[] Get_SCID(L2CAP.PSM ConnectionType)
         {
             switch (ConnectionType)
             {
@@ -240,10 +236,9 @@ namespace ScpControl
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
-
-        public override string ToString() 
+        public override string ToString()
         {
-            return String.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2} - {6}",
+            return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2} - {6}",
                 m_Local[5],
                 m_Local[4],
                 m_Local[3],
@@ -256,28 +251,19 @@ namespace ScpControl
 
         #region IEquatable<ScpBthConnection> Members
 
-        public virtual bool Equals(BthConnection other) 
+        public virtual bool Equals(BthConnection other)
         {
             return m_HCI_Handle.Equals(other.m_HCI_Handle);
         }
 
-        public virtual bool Equals(Byte Lsb, Byte Msb) 
+        public virtual bool Equals(byte Lsb, byte Msb)
         {
             return m_HCI_Handle.Equals(Lsb, Msb);
         }
 
-        public virtual bool Equals(Byte[] other) 
+        public virtual bool Equals(byte[] other)
         {
             return m_HCI_Handle.Equals(other);
-        }
-
-        #endregion
-
-        #region IComparable<ScpBthConnection> Members
-
-        public virtual int CompareTo(BthConnection other) 
-        {
-            return m_HCI_Handle.CompareTo(other.m_HCI_Handle);
         }
 
         #endregion
