@@ -3,80 +3,76 @@ using System.ComponentModel;
 using System.Reflection;
 using log4net;
 
-namespace ScpControl 
+namespace ScpControl
 {
-    public partial class ScpHub : Component 
+    public partial class ScpHub : Component
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected IntPtr m_Reference = IntPtr.Zero;
-        protected volatile Boolean m_Started = false;
+        private IntPtr m_Reference = IntPtr.Zero;
+        protected volatile bool m_Started = false;
 
-        public event EventHandler<ArrivalEventArgs> Arrival = null;
-        public event EventHandler<ReportEventArgs>  Report  = null;
-
-        protected virtual Boolean LogArrival(IDsDevice Arrived) 
-        {
-            ArrivalEventArgs args = new ArrivalEventArgs(Arrived);
-
-            On_Arrival(this, args);
-
-            return args.Handled;
-        }
-
-        public Boolean Active 
-        {
-            get { return m_Started; }
-        }
-
-
-        public ScpHub() 
+        public ScpHub()
         {
             InitializeComponent();
         }
 
-        public ScpHub(IContainer container) 
+        public ScpHub(IContainer container)
         {
             container.Add(this);
 
             InitializeComponent();
         }
 
+        public bool Active
+        {
+            get { return m_Started; }
+        }
 
-        public virtual Boolean Open()  
+        public event EventHandler<ArrivalEventArgs> Arrival;
+        public event EventHandler<ReportEventArgs> Report;
+
+        protected virtual bool LogArrival(IDsDevice Arrived)
+        {
+            var args = new ArrivalEventArgs(Arrived);
+
+            On_Arrival(this, args);
+
+            return args.Handled;
+        }
+
+        public virtual bool Open()
         {
             return true;
         }
 
-        public virtual Boolean Start() 
+        public virtual bool Start()
         {
             return m_Started;
         }
 
-        public virtual Boolean Stop()  
+        public virtual bool Stop()
         {
             return !m_Started;
         }
 
-        public virtual Boolean Close() 
+        public virtual bool Close()
         {
             if (m_Reference != IntPtr.Zero) ScpDevice.UnregisterNotify(m_Reference);
 
             return !m_Started;
         }
 
-
-        public virtual Boolean Suspend() 
+        public virtual bool Suspend()
         {
             return true;
         }
 
-        public virtual Boolean Resume()  
+        public virtual bool Resume()
         {
             return true;
         }
 
-
-        public virtual DsPadId Notify(ScpDevice.Notified Notification, String Class, String Path) 
+        public virtual DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
         {
             switch (Notification)
             {
@@ -90,12 +86,12 @@ namespace ScpControl
             return DsPadId.None;
         }
 
-        protected virtual void On_Arrival(object sender, ArrivalEventArgs e) 
+        protected virtual void On_Arrival(object sender, ArrivalEventArgs e)
         {
             if (Arrival != null) Arrival(this, e);
         }
 
-        protected virtual void On_Report(object sender, ReportEventArgs e)   
+        protected virtual void On_Report(object sender, ReportEventArgs e)
         {
             if (Report != null) Report(sender, e);
         }
