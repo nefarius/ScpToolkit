@@ -399,7 +399,7 @@ namespace ScpControl
                             break;
                     }
                 }
-                catch { }
+                catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
            }
 
             Log.Debug("-- Controller : UDP_Worker_Thread Exiting");

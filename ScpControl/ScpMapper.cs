@@ -188,7 +188,7 @@ namespace ScpControl
                         m_Map.SelectSingleNode("/ScpMapper/Active").FirstChild.Value = value;
                         m_Map.Save(m_FilePath);
                     }
-                    catch { }
+                    catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
                 }).Start();
             }
         }
@@ -205,7 +205,7 @@ namespace ScpControl
                         m_Map.LoadXml(value);
                         m_Map.Save(m_FilePath);
                     }
-                    catch { }
+                    catch (Exception ex) { Log.ErrorFormat("Unexpected error: {0}", ex); }
                 }).Start();
             }
         }
