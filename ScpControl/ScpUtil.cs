@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -1392,19 +1393,9 @@ namespace ScpControl
             return RegistryKey;
         }
 
-        private bool IsUserScoped(SettingsProperty Property)
+        private static bool IsUserScoped(SettingsProperty property)
         {
-            foreach (DictionaryEntry Entry in Property.Attributes)
-            {
-                var Attribute = (Attribute) Entry.Value;
-
-                if (Attribute is UserScopedSettingAttribute)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return (from DictionaryEntry entry in property.Attributes select (Attribute) entry.Value).OfType<UserScopedSettingAttribute>().Any();
         }
 
         private string GetSubKeyPath()
