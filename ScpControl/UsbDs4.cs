@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text;
 using System.ComponentModel;
-using System.Threading;
 
 namespace ScpControl 
 {
@@ -96,8 +94,7 @@ namespace ScpControl
                 }
             }
         }
-
-
+        
         public UsbDs4() : base(USB_CLASS_GUID) 
         {
             InitializeComponent();
@@ -109,8 +106,7 @@ namespace ScpControl
 
             InitializeComponent();
         }
-
-
+        
         public override Boolean Open(String DevicePath) 
         {
             if (base.Open(DevicePath))
@@ -190,8 +186,7 @@ namespace ScpControl
             Log.DebugFormat("++ Pair Failed [{0}]", Local);
             return false;
         }
-
-
+        
         protected override void Parse(Byte[] Report) 
         {
             if (Report[0] != 0x01) return;
