@@ -5,31 +5,45 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using ScpControl.Utilities;
 
 namespace ScpControl
 {
     public sealed partial class RootHub : ScpHub
     {
-        private BthHub bthHub = new BthHub();
-        private Cache[] m_Cache = {new Cache(), new Cache(), new Cache(), new Cache()};
-        private UdpClient m_Client = new UdpClient();
-        private IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
-        private byte[][] m_Native = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
+        private CancellationTokenSource _udpWorkerCancellationToken = new CancellationTokenSource();
+        private readonly BthHub bthHub = new BthHub();
+        private readonly Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
+        private readonly UdpClient m_Client = new UdpClient();
+        private readonly IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
 
-        private IDsDevice[] m_Pad =
+        private readonly byte[][] m_Native =
+        {
+            new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
+            new byte[2] {0, 0}
+        };
+
+        private readonly IDsDevice[] m_Pad =
         {
             new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
             new DsNull(DsPadId.Four)
         };
 
-        private string[] m_Reserved = {string.Empty, string.Empty, string.Empty, string.Empty};
+        private readonly string[] m_Reserved = { string.Empty, string.Empty, string.Empty, string.Empty };
+        private readonly IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+
+        private readonly byte[][] m_XInput =
+        {
+            new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
+            new byte[2] {0, 0}
+        };
+
+        private readonly BusDevice scpBus = new BusDevice();
+        private readonly UsbHub usbHub = new UsbHub();
+        private Task _udpWorkerTask;
         private UdpClient m_Server = new UdpClient();
-        private IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
         private volatile bool m_Suspended;
-        private byte[][] m_XInput = {new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0}};
-        private BusDevice scpBus = new BusDevice();
-        private UsbHub usbHub = new UsbHub();
 
         public RootHub()
         {
@@ -102,122 +116,33 @@ namespace ScpControl
                 m_Started |= usbHub.Start();
                 m_Started |= bthHub.Start();
 
-                if (m_Started) UDP_Worker.RunWorkerAsync();
+                if (m_Started)
+                    _udpWorkerTask = Task.Factory.StartNew(UdpWorker,
+                        _udpWorkerCancellationToken.Token);
             }
 
             return m_Started;
         }
 
-        public override bool Stop()
-        {
-            if (m_Started)
-            {
-                m_Started = false;
-                m_Server.Close();
-
-                scpMap.Stop();
-
-                scpBus.Stop();
-                usbHub.Stop();
-                bthHub.Stop();
-            }
-
-            return !m_Started;
-        }
-
-        public override bool Close()
-        {
-            if (m_Started)
-            {
-                m_Started = false;
-                m_Server.Close();
-
-                scpMap.Close();
-
-                scpBus.Close();
-                usbHub.Close();
-                bthHub.Close();
-            }
-
-            Global.Save();
-
-            return !m_Started;
-        }
-
-        public override bool Suspend()
-        {
-            m_Suspended = true;
-
-            for (var index = 0; index < m_Pad.Length; index++) m_Pad[index].Disconnect();
-
-            scpBus.Suspend();
-            usbHub.Suspend();
-            bthHub.Suspend();
-
-            Log.Debug("++ Suspended");
-            return true;
-        }
-
-        public override bool Resume()
-        {
-            Log.Debug("++ Resumed");
-
-            scpBus.Resume();
-            for (var index = 0; index < m_Pad.Length; index++)
-            {
-                if (m_Pad[index].State != DsState.Disconnected)
-                {
-                    scpBus.Plugin(index + 1);
-                }
-            }
-
-            usbHub.Resume();
-            bthHub.Resume();
-
-            m_Suspended = false;
-            return true;
-        }
-
-        public override DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
-        {
-            if (!m_Suspended)
-            {
-                if (Class == UsbDs4.USB_CLASS_GUID)
-                {
-                    return usbHub.Notify(Notification, Class, Path);
-                }
-
-                if (Class == UsbDs3.USB_CLASS_GUID)
-                {
-                    return usbHub.Notify(Notification, Class, Path);
-                }
-
-                if (Class == BthDongle.BTH_CLASS_GUID)
-                {
-                    bthHub.Notify(Notification, Class, Path);
-                }
-            }
-
-            return DsPadId.None;
-        }
-
-        private void UDP_Worker_Thread(object sender, DoWorkEventArgs e)
+        private void UdpWorker(object o)
         {
             var sb = new StringBuilder();
-
-            Thread.Sleep(1);
-
             var remote = new IPEndPoint(IPAddress.Loopback, 0);
+            var token = (CancellationToken) o;
 
-            m_Server = new UdpClient(m_ServerEp);
+            m_Server = new UdpClient(m_ServerEp) { Client = { ReceiveTimeout = 500 } };
 
             Log.Debug("-- Controller : UDP_Worker_Thread Starting");
-
-            while (m_Started)
+            
+            // loop endlessly 
+            while (!token.IsCancellationRequested)
             {
                 try
                 {
-                    var buffer = m_Server.Receive(ref remote);
+                    var buffer = Log.TryCatchSilent(() => m_Server.Receive(ref remote));
+
+                    if (buffer == null)
+                        continue;
 
                     byte serial;
                     switch (buffer[1])
@@ -395,7 +320,108 @@ namespace ScpControl
                 }
             }
 
+            // TODO: status var shouldn't be necessary, refactor and remove!
+            m_Started = !m_Started;
+            m_Server.Close();
+
             Log.Debug("-- Controller : UDP_Worker_Thread Exiting");
+        }
+
+        public new async Task<bool> Stop()
+        {
+            // no need to stop if task isn't running anymore
+            if (_udpWorkerTask.Status != TaskStatus.Running)
+                return !m_Started;
+
+            // signal task to stop work
+            _udpWorkerCancellationToken.Cancel();
+            // wait until task completed
+            await Task.WhenAll(_udpWorkerTask);
+            // reset cancellation token
+            _udpWorkerCancellationToken = new CancellationTokenSource();
+
+            scpMap.Stop();
+            scpBus.Stop();
+            usbHub.Stop();
+            bthHub.Stop();
+
+            return !m_Started;
+        }
+
+        public override bool Close()
+        {
+            if (m_Started)
+            {
+                m_Started = false;
+                m_Server.Close();
+
+                scpMap.Close();
+
+                scpBus.Close();
+                usbHub.Close();
+                bthHub.Close();
+            }
+
+            Global.Save();
+
+            return !m_Started;
+        }
+
+        public override bool Suspend()
+        {
+            m_Suspended = true;
+
+            for (var index = 0; index < m_Pad.Length; index++) m_Pad[index].Disconnect();
+
+            scpBus.Suspend();
+            usbHub.Suspend();
+            bthHub.Suspend();
+
+            Log.Debug("++ Suspended");
+            return true;
+        }
+
+        public override bool Resume()
+        {
+            Log.Debug("++ Resumed");
+
+            scpBus.Resume();
+            for (var index = 0; index < m_Pad.Length; index++)
+            {
+                if (m_Pad[index].State != DsState.Disconnected)
+                {
+                    scpBus.Plugin(index + 1);
+                }
+            }
+
+            usbHub.Resume();
+            bthHub.Resume();
+
+            m_Suspended = false;
+            return true;
+        }
+
+        public override DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
+        {
+            if (!m_Suspended)
+            {
+                if (Class == UsbDs4.USB_CLASS_GUID)
+                {
+                    return usbHub.Notify(Notification, Class, Path);
+                }
+
+                if (Class == UsbDs3.USB_CLASS_GUID)
+                {
+                    return usbHub.Notify(Notification, Class, Path);
+                }
+
+                if (Class == BthDongle.BTH_CLASS_GUID)
+                {
+                    bthHub.Notify(Notification, Class, Path);
+                }
+            }
+
+            return DsPadId.None;
         }
 
         protected override void On_Arrival(object sender, ArrivalEventArgs e)
@@ -427,7 +453,7 @@ namespace ScpControl
 
                         bFound = true;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         m_Pad[index] = arrived;
                     }
                 }
@@ -439,16 +465,16 @@ namespace ScpControl
                         bFound = true;
                         m_Reserved[index] = arrived.Local;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         m_Pad[index] = arrived;
                     }
                 }
 
                 if (bFound)
                 {
-                    scpBus.Plugin((int) arrived.PadId + 1);
+                    scpBus.Plugin((int)arrived.PadId + 1);
 
-                    Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int) arrived.PadId + 1, arrived.Local);
+                    Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
                 }
                 e.Handled = bFound;
             }
@@ -456,8 +482,8 @@ namespace ScpControl
 
         protected override void On_Report(object sender, ReportEventArgs e)
         {
-            int serial = e.Report[(int) DsOffset.Pad];
-            var model = (DsModel) e.Report[(int) DsOffset.Model];
+            int serial = e.Report[(int)DsOffset.Pad];
+            var model = (DsModel)e.Report[(int)DsOffset.Model];
 
             var report = m_Cache[serial].Report;
             var rumble = m_Cache[serial].Rumble;
@@ -472,7 +498,7 @@ namespace ScpControl
                 scpBus.Parse(e.Report, report, model);
             }
 
-            if (scpBus.Report(report, rumble) && (DsState) e.Report[1] == DsState.Connected)
+            if (scpBus.Report(report, rumble) && (DsState)e.Report[1] == DsState.Connected)
             {
                 var Large = rumble[3];
                 var Small = rumble[4];
@@ -486,7 +512,7 @@ namespace ScpControl
                 }
             }
 
-            if ((DsState) e.Report[1] != DsState.Connected)
+            if ((DsState)e.Report[1] != DsState.Connected)
             {
                 m_XInput[serial][0] = m_XInput[serial][1] = 0;
                 m_Native[serial][0] = m_Native[serial][1] = 0;
@@ -497,9 +523,9 @@ namespace ScpControl
 
         private class Cache
         {
-            private byte[] m_Mapped = new byte[ReportEventArgs.Length];
-            private byte[] m_Report = new byte[BusDevice.ReportSize];
-            private byte[] m_Rumble = new byte[BusDevice.RumbleSize];
+            private readonly byte[] m_Mapped = new byte[ReportEventArgs.Length];
+            private readonly byte[] m_Report = new byte[BusDevice.ReportSize];
+            private readonly byte[] m_Rumble = new byte[BusDevice.RumbleSize];
 
             public byte[] Report
             {

@@ -29,23 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.UDP_Worker = new System.ComponentModel.BackgroundWorker();
             this.scpMap = new ScpControl.ScpMapper(this.components);
             // 
-            // UDP_Worker
-            // 
-            this.UDP_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.UDP_Worker_Thread);
-            // 
-            // scpMapper
+            // scpMap
             // 
             this.scpMap.Active = "";
-            this.scpMap.Xml = "System.Xml.XmlDocument";
+            this.scpMap.Xml = "";
 
         }
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker UDP_Worker;
         private ScpMapper scpMap;
     }
 }

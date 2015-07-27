@@ -158,6 +158,7 @@
     <Compile Include="UsbHub.Designer.cs">
       <DependentUpon>UsbHub.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\ILogExtensions.cs" />
     <Compile Include="Utilities\OsInfoHelper.cs" />
     <Compile Include="XmlMapper.cs">
       <SubType>Component</SubType>
