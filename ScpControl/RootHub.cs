@@ -130,15 +130,17 @@ namespace ScpControl
             var remote = new IPEndPoint(IPAddress.Loopback, 0);
             var token = (CancellationToken) o;
 
+            // create new UDP channel; unblock receive after 500ms
             m_Server = new UdpClient(m_ServerEp) { Client = { ReceiveTimeout = 500 } };
 
             Log.Debug("-- Controller : UDP_Worker_Thread Starting");
             
-            // loop endlessly 
+            // loop endlessly until parent requested cancellation
             while (!token.IsCancellationRequested)
             {
                 try
                 {
+                    // swallow exception on timeout; returns null if no data received
                     var buffer = Log.TryCatchSilent(() => m_Server.Receive(ref remote));
 
                     if (buffer == null)
@@ -206,9 +208,9 @@ namespace ScpControl
 
                         case 0x03: // Config Read Request
                         {
-                            var Data = Global.Packed;
+                            var data = Global.Packed;
 
-                            m_Server.Send(Data, Data.Length, remote);
+                            m_Server.Send(data, data.Length, remote);
                         }
                             break;
 
@@ -348,23 +350,13 @@ namespace ScpControl
             return !m_Started;
         }
 
-        public override bool Close()
+        public new async Task<bool> Close()
         {
-            if (m_Started)
-            {
-                m_Started = false;
-                m_Server.Close();
-
-                scpMap.Close();
-
-                scpBus.Close();
-                usbHub.Close();
-                bthHub.Close();
-            }
+            await Stop();
 
             Global.Save();
 
-            return !m_Started;
+            return true;
         }
 
         public override bool Suspend()
