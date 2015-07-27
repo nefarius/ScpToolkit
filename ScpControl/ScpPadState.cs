@@ -9,7 +9,7 @@ namespace ScpControl
 {
     public partial class ScpPadState : Component
     {
-        private const int Centre = 127;
+        protected const int Centre = 127;
         private const int Accelerate = 75;
         private const int Repeat_Delay = 40;
         private const int Repeat_Rate = 5;
@@ -18,7 +18,7 @@ namespace ScpControl
         private DsPadId m_Pad = DsPadId.One;
         private ScpProxy m_Proxy;
         // Mouse
-        private int m_Threshold;
+        protected int m_Threshold;
         protected int m_vx, m_vy;
 
         public ScpPadState()
