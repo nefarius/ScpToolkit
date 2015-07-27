@@ -28,22 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.HCI_Worker = new System.ComponentModel.BackgroundWorker();
-            this.L2CAP_Worker = new System.ComponentModel.BackgroundWorker();
-            // 
-            // HCI_Worker
-            // 
-            this.HCI_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.HCI_Worker_Thread);
-            // 
-            // L2CAP_Worker
-            // 
-            this.L2CAP_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.L2CAP_Worker_Thread);
 
         }
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker HCI_Worker;
-        private System.ComponentModel.BackgroundWorker L2CAP_Worker;
     }
 }

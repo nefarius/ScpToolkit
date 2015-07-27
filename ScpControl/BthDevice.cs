@@ -17,10 +17,10 @@ namespace ScpControl
             m_Tick = DateTime.Now,
             m_Disconnect = DateTime.Now;
 
-        protected byte[] m_Master = new byte[6];
+        private byte[] m_Master = new byte[6];
         protected uint m_Packet;
         protected byte m_PlugStatus = 0;
-        protected bool m_Publish;
+        private bool m_Publish;
         protected uint m_Queued = 0;
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
         protected DsState m_State = DsState.Disconnected;
@@ -200,11 +200,11 @@ namespace ScpControl
         {
             if (m_State == DsState.Connected)
             {
-                var Now = DateTime.Now;
+                var now = DateTime.Now;
 
                 if (m_IsIdle && Global.IdleDisconnect)
                 {
-                    if ((Now - m_Idle).TotalMilliseconds >= Global.IdleTimeout)
+                    if ((now - m_Idle).TotalMilliseconds >= Global.IdleTimeout)
                     {
                         Log.Debug("++ Idle Disconnect Triggered");
 
@@ -217,7 +217,7 @@ namespace ScpControl
                 }
                 else if (m_IsDisconnect)
                 {
-                    if ((Now - m_Disconnect).TotalMilliseconds >= 2000)
+                    if ((now - m_Disconnect).TotalMilliseconds >= 2000)
                     {
                         Log.Debug("++ Quick Disconnect Triggered");
 
@@ -229,7 +229,7 @@ namespace ScpControl
                     }
                 }
 
-                Process(Now);
+                Process(now);
             }
         }
     }
