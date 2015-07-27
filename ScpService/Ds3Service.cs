@@ -50,15 +50,15 @@ namespace ScpService
             if (_mDs4Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mDs4Notify);
             if (_mBthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mBthNotify);
 
-            rootHub.Stop();
-            rootHub.Close();
+            rootHub.Stop().Wait();
+            rootHub.Close().Wait();
 
             Log.Info("Scarlet.Crush Productions DS3 Service Stopped");
         }
 
-        private int ServiceControlHandler(int Control, int Type, IntPtr Data, IntPtr Context)
+        private int ServiceControlHandler(int control, int type, IntPtr data, IntPtr context)
         {
-            switch (Control)
+            switch (control)
             {
                 case ScpDevice.SERVICE_CONTROL_STOP:
                 case ScpDevice.SERVICE_CONTROL_SHUTDOWN:
@@ -68,7 +68,7 @@ namespace ScpService
 
                 case ScpDevice.SERVICE_CONTROL_POWEREVENT:
 
-                    switch (Type)
+                    switch (type)
                     {
                         case ScpDevice.PBT_APMSUSPEND:
 
@@ -88,7 +88,7 @@ namespace ScpService
 
                 case ScpDevice.SERVICE_CONTROL_DEVICEEVENT:
 
-                    switch (Type)
+                    switch (type)
                     {
                         case ScpDevice.DBT_DEVICEARRIVAL:
                         case ScpDevice.DBT_DEVICEREMOVECOMPLETE:
@@ -97,7 +97,7 @@ namespace ScpService
 
                             hdr =
                                 (ScpDevice.DEV_BROADCAST_HDR)
-                                    Marshal.PtrToStructure(Data, typeof (ScpDevice.DEV_BROADCAST_HDR));
+                                    Marshal.PtrToStructure(data, typeof (ScpDevice.DEV_BROADCAST_HDR));
 
                             if (hdr.dbch_devicetype == ScpDevice.DBT_DEVTYP_DEVICEINTERFACE)
                             {
@@ -105,14 +105,14 @@ namespace ScpService
 
                                 deviceInterface =
                                     (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M)
-                                        Marshal.PtrToStructure(Data, typeof (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
+                                        Marshal.PtrToStructure(data, typeof (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
 
                                 var Class = "{" + new Guid(deviceInterface.dbcc_classguid).ToString().ToUpper() + "}";
 
                                 var path = new string(deviceInterface.dbcc_name);
                                 path = path.Substring(0, path.IndexOf('\0')).ToUpper();
 
-                                var pad = rootHub.Notify((ScpDevice.Notified) Type, Class, path);
+                                var pad = rootHub.Notify((ScpDevice.Notified) type, Class, path);
 
                                 if (pad != DsPadId.None)
                                 {
