@@ -6,7 +6,7 @@ namespace ScpControl
     public partial class UsbHub : ScpHub
     {
         private readonly UsbDevice[] _device = new UsbDevice[4];
-        
+
         public UsbHub()
         {
             InitializeComponent();
@@ -68,7 +68,7 @@ namespace ScpControl
                 try
                 {
                     UsbDevice Current = new UsbDs3();
-                    Current.PadId = (DsPadId) Index;
+                    Current.PadId = (DsPadId)Index;
 
                     if (Current.Open(Instance))
                     {
@@ -150,7 +150,7 @@ namespace ScpControl
 
             return base.Close();
         }
-        
+
         public override Boolean Suspend()
         {
             Stop();
@@ -166,7 +166,7 @@ namespace ScpControl
 
             return base.Resume();
         }
-        
+
         public override DsPadId Notify(ScpDevice.Notified Notification, String Class, String Path)
         {
             Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", Notification, Class, Path);
@@ -175,52 +175,63 @@ namespace ScpControl
             {
                 case ScpDevice.Notified.Arrival:
                     {
-                        UsbDevice Arrived = new UsbDevice();
+                        UsbDevice arrived = new UsbDevice();
 
-                        if (Class.ToUpper() == UsbDs3.USB_CLASS_GUID.ToUpper()) { Arrived = new UsbDs3(); Log.Debug("-- DS3 Arrival Event"); }
-                        if (Class.ToUpper() == UsbDs4.USB_CLASS_GUID.ToUpper()) { Arrived = new UsbDs4(); Log.Debug("-- DS4 Arrival Event"); }
-
-                        if (Arrived.Open(Path))
+                        if (string.Equals(Class, UsbDs3.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            Log.DebugFormat("-- Device Arrival [{0}]", Arrived.Local);
+                            arrived = new UsbDs3();
+                            Log.Debug("-- DS3 Arrival Event");
+                        }
 
-                            if (LogArrival(Arrived))
+                        if (string.Equals(Class, UsbDs4.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            arrived = new UsbDs4();
+                            Log.Debug("-- DS4 Arrival Event");
+                        }
+
+                        Log.DebugFormat("Arrival event for unknown GUID {0} received", Class);
+
+                        if (arrived.Open(Path))
+                        {
+                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.Local);
+
+                            if (LogArrival(arrived))
                             {
-                                if (_device[(Byte)Arrived.PadId].IsShutdown)
+                                if (_device[(Byte)arrived.PadId].IsShutdown)
                                 {
-                                    _device[(Byte)Arrived.PadId].IsShutdown = false;
+                                    _device[(Byte)arrived.PadId].IsShutdown = false;
 
-                                    _device[(Byte)Arrived.PadId].Close();
-                                    _device[(Byte)Arrived.PadId] = Arrived;
+                                    _device[(Byte)arrived.PadId].Close();
+                                    _device[(Byte)arrived.PadId] = arrived;
 
-                                    return Arrived.PadId;
+                                    return arrived.PadId;
                                 }
                                 else
                                 {
-                                    Arrived.Report += new EventHandler<ReportEventArgs>(On_Report);
+                                    arrived.Report += new EventHandler<ReportEventArgs>(On_Report);
 
-                                    _device[(Byte)Arrived.PadId].Close();
-                                    _device[(Byte)Arrived.PadId] = Arrived;
+                                    _device[(Byte)arrived.PadId].Close();
+                                    _device[(Byte)arrived.PadId] = arrived;
 
-                                    if (m_Started) Arrived.Start();
-                                    return Arrived.PadId;
+                                    if (m_Started) arrived.Start();
+                                    return arrived.PadId;
                                 }
                             }
                         }
 
-                        Arrived.Close();
+                        arrived.Close();
                     }
                     break;
 
                 case ScpDevice.Notified.Removal:
                     {
-                        for (Int32 Index = 0; Index < _device.Length; Index++)
+                        for (Int32 index = 0; index < _device.Length; index++)
                         {
-                            if (_device[Index].State == DsState.Connected && Path == _device[Index].Path)
+                            if (_device[index].State == DsState.Connected && Path == _device[index].Path)
                             {
-                                Log.DebugFormat("-- Device Removal [{0}]", _device[Index].Local);
+                                Log.DebugFormat("-- Device Removal [{0}]", _device[index].Local);
 
-                                _device[Index].Stop();
+                                _device[index].Stop();
                             }
                         }
                     }
