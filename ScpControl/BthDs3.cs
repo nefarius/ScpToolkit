@@ -5,7 +5,7 @@ namespace ScpControl
 {
     public partial class BthDs3 : BthDevice
     {
-        private byte[] m_Enable = {0x53, 0xF4, 0x42, 0x03, 0x00, 0x00};
+        private byte[] m_Enable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
 
         private byte[][] m_InitReport =
         {
@@ -39,7 +39,7 @@ namespace ScpControl
             }
         };
 
-        private byte[] m_Leds = {0x02, 0x04, 0x08, 0x10};
+        private byte[] m_Leds = { 0x02, 0x04, 0x08, 0x10 };
 
         private byte[] m_Report =
         {
@@ -68,16 +68,17 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        public BthDs3(IBthDevice device, byte[] master, byte lsb, byte msb) : base(device, master, lsb, msb)
+        public BthDs3(IBthDevice device, byte[] master, byte lsb, byte msb)
+            : base(device, master, lsb, msb)
         {
         }
 
         public override DsPadId PadId
         {
-            get { return (DsPadId) m_ControllerId; }
+            get { return (DsPadId)m_ControllerId; }
             set
             {
-                m_ControllerId = (byte) value;
+                m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
                 m_Report[11] = m_Leds[m_ControllerId];
@@ -91,7 +92,7 @@ namespace ScpControl
 
             if (Local.StartsWith("00:26:5C")) // Fix up for Fake DS3
             {
-                Log.WarnFormat("Fake DS3 detected: {0}", Local);
+                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", Remote_Name, Local);
 
                 m_Enable[0] = 0xA3;
 
@@ -102,7 +103,7 @@ namespace ScpControl
 
             if (Remote_Name.EndsWith("-ghic")) // Fix up for Fake DS3
             {
-                Log.WarnFormat("Fake DS3 detected: {0}", Local);
+                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", Remote_Name, Local);
 
                 m_Report[3] = 0x00;
                 m_Report[5] = 0x00;
@@ -129,12 +130,12 @@ namespace ScpControl
 
             m_ReportArgs.Report[2] = m_BatteryStatus;
 
-            m_ReportArgs.Report[4] = (byte) (m_Packet >> 0 & 0xFF);
-            m_ReportArgs.Report[5] = (byte) (m_Packet >> 8 & 0xFF);
-            m_ReportArgs.Report[6] = (byte) (m_Packet >> 16 & 0xFF);
-            m_ReportArgs.Report[7] = (byte) (m_Packet >> 24 & 0xFF);
+            m_ReportArgs.Report[4] = (byte)(m_Packet >> 0 & 0xFF);
+            m_ReportArgs.Report[5] = (byte)(m_Packet >> 8 & 0xFF);
+            m_ReportArgs.Report[6] = (byte)(m_Packet >> 16 & 0xFF);
+            m_ReportArgs.Report[7] = (byte)(m_Packet >> 24 & 0xFF);
 
-            var buttons = (Ds3Button) ((report[11] << 0) | (report[12] << 8) | (report[13] << 16) | (report[14] << 24));
+            var buttons = (Ds3Button)((report[11] << 0) | (report[12] << 8) | (report[13] << 16) | (report[14] << 24));
             bool trigger = false, active = false;
 
             // Quick Disconnect
@@ -204,7 +205,7 @@ namespace ScpControl
                 }
                 else
                 {
-                    m_Report[4] = (byte) (small > 0 ? 0x01 : 0x00);
+                    m_Report[4] = (byte)(small > 0 ? 0x01 : 0x00);
                     m_Report[6] = large;
                 }
 
