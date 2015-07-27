@@ -11,16 +11,16 @@ namespace ScpControl
     public sealed partial class BthDongle : ScpDevice, IBthDevice
     {
         public const string BTH_CLASS_GUID = "{2F87C733-60E0-4355-8515-95D6978418B2}";
-        private readonly ConnectionList m_Connected = new ConnectionList();
+        private CancellationTokenSource _hciCancellationTokenSource = new CancellationTokenSource();
+        private Task _hciWorkerTask;
+        private CancellationTokenSource _l2CapCancellationTokenSource = new CancellationTokenSource();
+        private Task _l2CapWorkerTask;
         private string m_HCI_Version = string.Empty;
         private byte m_Id = 0x01;
         private string m_LMP_Version = string.Empty;
-        private byte[] m_Local = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        private byte[] m_Local = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         private DsState m_State = DsState.Disconnected;
-        private CancellationTokenSource _hciCancellationTokenSource = new CancellationTokenSource();
-        private CancellationTokenSource _l2CapCancellationTokenSource = new CancellationTokenSource();
-        private Task _hciWorkerTask = null;
-        private Task _l2CapWorkerTask = null;
+        private readonly ConnectionList m_Connected = new ConnectionList();
 
         public BthDongle()
             : base(BTH_CLASS_GUID)
@@ -75,10 +75,10 @@ namespace ScpControl
 
             Buffer[0] = Handle[0];
             Buffer[1] = Handle[1];
-            Buffer[2] = (byte)((Data.Length + 4) % 256);
-            Buffer[3] = (byte)((Data.Length + 4) / 256);
-            Buffer[4] = (byte)(Data.Length % 256);
-            Buffer[5] = (byte)(Data.Length / 256);
+            Buffer[2] = (byte) ((Data.Length + 4)%256);
+            Buffer[3] = (byte) ((Data.Length + 4)/256);
+            Buffer[4] = (byte) (Data.Length%256);
+            Buffer[5] = (byte) (Data.Length/256);
             Buffer[6] = Channel[0];
             Buffer[7] = Channel[1];
 
@@ -137,7 +137,6 @@ namespace ScpControl
 
             return State == DsState.Connected;
         }
-
 
         public new async Task<bool> Stop()
         {
@@ -242,6 +241,10 @@ namespace ScpControl
             m_Connected.Remove(connection);
         }
 
+        private class ConnectionList : SortedDictionary<BthHandle, BthDevice>
+        {
+        }
+
         #region Events
 
         private void OnInitialised(BthDevice Connection)
@@ -265,10 +268,6 @@ namespace ScpControl
 
         #endregion
 
-        private class ConnectionList : SortedDictionary<BthHandle, BthDevice>
-        {
-        }
-
         #region Worker Threads
 
         private void L2CAP_DS4(BthDevice Connection, byte[] Buffer, int Transfered)
@@ -279,9 +278,9 @@ namespace ScpControl
 
             if (Buffer[6] == 0x01 && Buffer[7] == 0x00) // Control Channel
             {
-                if (Enum.IsDefined(typeof(L2CAP.Code), Buffer[8]))
+                if (Enum.IsDefined(typeof (L2CAP.Code), Buffer[8]))
                 {
-                    Event = (L2CAP.Code)Buffer[8];
+                    Event = (L2CAP.Code) Buffer[8];
 
                     switch (Event)
                     {
@@ -294,18 +293,18 @@ namespace ScpControl
 
                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, Buffer[8], Buffer[12]);
 
-                            L2_SCID = new byte[2] { Buffer[14], Buffer[15] };
-                            L2_DCID = Connection.Set((L2CAP.PSM)Buffer[12], L2_SCID);
+                            L2_SCID = new byte[2] {Buffer[14], Buffer[15]};
+                            L2_DCID = Connection.Set((L2CAP.PSM) Buffer[12], L2_SCID);
 
-                            if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM)Buffer[12]) Connection.Started = true;
+                            if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM) Buffer[12]) Connection.Started = true;
 
                             L2CAP_Connection_Response(Connection.HCI_Handle.Bytes, Buffer[9], L2_SCID, L2_DCID, 0x00);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
-                                (byte)L2CAP.Code.L2CAP_Connection_Response);
+                                (byte) L2CAP.Code.L2CAP_Connection_Response);
 
                             L2CAP_Configuration_Request(Connection.HCI_Handle.Bytes, m_Id++, L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                (byte)L2CAP.Code.L2CAP_Configuration_Request);
+                                (byte) L2CAP.Code.L2CAP_Configuration_Request);
                             break;
 
                         case L2CAP.Code.L2CAP_Connection_Response:
@@ -321,7 +320,7 @@ namespace ScpControl
 
                             L2CAP_Configuration_Response(Connection.HCI_Handle.Bytes, Buffer[9], L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
-                                (byte)L2CAP.Code.L2CAP_Configuration_Response);
+                                (byte) L2CAP.Code.L2CAP_Configuration_Response);
 
                             if (Connection.SvcStarted)
                             {
@@ -344,11 +343,11 @@ namespace ScpControl
                             Log.DebugFormat(">> {0} [{1:X2}] Handle [{2:X2}{3:X2}]", Event, Buffer[8], Buffer[15],
                                 Buffer[14]);
 
-                            L2_SCID = new byte[2] { Buffer[14], Buffer[15] };
+                            L2_SCID = new byte[2] {Buffer[14], Buffer[15]};
 
                             L2CAP_Disconnection_Response(Connection.HCI_Handle.Bytes, Buffer[9], L2_SCID, L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Response,
-                                (byte)L2CAP.Code.L2CAP_Disconnection_Response);
+                                (byte) L2CAP.Code.L2CAP_Disconnection_Response);
                             break;
 
                         case L2CAP.Code.L2CAP_Disconnection_Response:
@@ -390,7 +389,7 @@ namespace ScpControl
 
         private void L2CapWorker(object o)
         {
-            var token = (CancellationToken)o;
+            var token = (CancellationToken) o;
             var buffer = new byte[512];
 
             var transfered = 0;
@@ -419,9 +418,9 @@ namespace ScpControl
 
                             if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
                             {
-                                if (Enum.IsDefined(typeof(L2CAP.Code), buffer[8]))
+                                if (Enum.IsDefined(typeof (L2CAP.Code), buffer[8]))
                                 {
-                                    var Event = (L2CAP.Code)buffer[8];
+                                    var Event = (L2CAP.Code) buffer[8];
 
                                     switch (Event)
                                     {
@@ -434,17 +433,17 @@ namespace ScpControl
 
                                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
 
-                                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
-                                            L2_DCID = connection.Set((L2CAP.PSM)buffer[12], L2_SCID);
+                                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
+                                            L2_DCID = connection.Set((L2CAP.PSM) buffer[12], L2_SCID);
 
                                             L2CAP_Connection_Response(connection.HCI_Handle.Bytes, buffer[9], L2_SCID,
                                                 L2_DCID, 0x00);
                                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
-                                                (byte)L2CAP.Code.L2CAP_Connection_Response);
+                                                (byte) L2CAP.Code.L2CAP_Connection_Response);
 
                                             L2CAP_Configuration_Request(connection.HCI_Handle.Bytes, m_Id++, L2_SCID);
                                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                                (byte)L2CAP.Code.L2CAP_Configuration_Request);
+                                                (byte) L2CAP.Code.L2CAP_Configuration_Request);
                                             break;
 
                                         case L2CAP.Code.L2CAP_Connection_Response:
@@ -453,16 +452,17 @@ namespace ScpControl
 
                                             if (buffer[16] == 0) // Success
                                             {
-                                                L2_SCID = new byte[2] { buffer[12], buffer[13] };
-                                                L2_DCID = new byte[2] { buffer[14], buffer[15] };
+                                                L2_SCID = new byte[2] {buffer[12], buffer[13]};
+                                                L2_DCID = new byte[2] {buffer[14], buffer[15]};
 
-                                                var DCID = (ushort)(buffer[15] << 8 | buffer[14]);
+                                                var DCID = (ushort) (buffer[15] << 8 | buffer[14]);
 
                                                 connection.Set(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
 
                                                 L2CAP_Configuration_Request(connection.HCI_Handle.Bytes, m_Id++, L2_SCID);
-                                                Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                                    (byte)L2CAP.Code.L2CAP_Configuration_Request);
+                                                Log.DebugFormat("<< {0} [{1:X2}]",
+                                                    L2CAP.Code.L2CAP_Configuration_Request,
+                                                    (byte) L2CAP.Code.L2CAP_Configuration_Request);
                                             }
                                             break;
 
@@ -474,7 +474,7 @@ namespace ScpControl
 
                                             L2CAP_Configuration_Response(connection.HCI_Handle.Bytes, buffer[9], L2_SCID);
                                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
-                                                (byte)L2CAP.Code.L2CAP_Configuration_Response);
+                                                (byte) L2CAP.Code.L2CAP_Configuration_Response);
 
                                             if (connection.SvcStarted)
                                             {
@@ -500,14 +500,16 @@ namespace ScpControl
                                                 else
                                                 {
                                                     var DCID = BthConnection.DCID++;
-                                                    L2_DCID = new byte[2] { (byte)((DCID >> 0) & 0xFF), (byte)((DCID >> 8) & 0xFF) };
+                                                    L2_DCID = new byte[2]
+                                                    {(byte) ((DCID >> 0) & 0xFF), (byte) ((DCID >> 8) & 0xFF)};
 
-                                                    L2CAP_Connection_Request(connection.HCI_Handle.Bytes, m_Id++, L2_DCID,
+                                                    L2CAP_Connection_Request(connection.HCI_Handle.Bytes, m_Id++,
+                                                        L2_DCID,
                                                         L2CAP.PSM.HID_Service);
                                                     Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
                                                         L2CAP.Code.L2CAP_Connection_Request,
-                                                        (byte)L2CAP.Code.L2CAP_Connection_Request,
-                                                        (byte)L2CAP.PSM.HID_Service);
+                                                        (byte) L2CAP.Code.L2CAP_Connection_Request,
+                                                        (byte) L2CAP.PSM.HID_Service);
                                                 }
                                             }
                                             break;
@@ -517,12 +519,12 @@ namespace ScpControl
                                             Log.DebugFormat(">> {0} [{1:X2}] Handle [{2:X2}{3:X2}]", Event, buffer[8],
                                                 buffer[15], buffer[14]);
 
-                                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
+                                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
 
                                             L2CAP_Disconnection_Response(connection.HCI_Handle.Bytes, buffer[9], L2_SCID,
                                                 L2_SCID);
                                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Response,
-                                                (byte)L2CAP.Code.L2CAP_Disconnection_Response);
+                                                (byte) L2CAP.Code.L2CAP_Disconnection_Response);
                                             break;
 
                                         case L2CAP.Code.L2CAP_Disconnection_Response:
@@ -561,7 +563,8 @@ namespace ScpControl
                                     }
                                 }
                             }
-                            else if (buffer[8] == 0xA1 && buffer[9] == 0x01 && transfered == 58) connection.Parse(buffer);
+                            else if (buffer[8] == 0xA1 && buffer[9] == 0x01 && transfered == 58)
+                                connection.Parse(buffer);
                             else if (connection.InitReport(buffer))
                             {
                                 connection.CanStartHid = true;
@@ -571,7 +574,7 @@ namespace ScpControl
 
                                 L2CAP_Disconnection_Request(connection.HCI_Handle.Bytes, m_Id++, L2_SCID, L2_DCID);
                                 Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Request,
-                                    (byte)L2CAP.Code.L2CAP_Disconnection_Request);
+                                    (byte) L2CAP.Code.L2CAP_Disconnection_Request);
                             }
                         }
                     }
@@ -587,7 +590,7 @@ namespace ScpControl
 
         private void HicWorker(object o)
         {
-            var token = (CancellationToken)o;
+            var token = (CancellationToken) o;
             var nameList = new SortedDictionary<string, string>();
             StringBuilder nm = new StringBuilder(), debug = new StringBuilder();
 
@@ -613,22 +616,22 @@ namespace ScpControl
                 {
                     if (ReadIntPipe(Buffer, Buffer.Length, ref Transfered) && Transfered > 0)
                     {
-                        if (Enum.IsDefined(typeof(HCI.Event), Buffer[0]))
+                        if (Enum.IsDefined(typeof (HCI.Event), Buffer[0]))
                         {
-                            Event = (HCI.Event)Buffer[0];
+                            Event = (HCI.Event) Buffer[0];
 
                             switch (Event)
                             {
                                 case HCI.Event.HCI_Command_Complete_EV:
 
-                                    Command = (HCI.Command)(ushort)(Buffer[3] | Buffer[4] << 8);
+                                    Command = (HCI.Command) (ushort) (Buffer[3] | Buffer[4] << 8);
                                     Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, Buffer[0], Buffer[5],
                                         Command);
                                     break;
 
                                 case HCI.Event.HCI_Command_Status_EV:
 
-                                    Command = (HCI.Command)(ushort)(Buffer[4] | Buffer[5] << 8);
+                                    Command = (HCI.Command) (ushort) (Buffer[4] | Buffer[5] << 8);
                                     Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, Buffer[0], Buffer[2],
                                         Command);
 
@@ -671,7 +674,8 @@ namespace ScpControl
 
                                     if (Command == HCI.Command.HCI_Read_BD_ADDR && Buffer[5] == 0)
                                     {
-                                        m_Local = new[] { Buffer[6], Buffer[7], Buffer[8], Buffer[9], Buffer[10], Buffer[11] };
+                                        m_Local = new[]
+                                        {Buffer[6], Buffer[7], Buffer[8], Buffer[9], Buffer[10], Buffer[11]};
 
                                         Transfered = HCI_Read_Buffer_Size();
                                     }
@@ -820,27 +824,28 @@ namespace ScpControl
                                     if (!nameList.Any())
                                         break;
 
-                                    Connection = Add(Buffer[3], (byte)(Buffer[4] | 0x20), nameList[bd]);
+                                    Connection = Add(Buffer[3], (byte) (Buffer[4] | 0x20), nameList[bd]);
 
                                     if (nameList[bd].Contains("-ghic") || bd.StartsWith("00:26:5C") ||
                                         bd.StartsWith("00:16:FE:71")) Connection.ServiceByPass = true;
 
                                     Connection.Remote_Name = nameList[bd];
                                     nameList.Remove(bd);
-                                    Connection.BD_Address = new[] { Buffer[10], Buffer[9], Buffer[8], Buffer[7], Buffer[6], Buffer[5] };
+                                    Connection.BD_Address = new[]
+                                    {Buffer[10], Buffer[9], Buffer[8], Buffer[7], Buffer[6], Buffer[5]};
                                     break;
 
                                 case HCI.Event.HCI_Disconnection_Complete_EV:
 
-                                    Remove(Buffer[3], (byte)(Buffer[4] | 0x20));
+                                    Remove(Buffer[3], (byte) (Buffer[4] | 0x20));
                                     break;
 
                                 case HCI.Event.HCI_Number_Of_Completed_Packets_EV:
 
                                     for (byte Index = 0, Ptr = 3; Index < Buffer[2]; Index++, Ptr += 4)
                                     {
-                                        OnCompletedCount(Buffer[Ptr], (byte)(Buffer[Ptr + 1] | 0x20),
-                                            (ushort)(Buffer[Ptr + 2] | Buffer[Ptr + 3] << 8));
+                                        OnCompletedCount(Buffer[Ptr], (byte) (Buffer[Ptr + 1] | 0x20),
+                                            (ushort) (Buffer[Ptr + 2] | Buffer[Ptr + 3] << 8));
                                     }
                                     break;
 
@@ -852,7 +857,7 @@ namespace ScpControl
 
                                     for (var Index = 9; Index < Buffer.Length; Index++)
                                     {
-                                        if (Buffer[Index] > 0) nm.Append((char)Buffer[Index]);
+                                        if (Buffer[Index] > 0) nm.Append((char) Buffer[Index]);
                                         else break;
                                     }
 
@@ -928,13 +933,13 @@ namespace ScpControl
         {
             var Transfered = 0;
 
-            Buffer[0] = (byte)(((uint)Command >> 0) & 0xFF);
-            Buffer[1] = (byte)(((uint)Command >> 8) & 0xFF);
-            Buffer[2] = (byte)(Buffer.Length - 3);
+            Buffer[0] = (byte) (((uint) Command >> 0) & 0xFF);
+            Buffer[1] = (byte) (((uint) Command >> 8) & 0xFF);
+            Buffer[2] = (byte) (Buffer.Length - 3);
 
             SendTransfer(0x20, 0x00, 0x0000, Buffer, ref Transfered);
 
-            Log.DebugFormat("<< {0} [{1:X4}]", Command, (ushort)Command);
+            Log.DebugFormat("<< {0} [{1:X4}]", Command, (ushort) Command);
             return Transfered;
         }
 
@@ -1073,7 +1078,7 @@ namespace ScpControl
             var Buffer = new byte[6];
 
             Buffer[3] = Handle.Bytes[0];
-            Buffer[4] = (byte)(Handle.Bytes[1] ^ 0x20);
+            Buffer[4] = (byte) (Handle.Bytes[1] ^ 0x20);
             Buffer[5] = 0x01;
 
             return HCI_Command(HCI.Command.HCI_Set_Connection_Encryption, Buffer);
@@ -1125,7 +1130,7 @@ namespace ScpControl
             Buffer[11] = 0x01;
             Buffer[12] = 0x00;
             Buffer[13] = Offset[0];
-            Buffer[14] = (byte)(Offset[1] | 0x80);
+            Buffer[14] = (byte) (Offset[1] | 0x80);
             Buffer[15] = 0x01;
 
             return HCI_Command(HCI.Command.HCI_Create_Connection, Buffer);
@@ -1346,7 +1351,7 @@ namespace ScpControl
             var Buffer = new byte[6];
 
             Buffer[3] = Handle.Bytes[0];
-            Buffer[4] = (byte)(Handle.Bytes[1] ^ 0x20);
+            Buffer[4] = (byte) (Handle.Bytes[1] ^ 0x20);
             Buffer[5] = 0x13;
 
             return HCI_Command(HCI.Command.HCI_Disconnect, Buffer);
@@ -1362,10 +1367,10 @@ namespace ScpControl
             var Buffer = new byte[64];
 
             Buffer[0] = Handle[0];
-            Buffer[1] = (byte)(Handle[1] | 0x20);
-            Buffer[2] = (byte)(Data.Length + 4);
+            Buffer[1] = (byte) (Handle[1] | 0x20);
+            Buffer[2] = (byte) (Data.Length + 4);
             Buffer[3] = 0x00;
-            Buffer[4] = (byte)(Data.Length);
+            Buffer[4] = (byte) (Data.Length);
             Buffer[5] = 0x00;
             Buffer[6] = 0x01;
             Buffer[7] = 0x00;
@@ -1384,7 +1389,7 @@ namespace ScpControl
             Buffer[1] = Id;
             Buffer[2] = 0x04;
             Buffer[3] = 0x00;
-            Buffer[4] = (byte)Psm;
+            Buffer[4] = (byte) Psm;
             Buffer[5] = 0x00;
             Buffer[6] = DCID[0];
             Buffer[7] = DCID[1];
@@ -1418,7 +1423,7 @@ namespace ScpControl
 
             Buffer[0] = 0x04;
             Buffer[1] = Id;
-            Buffer[2] = (byte)(MTU ? 0x08 : 0x04);
+            Buffer[2] = (byte) (MTU ? 0x08 : 0x04);
             Buffer[3] = 0x00;
             Buffer[4] = DCID[0];
             Buffer[5] = DCID[1];
