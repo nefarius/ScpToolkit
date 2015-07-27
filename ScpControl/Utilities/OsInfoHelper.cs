@@ -47,14 +47,14 @@ namespace ScpControl.Utilities
 
         public static OsType OsParse(string info)
         {
-            var Valid = OsType.Invalid;
+            var valid = OsType.Invalid;
 
-            var architecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE").ToUpper().Trim();
+            var architecture = (Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") ?? "UNKNOWN").ToUpper().Trim();
 
             if (Environment.Is64BitOperatingSystem == Environment.Is64BitProcess &&
                 (architecture == "X86" || architecture == "AMD64"))
             {
-                Valid = OsType.Default;
+                valid = OsType.Default;
 
                 if (!string.IsNullOrEmpty(info))
                 {
@@ -66,27 +66,27 @@ namespace ScpControl.Utilities
                         {
                             case "XP":
 
-                                if (!Environment.Is64BitOperatingSystem) Valid = OsType.Xp;
+                                if (!Environment.Is64BitOperatingSystem) valid = OsType.Xp;
                                 break;
 
                             case "VISTA":
 
-                                Valid = OsType.Vista;
+                                valid = OsType.Vista;
                                 break;
 
                             case "7":
 
-                                Valid = OsType.Win7;
+                                valid = OsType.Win7;
                                 break;
 
                             case "8":
 
-                                Valid = OsType.Win8;
+                                valid = OsType.Win8;
                                 break;
 
                             case "8.1":
 
-                                Valid = OsType.Win81;
+                                valid = OsType.Win81;
                                 break;
 
                             case "SERVER":
@@ -97,17 +97,17 @@ namespace ScpControl.Utilities
 
                                         if (Token[4].ToUpper().Trim() == "R2")
                                         {
-                                            Valid = OsType.Win7;
+                                            valid = OsType.Win7;
                                         }
                                         else
                                         {
-                                            Valid = OsType.Vista;
+                                            valid = OsType.Vista;
                                         }
                                         break;
 
                                     case "2012":
 
-                                        Valid = OsType.Win8;
+                                        valid = OsType.Win8;
                                         break;
                                 }
                                 break;
@@ -116,7 +116,7 @@ namespace ScpControl.Utilities
                 }
             }
 
-            return Valid;
+            return valid;
         }
     }
 }
