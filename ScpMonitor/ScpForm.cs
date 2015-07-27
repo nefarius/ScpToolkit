@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 
 using ScpControl;
+using ScpControl.Utilities;
 
 namespace ScpMonitor 
 {

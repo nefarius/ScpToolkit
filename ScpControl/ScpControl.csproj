@@ -162,7 +162,9 @@
       <DependentUpon>UsbHub.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ILogExtensions.cs" />
+    <Compile Include="Utilities\KbmPost.cs" />
     <Compile Include="Utilities\OsInfoHelper.cs" />
+    <Compile Include="Utilities\ThemeUtil.cs" />
     <Compile Include="XmlMapper.cs">
       <SubType>Component</SubType>
     </Compile>
