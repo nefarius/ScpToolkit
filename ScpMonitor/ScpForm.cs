@@ -1,41 +1,35 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Text;
-using System.Drawing;
 using System.Configuration;
-
+using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
-
+using System.Text;
+using System.Windows.Forms;
 using ScpControl;
 using ScpControl.Utilities;
+using ScpMonitor.Properties;
 
-namespace ScpMonitor 
+namespace ScpMonitor
 {
-    public partial class ScpForm : Form 
+    public partial class ScpForm : Form
     {
-        protected RegistrySettings m_Config = new RegistrySettings();
+        protected bool FormSaved, ConfSaved, ProfSaved, FormVisible;
+        protected int FormX, FormY, ConfX, ConfY, ProfX, ProfY;
+        private byte[] m_Buffer = new byte[2];
+        private RegistrySettings m_Config = new RegistrySettings();
+        private bool m_Connected;
+        private char[] m_Delim = {'^'};
+        private UdpClient m_Server = new UdpClient();
+        private IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+        private ProfilesForm Profiles = new ProfilesForm();
+        private SettingsForm Settings = new SettingsForm();
 
-        protected Boolean FormSaved, ConfSaved, ProfSaved, FormVisible;
-        protected Int32   FormX, FormY, ConfX, ConfY, ProfX, ProfY;
-
-        protected Boolean m_Connected = false;
-
-        protected IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
-        protected UdpClient  m_Server   = new UdpClient();
-
-        protected Byte[] m_Buffer = new Byte[2];
-        protected Char[] m_Delim  = new Char[] { '^' };
-
-        protected SettingsForm Settings = new SettingsForm();
-        protected ProfilesForm Profiles = new ProfilesForm();
-
-        public ScpForm() 
+        public ScpForm()
         {
             InitializeComponent();
-            btnUp_1.Tag = (Byte) 1;
-            btnUp_2.Tag = (Byte) 2;
-            btnUp_3.Tag = (Byte) 3;
+            btnUp_1.Tag = (byte) 1;
+            btnUp_2.Tag = (byte) 2;
+            btnUp_3.Tag = (byte) 3;
 
             m_Server.Client.ReceiveTimeout = 250;
             m_Buffer[1] = 0x02;
@@ -57,7 +51,7 @@ namespace ScpMonitor
             if (FormSaved)
             {
                 StartPosition = FormStartPosition.Manual;
-                Location = new System.Drawing.Point(FormX, FormY);
+                Location = new Point(FormX, FormY);
             }
 
             if (!FormVisible)
@@ -69,25 +63,25 @@ namespace ScpMonitor
             if (ConfSaved)
             {
                 Settings.StartPosition = FormStartPosition.Manual;
-                Settings.Location = new System.Drawing.Point(ConfX, ConfY);
+                Settings.Location = new Point(ConfX, ConfY);
             }
 
             if (ProfSaved)
             {
                 Profiles.StartPosition = FormStartPosition.Manual;
-                Profiles.Location = new System.Drawing.Point(ProfX, ProfY);
+                Profiles.Location = new Point(ProfX, ProfY);
             }
 
-            lblHost.Text  = "Host Address : 00:00:00:00:00:00\r\n\r\n0\r\n\r\n0\r\n\r\n0";
+            lblHost.Text = "Host Address : 00:00:00:00:00:00\r\n\r\n0\r\n\r\n0\r\n\r\n0";
             lblPad_1.Text = "Pad 1 : DS3 00:00:00:00:00:00 - USB FFFFFFFF Charging";
 
-            Int32 SizeX = 50 + lblHost.Width + lblPad_1.Width;
-            Int32 SizeY = 20 + lblHost.Height;
+            var SizeX = 50 + lblHost.Width + lblPad_1.Width;
+            var SizeY = 20 + lblHost.Height;
 
-            lblPad_1.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 0));
-            lblPad_2.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 2));
-            lblPad_3.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 4));
-            lblPad_4.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 6));
+            lblPad_1.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*0));
+            lblPad_2.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*2));
+            lblPad_3.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*4));
+            lblPad_4.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*6));
 
             btnUp_1.Location = new Point(lblPad_2.Location.X - 26, lblPad_2.Location.Y - 6);
             btnUp_2.Location = new Point(lblPad_3.Location.X - 26, lblPad_3.Location.Y - 6);
@@ -96,40 +90,43 @@ namespace ScpMonitor
             ClientSize = new Size(SizeX, SizeY);
         }
 
-        public void Reset() 
+        public void Reset()
         {
             CenterToScreen();
         }
 
-        protected void Parse(Byte[] Buffer) 
+        private void Parse(byte[] Buffer)
         {
             if (!m_Connected)
             {
-                m_Connected       = true;
-                tmConfig.Enabled  = true;
+                m_Connected = true;
+                tmConfig.Enabled = true;
                 tmProfile.Enabled = true;
 
                 niTray.BalloonTipText = "Server Connected";
                 niTray.ShowBalloonTip(3000);
             }
 
-            String   Data  = Encoding.Unicode.GetString(Buffer);
-            String[] Split = Data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+            var Data = Encoding.Unicode.GetString(Buffer);
+            var Split = Data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
 
-            lblHost.Text  = Split[0];
+            lblHost.Text = Split[0];
 
             lblPad_1.Text = Split[1];
-            lblPad_2.Text = Split[2]; btnUp_1.Enabled = !Split[2].Contains("Disconnected");
-            lblPad_3.Text = Split[3]; btnUp_2.Enabled = !Split[3].Contains("Disconnected");
-            lblPad_4.Text = Split[4]; btnUp_3.Enabled = !Split[4].Contains("Disconnected");
+            lblPad_2.Text = Split[2];
+            btnUp_1.Enabled = !Split[2].Contains("Disconnected");
+            lblPad_3.Text = Split[3];
+            btnUp_2.Enabled = !Split[3].Contains("Disconnected");
+            lblPad_4.Text = Split[4];
+            btnUp_3.Enabled = !Split[4].Contains("Disconnected");
         }
 
-        protected void Clear() 
+        private void Clear()
         {
             if (m_Connected)
             {
-                m_Connected       = false;
-                tmConfig.Enabled  = false;
+                m_Connected = false;
+                tmConfig.Enabled = false;
                 tmProfile.Enabled = false;
 
                 niTray.BalloonTipText = "Server Disconnected";
@@ -149,7 +146,7 @@ namespace ScpMonitor
             btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
         }
 
-        protected void tmrUpdate_Tick(object sender, EventArgs e) 
+        private void tmrUpdate_Tick(object sender, EventArgs e)
         {
             lock (this)
             {
@@ -186,9 +183,9 @@ namespace ScpMonitor
 
                     if (m_Server.Send(m_Buffer, m_Buffer.Length, m_ServerEp) == m_Buffer.Length)
                     {
-                        IPEndPoint ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
+                        var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
-                        Byte[] Buffer = m_Server.Receive(ref ReferenceEp);
+                        var Buffer = m_Server.Receive(ref ReferenceEp);
 
                         if (Buffer.Length > 0) Parse(Buffer);
                     }
@@ -202,14 +199,14 @@ namespace ScpMonitor
             }
         }
 
-        protected void Form_Load(object sender, EventArgs e) 
+        private void Form_Load(object sender, EventArgs e)
         {
-            Icon = niTray.Icon = Properties.Resources.Scp_All;
+            Icon = niTray.Icon = Resources.Scp_All;
 
             tmrUpdate.Enabled = true;
         }
 
-        protected void Form_Closing(object sender, FormClosingEventArgs e) 
+        private void Form_Closing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing && niTray.Visible)
             {
@@ -243,14 +240,14 @@ namespace ScpMonitor
             }
         }
 
-        protected void btnUp_Click(object sender, EventArgs e) 
+        private void btnUp_Click(object sender, EventArgs e)
         {
-            Byte[] Buffer = { 0, 5, (Byte)((Button)sender).Tag };
+            byte[] Buffer = {0, 5, (byte) ((Button) sender).Tag};
 
             m_Server.Send(Buffer, Buffer.Length, m_ServerEp);
         }
 
-        protected void niTray_Click(object sender, MouseEventArgs e) 
+        private void niTray_Click(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -272,7 +269,7 @@ namespace ScpMonitor
             }
         }
 
-        protected void tmConfig_Click(object sender, EventArgs e) 
+        private void tmConfig_Click(object sender, EventArgs e)
         {
             if (!Settings.Visible)
             {
@@ -283,7 +280,7 @@ namespace ScpMonitor
             Settings.Activate();
         }
 
-        protected void tmProfile_Click(object sender, EventArgs e) 
+        private void tmProfile_Click(object sender, EventArgs e)
         {
             if (!Profiles.Visible)
             {
@@ -294,7 +291,7 @@ namespace ScpMonitor
             Profiles.Activate();
         }
 
-        protected void tmReset_Click(object sender, EventArgs e) 
+        private void tmReset_Click(object sender, EventArgs e)
         {
             lock (this)
             {
@@ -308,88 +305,88 @@ namespace ScpMonitor
             }
         }
 
-        protected void tmExit_Click(object sender, EventArgs e) 
+        private void tmExit_Click(object sender, EventArgs e)
         {
             niTray.Visible = false;
             Close();
         }
 
-        protected void Button_Enter(object sender, EventArgs e) 
+        private void Button_Enter(object sender, EventArgs e)
         {
             ThemeUtil.UpdateFocus(((Button) sender).Handle);
         }
     }
 
-    [SettingsProvider(typeof(ScpControl.RegistryProvider))]
-    public class RegistrySettings : ApplicationSettingsBase 
+    [SettingsProvider(typeof (RegistryProvider))]
+    public class RegistrySettings : ApplicationSettingsBase
     {
         [UserScopedSetting, DefaultSettingValue("true")]
-        public Boolean Visible 
+        public bool Visible
         {
-            get { return (Boolean) this["Visible"]; }
+            get { return (bool) this["Visible"]; }
             set { this["Visible"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
-        public Boolean FormSaved 
+        public bool FormSaved
         {
-            get { return (Boolean) this["FormSaved"]; }
+            get { return (bool) this["FormSaved"]; }
             set { this["FormSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
-        public Boolean ConfSaved 
+        public bool ConfSaved
         {
-            get { return (Boolean) this["ConfSaved"]; }
+            get { return (bool) this["ConfSaved"]; }
             set { this["ConfSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
-        public Boolean ProfSaved 
+        public bool ProfSaved
         {
-            get { return (Boolean)this["ProfSaved"]; }
+            get { return (bool) this["ProfSaved"]; }
             set { this["ProfSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
-        public Int32 FormX 
+        public int FormX
         {
-            get { return (Int32) this["FormX"]; }
+            get { return (int) this["FormX"]; }
             set { this["FormX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
-        public Int32 FormY 
+        public int FormY
         {
-            get { return (Int32)this["FormY"]; }
+            get { return (int) this["FormY"]; }
             set { this["FormY"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
-        public Int32 ConfX 
+        public int ConfX
         {
-            get { return (Int32)this["ConfX"]; }
+            get { return (int) this["ConfX"]; }
             set { this["ConfX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
-        public Int32 ConfY 
+        public int ConfY
         {
-            get { return (Int32)this["ConfY"]; }
+            get { return (int) this["ConfY"]; }
             set { this["ConfY"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
-        public Int32 ProfX 
+        public int ProfX
         {
-            get { return (Int32)this["ProfX"]; }
+            get { return (int) this["ProfX"]; }
             set { this["ProfX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
-        public Int32 ProfY 
+        public int ProfY
         {
-            get { return (Int32)this["ProfY"]; }
+            get { return (int) this["ProfY"]; }
             set { this["ProfY"] = value; }
         }
     }
