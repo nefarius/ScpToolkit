@@ -26,7 +26,7 @@ namespace ScpControl.Utilities
             {
                 foreach (var mo in mos.Get().Cast<ManagementObject>())
                 {
-                    info = Regex.Replace(mo.GetPropertyValue("Caption").ToString(), "[^A-Za-z0-9 ]", "").Trim();
+                    info = Regex.Replace(mo.GetPropertyValue("Caption").ToString(), @"[^A-Za-z0-9 \.]", "").Trim();
 
                     var spv = mo.GetPropertyValue("ServicePackMajorVersion");
 
@@ -34,8 +34,7 @@ namespace ScpControl.Utilities
                     {
                         info += " Service Pack " + spv;
                     }
-
-
+                    
                     info = string.Format("{0} ({1} {2})", info, Environment.OSVersion.Version,
                         Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"));
 
@@ -85,7 +84,7 @@ namespace ScpControl.Utilities
                                 Valid = OsType.Win8;
                                 break;
 
-                            case "81":
+                            case "8.1":
 
                                 Valid = OsType.Win81;
                                 break;
