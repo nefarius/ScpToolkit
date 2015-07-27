@@ -691,7 +691,7 @@ namespace ScpControl
         }
     }
 
-    public class Global
+    public static class Global
     {
         private static BackingStore m_Config = new BackingStore();
 
