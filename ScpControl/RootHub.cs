@@ -294,7 +294,7 @@ namespace ScpControl
 
                             var data = new byte[11];
                             // TODO: investigate
-                            var temp = Encoding.Unicode.GetBytes(m_Pad[serial].Local);
+                            var temp = m_Pad[serial].Local;
                             Log.DebugFormat("temp = {0}", temp);
 
                             data[0] = serial;
