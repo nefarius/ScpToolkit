@@ -138,12 +138,13 @@ namespace ScpControl
             return State == DsState.Connected;
         }
 
-        public new async Task<bool> Stop()
+        public override bool Stop()
         {
             if (IsActive)
             {
                 m_State = DsState.Reserved;
 
+                // disconnect all connected devices gracefully
                 foreach (var device in m_Connected.Values)
                 {
                     device.Disconnect();
@@ -156,9 +157,6 @@ namespace ScpControl
                 // reset tokens
                 _hciCancellationTokenSource = new CancellationTokenSource();
                 _l2CapCancellationTokenSource = new CancellationTokenSource();
-
-                // run async to avoid deadlock when called from ScpServer
-                await Task.Run(() => HCI_Reset());
 
                 m_Connected.Clear();
             }
@@ -921,6 +919,8 @@ namespace ScpControl
                     Log.ErrorFormat("Unexpected error in HCI_Worker_Thread: {0}", ex);
                 }
             }
+
+            HCI_Reset();
 
             Log.Debug("-- Bluetooth  : HCI_Worker_Thread Exiting");
         }
