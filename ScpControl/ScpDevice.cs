@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
+using LibUsbDotNet.Main;
+using LibUsbDotNet.WinUsb;
 
 namespace ScpControl
 {
@@ -541,15 +543,14 @@ namespace ScpControl
 
         protected virtual bool GetDeviceHandle(string Path)
         {
-            int LastError;
-
             m_FileHandle = CreateFile(Path, (GENERIC_WRITE | GENERIC_READ), FILE_SHARE_READ | FILE_SHARE_WRITE,
                 IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
 
             if (m_FileHandle == IntPtr.Zero || m_FileHandle == (IntPtr) INVALID_HANDLE_VALUE)
             {
                 m_FileHandle = IntPtr.Zero;
-                LastError = GetLastError();
+                var lastError = GetLastError();
+                Log.DebugFormat("LastError = {0}", lastError);
             }
 
             return !(m_FileHandle == IntPtr.Zero);
@@ -611,7 +612,7 @@ namespace ScpControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} {1}", ex.HelpLink, ex.Message);
+                Log.ErrorFormat("{0} {1}", ex.HelpLink, ex.Message);
                 throw;
             }
         }
@@ -649,7 +650,7 @@ namespace ScpControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} {1}", ex.HelpLink, ex.Message);
+                Log.ErrorFormat("{0} {1}", ex.HelpLink, ex.Message);
                 throw;
             }
             finally
