@@ -38,24 +38,24 @@ namespace ScpControl
             Byte Index = 0;
 
             // enumerate DS4 devices
-            for (Byte Instance = 0; Instance < _device.Length && Index < _device.Length; Instance++)
+            for (Byte instance = 0; instance < _device.Length && Index < _device.Length; instance++)
             {
                 try
                 {
-                    UsbDevice Current = new UsbDs4();
-                    Current.PadId = (DsPadId)Index;
+                    UsbDevice current = new UsbDs4();
+                    current.PadId = (DsPadId)Index;
 
-                    if (Current.Open(Instance))
+                    if (current.Open(instance))
                     {
-                        if (LogArrival(Current))
+                        if (LogArrival(current))
                         {
-                            Current.Report += new EventHandler<ReportEventArgs>(On_Report);
+                            current.Report += new EventHandler<ReportEventArgs>(On_Report);
 
-                            _device[Index++] = Current;
+                            _device[Index++] = current;
                         }
-                        else Current.Close();
+                        else current.Close();
                     }
-                    else Current.Close();
+                    else current.Close();
                 }
                 catch (Exception ex)
                 {
@@ -64,25 +64,25 @@ namespace ScpControl
                 }
             }
 
-            // enumerate DS4 devices
-            for (Byte Instance = 0; Instance < _device.Length && Index < _device.Length; Instance++)
+            // enumerate DS3 devices
+            for (Byte instance = 0; instance < _device.Length && Index < _device.Length; instance++)
             {
                 try
                 {
-                    UsbDevice Current = new UsbDs3();
-                    Current.PadId = (DsPadId)Index;
+                    UsbDevice current = new UsbDs3();
+                    current.PadId = (DsPadId)Index;
 
-                    if (Current.Open(Instance))
+                    if (current.Open(instance))
                     {
-                        if (LogArrival(Current))
+                        if (LogArrival(current))
                         {
-                            Current.Report += new EventHandler<ReportEventArgs>(On_Report);
+                            current.Report += new EventHandler<ReportEventArgs>(On_Report);
 
-                            _device[Index++] = Current;
+                            _device[Index++] = current;
                         }
-                        else Current.Close();
+                        else current.Close();
                     }
-                    else Current.Close();
+                    else current.Close();
                 }
                 catch (Exception ex)
                 {
