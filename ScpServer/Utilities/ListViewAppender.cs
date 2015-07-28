@@ -42,7 +42,7 @@ namespace ScpServer.Utilities
                     try
                     {
                         // queue method invokation on main thread
-                        _form.Invoke(new Action<LoggingEvent>(Append), loggingEvent);
+                        _form.BeginInvoke(new Action<LoggingEvent>(Append), loggingEvent);
                         return;
                     }
                     catch (ObjectDisposedException)
