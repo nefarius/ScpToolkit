@@ -37,6 +37,7 @@ namespace ScpControl
 
             Byte Index = 0;
 
+            // enumerate DS4 devices
             for (Byte Instance = 0; Instance < _device.Length && Index < _device.Length; Instance++)
             {
                 try
@@ -63,6 +64,7 @@ namespace ScpControl
                 }
             }
 
+            // enumerate DS4 devices
             for (Byte Instance = 0; Instance < _device.Length && Index < _device.Length; Instance++)
             {
                 try
