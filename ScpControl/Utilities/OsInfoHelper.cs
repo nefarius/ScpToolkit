@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Management;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using log4net;
+using log4net.Repository.Hierarchy;
 
 namespace ScpControl.Utilities
 {
@@ -18,28 +21,37 @@ namespace ScpControl.Utilities
 
     public static class OsInfoHelper
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public static string OsInfo()
         {
             var info = string.Empty;
 
-            using (var mos = new ManagementObjectSearcher("SELECT * FROM  Win32_OperatingSystem"))
+            try
             {
-                foreach (var mo in mos.Get().Cast<ManagementObject>())
+                using (var mos = new ManagementObjectSearcher("SELECT * FROM  Win32_OperatingSystem"))
                 {
-                    info = Regex.Replace(mo.GetPropertyValue("Caption").ToString(), @"[^A-Za-z0-9 \.]", "").Trim();
-
-                    var spv = mo.GetPropertyValue("ServicePackMajorVersion");
-
-                    if (spv != null && spv.ToString() != "0")
+                    foreach (var mo in mos.Get().Cast<ManagementObject>())
                     {
-                        info += " Service Pack " + spv;
-                    }
-                    
-                    info = string.Format("{0} ({1} {2})", info, Environment.OSVersion.Version,
-                        Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"));
+                        info = Regex.Replace(mo.GetPropertyValue("Caption").ToString(), @"[^A-Za-z0-9 \.]", "").Trim();
 
-                    mo.Dispose();
+                        var spv = mo.GetPropertyValue("ServicePackMajorVersion");
+
+                        if (spv != null && spv.ToString() != "0")
+                        {
+                            info += " Service Pack " + spv;
+                        }
+
+                        info = string.Format("{0} ({1} {2})", info, Environment.OSVersion.Version,
+                            Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"));
+
+                        mo.Dispose();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Couldn't query operating system information: {0}", ex);
             }
 
             return info;
