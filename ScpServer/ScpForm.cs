@@ -21,6 +21,12 @@ namespace ScpServer
         public ScpForm()
         {
             InitializeComponent();
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject);
+            };
+
             ThemeUtil.SetTheme(lvDebug);
 
             Pad[0] = rbPad_1;

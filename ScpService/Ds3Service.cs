@@ -23,6 +23,11 @@ namespace ScpService
         {
             InitializeComponent();
 
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject);
+            };
+
             _mTimer = new Timer(OnTimer, null, Timeout.Infinite, Timeout.Infinite);
         }
 

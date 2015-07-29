@@ -33,6 +33,11 @@ namespace ScpDriver
         {
             InitializeComponent();
 
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject);
+            };
+
             try
             {
                 // get absolute path to XML file
