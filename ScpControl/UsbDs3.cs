@@ -136,11 +136,6 @@ namespace ScpControl
             return false;
         }
 
-        private static byte IsBitSet(byte bitmask, int mask, int onTrue, int onFalse = 0x00)
-        {
-            return (byte)(((mask & bitmask) == mask) ? onTrue : onFalse);
-        }
-
         protected override void Parse(byte[] Report)
         {
             if (Report[0] != 0x01) return;
