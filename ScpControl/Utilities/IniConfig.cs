@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using IniParser;
+using IniParser.Model;
 using log4net;
 
 namespace ScpControl.Utilities
@@ -15,6 +16,9 @@ namespace ScpControl.Utilities
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        ///     Interprets the ScpControl.ini configuration file.
+        /// </summary>
         private IniConfig()
         {
             var parser = new FileIniDataParser();
@@ -26,20 +30,31 @@ namespace ScpControl.Utilities
                 return;
             }
 
-            var data = parser.ReadFile(fullPath);
+            IniData data;
+
+            // parse data from INI
+            try
+            {
+                data = parser.ReadFile(fullPath);
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Error while parsing configuration file: {0}", ex);
+                return;
+            }
 
             BthDongle = new BthDongleCfg
             {
                 SupportedNames =
-                    data["BthDongle"].Where(k => k.KeyName.Equals("SupportedName")).Select(v => v.Value),
-                SupportedMacs = data["BthDongle"].Where(k => k.KeyName.Equals("SupportedMac")).Select(v => v.Value)
+                    data["BthDongle"]["SupportedNames"].Split(',').Select(v => v.Trim()),
+                SupportedMacs = data["BthDongle"]["SupportedMacs"].Split(',').Select(v => v.Trim())
             };
 
             BthDs3 = new BthDs3Cfg
             {
                 SupportedNames =
-                    data["BthDs3"].Where(k => k.KeyName.Equals("SupportedName")).Select(v => v.Value),
-                SupportedMacs = data["BthDs3"].Where(k => k.KeyName.Equals("SupportedMac")).Select(v => v.Value)
+                    data["BthDs3"]["SupportedNames"].Split(',').Select(v => v.Trim()),
+                SupportedMacs = data["BthDs3"]["SupportedMacs"].Split(',').Select(v => v.Trim())
             };
         }
 

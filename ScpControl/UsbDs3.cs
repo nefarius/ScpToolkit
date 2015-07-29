@@ -141,79 +141,9 @@ namespace ScpControl
             return (byte)(((mask & bitmask) == mask) ? onTrue : onFalse);
         }
 
-        private void ConvertAfterglowToValidBytes(ref byte[] b)
-        {
-            var input = new byte[28];
-
-            for (int i = 0; i < 27; i++)
-            {
-                input[i] = b[i];
-                b[i] = 0x00;
-            }
-
-            b[4] |= (byte)(input[1] >> 4); // PS
-            b[2] |= (byte)(input[1] >> 0); // Select
-            b[2] |= (byte)(input[1] << 2); // Start
-
-            b[3] |= (byte)(input[0] >> 2); // L1
-            b[20] = input[15]; // L1
-
-            b[3] |= (byte)(((input[0] >> 5) & 1) << 3); // R1
-            b[21] = input[16]; // R1
-
-            b[3] |= (byte)(input[0] >> 6); // L2
-            b[18] = input[17]; // L2
-
-            b[3] |= (byte)(((input[0] >> 7) & 1) << 1); // R2
-            b[19] = input[18]; // R2
-
-            b[3] |= (byte)(((input[0] >> 3) & 1) << 4); // Triangle
-            b[22] = input[11]; // Triangle
-
-            b[3] |= (byte)(((input[0] >> 2) & 1) << 5); // Circle
-            b[23] = input[12]; // Circle
-
-            b[3] |= (byte)(((input[0] >> 1) & 1) << 6); // Cross
-            b[24] = input[13]; // Cross
-
-            b[3] |= (byte)(((input[0] >> 0) & 1) << 7); // Square
-            b[25] = input[14]; // Square
-
-            if (input[2] != 0x0F)
-            {
-                b[2] |= (byte) (((input[2] >> 1) & 1) << 5); // D-Pad right
-                b[15] = input[7]; // D-Pad right
-
-                b[2] |= (byte) (((input[2] >> 2) & 1) << 7); // D-Pad left
-                b[17] = input[8]; // D-Pad left
-
-                b[2] |= (byte) (((input[2] >> 0) & 0) >> 4); // D-Pad up
-                b[14] = input[9]; // D-Pad up
-
-                b[2] |= (byte) ((((input[2] >> 2) & 1) ^ 1) << 6); // D-Pad down
-                b[16] = input[10]; // D-Pad down
-            }
-
-            b[7] = input[4]; // Left Axis Y+
-            b[7] = input[4]; // Left Axis Y-
-            b[6] = input[3]; // Left Axis X-
-            b[6] = input[3]; // Left Axis X+
-
-            b[9] = input[6]; // Right Axis Y+
-            b[9] = input[6]; // Right Axis Y-
-            b[8] = input[5]; // Right Axis X-
-            b[8] = input[5]; // Right Axis X+
-
-            b[2] |= IsBitSet(input[1], 0x04, 0x02); // Left Thumb
-            b[2] |= IsBitSet(input[1], 0x08, 0x04); // Right Thumb
-        }
-
         protected override void Parse(byte[] Report)
         {
-            if (Report[26] == 0x02)
-                ConvertAfterglowToValidBytes(ref Report);
-            else
-                if (Report[0] != 0x01) return;
+            if (Report[0] != 0x01) return;
 
             m_Packet++;
 
