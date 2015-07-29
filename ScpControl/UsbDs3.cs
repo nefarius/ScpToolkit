@@ -140,7 +140,7 @@ namespace ScpControl
         {
             if (Report[0] != 0x01) return;
 
-            if (m_Packet++ < m_Packet)
+            if (m_Packet++ + 1 < m_Packet)
             {
                 Log.WarnFormat("Packet counter rolled over ({0}), resetting to 0", m_Packet);
                 m_Packet = 0;
