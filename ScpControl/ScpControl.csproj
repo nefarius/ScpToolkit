@@ -34,6 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="INIFileParser">
+      <HintPath>..\packages\ini-parser.2.2.2\lib\net20\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="LibUsbDotNet">
       <HintPath>..\packages\LibUsbDotNet.2.2.8\lib\LibUsbDotNet.dll</HintPath>
     </Reference>
@@ -162,6 +165,7 @@
       <DependentUpon>UsbHub.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ILogExtensions.cs" />
+    <Compile Include="Utilities\IniConfig.cs" />
     <Compile Include="Utilities\KbmPost.cs" />
     <Compile Include="Utilities\OsInfoHelper.cs" />
     <Compile Include="Utilities\ThemeUtil.cs" />
@@ -210,6 +214,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="ScpControl.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

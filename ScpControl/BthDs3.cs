@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
+using ScpControl.Utilities;
 
 namespace ScpControl
 {
@@ -90,7 +92,9 @@ namespace ScpControl
             CanStartHid = false;
             m_State = DsState.Connected;
 
-            if (Local.StartsWith("00:26:5C")) // Fix up for Fake DS3
+            var bdc = IniConfig.Instance.BthDs3;
+
+            if (bdc.SupportedMacs.Any(m => Local.StartsWith(m))) // Fix up for Fake DS3
             {
                 Log.WarnFormat("Fake DS3 detected: {0} [{1}]", Remote_Name, Local);
 
@@ -101,7 +105,7 @@ namespace ScpControl
                 m_Report[5] = 0x00;
             }
 
-            if (Remote_Name.EndsWith("-ghic")) // Fix up for Fake DS3
+            if (bdc.SupportedNames.Any(n => Remote_Name.EndsWith(n))) // Fix up for Fake DS3
             {
                 Log.WarnFormat("Fake DS3 detected: {0} [{1}]", Remote_Name, Local);
 
