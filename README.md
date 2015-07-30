@@ -1,6 +1,11 @@
 # ScpServer
 XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
 
+## Credits
+ * Major props to [original author Scarlet.Crush](http://forums.pcsx2.net/User-Scarlet-Crush) for developing this awesome toolkit!
+ * [MadMilkman.Ini parsing library by Mario Z.](https://github.com/MarioZ/MadMilkman.Ini)
+ * To be extended...
+
 ## Installation requirements
  * [Microsoft .NET Framework 4.5](http://www.microsoft.com/de-at/download/details.aspx?id=42642)
  * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/de-at/download/details.aspx?id=40784)
@@ -84,3 +89,5 @@ To be filled...
  * `USB\VID_0A5C&PID_21E3`
  * `USB\VID_05AC&PID_8216`
  * `USB\VID_0A5C&PID_21B4`
+
+
