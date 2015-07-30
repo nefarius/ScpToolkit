@@ -34,7 +34,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Scp.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.5\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -54,6 +60,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ButtonMappingEntryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -61,6 +71,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ButtonMappingEntryControl.xaml.cs">
+      <DependentUpon>ButtonMappingEntryControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -85,6 +98,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +107,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Scp.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Icons\48px-PS3_Circle.png" />
+    <Resource Include="Icons\48px-PS3_Cross.png" />
+    <Resource Include="Icons\48px-PS3_Dpad.png" />
+    <Resource Include="Icons\48px-PS3_L1.png" />
+    <Resource Include="Icons\48px-PS3_L2.png" />
+    <Resource Include="Icons\48px-PS3_L3.png" />
+    <Resource Include="Icons\48px-PS3_Left_Stick.png" />
+    <Resource Include="Icons\48px-PS3_R1.png" />
+    <Resource Include="Icons\48px-PS3_R2.png" />
+    <Resource Include="Icons\48px-PS3_Right_Stick %281%29.png" />
+    <Resource Include="Icons\48px-PS3_Right_Stick.png" />
+    <Resource Include="Icons\48px-PS3_Select.png" />
+    <Resource Include="Icons\48px-PS3_Sqaure.png" />
+    <Resource Include="Icons\48px-PS3_Start.png" />
+    <Resource Include="Icons\48px-PS3_Triangle.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
