@@ -243,7 +243,7 @@ namespace ScpControl
         ///     Prototype helper method to convert input byte stream of Afterglow Wireless Controllers to valid PS3 packet.
         /// </summary>
         /// <param name="b">The input byte stream captured from the controller.</param>
-        private void ConvertAfterglowToValidBytes(ref byte[] b)
+        private static void ConvertAfterglowToValidBytes(ref byte[] b)
         {
             // identify the fake controller
             // TODO: add more checks
