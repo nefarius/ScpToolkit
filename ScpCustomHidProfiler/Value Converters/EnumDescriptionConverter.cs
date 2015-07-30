@@ -10,6 +10,9 @@ namespace ScpCustomHidProfiler.Value_Converters
     {
         private string GetEnumDescription(Enum enumObj)
         {
+            if (enumObj == null)
+                return string.Empty;
+
             FieldInfo fieldInfo = enumObj.GetType().GetField(enumObj.ToString());
 
             object[] attribArray = fieldInfo.GetCustomAttributes(false);

@@ -31,8 +31,13 @@
         <Image Grid.Column="0" x:Name="ButtonImage" Width="48" Height="48" HorizontalAlignment="Left" />
 
         <!-- Type of target command -->
-        <ComboBox Grid.Column="1" x:Name="TargetTypeComboBox" VerticalAlignment="Center" HorizontalAlignment="Stretch"
-                  Margin="10" ItemsSource="{Binding Source={StaticResource MyCommandTypes}}" SelectedIndex="0">
+        <ComboBox Grid.Column="1"
+                  VerticalAlignment="Center" 
+                  HorizontalAlignment="Stretch"
+                  Margin="10" 
+                  ItemsSource="{Binding Source={StaticResource MyCommandTypes}}" 
+                  SelectedIndex="0"
+                  SelectionChanged="TargetTypeComboBox_OnSelectionChanged">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
@@ -41,7 +46,11 @@
         </ComboBox>
 
         <!-- Target command -->
-        <ComboBox Grid.Column="2" x:Name="TargetCommandComboBox" VerticalAlignment="Center"
-                  HorizontalAlignment="Stretch" Margin="10" />
+        <ComboBox Grid.Column="2" 
+                  x:Name="TargetCommandComboBox" 
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch" 
+                  Margin="10" 
+                  SelectedIndex="1"/>
     </Grid>
 </UserControl>
