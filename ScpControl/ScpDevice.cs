@@ -146,15 +146,16 @@ namespace ScpControl
         {
             if (!m_IsActive) return false;
 
-            var Setup = new WINUSB_SETUP_PACKET();
-
-            Setup.RequestType = RequestType;
-            Setup.Request = Request;
-            Setup.Value = Value;
-            Setup.Index = 0;
-            Setup.Length = (ushort) Buffer.Length;
-
-            return WinUsb_ControlTransfer(m_WinUsbHandle, Setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
+            var setup = new WINUSB_SETUP_PACKET
+            {
+                RequestType = RequestType,
+                Request = Request,
+                Value = Value,
+                Index = 0,
+                Length = (ushort) Buffer.Length
+            };
+            
+            return WinUsb_ControlTransfer(m_WinUsbHandle, setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
         }
 
         #endregion
