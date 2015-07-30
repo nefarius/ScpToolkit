@@ -22,7 +22,13 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
 
 ## Compatible Controllers
 To be filled...
+ * `USB\VID_054C&PID_0268`
+  * Original Sony DualShock 3 Controller
  * `USB\VID_054C&PID_0268&REV_0100`
+  * BigBen BB4401 PS3PADRFLX (3rd Party Controller)
+ * `USB\VID_0E6F&PID_0214&REV_0580`
+  * Afterglow AP.2 Wireless Controller for PS3 (3rd Party Controller)
+  * Although it's a wireless controller, technically it's an USB controller because it uses a proprietary protocol and ships with it's own USB dongle which can't/must not be paired manually.
 
 ## Compatible Bluetooth Dongles
 To be filled...
