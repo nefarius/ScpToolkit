@@ -19,6 +19,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
 ### Optional
  * A supported Bluetooth 2.0 (or higher) compatible USB dongle **with EDR** (**E**nhanced **D**ata **R**ate)
   * See **Compatible Bluetooth Dongles**
+ * For DS4s to be useable the minimal supported Bluetooth version is **2.1**!
 
 ## Compatible Controllers
 To be filled...
