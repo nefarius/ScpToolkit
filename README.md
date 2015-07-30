@@ -22,6 +22,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
 
 ## Compatible Controllers
 To be filled...
+ * `USB\VID_054C&PID_0268&REV_0100`
 
 ## Compatible Bluetooth Dongles
 To be filled...
