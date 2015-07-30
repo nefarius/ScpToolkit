@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
+using ScpControl.Utilities;
+using ComboBox = System.Windows.Controls.ComboBox;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace ScpCustomHidProfiler
 {
@@ -16,7 +20,7 @@ namespace ScpCustomHidProfiler
         {
             InitializeComponent();
 
-            TargetCommandComboBox.ItemsSource = Enum.GetValues(typeof(Key)).Cast<Key>();
+            TargetCommandComboBox.ItemsSource = ValidKeys;
         }
 
         public Uri ImageSource
@@ -46,15 +50,31 @@ namespace ScpCustomHidProfiler
                 case CommandTypes.GamepadButton:
                     break;
                 case CommandTypes.Keystrokes:
-                    TargetCommandComboBox.ItemsSource = Enum.GetValues(typeof (Key)).Cast<Key>();
+                    TargetCommandComboBox.ItemsSource = ValidKeys;
                     break;
                 case CommandTypes.MouseAxis:
                     break;
                 case CommandTypes.MouseButtons:
-                    TargetCommandComboBox.ItemsSource = Enum.GetValues(typeof (MouseButton)).Cast<MouseButton>();
+                    TargetCommandComboBox.ItemsSource =
+                        Enum.GetValues(typeof (KbmPost.MouseButtons)).Cast<KbmPost.MouseButtons>();
                     break;
             }
         }
+
+        private static readonly IEnumerable<Keys> ValidKeys = Enum.GetValues(typeof (Keys))
+            .Cast<Keys>()
+            .Where(k => k != Keys.None 
+                && k != Keys.KeyCode 
+                && k != Keys.Modifiers
+                && k != Keys.Packet
+                && k != Keys.NoName
+                && k != Keys.LButton
+                && k != Keys.RButton
+                && k != Keys.MButton
+                && k != Keys.XButton1
+                && k != Keys.XButton2
+                && k != Keys.HanguelMode
+                && k != Keys.IMEAceept);
 
         public static readonly DependencyProperty ImageSourceProperty =
             DependencyProperty.Register

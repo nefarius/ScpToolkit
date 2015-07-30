@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace ScpCustomHidProfiler
 {
@@ -21,5 +16,8 @@ namespace ScpCustomHidProfiler
 
     public class ButtonMappingEntry
     {
+        public CommandTypes CommandType { get; set; }
+
+        public object CommandTarget { get; set; }
     }
 }
