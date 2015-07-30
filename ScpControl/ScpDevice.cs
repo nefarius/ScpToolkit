@@ -154,7 +154,7 @@ namespace ScpControl
                 Index = 0,
                 Length = (ushort) Buffer.Length
             };
-            
+
             return WinUsb_ControlTransfer(m_WinUsbHandle, setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
         }
 
