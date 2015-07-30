@@ -16,6 +16,7 @@ namespace ScpControl.Utilities
         Win7,
         Win8,
         Win81,
+        Win10,
         Default
     };
 
@@ -99,6 +100,11 @@ namespace ScpControl.Utilities
                             case "8.1":
 
                                 valid = OsType.Win81;
+                                break;
+
+                            case "10":
+
+                                valid = OsType.Win10;
                                 break;
 
                             case "SERVER":
