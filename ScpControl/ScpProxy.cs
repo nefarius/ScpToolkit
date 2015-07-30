@@ -6,13 +6,14 @@ using System.Reflection;
 using System.Text;
 using System.Xml;
 using log4net;
+using ScpControl.Utilities;
 
 namespace ScpControl
 {
     public sealed partial class ScpProxy : Component
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly char[] m_Delim = {'^'};
+        private static readonly char[] m_Delim = { '^' };
         private readonly IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
         private readonly XmlMapper m_Mapper = new XmlMapper();
         private readonly UdpClient m_Server = new UdpClient();
@@ -46,7 +47,7 @@ namespace ScpControl
 
                 try
                 {
-                    byte[] Send = {0, 6};
+                    byte[] Send = { 0, 6 };
 
                     if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
                     {
@@ -80,7 +81,7 @@ namespace ScpControl
 
                 try
                 {
-                    byte[] Send = {0, 3};
+                    byte[] Send = { 0, 3 };
 
                     if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
                     {
@@ -150,7 +151,7 @@ namespace ScpControl
 
             try
             {
-                byte[] Buffer = {0, 0x08};
+                byte[] Buffer = { 0, 0x08 };
 
                 if (m_Server.Send(Buffer, Buffer.Length, m_ServerEp) == Buffer.Length)
                 {
@@ -241,7 +242,7 @@ namespace ScpControl
 
             try
             {
-                byte[] Buffer = {(byte) Pad, 0x0A};
+                byte[] Buffer = { (byte)Pad, 0x0A };
 
                 if (m_Server.Send(Buffer, Buffer.Length, m_ServerEp) == Buffer.Length)
                 {
@@ -254,8 +255,8 @@ namespace ScpControl
                         var Local = new byte[6];
                         Array.Copy(Buffer, 5, Local, 0, Local.Length);
 
-                        Detail = new DsDetail((DsPadId) Buffer[0], (DsState) Buffer[1], (DsModel) Buffer[2], Local,
-                            (DsConnection) Buffer[3], (DsBattery) Buffer[4]);
+                        Detail = new DsDetail((DsPadId)Buffer[0], (DsState)Buffer[1], (DsModel)Buffer[2], Local,
+                            (DsConnection)Buffer[3], (DsBattery)Buffer[4]);
                     }
                 }
             }
@@ -275,7 +276,7 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    byte[] Buffer = {(byte) Pad, 0x01, Large, Small};
+                    byte[] Buffer = { (byte)Pad, 0x01, Large, Small };
 
                     m_Server.Send(Buffer, Buffer.Length, m_ServerEp);
                     Rumbled = true;
@@ -352,19 +353,13 @@ namespace ScpControl
 
         private void NativeFeed_Worker_DoWork(object sender, DoWorkEventArgs e)
         {
-            var Packet = new DsPacket();
-            var Buffer = new byte[ReportEventArgs.Length];
+            var packet = new DsPacket();
+            var buffer = new byte[ReportEventArgs.Length];
 
             while (!NativeFeed_Worker.CancellationPending)
             {
-                try
-                {
-                    m_Client.Client.Receive(Buffer);
-                    LogPacket(Packet.Load(Buffer));
-                }
-                catch
-                {
-                }
+                Log.TryCatchSilent(() => m_Client.Client.Receive(buffer));
+                LogPacket(packet.Load(buffer));
             }
 
             m_Client.Close();
@@ -405,15 +400,15 @@ namespace ScpControl
 
         internal DsPacket Load(byte[] Native)
         {
-            Array.Copy(Native, (int) DsOffset.Address, m_Local, 0, m_Local.Length);
+            Array.Copy(Native, (int)DsOffset.Address, m_Local, 0, m_Local.Length);
 
             m_Detail.Load(
-                (DsPadId) Native[(int) DsOffset.Pad],
-                (DsState) Native[(int) DsOffset.State],
-                (DsModel) Native[(int) DsOffset.Model],
+                (DsPadId)Native[(int)DsOffset.Pad],
+                (DsState)Native[(int)DsOffset.State],
+                (DsModel)Native[(int)DsOffset.Model],
                 m_Local,
-                (DsConnection) Native[(int) DsOffset.Connection],
-                (DsBattery) Native[(int) DsOffset.Battery]
+                (DsConnection)Native[(int)DsOffset.Connection],
+                (DsBattery)Native[(int)DsOffset.Battery]
                 );
 
             m_Packet = Native[4] << 0 | Native[5] << 8 | Native[6] << 16 | Native[7] << 24;
@@ -423,10 +418,10 @@ namespace ScpControl
             {
                 case DsModel.DS3:
                     m_Ds3Button =
-                        (Ds3Button) ((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24));
+                        (Ds3Button)((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24));
                     break;
                 case DsModel.DS4:
-                    m_Ds4Button = (Ds4Button) ((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16));
+                    m_Ds4Button = (Ds4Button)((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16));
                     break;
             }
 
@@ -439,10 +434,10 @@ namespace ScpControl
             {
                 case DsModel.DS3:
                     m_Ds3Button =
-                        (Ds3Button) ((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24));
+                        (Ds3Button)((Native[10] << 0) | (Native[11] << 8) | (Native[12] << 16) | (Native[13] << 24));
                     break;
                 case DsModel.DS4:
-                    m_Ds4Button = (Ds4Button) ((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16));
+                    m_Ds4Button = (Ds4Button)((Native[13] << 0) | (Native[14] << 8) | ((Native[15] & 0x03) << 16));
                     break;
             }
         }
@@ -465,14 +460,14 @@ namespace ScpControl
         {
             if (m_Detail.Model != DsModel.DS3) throw new InvalidEnumArgumentException();
 
-            return Native[(int) Offset];
+            return Native[(int)Offset];
         }
 
         public byte Axis(Ds4Axis Offset)
         {
             if (m_Detail.Model != DsModel.DS4) throw new InvalidEnumArgumentException();
 
-            return Native[(int) Offset];
+            return Native[(int)Offset];
         }
     }
 
