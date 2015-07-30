@@ -38,6 +38,8 @@ namespace ScpCustomHidProfiler
         public ButtonMappingEntryControl()
         {
             InitializeComponent();
+
+            
         }
 
         private static void OnImageSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)

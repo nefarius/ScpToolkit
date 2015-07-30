@@ -60,6 +60,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
     <Page Include="ButtonMappingEntryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -72,6 +73,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ButtonMappingEntry.cs" />
     <Compile Include="ButtonMappingEntryControl.xaml.cs">
       <DependentUpon>ButtonMappingEntryControl.xaml</DependentUpon>
     </Compile>

@@ -3,8 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:myself="clr-namespace:ScpCustomHidProfiler"
+             xmlns:vc="clr-namespace:ScpCustomHidProfiler.Value_Converters"
              mc:Ignorable="d"
              d:DesignHeight="48" d:DesignWidth="400">
+    <UserControl.Resources>
+        <vc:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+
+        <ObjectDataProvider MethodName="GetValues"
+                            ObjectType="{x:Type sys:Enum}"
+                            x:Key="MyCommandTypes">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="myself:CommandTypes" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60" />
@@ -14,11 +29,19 @@
 
         <!-- Button Icon -->
         <Image Grid.Column="0" x:Name="ButtonImage" Width="48" Height="48" HorizontalAlignment="Left" />
-        
+
         <!-- Type of target command -->
-        <ComboBox Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10"/>
-        
+        <ComboBox Grid.Column="1" x:Name="TargetTypeComboBox" VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                  Margin="10" ItemsSource="{Binding Source={StaticResource MyCommandTypes}}" SelectedIndex="0">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
         <!-- Target command -->
-        <ComboBox Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10"/>
+        <ComboBox Grid.Column="2" x:Name="TargetCommandComboBox" VerticalAlignment="Center"
+                  HorizontalAlignment="Stretch" Margin="10" />
     </Grid>
 </UserControl>
