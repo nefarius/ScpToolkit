@@ -88,6 +88,10 @@
       <DependentUpon>BthHub.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\CommonInfo.cs" />
+    <Compile Include="ScpCore\BackingStore.cs" />
+    <Compile Include="ScpCore\Global.cs" />
+    <Compile Include="ScpCore\HCI.cs" />
+    <Compile Include="ScpCore\L2CAP.cs" />
     <Compile Include="ScpMapper.cs">
       <SubType>Component</SubType>
     </Compile>

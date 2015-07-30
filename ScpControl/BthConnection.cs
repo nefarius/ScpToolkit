@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using log4net;
+using ScpControl.ScpCore;
 
 namespace ScpControl
 {
