@@ -29,6 +29,7 @@ To be filled...
  * `USB\VID_0E6F&PID_0214&REV_0580`
   * Afterglow AP.2 Wireless Controller for PS3 (3rd Party Controller)
   * Although it's a wireless controller, technically it's an USB controller because it uses a proprietary protocol and ships with it's own USB dongle which can't/must not be paired manually.
+  * Rumble, LED-Control and battery charging status isn't supported/implemented yet.
 
 ## Compatible Bluetooth Dongles
 To be filled...
