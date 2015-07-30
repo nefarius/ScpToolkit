@@ -456,7 +456,7 @@ namespace ScpControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} {1}", ex.HelpLink, ex.Message);
+                Log.ErrorFormat("{0} {1}", ex.HelpLink, ex.Message);
                 throw;
             }
             finally
@@ -525,7 +525,7 @@ namespace ScpControl
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} {1}", ex.HelpLink, ex.Message);
+                Log.ErrorFormat("{0} {1}", ex.HelpLink, ex.Message);
                 throw;
             }
             finally
