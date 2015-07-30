@@ -51,6 +51,7 @@ namespace ScpCustomHidProfiler
                 case CommandTypes.MouseAxis:
                     break;
                 case CommandTypes.MouseButtons:
+                    TargetCommandComboBox.ItemsSource = Enum.GetValues(typeof (MouseButton)).Cast<MouseButton>();
                     break;
             }
         }
