@@ -92,6 +92,9 @@
     <Compile Include="ScpCore\Global.cs" />
     <Compile Include="ScpCore\HCI.cs" />
     <Compile Include="ScpCore\L2CAP.cs" />
+    <Compile Include="ScpDevice.Interop.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ScpMapper.cs">
       <SubType>Component</SubType>
     </Compile>
