@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
-using LibUsbDotNet.Main;
-using LibUsbDotNet.WinUsb;
 
 namespace ScpControl
 {

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using IniParser;
-using IniParser.Model;
 using log4net;
+using MadMilkman.Ini;
 
 namespace ScpControl.Utilities
 {
@@ -21,7 +19,7 @@ namespace ScpControl.Utilities
         /// </summary>
         private IniConfig()
         {
-            var parser = new FileIniDataParser();
+            var ini = new IniFile();
             var fullPath = Path.Combine(WorkingDirectory, CfgFile);
 
             if (!File.Exists(fullPath))
@@ -30,32 +28,35 @@ namespace ScpControl.Utilities
                 return;
             }
 
-            IniData data;
-
             // parse data from INI
             try
             {
-                data = parser.ReadFile(fullPath);
+                ini.Load(fullPath);
+
+                string[] values;
+
+                BthDongle = new BthDongleCfg();
+                {
+                    ini.Sections["BthDongle"].Keys["SupportedNames"].TryParseValue(out values);
+                    BthDongle.SupportedNames = values;
+
+                    ini.Sections["BthDongle"].Keys["SupportedMacs"].TryParseValue(out values);
+                    BthDongle.SupportedMacs = values;
+                }
+
+                BthDs3 = new BthDs3Cfg();
+                {
+                    ini.Sections["BthDs3"].Keys["SupportedNames"].TryParseValue(out values);
+                    BthDs3.SupportedNames = values;
+
+                    ini.Sections["BthDs3"].Keys["SupportedMacs"].TryParseValue(out values);
+                    BthDs3.SupportedMacs = values;
+                }
             }
             catch (Exception ex)
             {
                 Log.FatalFormat("Error while parsing configuration file: {0}", ex);
-                return;
             }
-
-            BthDongle = new BthDongleCfg
-            {
-                SupportedNames =
-                    data["BthDongle"]["SupportedNames"].Split(',').Select(v => v.Trim()),
-                SupportedMacs = data["BthDongle"]["SupportedMacs"].Split(',').Select(v => v.Trim())
-            };
-
-            BthDs3 = new BthDs3Cfg
-            {
-                SupportedNames =
-                    data["BthDs3"]["SupportedNames"].Split(',').Select(v => v.Trim()),
-                SupportedMacs = data["BthDs3"]["SupportedMacs"].Split(',').Select(v => v.Trim())
-            };
         }
 
         public static IniConfig Instance
