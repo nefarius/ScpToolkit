@@ -93,6 +93,8 @@ namespace ScpControl
         {
             var opened = false;
 
+            Log.Info("Initializing root hub");
+
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                 Assembly.GetExecutingAssembly().GetName().Version);
             Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
@@ -111,6 +113,8 @@ namespace ScpControl
         {
             if (m_Started) return m_Started;
 
+            Log.Info("Starting root hub");
+
             scpMap.Start();
 
             m_Started |= scpBus.Start();
@@ -120,6 +124,8 @@ namespace ScpControl
             if (m_Started)
                 _udpWorkerTask = Task.Factory.StartNew(UdpWorker,
                     _udpWorkerCancellationToken.Token);
+
+            Log.Info("Root hub started");
 
             return m_Started;
         }
@@ -331,6 +337,8 @@ namespace ScpControl
 
         public new async Task<bool> Stop()
         {
+            Log.Info("Root hub stop requested");
+
             // no need to stop if task isn't running anymore
             if (_udpWorkerTask.Status != TaskStatus.Running)
                 return !m_Started;
@@ -346,6 +354,8 @@ namespace ScpControl
             scpBus.Stop();
             usbHub.Stop();
             bthHub.Stop();
+
+            Log.Info("Root hub stopped");
 
             return !m_Started;
         }
