@@ -4,7 +4,6 @@ using System.Management;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using log4net;
-using log4net.Repository.Hierarchy;
 
 namespace ScpControl.Utilities
 {
@@ -62,75 +61,67 @@ namespace ScpControl.Utilities
         {
             var valid = OsType.Invalid;
 
-            var architecture = (Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") ?? "UNKNOWN").ToUpper().Trim();
+            var architecture =
+                (Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE") ?? "UNKNOWN").ToUpper().Trim();
 
             if (Environment.Is64BitOperatingSystem == Environment.Is64BitProcess &&
                 (architecture == "X86" || architecture == "AMD64"))
             {
                 valid = OsType.Default;
 
-                if (!string.IsNullOrEmpty(info))
+                if (string.IsNullOrEmpty(info)) return valid;
+
+                var token = info.Split(' ');
+
+                if (token[0].ToUpper().Trim() != "MICROSOFT" || token[1].ToUpper().Trim() != "WINDOWS") return valid;
+
+                switch (token[2].ToUpper().Trim())
                 {
-                    var Token = info.Split(' ');
+                    case "XP":
 
-                    if (Token[0].ToUpper().Trim() == "MICROSOFT" && Token[1].ToUpper().Trim() == "WINDOWS")
-                    {
-                        switch (Token[2].ToUpper().Trim())
+                        if (!Environment.Is64BitOperatingSystem) valid = OsType.Xp;
+                        break;
+
+                    case "VISTA":
+
+                        valid = OsType.Vista;
+                        break;
+
+                    case "7":
+
+                        valid = OsType.Win7;
+                        break;
+
+                    case "8":
+
+                        valid = OsType.Win8;
+                        break;
+
+                    case "8.1":
+
+                        valid = OsType.Win81;
+                        break;
+
+                    case "10":
+
+                        valid = OsType.Win10;
+                        break;
+
+                    case "SERVER":
+
+                        switch (token[3].ToUpper().Trim())
                         {
-                            case "XP":
+                            case "2008":
 
-                                if (!Environment.Is64BitOperatingSystem) valid = OsType.Xp;
+                                valid = token[4].ToUpper().Trim() == "R2" ? OsType.Win7 : OsType.Vista;
                                 break;
 
-                            case "VISTA":
-
-                                valid = OsType.Vista;
-                                break;
-
-                            case "7":
-
-                                valid = OsType.Win7;
-                                break;
-
-                            case "8":
+                            case "2012":
 
                                 valid = OsType.Win8;
                                 break;
-
-                            case "8.1":
-
-                                valid = OsType.Win81;
-                                break;
-
-                            case "10":
-
-                                valid = OsType.Win10;
-                                break;
-
-                            case "SERVER":
-
-                                switch (Token[3].ToUpper().Trim())
-                                {
-                                    case "2008":
-
-                                        if (Token[4].ToUpper().Trim() == "R2")
-                                        {
-                                            valid = OsType.Win7;
-                                        }
-                                        else
-                                        {
-                                            valid = OsType.Vista;
-                                        }
-                                        break;
-
-                                    case "2012":
-
-                                        valid = OsType.Win8;
-                                        break;
-                                }
-                                break;
                         }
-                    }
+                        break;
                 }
             }
 

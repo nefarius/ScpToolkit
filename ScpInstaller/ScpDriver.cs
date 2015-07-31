@@ -14,19 +14,19 @@ namespace ScpDriver
     {
         /// <remarks />
         public string Service { get; set; }
-        public bool UseService { get { return !string.IsNullOrEmpty(Service) && bool.Parse(Service); } }
+        public bool InstallService { get { return !string.IsNullOrEmpty(Service) && bool.Parse(Service); } }
 
         /// <remarks />
         public string Bluetooth { get; set; }
-        public bool UseBluetooth { get { return !string.IsNullOrEmpty(Bluetooth) && bool.Parse(Bluetooth); } }
+        public bool InstallBluetooth { get { return !string.IsNullOrEmpty(Bluetooth) && bool.Parse(Bluetooth); } }
 
         /// <remarks />
         public string DualShock3 { get; set; }
-        public bool UseDualShock3 { get { return !string.IsNullOrEmpty(DualShock3) && bool.Parse(DualShock3); } }
+        public bool InstallDualShock3 { get { return !string.IsNullOrEmpty(DualShock3) && bool.Parse(DualShock3); } }
 
         /// <remarks />
         public string VirtualBus { get; set; }
-        public bool UseVirtualBus { get { return !string.IsNullOrEmpty(VirtualBus) && bool.Parse(VirtualBus); } }
+        public bool InstallVirtualBus { get { return !string.IsNullOrEmpty(VirtualBus) && bool.Parse(VirtualBus); } }
 
         public static ScpDriver Deserialize(string file)
         {

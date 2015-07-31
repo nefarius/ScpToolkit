@@ -41,20 +41,20 @@ namespace ScpDriver
             try
             {
                 // get absolute path to XML file
-                var cfgFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                var cfgFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
                     Assembly.GetExecutingAssembly().GetName().Name + ".xml");
                 // deserialize file content
                 var cfg = ScpDriver.Deserialize(cfgFile);
 
                 // set display options
-                cbService.Checked = cbService.Visible = cfg.UseService;
-                cbBluetooth.Checked = cbBluetooth.Visible = cfg.UseBluetooth;
-                cbDS3.Checked = cbDS3.Visible = cfg.UseDualShock3;
-                cbBus.Checked = cbBus.Visible = cfg.UseVirtualBus;
+                cbService.Checked = cbService.Visible = cfg.InstallService;
+                cbBluetooth.Checked = cbBluetooth.Visible = cfg.InstallBluetooth;
+                cbDS3.Checked = cbDS3.Visible = cfg.InstallDualShock3;
+                cbBus.Checked = cbBus.Visible = cfg.InstallVirtualBus;
 
                 // Don't install Service if Bus not Enabled
-                if (!cfg.UseVirtualBus)
-                    cbService.Checked = cbService.Visible = cfg.UseVirtualBus;
+                if (!cfg.InstallVirtualBus)
+                    cbService.Checked = cbService.Visible = cfg.InstallVirtualBus;
             }
             catch (Exception ex)
             {
