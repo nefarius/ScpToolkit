@@ -18,16 +18,15 @@ namespace ScpDriver
     public partial class ScpForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly string[] _desc = { "SUCCESS", "INFO   ", "WARNING", "ERROR  " };
         private Difx _installer;
         private Cursor _saved;
-        private bool BTH_Driver_Configured;
-        private bool Bus_Device_Configured;
-        private bool Bus_Driver_Configured;
-        private bool DS3_Driver_Configured;
-        private bool Reboot;
-        private bool Scp_Service_Configured;
-        private OsType Valid = OsType.Invalid;
+        private bool _bthDriverConfigured;
+        private bool _busDeviceConfigured;
+        private bool _busDriverConfigured;
+        private bool _ds3DriverConfigured;
+        private bool _reboot;
+        private bool _scpServiceConfigured;
+        private OsType _valid = OsType.Invalid;
 
         public ScpForm()
         {
@@ -147,11 +146,11 @@ namespace ScpDriver
             _installer.onLogEvent += Logger;
 
             var info = OsInfoHelper.OsInfo();
-            Valid = OsInfoHelper.OsParse(info);
+            _valid = OsInfoHelper.OsParse(info);
 
             Log.InfoFormat("{0} detected", info);
 
-            if (Valid == OsType.Invalid)
+            if (_valid == OsType.Invalid)
             {
                 btnInstall.Enabled = false;
                 btnUninstall.Enabled = false;
@@ -163,7 +162,7 @@ namespace ScpDriver
                 btnInstall.Enabled = true;
                 btnUninstall.Enabled = true;
 
-                Log.InfoFormat("Selected {0} configuration", Valid);
+                Log.InfoFormat("Selected {0} configuration", _valid);
             }
 
             Icon = Resources.Scp_All;
@@ -180,11 +179,11 @@ namespace ScpDriver
             btnUninstall.Enabled = false;
             btnExit.Enabled = false;
 
-            Bus_Device_Configured = false;
-            Bus_Driver_Configured = false;
-            DS3_Driver_Configured = false;
-            BTH_Driver_Configured = false;
-            Scp_Service_Configured = false;
+            _busDeviceConfigured = false;
+            _busDriverConfigured = false;
+            _ds3DriverConfigured = false;
+            _bthDriverConfigured = false;
+            _scpServiceConfigured = false;
 
             pbRunning.Style = ProgressBarStyle.Marquee;
 
@@ -214,30 +213,30 @@ namespace ScpDriver
                                 "root\\ScpVBus\0\0"))
                             {
                                 Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Created");
-                                Bus_Device_Configured = true;
+                                _busDeviceConfigured = true;
                             }
                         }
 
                         result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"), flags,
                             out rebootRequired);
-                        Reboot |= rebootRequired;
-                        if (result == 0) Bus_Driver_Configured = true;
+                        _reboot |= rebootRequired;
+                        if (result == 0) _busDriverConfigured = true;
                     }
 
                     if (cbBluetooth.Checked)
                     {
                         result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"), flags,
                             out rebootRequired);
-                        Reboot |= rebootRequired;
-                        if (result == 0) BTH_Driver_Configured = true;
+                        _reboot |= rebootRequired;
+                        if (result == 0) _bthDriverConfigured = true;
                     }
 
                     if (cbDS3.Checked)
                     {
                         result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"), flags,
                             out rebootRequired);
-                        Reboot |= rebootRequired;
-                        if (result == 0) DS3_Driver_Configured = true;
+                        _reboot |= rebootRequired;
+                        if (result == 0) _ds3DriverConfigured = true;
                     }
 
                     if (cbService.Checked)
@@ -254,9 +253,9 @@ namespace ScpDriver
 
                         if (Start(Settings.Default.ScpServiceName))
                             Logger(DifxLog.DIFXAPI_INFO, 0, Settings.Default.ScpServiceName + " Started.");
-                        else Reboot = true;
+                        else _reboot = true;
 
-                        Scp_Service_Configured = true;
+                        _scpServiceConfigured = true;
                     }
                 }
                 catch (Win32Exception w32Ex)
@@ -290,23 +289,23 @@ namespace ScpDriver
             Cursor = _saved;
 
             Log.Info("Install Succeeded.");
-            if (Reboot)
+            if (_reboot)
                 Log.InfoFormat("[Reboot Required]");
 
             Log.Info("-- Install Summary --");
-            if (Scp_Service_Configured)
+            if (_scpServiceConfigured)
                 Log.Info("SCP DS3 Service installed");
 
-            if (Bus_Device_Configured)
+            if (_busDeviceConfigured)
                 Log.Info("Bus Device installed");
 
-            if (Bus_Driver_Configured)
+            if (_busDriverConfigured)
                 Log.Info("Bus Driver installed");
 
-            if (DS3_Driver_Configured)
+            if (_ds3DriverConfigured)
                 Log.Info("DS3 USB Driver installed");
 
-            if (BTH_Driver_Configured)
+            if (_bthDriverConfigured)
                 Log.Info("Bluetooth Driver installed");
 
             #endregion
@@ -323,11 +322,11 @@ namespace ScpDriver
             btnUninstall.Enabled = false;
             btnExit.Enabled = false;
 
-            Bus_Device_Configured = false;
-            Bus_Driver_Configured = false;
-            DS3_Driver_Configured = false;
-            BTH_Driver_Configured = false;
-            Scp_Service_Configured = false;
+            _busDeviceConfigured = false;
+            _busDriverConfigured = false;
+            _ds3DriverConfigured = false;
+            _bthDriverConfigured = false;
+            _scpServiceConfigured = false;
 
             pbRunning.Style = ProgressBarStyle.Marquee;
 
@@ -359,7 +358,7 @@ namespace ScpDriver
                         }
 
                         service.Uninstall(state);
-                        Scp_Service_Configured = true;
+                        _scpServiceConfigured = true;
                     }
 
                     if (cbBluetooth.Checked)
@@ -367,8 +366,8 @@ namespace ScpDriver
                         result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"),
                             DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
                             out rebootRequired);
-                        Reboot |= rebootRequired;
-                        if (result == 0) BTH_Driver_Configured = true;
+                        _reboot |= rebootRequired;
+                        if (result == 0) _bthDriverConfigured = true;
                     }
 
                     if (cbDS3.Checked)
@@ -376,8 +375,8 @@ namespace ScpDriver
                         result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"),
                             DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
                             out rebootRequired);
-                        Reboot |= rebootRequired;
-                        if (result == 0) DS3_Driver_Configured = true;
+                        _reboot |= rebootRequired;
+                        if (result == 0) _ds3DriverConfigured = true;
                     }
 
                     if (cbBus.Checked && Devcon.Find(Settings.Default.Ds3BusClassGuid, ref devPath, ref instanceId))
@@ -385,12 +384,12 @@ namespace ScpDriver
                         if (Devcon.Remove(Settings.Default.Ds3BusClassGuid, devPath, instanceId))
                         {
                             Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Removed");
-                            Bus_Device_Configured = true;
+                            _busDeviceConfigured = true;
 
                             _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"),
                                 DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
                                 out rebootRequired);
-                            Reboot |= rebootRequired;
+                            _reboot |= rebootRequired;
                         }
                         else
                         {
@@ -435,24 +434,24 @@ namespace ScpDriver
             Cursor = _saved;
 
             Log.Info("Uninstall Succeeded.");
-            if (Reboot)
+            if (_reboot)
                 Log.Info(" [Reboot Required]");
 
             Log.Info("-- Uninstall Summary --");
 
-            if (Scp_Service_Configured)
+            if (_scpServiceConfigured)
                 Log.Info("SCP DS3 Service uninstalled");
 
-            if (Bus_Device_Configured)
+            if (_busDeviceConfigured)
                 Log.Info("Bus Device uninstalled");
 
-            if (Bus_Driver_Configured)
+            if (_busDriverConfigured)
                 Log.Info("Bus Driver uninstalled");
 
-            if (DS3_Driver_Configured)
+            if (_ds3DriverConfigured)
                 Log.Info("DS3 USB Driver uninstalled");
 
-            if (BTH_Driver_Configured)
+            if (_bthDriverConfigured)
                 Log.Info("Bluetooth Driver uninstalled");
 
             #endregion
