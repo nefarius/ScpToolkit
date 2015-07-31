@@ -1,0 +1,430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ScpControl.BthConnection" Collapsed="true">
+    <Position X="1.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgFAIAAAACEABEQMgBCGAIACAAqAACAgQEgAAAABACA=</HashCode>
+      <FileName>BthConnection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ScpControl.BthDevice" Collapsed="true">
+    <Position X="1.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAwggYBIACgRAAMEIkKAEAAGAgREIABIICBADAKABBA=</HashCode>
+      <FileName>BthDevice.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ScpControl.BthDongle" Collapsed="true">
+    <Position X="0.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAPEFAKQCCChYgHcoSGiVXIGEAJAADYYICALBGCYDCA=</HashCode>
+      <FileName>BthDongle.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ScpControl.BthDs3" Collapsed="true">
+    <Position X="0.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAiAAAAAAAgCgEAACAAABAAAACABAAAIAAAA=</HashCode>
+      <FileName>BthDs3.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.BthDs4" Collapsed="true">
+    <Position X="2.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAACiAAAAAIAgCgEAADAAAAAAAAAABACAMAAQA=</HashCode>
+      <FileName>BthDs4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.BthHub" Collapsed="true">
+    <Position X="0.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAICAAIACAAACAAAACAAAQgCBAIAAAAAiAAAA=</HashCode>
+      <FileName>BthHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.BusDevice" Collapsed="true">
+    <Position X="7.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAgAAAAACSBIAAIAAKkAAACAAAAKCQAIAAQBAiABAA=</HashCode>
+      <FileName>BusDevice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.RootHub" Collapsed="true">
+    <Position X="3" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBACAAAAKCQAJgCAAACAIIACAAAQASjAIAIAAgiAUCA=</HashCode>
+      <FileName>RootHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpDevice" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhQbkIkADWACKKIB+ZWIhGiiBDgoAIGSKEoFgDmAxAw=</HashCode>
+      <FileName>ScpDevice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpHub" Collapsed="true">
+    <Position X="3" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAAIAAAAACAAIACAAgAASBgIAAAQAiABCA=</HashCode>
+      <FileName>ScpHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpMapper" Collapsed="true">
+    <Position X="10" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACGAAgWAAIgAAIACAAAAGACoAAAAgKBAAQQCAACA=</HashCode>
+      <FileName>ScpMapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpPadState" Collapsed="true">
+    <Position X="11.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AFgAAAAECCAABoAAwAKAAABCCggEYBCQAAIgAAIEEAA=</HashCode>
+      <FileName>ScpPadState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpProxy" Collapsed="true">
+    <Position X="13.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAgOAACCQAAoAACACAIBACAAgAABAhIAAAQAIASCA=</HashCode>
+      <FileName>ScpProxy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.DsPacket" Collapsed="true">
+    <Position X="18.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEEAgBAABAAAAQAAAAAAAAAAAAAgAIAAASAAAAAASAA=</HashCode>
+      <FileName>ScpProxy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.DsDetail" Collapsed="true">
+    <Position X="15.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgEAgAAAAIQBAgAgAAAAAAAAAABBAAAgAAgABAAAAAA=</HashCode>
+      <FileName>ScpProxy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpTimer" Collapsed="true">
+    <Position X="15.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAgAIkAAIKAAAACIAAACAQAIQAAAAAAQAA=</HashCode>
+      <FileName>ScpTimer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Ds3ButtonMap" Collapsed="true">
+    <Position X="18.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Ds3AxisMap" Collapsed="true">
+    <Position X="15.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Ds3ButtonAxisMap" Collapsed="true">
+    <Position X="17" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Ds4ButtonMap" Collapsed="true">
+    <Position X="13.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Ds4AxisMap" Collapsed="true">
+    <Position X="10" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Ds4ButtonAxisMap" Collapsed="true">
+    <Position X="11.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ProfileMap" Collapsed="true">
+    <Position X="15.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Profile" Collapsed="true">
+    <Position X="13.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAIgAAAAAAAAABiAAQIAQECAAAgBCAQSAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.BthHandle" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAASEgAAAAAAABAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ScpControl.DsNull" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACgQAAEEAAAAEAAAAgDAAAAACAgABAIAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ScpControl.ArrivalEventArgs" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ReportEventArgs" Collapsed="true">
+    <Position X="18.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAgAABAAAAAAACAAAAAAAAABAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.RegistryProvider" Collapsed="true">
+    <Position X="17" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAACAACAAAEAQAAAAAAAgAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.UsbDevice" Collapsed="true">
+    <Position X="4" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>Ag0ggYRIACgRAAEEAkKAEQAGAgDEIQBIZCgABAKEBBA=</HashCode>
+      <FileName>UsbDevice.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ScpControl.UsbDs3" Collapsed="true">
+    <Position X="3" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAACAACgAIAAAAgCgEAACAAABAAAACAAAAAIAAAA=</HashCode>
+      <FileName>UsbDs3.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.UsbDs4" Collapsed="true">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAACAACgAIAAIAgCgEAADAAAAAAACAAAACAMAAQA=</HashCode>
+      <FileName>UsbDs4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.UsbHub" Collapsed="true">
+    <Position X="5.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAIAAAAACAAAACAAAAgCBAIAAAAAiAAAA=</HashCode>
+      <FileName>UsbHub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.XmlMapper" Collapsed="true">
+    <Position X="18.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAkAAADAAkwAAAAKAAZACBAgIABAgAAAAEABACAA=</HashCode>
+      <FileName>XmlMapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpCore.BackingStore" Collapsed="true">
+    <Position X="11.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>0AIAgJBAAAFQAgAJAABAAAAICCQCCAAgEGAAEgIBQJA=</HashCode>
+      <FileName>ScpCore\BackingStore.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpCore.Global" Collapsed="true">
+    <Position X="11.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAIAgIAAAAQAAAABAAAAAWgiADAAAJACCAgAAgIAAKA=</HashCode>
+      <FileName>ScpCore\Global.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpCore.HCI" Collapsed="true">
+    <Position X="13.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpCore\HCI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpCore.L2CAP" Collapsed="true">
+    <Position X="10" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScpCore\L2CAP.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Utilities.FuncExtenstion" Collapsed="true">
+    <Position X="10" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utilities\ILogExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Utilities.IlogExtensions" Collapsed="true">
+    <Position X="15.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAEAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Utilities\ILogExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Utilities.IniConfig" Collapsed="true">
+    <Position X="17" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAkAAAAAAAAAAAAgAAAAAQCAAAAQAAAA=</HashCode>
+      <FileName>Utilities\IniConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Utilities.KbmPost" Collapsed="true">
+    <Position X="18.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUAAQEAAAIAAAAwCAAAAQAAAAACAAAAQACAAAACAEAg=</HashCode>
+      <FileName>Utilities\KbmPost.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Utilities.OsInfoHelper" Collapsed="true">
+    <Position X="11.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAgAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Utilities\OsInfoHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Utilities.ThemeUtil" Collapsed="true">
+    <Position X="17" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAQAAAAAAQCAAAAAACAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Utilities\ThemeUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="ScpControl.IDsDevice" Collapsed="true">
+    <Position X="11.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACgQAAEAAAAAEAAAAgDAAAAAAAgABAIAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ScpControl.IBthDevice" Collapsed="true">
+    <Position X="10" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAIAAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="ScpControl.DsOffset" Collapsed="true">
+    <Position X="13.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgEAAAAAAAAAAgAAAAACAAgABAAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.DsState" Collapsed="true">
+    <Position X="17" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAQAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.DsConnection" Collapsed="true">
+    <Position X="18.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAEA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.DsBattery" Collapsed="true">
+    <Position X="17" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAgAAAAAAAAgAAAAAAgAEQAEEAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.DsPadId" Collapsed="true">
+    <Position X="15.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAIgAAAkAAIA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.DsModel" Collapsed="true">
+    <Position X="11.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.DsMatch" Collapsed="true">
+    <Position X="10" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAgAAAAAAAAAAAAAAAAAAAAAAAAEBAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.X360Button" Collapsed="true">
+    <Position X="11.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQAAAAIAACAAAAIAAAAAAAAAAAAAAAAACACAIEEA8AI=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.X360Axis" Collapsed="true">
+    <Position X="10" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAgIQAAABAAAAAAAABACAAAAAAAAACAAAAAAMAAEAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.Ds3Button" Collapsed="true">
+    <Position X="11.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CACAACIAACAAAAABAABAABAAAAggAAgACACgQAEAAAI=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.Ds3Axis" Collapsed="true">
+    <Position X="10" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAFAAAABAABAABAAACggCAgACACgAAEAAAI=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.Ds4Button" Collapsed="true">
+    <Position X="15.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CICQACIAAAAAAAABAABAABAAAAggAAgACACgAAFAAAI=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.Ds4Axis" Collapsed="true">
+    <Position X="13.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAFAAAAAAABAABAAACAACAAAAAAAAAEAAAA=</HashCode>
+      <FileName>ScpUtil.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ScpControl.Utilities.OsType" Collapsed="true">
+    <Position X="18.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAEAAAAAAIAAAAIEIAAAAAAAAAAAAAAACBAAA=</HashCode>
+      <FileName>Utilities\OsInfoHelper.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

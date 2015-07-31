@@ -218,6 +218,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ScpControlClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="ScpControl.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
