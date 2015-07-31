@@ -109,18 +109,17 @@ namespace ScpControl
 
         public override bool Start()
         {
-            if (!m_Started)
-            {
-                scpMap.Start();
+            if (m_Started) return m_Started;
 
-                m_Started |= scpBus.Start();
-                m_Started |= usbHub.Start();
-                m_Started |= bthHub.Start();
+            scpMap.Start();
 
-                if (m_Started)
-                    _udpWorkerTask = Task.Factory.StartNew(UdpWorker,
-                        _udpWorkerCancellationToken.Token);
-            }
+            m_Started |= scpBus.Start();
+            m_Started |= usbHub.Start();
+            m_Started |= bthHub.Start();
+
+            if (m_Started)
+                _udpWorkerTask = Task.Factory.StartNew(UdpWorker,
+                    _udpWorkerCancellationToken.Token);
 
             return m_Started;
         }
