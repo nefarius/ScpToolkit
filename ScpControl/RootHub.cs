@@ -165,6 +165,10 @@ namespace ScpControl
 
                             case ScpRequest.StatusData: // Status Data Request
                                 {
+#if DEBUG
+                                    Log.Debug("Received StatusData request");
+#endif
+
                                     var sb = new StringBuilder();
 
                                     sb.Append(Dongle);
@@ -179,7 +183,13 @@ namespace ScpControl
                                     sb.Append(Pad[3]);
                                     sb.Append('^');
 
-                                    protocol.SendAsync(request, sb.ToString().ToBytes().ToArray());
+                                    var data = sb.ToString().ToBytes().ToArray();
+
+                                    protocol.SendAsync(request, data);
+
+#if DEBUG
+                                    Log.DebugFormat("Sent StatusData: {0}", data.Length);
+#endif
                                 }
                                 break;
 
@@ -296,8 +306,8 @@ namespace ScpControl
                     }
                 });
 
-                socket.Disconnected += (sender, e) => Log.InfoFormat("Socket disconnected from command channel {0}", sender.GetHashCode());
-                socket.Disposed += (sender, e) => Log.InfoFormat("Socket disposed from command channel {0}", sender.GetHashCode());
+                socket.Disconnected += (sender, e) => Log.InfoFormat("Client disconnected from command channel {0}", sender.GetHashCode());
+                socket.Disposed += (sender, e) => Log.InfoFormat("Client disposed from command channel {0}", sender.GetHashCode());
 
                 #endregion
             });
@@ -323,7 +333,7 @@ namespace ScpControl
                 socket.Disconnected += (sender, e) =>
                 {
                     Log.InfoFormat(
-                        "Socket disconnected from native feed channel {0}",
+                        "Client disconnected from native feed channel {0}",
                         sender.GetHashCode());
 
                     lock (this) // TODO: possible deadlock!
@@ -333,7 +343,7 @@ namespace ScpControl
                 };
                 socket.Disposed += (sender, e) =>
                 {
-                    Log.InfoFormat("Socket disposed from native feed channel {0}",
+                    Log.InfoFormat("Client disposed from native feed channel {0}",
                         sender.GetHashCode());
 
                     lock (this) // TODO: possible deadlock!

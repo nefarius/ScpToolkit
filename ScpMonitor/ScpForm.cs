@@ -146,6 +146,15 @@ namespace ScpMonitor
 
         private void Parse(byte[] buffer)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    Parse(buffer);
+                }));
+                return;
+            }
+
             if (!m_Connected)
             {
                 m_Connected = true;
@@ -159,21 +168,15 @@ namespace ScpMonitor
             var data = buffer.ToUtf8();
             var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
 
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new Action(() =>
-                {
-                    lblHost.Text = split[0];
+            lblHost.Text = split[0];
 
-                    lblPad_1.Text = split[1];
-                    lblPad_2.Text = split[2];
-                    btnUp_1.Enabled = !split[2].Contains("Disconnected");
-                    lblPad_3.Text = split[3];
-                    btnUp_2.Enabled = !split[3].Contains("Disconnected");
-                    lblPad_4.Text = split[4];
-                    btnUp_3.Enabled = !split[4].Contains("Disconnected");
-                }));
-            }
+            lblPad_1.Text = split[1];
+            lblPad_2.Text = split[2];
+            btnUp_1.Enabled = !split[2].Contains("Disconnected");
+            lblPad_3.Text = split[3];
+            btnUp_2.Enabled = !split[3].Contains("Disconnected");
+            lblPad_4.Text = split[4];
+            btnUp_3.Enabled = !split[4].Contains("Disconnected");
         }
 
         private void Clear()
