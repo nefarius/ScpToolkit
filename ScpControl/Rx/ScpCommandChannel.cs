@@ -28,7 +28,7 @@ namespace ScpControl.Rx
         T Payload { get; set; }
     }
 
-    public class ScpBytePacket : EventArgs, IScpPacket<byte[]>
+    public class ScpCommandPacket : EventArgs, IScpPacket<byte[]>
     {
         public ScpRequest Request { get; set; }
         public byte[] Payload { get; set; }
@@ -39,7 +39,7 @@ namespace ScpControl.Rx
     ///     has a fixed length header and a variable length string
     ///     payload.
     /// </summary>
-    public class ScpCommandChannel : IChannel<ScpBytePacket>
+    public class ScpCommandChannel : IChannel<ScpCommandPacket>
     {
         private readonly IReactiveSocket _socket;
 
@@ -54,12 +54,12 @@ namespace ScpControl.Rx
             Receiver = from header in socket.Receiver.Buffer(sizeof (int))
                 let length = BitConverter.ToInt32(header.ToArray(), 0)
                 let body = socket.Receiver.Take(length).ToEnumerable().ToArray()
-                select new ScpBytePacket {Request = (ScpRequest) body[0], Payload = body.Skip(1).ToArray()};
+                select new ScpCommandPacket {Request = (ScpRequest) body[0], Payload = body.Skip(1).ToArray()};
         }
 
-        public IObservable<ScpBytePacket> Receiver { get; private set; }
+        public IObservable<ScpCommandPacket> Receiver { get; private set; }
 
-        public Task SendAsync(ScpBytePacket message)
+        public Task SendAsync(ScpCommandPacket message)
         {
             try
             {
@@ -73,15 +73,15 @@ namespace ScpControl.Rx
 
         public Task SendAsync(ScpRequest request, byte[] payload)
         {
-            return SendAsync(new ScpBytePacket {Request = request, Payload = payload});
+            return SendAsync(new ScpCommandPacket {Request = request, Payload = payload});
         }
 
         public Task SendAsync(ScpRequest request)
         {
-            return SendAsync(new ScpBytePacket {Request = request});
+            return SendAsync(new ScpCommandPacket {Request = request});
         }
 
-        private static byte[] Convert(ScpBytePacket message)
+        private static byte[] Convert(ScpCommandPacket message)
         {
             byte[] payload;
 

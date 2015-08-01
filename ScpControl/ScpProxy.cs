@@ -84,11 +84,13 @@ namespace ScpControl
                                     local,
                                     (DsConnection)buffer[3], (DsBattery)buffer[4]);
 
-                                _padDetailEvent.Set();
+                                if (!_padDetailEvent.Set())
+                                    Log.ErrorFormat("Couldn't signal pad detail event");
                                 break;
                             case ScpRequest.NativeFeedAvailable:
                                 _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
-                                _nativeFeedEnabledEvent.Set();
+                                if (!_nativeFeedEnabledEvent.Set())
+                                    Log.ErrorFormat("Couldn't signal native feed available event");
                                 break;
                             case ScpRequest.StatusData:
                                 OnStatusData(packet);
@@ -111,7 +113,7 @@ namespace ScpControl
                 var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
                 rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(buffer =>
                 {
-                    if(buffer.Length <= 0)
+                    if (buffer.Length <= 0)
                         return;
 
                     var packet = new DsPacket();
@@ -137,11 +139,11 @@ namespace ScpControl
 
         public event EventHandler<DsPacket> Packet;
 
-        public event EventHandler<ScpBytePacket> StatusDataReceived;
+        public event EventHandler<ScpCommandPacket> StatusDataReceived;
 
-        public event EventHandler<ScpBytePacket> XmlReceived;
+        public event EventHandler<ScpCommandPacket> XmlReceived;
 
-        public event EventHandler<ScpBytePacket> ConfigReceived;
+        public event EventHandler<ScpCommandPacket> ConfigReceived;
 
         public XmlMapper Mapper
         {
@@ -161,7 +163,7 @@ namespace ScpControl
                 // send request to root hub
                 _rootHubCommandChannel.SendAsync(ScpRequest.ProfileList);
                 // wait for response to arrive
-                _activeProfileEvent.WaitOne();
+                _activeProfileEvent.WaitOne(500);
 
                 return _activeProfile;
             }
@@ -179,12 +181,12 @@ namespace ScpControl
 
                 _rootHubCommandChannel.SendAsync(ScpRequest.NativeFeedAvailable);
 
-                _nativeFeedEnabledEvent.WaitOne();
+                _nativeFeedEnabledEvent.WaitOne(500);
 
                 return _nativeFeedAvailable;
             }
         }
-        
+
         public async Task<bool> Start()
         {
             try
@@ -211,8 +213,11 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    _rxCommandClient.Disconnect();
-                    _rxFeedClient.Disconnect();
+                    if (_rxCommandClient.IsConnected)
+                        _rxCommandClient.Disconnect();
+
+                    if (_rxFeedClient.IsConnected)
+                        _rxFeedClient.Disconnect();
 
                     m_Active = false;
                 }
@@ -421,7 +426,7 @@ namespace ScpControl
             }
         }
 
-        private void OnStatusData(ScpBytePacket packet)
+        private void OnStatusData(ScpCommandPacket packet)
         {
             if (StatusDataReceived != null)
             {
@@ -429,7 +434,7 @@ namespace ScpControl
             }
         }
 
-        private void OnXmlReceived(ScpBytePacket packet)
+        private void OnXmlReceived(ScpCommandPacket packet)
         {
             if (XmlReceived != null)
             {
@@ -437,7 +442,7 @@ namespace ScpControl
             }
         }
 
-        private void OnConfigReceived(ScpBytePacket packet)
+        private void OnConfigReceived(ScpCommandPacket packet)
         {
             if (ConfigReceived != null)
             {

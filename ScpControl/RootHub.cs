@@ -120,6 +120,8 @@ namespace ScpControl
 
                 protocol.Receiver.Subscribe(packet =>
                 {
+                    var sb = new StringBuilder();
+
                     try
                     {
                         var buffer = packet.Payload;
@@ -145,7 +147,7 @@ namespace ScpControl
                                     buffer[5] = 0;
                                 }
 
-                                protocol.SendAsync(new ScpBytePacket { Request = request, Payload = buffer });
+                                protocol.SendAsync(new ScpCommandPacket { Request = request, Payload = buffer });
                                 break;
 
                             case ScpRequest.Rumble: // Rumble Request
@@ -170,7 +172,7 @@ namespace ScpControl
                                     Log.Debug("Received StatusData request");
 #endif
 
-                                    var sb = new StringBuilder();
+                                    sb.Clear();
 
                                     sb.Append(Dongle);
                                     sb.Append('^');
@@ -186,7 +188,7 @@ namespace ScpControl
 
                                     var data = sb.ToString().ToBytes().ToArray();
 
-                                    protocol.SendAsync(request, data);
+                                    protocol.SendAsync(request, data).Wait();
 
 #if DEBUG
                                     Log.DebugFormat("Sent StatusData: {0}", data.Length);
@@ -230,7 +232,7 @@ namespace ScpControl
 
                             case ScpRequest.ProfileList: // Profile List
                                 {
-                                    var sb = new StringBuilder();
+                                    sb.Clear();
 
                                     sb.Append(scpMap.Active);
                                     sb.Append('^');
@@ -313,16 +315,6 @@ namespace ScpControl
                 #endregion
             });
 
-            try
-            {
-                _rxCmdServer.Start();
-            }
-            catch (SocketException sex)
-            {
-                Log.FatalFormat("Couldn't start command server: {0}", sex);
-                return false;
-            }
-
             #endregion
 
             #region Native feed server
@@ -366,16 +358,6 @@ namespace ScpControl
                 };
             });
 
-            try
-            {
-                _rxFeedServer.Start();
-            }
-            catch (SocketException sex)
-            {
-                Log.FatalFormat("Couldn't start native feed server: {0}", sex);
-                return false;
-            }
-
             #endregion
 
             scpMap.Open();
@@ -393,6 +375,26 @@ namespace ScpControl
             if (m_Started) return m_Started;
 
             Log.Info("Starting root hub");
+
+            try
+            {
+                _rxCmdServer.Start();
+            }
+            catch (SocketException sex)
+            {
+                Log.FatalFormat("Couldn't start command server: {0}", sex);
+                return false;
+            }
+
+            try
+            {
+                _rxFeedServer.Start();
+            }
+            catch (SocketException sex)
+            {
+                Log.FatalFormat("Couldn't start native feed server: {0}", sex);
+                return false;
+            }
 
             scpMap.Start();
 
@@ -580,7 +582,7 @@ namespace ScpControl
                 m_Native[serial][0] = m_Native[serial][1] = 0;
             }
 
-            if(Global.DisableNative)
+            if (Global.DisableNative)
                 return;
 
             lock (this)
@@ -591,9 +593,6 @@ namespace ScpControl
                 {
                     try
                     {
-#if DEBUG
-                        Log.DebugFormat(">> request: {0:D4}, length: {1}", (int)ScpRequest.NativeFeed, e.Report.Length);
-#endif
                         channel.SendAsync(e.Report);
                     }
                     catch (AggregateException)

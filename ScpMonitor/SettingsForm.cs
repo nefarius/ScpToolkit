@@ -29,7 +29,7 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
-        public void Response(ScpBytePacket packet)
+        public void Response(ScpCommandPacket packet)
         {
             Log.Info("Received configuration response");
 

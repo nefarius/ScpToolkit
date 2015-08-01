@@ -187,8 +187,8 @@
             // 
             // scpProxy
             // 
-            this.scpProxy.StatusDataReceived += new System.EventHandler<ScpControl.Rx.ScpBytePacket>(this.scpProxy_StatusDataReceived);
-            this.scpProxy.ConfigReceived += new System.EventHandler<ScpControl.Rx.ScpBytePacket>(this.scpProxy_ConfigReceived);
+            this.scpProxy.StatusDataReceived += new System.EventHandler<ScpControl.Rx.ScpCommandPacket>(this.scpProxy_StatusDataReceived);
+            this.scpProxy.ConfigReceived += new System.EventHandler<ScpControl.Rx.ScpCommandPacket>(this.scpProxy_ConfigReceived);
             // 
             // ScpForm
             // 

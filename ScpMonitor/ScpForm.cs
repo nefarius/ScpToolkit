@@ -291,7 +291,7 @@ namespace ScpMonitor
             ThemeUtil.UpdateFocus(((Button)sender).Handle);
         }
         
-        private async void scpProxy_StatusDataReceived(object sender, ScpBytePacket e)
+        private async void scpProxy_StatusDataReceived(object sender, ScpCommandPacket e)
         {
             this.UiThread(() =>
             {
@@ -305,7 +305,7 @@ namespace ScpMonitor
             scpProxy.SubmitRequest(ScpRequest.StatusData);
         }
 
-        private void scpProxy_ConfigReceived(object sender, ScpBytePacket e)
+        private void scpProxy_ConfigReceived(object sender, ScpCommandPacket e)
         {
             _settings.Response(e);
         }

@@ -110,7 +110,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Rx\IChannel.cs" />
-    <Compile Include="Rx\ScpByteChannel.cs" />
+    <Compile Include="Rx\ScpCommandChannel.cs" />
     <Compile Include="Rx\ScpNativeFeedChannel.cs" />
     <Compile Include="ScpCore\BackingStore.cs" />
     <Compile Include="ScpCore\Global.cs" />
