@@ -94,6 +94,9 @@ namespace ScpControl
                 var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
                 rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(buffer =>
                 {
+                    if(buffer.Length <= 0)
+                        return;
+
                     var packet = new DsPacket();
 
                     LogPacket(packet.Load(buffer));

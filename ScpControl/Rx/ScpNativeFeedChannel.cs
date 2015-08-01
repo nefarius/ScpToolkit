@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using ReactiveSockets;
 
 namespace ScpControl.Rx
@@ -17,26 +18,22 @@ namespace ScpControl.Rx
         {
             this._socket = socket;
 
-            Receiver = from header in socket.Receiver.Buffer(sizeof(int))
-                       let length = BitConverter.ToInt32(header.ToArray(), 0)
-                       let body = socket.Receiver.Take(length).ToEnumerable().ToArray()
-                       select body;
+            Receiver = from packet in socket.Receiver.Buffer(96)
+                       select packet.ToArray();
         }
 
         public IObservable<byte[]> Receiver { get; private set; }
 
-        public System.Threading.Tasks.Task SendAsync(byte[] message)
+        public Task SendAsync(byte[] message)
         {
-            return _socket.SendAsync(Convert(message));
-        }
-
-        private static byte[] Convert(byte[] message)
-        {
-            var body = message;
-            var header = BitConverter.GetBytes(body.Length);
-            var payload = header.Concat(body).ToArray();
-
-            return payload;
+            try
+            {
+                return _socket.SendAsync(message);
+            }
+            catch (InvalidOperationException)
+            {
+                return Task.FromResult<object>(null);
+            }
         }
     }
 }
