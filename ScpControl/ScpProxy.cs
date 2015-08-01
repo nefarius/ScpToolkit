@@ -23,7 +23,7 @@ namespace ScpControl
         private bool m_Active;
         private XmlDocument m_Map = new XmlDocument();
         private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost, Settings.Default.RootHubCommandRxPort);
-        private readonly ScpByteChannel _rootHubCommandChannel;
+        private readonly ScpCommandChannel _rootHubCommandChannel;
         private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedRxHost, Settings.Default.RootHubNativeFeedRxPort);
         private readonly AutoResetEvent _activeProfileEvent = new AutoResetEvent(false);
         private readonly AutoResetEvent _padDetailEvent = new AutoResetEvent(false);
@@ -44,7 +44,7 @@ namespace ScpControl
 
                 try
                 {
-                    _rootHubCommandChannel = new ScpByteChannel(_rxCommandClient);
+                    _rootHubCommandChannel = new ScpCommandChannel(_rxCommandClient);
                     _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
                     {
                         var request = packet.Request;

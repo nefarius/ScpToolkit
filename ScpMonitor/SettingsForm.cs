@@ -10,10 +10,10 @@ namespace ScpMonitor
     public partial class SettingsForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly ScpByteChannel _rootHubChannel;
+        private readonly ScpCommandChannel _rootHubChannel;
         private readonly byte[] _mBuffer = new byte[17];
 
-        public SettingsForm(ScpByteChannel protocol)
+        public SettingsForm(ScpCommandChannel protocol)
         {
             _rootHubChannel = protocol;
 

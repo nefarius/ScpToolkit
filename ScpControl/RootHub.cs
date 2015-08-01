@@ -114,7 +114,7 @@ namespace ScpControl
             _rxCmdServer.Connections.Subscribe(socket =>
             {
                 Log.InfoFormat("Client connected on command channel: {0}", socket.GetHashCode());
-                var protocol = new ScpByteChannel(socket);
+                var protocol = new ScpCommandChannel(socket);
 
                 #region Incoming command requests
 

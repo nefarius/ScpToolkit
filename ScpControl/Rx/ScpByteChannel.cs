@@ -39,7 +39,7 @@ namespace ScpControl.Rx
     ///     has a fixed length header and a variable length string
     ///     payload.
     /// </summary>
-    public class ScpByteChannel : IChannel<ScpBytePacket>
+    public class ScpCommandChannel : IChannel<ScpBytePacket>
     {
         private readonly IReactiveSocket _socket;
 
@@ -47,7 +47,7 @@ namespace ScpControl.Rx
         ///     Initializes the channel with the given socket, using
         ///     the given encoding for messages.
         /// </summary>
-        public ScpByteChannel(IReactiveSocket socket)
+        public ScpCommandChannel(IReactiveSocket socket)
         {
             _socket = socket;
 

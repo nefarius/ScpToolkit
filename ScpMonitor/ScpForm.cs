@@ -23,7 +23,7 @@ namespace ScpMonitor
         protected int FormX, FormY, ConfX, ConfY, ProfX, ProfY;
         private bool m_Connected;
         private readonly ProfilesForm _profiles = new ProfilesForm();
-        private readonly ScpByteChannel _rootHubChannel;
+        private readonly ScpCommandChannel _rootHubChannel;
 
         private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost,
             Settings.Default.RootHubCommandRxPort);
@@ -102,7 +102,7 @@ namespace ScpMonitor
 
             try
             {
-                _rootHubChannel = new ScpByteChannel(_rxCommandClient);
+                _rootHubChannel = new ScpCommandChannel(_rxCommandClient);
 
                 _rxCommandClient.Disconnected += (sender, args) =>
                 {
