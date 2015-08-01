@@ -32,6 +32,8 @@ namespace ScpControl
         private DsDetail _padDetail;
         private bool _nativeFeedAvailable;
 
+        #region Ctors
+
         public ScpProxy()
         {
             InitializeComponent();
@@ -107,11 +109,16 @@ namespace ScpControl
             container.Add(this);
         }
 
+        #endregion
+
         public XmlMapper Mapper
         {
             get { return m_Mapper; }
         }
 
+        /// <summary>
+        ///     Gets the currently active profile.
+        /// </summary>
         public string Active
         {
             get
@@ -133,6 +140,9 @@ namespace ScpControl
             }
         }
 
+        /// <summary>
+        ///     Checks if the native feed is available.
+        /// </summary>
         public bool Enabled
         {
             get
@@ -275,6 +285,11 @@ namespace ScpControl
             return selected;
         }
 
+        /// <summary>
+        ///     Receives details about the provided pad.
+        /// </summary>
+        /// <param name="pad">The pad ID to query details for.</param>
+        /// <returns>The pad details returned from the root hub.</returns>
         public DsDetail Detail(DsPadId pad)
         {
             try
