@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Mime;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -312,7 +313,15 @@ namespace ScpControl
                 #endregion
             });
 
-            _rxCmdServer.Start();
+            try
+            {
+                _rxCmdServer.Start();
+            }
+            catch (SocketException sex)
+            {
+                Log.FatalFormat("Couldn't start command server: {0}", sex);
+                return false;
+            }
 
             #endregion
 
@@ -353,7 +362,15 @@ namespace ScpControl
                 };
             });
 
-            _rxFeedServer.Start();
+            try
+            {
+                _rxFeedServer.Start();
+            }
+            catch (SocketException sex)
+            {
+                Log.FatalFormat("Couldn't start native feed server: {0}", sex);
+                return false;
+            }
 
             #endregion
 
@@ -569,6 +586,9 @@ namespace ScpControl
                 {
                     try
                     {
+#if DEBUG
+                        Log.DebugFormat(">> request: {0:D4}, length: {1}", (int)ScpRequest.NativeFeed, e.Report.Length);
+#endif
                         channel.SendAsync(ScpRequest.NativeFeed, e.Report).Wait();
                     }
                     catch (AggregateException) { }

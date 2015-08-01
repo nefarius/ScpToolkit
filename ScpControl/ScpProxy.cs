@@ -40,43 +40,50 @@ namespace ScpControl
 
             #region Command cient
 
-            _rootHubCommandChannel = new ScpByteChannel(_rxCommandClient);
-            _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+            try
             {
-                var request = packet.Request;
-                var buffer = packet.Payload;
-
-                switch (request)
+                _rootHubCommandChannel = new ScpByteChannel(_rxCommandClient);
+                _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
                 {
-                    case ScpRequest.GetXml:
-                        m_Map.LoadXml(buffer.ToUtf8());
-                        m_Mapper.Initialize(m_Map);
-                        break;
-                    case ScpRequest.ProfileList:
-                        var data = buffer.ToUtf8();
-                        var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+                    var request = packet.Request;
+                    var buffer = packet.Payload;
 
-                        _activeProfile = split[0];
-                        _activeProfileEvent.Set();
-                        break;
-                    case ScpRequest.PadDetail:
-                        var local = new byte[6];
-                        Array.Copy(buffer, 5, local, 0, local.Length);
+                    switch (request)
+                    {
+                        case ScpRequest.GetXml:
+                            m_Map.LoadXml(buffer.ToUtf8());
+                            m_Mapper.Initialize(m_Map);
+                            break;
+                        case ScpRequest.ProfileList:
+                            var data = buffer.ToUtf8();
+                            var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
 
-                        _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
-                            local,
-                            (DsConnection)buffer[3], (DsBattery)buffer[4]);
+                            _activeProfile = split[0];
+                            _activeProfileEvent.Set();
+                            break;
+                        case ScpRequest.PadDetail:
+                            var local = new byte[6];
+                            Array.Copy(buffer, 5, local, 0, local.Length);
 
-                        _padDetailEvent.Set();
-                        break;
-                    case ScpRequest.NativeFeedAvailable:
-                        _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
-                        _nativeFeedEnabledEvent.Set();
-                        break;
-                }
-            });
+                            _padDetail = new DsDetail((DsPadId) buffer[0], (DsState) buffer[1], (DsModel) buffer[2],
+                                local,
+                                (DsConnection) buffer[3], (DsBattery) buffer[4]);
 
-            _rxCommandClient.ConnectAsync().Wait();
+                            _padDetailEvent.Set();
+                            break;
+                        case ScpRequest.NativeFeedAvailable:
+                            _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
+                            _nativeFeedEnabledEvent.Set();
+                            break;
+                    }
+                });
+
+                _rxCommandClient.ConnectAsync().Wait();
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Couldn't connect to root hub: {0}",ex);
+            }
 
             #endregion
 

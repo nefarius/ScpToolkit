@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
 using ReactiveSockets;
@@ -101,40 +103,48 @@ namespace ScpMonitor
 
             ClientSize = new Size(SizeX, SizeY);
 
-            _rootHubChannel = new ScpByteChannel(_rxCommandClient);
-
-            _rxCommandClient.Disconnected += (sender, args) =>
+            try
             {
-                Log.Info("Server connection has been closed");
+                _rootHubChannel = new ScpByteChannel(_rxCommandClient);
 
-                Clear();
-            };
-
-            _rxCommandClient.Disposed += (sender, args) =>
-            {
-                Log.Info("Server connection has been disposed");
-
-                Clear();
-            };
-
-            _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
-            {
-                var request = packet.Request;
-                var buffer = packet.Payload;
-
-                switch (request)
+                _rxCommandClient.Disconnected += (sender, args) =>
                 {
-                    case ScpRequest.StatusData:
-                        if (buffer.Length > 0)
-                            Parse(buffer);
-                        break;
-                    case ScpRequest.ConfigRead:
-                        _settings.Response(packet);
-                        break;
-                }
-            });
+                    Log.Info("Server connection has been closed");
 
-            _rxCommandClient.ConnectAsync().Wait();
+                    Clear();
+                };
+
+                _rxCommandClient.Disposed += (sender, args) =>
+                {
+                    Log.Info("Server connection has been disposed");
+
+                    Clear();
+                };
+
+                _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+                {
+                    var request = packet.Request;
+                    var buffer = packet.Payload;
+
+                    switch (request)
+                    {
+                        case ScpRequest.StatusData:
+                            if (buffer.Length > 0)
+                                Parse(buffer);
+                            break;
+                        case ScpRequest.ConfigRead:
+                            _settings.Response(packet);
+                            break;
+                    }
+                });
+
+                _rxCommandClient.ConnectAsync().Wait();
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Couldn't connect to root hub: {0}", ex);
+                return;
+            }
 
             _settings = new SettingsForm(_rootHubChannel);
         }
@@ -257,11 +267,15 @@ namespace ScpMonitor
             }
         }
 
-        private void Form_Load(object sender, EventArgs e)
+        private async void Form_Load(object sender, EventArgs e)
         {
             Icon = niTray.Icon = Resources.Scp_All;
 
-            tmrUpdate.Enabled = true;
+            await Task.Run(() =>
+            {
+                Thread.Sleep(1000);
+                this.BeginInvoke(new Action(() => { tmrUpdate.Enabled = true; }));
+            });
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
