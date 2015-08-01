@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using log4net;
 using ReactiveSockets;
@@ -97,8 +98,6 @@ namespace ScpControl
                                 break;
                         }
                     });
-
-                    _rxCommandClient.ConnectAsync().Wait();
                 }
                 catch (Exception ex)
                 {
@@ -119,8 +118,6 @@ namespace ScpControl
 
                     LogPacket(packet.Load(buffer));
                 });
-
-                _rxFeedClient.ConnectAsync().Wait();
 
                 #endregion
             }
@@ -188,13 +185,14 @@ namespace ScpControl
             }
         }
         
-        public bool Start()
+        public async Task<bool> Start()
         {
             try
             {
                 if (!m_Active)
                 {
-                    // TODO: remove or improve
+                    await _rxCommandClient.ConnectAsync();
+                    await _rxFeedClient.ConnectAsync();
 
                     m_Active = true;
                 }
@@ -213,7 +211,6 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    // TODO: improve
                     _rxCommandClient.Disconnect();
                     _rxFeedClient.Disconnect();
 

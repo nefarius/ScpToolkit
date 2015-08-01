@@ -180,9 +180,11 @@ namespace ScpMonitor
             }
         }
 
-        private void Form_Load(object sender, EventArgs e)
+        private async void Form_Load(object sender, EventArgs e)
         {
             Icon = niTray.Icon = Resources.Scp_All;
+
+            await scpProxy.Start();
 
             scpProxy.SubmitRequest(ScpRequest.StatusData);
         }
