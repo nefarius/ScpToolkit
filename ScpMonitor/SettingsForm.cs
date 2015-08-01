@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
+using ScpControl.Rx;
 using ScpMonitor.Properties;
 
 namespace ScpMonitor
@@ -11,15 +10,14 @@ namespace ScpMonitor
     public partial class SettingsForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly byte[] m_Buffer = new byte[17];
-        private readonly UdpClient m_Server = new UdpClient();
-        private readonly IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+        private readonly ScpByteChannel _rootHubChannel;
+        private readonly byte[] _mBuffer = new byte[17];
 
-        public SettingsForm()
+        public SettingsForm(ScpByteChannel protocol)
         {
-            InitializeComponent();
+            _rootHubChannel = protocol;
 
-            m_Server.Client.ReceiveTimeout = 250;
+            InitializeComponent();
 
             ttSSP.SetToolTip(cbSSP, @"Requires Service Restart");
         }
@@ -29,34 +27,46 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
+        public void Response(IScpPacket<byte[]> packet)
+        {
+            var request = packet.Request;
+            var buffer = packet.Payload;
+
+            switch (request)
+            {
+                case ScpRequest.ConfigRead:
+                    if (InvokeRequired)
+                    {
+                        Invoke(new Action(() =>
+                        {
+                            tbIdle.Value = buffer[2];
+                            cbLX.Checked = buffer[3] == 1;
+                            cbLY.Checked = buffer[4] == 1;
+                            cbRX.Checked = buffer[5] == 1;
+                            cbRY.Checked = buffer[6] == 1;
+                            cbLED.Checked = buffer[7] == 1;
+                            cbRumble.Checked = buffer[8] == 1;
+                            cbTriggers.Checked = buffer[9] == 1;
+                            tbLatency.Value = buffer[10];
+                            tbLeft.Value = buffer[11];
+                            tbRight.Value = buffer[12];
+                            cbNative.Checked = buffer[13] == 1;
+                            cbSSP.Checked = buffer[14] == 1;
+                            tbBrightness.Value = buffer[15];
+                            cbForce.Checked = buffer[16] == 1;
+                        }));
+                    }
+                    break;
+            }
+        }
+
         public void Request()
         {
             try
             {
-                m_Buffer[1] = 0x03;
+                _mBuffer[1] = (byte) ScpRequest.ConfigRead;
 
-                if (m_Server.Send(m_Buffer, m_Buffer.Length, m_ServerEp) == m_Buffer.Length)
-                {
-                    var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                    var Buffer = m_Server.Receive(ref ReferenceEp);
-
-                    tbIdle.Value = Buffer[2];
-                    cbLX.Checked = Buffer[3] == 1;
-                    cbLY.Checked = Buffer[4] == 1;
-                    cbRX.Checked = Buffer[5] == 1;
-                    cbRY.Checked = Buffer[6] == 1;
-                    cbLED.Checked = Buffer[7] == 1;
-                    cbRumble.Checked = Buffer[8] == 1;
-                    cbTriggers.Checked = Buffer[9] == 1;
-                    tbLatency.Value = Buffer[10];
-                    tbLeft.Value = Buffer[11];
-                    tbRight.Value = Buffer[12];
-                    cbNative.Checked = Buffer[13] == 1;
-                    cbSSP.Checked = Buffer[14] == 1;
-                    tbBrightness.Value = Buffer[15];
-                    cbForce.Checked = Buffer[16] == 1;
-                }
+                _rootHubChannel.SendAsync(ScpRequest.ConfigRead, _mBuffer);
             }
             catch (Exception ex)
             {
@@ -80,24 +90,25 @@ namespace ScpMonitor
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            m_Buffer[1] = 0x04;
-            m_Buffer[2] = (byte) tbIdle.Value;
-            m_Buffer[3] = (byte) (cbLX.Checked ? 0x01 : 0x00);
-            m_Buffer[4] = (byte) (cbLY.Checked ? 0x01 : 0x00);
-            m_Buffer[5] = (byte) (cbRX.Checked ? 0x01 : 0x00);
-            m_Buffer[6] = (byte) (cbRY.Checked ? 0x01 : 0x00);
-            m_Buffer[7] = (byte) (cbLED.Checked ? 0x01 : 0x00);
-            m_Buffer[8] = (byte) (cbRumble.Checked ? 0x01 : 0x00);
-            m_Buffer[9] = (byte) (cbTriggers.Checked ? 0x01 : 0x00);
-            m_Buffer[10] = (byte) tbLatency.Value;
-            m_Buffer[11] = (byte) tbLeft.Value;
-            m_Buffer[12] = (byte) tbRight.Value;
-            m_Buffer[13] = (byte) (cbNative.Checked ? 0x01 : 0x00);
-            m_Buffer[14] = (byte) (cbSSP.Checked ? 0x01 : 0x00);
-            m_Buffer[15] = (byte) tbBrightness.Value;
-            m_Buffer[16] = (byte) (cbForce.Checked ? 0x01 : 0x00);
+            _mBuffer[1] = (byte) ScpRequest.ConfigWrite;
+            _mBuffer[2] = (byte) tbIdle.Value;
+            _mBuffer[3] = (byte) (cbLX.Checked ? 0x01 : 0x00);
+            _mBuffer[4] = (byte) (cbLY.Checked ? 0x01 : 0x00);
+            _mBuffer[5] = (byte) (cbRX.Checked ? 0x01 : 0x00);
+            _mBuffer[6] = (byte) (cbRY.Checked ? 0x01 : 0x00);
+            _mBuffer[7] = (byte) (cbLED.Checked ? 0x01 : 0x00);
+            _mBuffer[8] = (byte) (cbRumble.Checked ? 0x01 : 0x00);
+            _mBuffer[9] = (byte) (cbTriggers.Checked ? 0x01 : 0x00);
+            _mBuffer[10] = (byte) tbLatency.Value;
+            _mBuffer[11] = (byte) tbLeft.Value;
+            _mBuffer[12] = (byte) tbRight.Value;
+            _mBuffer[13] = (byte) (cbNative.Checked ? 0x01 : 0x00);
+            _mBuffer[14] = (byte) (cbSSP.Checked ? 0x01 : 0x00);
+            _mBuffer[15] = (byte) tbBrightness.Value;
+            _mBuffer[16] = (byte) (cbForce.Checked ? 0x01 : 0x00);
 
-            m_Server.Send(m_Buffer, m_Buffer.Length, m_ServerEp);
+            _rootHubChannel.SendAsync(ScpRequest.ConfigWrite, _mBuffer);
+
             Hide();
         }
 

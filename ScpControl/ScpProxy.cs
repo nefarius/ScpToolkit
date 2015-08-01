@@ -6,6 +6,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using log4net;
 using ReactiveSockets;
@@ -22,21 +23,54 @@ namespace ScpControl
         private readonly XmlMapper m_Mapper = new XmlMapper();
         private bool m_Active;
         private XmlDocument m_Map = new XmlDocument();
-        private readonly ReactiveClient _rxClient = new ReactiveClient(Settings.Default.RxHost, Settings.Default.RxPort);
-        private ScpByteChannel _rootHubChannel;
-        private readonly ReactiveListener _rxServer = new ReactiveListener(26760);
+        private readonly ReactiveClient _rxClient = new ReactiveClient(Settings.Default.RootHubRxHost, Settings.Default.RootHubRxPort);
+        private readonly ScpByteChannel _rootHubChannel;
+        private AutoResetEvent _activeProfileEvent = new AutoResetEvent(false);
+        private string _activeProfile;
+        private readonly ReactiveListener _rxServer = new ReactiveListener(26761);
         private ScpByteChannel _serverProtocol;
 
         public ScpProxy()
         {
             InitializeComponent();
+
+            #region Client
+
+            _rootHubChannel = new ScpByteChannel(_rxClient);
+            _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+            {
+                /* var packet = new DsPacket();
+
+                LogPacket(packet.Load(message.Payload)); */
+
+                var request = packet.Request;
+                var buffer = packet.Payload;
+
+                switch (request)
+                {
+                    case ScpRequest.GetXml:
+                        m_Map.LoadXml(buffer.ToUtf8());
+                        m_Mapper.Initialize(m_Map);
+                        break;
+                    case ScpRequest.ProfileList:
+                        var data = buffer.ToUtf8();
+                        var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+
+                        _activeProfile = split[0];
+                        _activeProfileEvent.Set();
+                        break;
+                }
+            });
+
+            _rxClient.ConnectAsync().Wait();
+
+            #endregion
         }
 
         public ScpProxy(IContainer container)
+            : this()
         {
             container.Add(this);
-
-            InitializeComponent();
         }
 
         public XmlMapper Mapper
@@ -48,34 +82,20 @@ namespace ScpControl
         {
             get
             {
-                var Active = string.Empty;
-
                 try
                 {
                     byte[] send = { 0, 6 };
 
                     _rootHubChannel.SendAsync(ScpRequest.ProfileList, send);
 
-                    /*
-                        var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                        var Buffer = m_Server.Receive(ref ReferenceEp);
-
-                        if (Buffer.Length > 0)
-                        {
-                            var Data = Encoding.Unicode.GetString(Buffer);
-                            var Split = Data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
-
-                            Active = Split[0];
-                        }
-                    */
+                    _activeProfileEvent.WaitOne();
                 }
                 catch (Exception ex)
                 {
                     Log.ErrorFormat("Unexpected error: {0}", ex);
                 }
 
-                return Active;
+                return _activeProfile;
             }
         }
 
@@ -119,20 +139,6 @@ namespace ScpControl
             {
                 if (!m_Active)
                 {
-                    #region Client
-
-                    _rootHubChannel = new ScpByteChannel(_rxClient);
-                    _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(message =>
-                    {
-                        var packet = new DsPacket();
-
-                        LogPacket(packet.Load(message.Payload));
-                    });
-
-                    _rxClient.ConnectAsync().Wait();
-
-                    #endregion
-
                     #region Server
 
                     _rxServer.Connections.Subscribe(socket =>
@@ -146,6 +152,7 @@ namespace ScpControl
                             var request = packet.Request;
                             var buffer = packet.Payload;
 
+                            /*
                             switch (request)
                             {
                                 case ScpRequest.GetXml:
@@ -153,6 +160,7 @@ namespace ScpControl
                                     m_Mapper.Initialize(m_Map);
                                     break;
                             }
+                             * */
                         });
 
                         socket.Disconnected += (sender, e) => Log.InfoFormat("Socket disconnected {0}", sender.GetHashCode());
@@ -196,7 +204,7 @@ namespace ScpControl
 
             try
             {
-                _serverProtocol.SendAsync(ScpRequest.GetXml);
+                _rootHubChannel.SendAsync(ScpRequest.GetXml);
 
                 Loaded = true;
             }

@@ -99,6 +99,7 @@
     <Compile Include="AxisControl.Designer.cs">
       <DependentUpon>AxisControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CrossThreadHelper.cs" />
     <Compile Include="ProfileProperties.cs">
       <SubType>Form</SubType>
     </Compile>

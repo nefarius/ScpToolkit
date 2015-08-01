@@ -3,7 +3,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using ReactiveSockets;
+using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
@@ -13,7 +15,7 @@ namespace ScpControl
     public sealed partial class RootHub : ScpHub
     {
         private volatile bool m_Suspended;
-        private readonly ReactiveListener _rxServer = new ReactiveListener(26760);
+        private readonly ReactiveListener _rxServer = new ReactiveListener(Settings.Default.RootHubRxPort);
         private readonly BthHub bthHub = new BthHub();
         private readonly Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
@@ -146,14 +148,21 @@ namespace ScpControl
 
                             case ScpRequest.StatusData: // Status Data Request
                                 {
-                                    var body = Dongle.ToBytes().ToArray();
+                                    var sb = new StringBuilder();
 
-                                    for (var i = 0; i < 4; i++)
-                                    {
-                                        body = body.Concat(Pad[i].ToString().ToBytes()).ToArray();
-                                    }
+                                    sb.Append(Dongle);
+                                    sb.Append('^');
 
-                                    protocol.SendAsync(request, body);
+                                    sb.Append(Pad[0]);
+                                    sb.Append('^');
+                                    sb.Append(Pad[1]);
+                                    sb.Append('^');
+                                    sb.Append(Pad[2]);
+                                    sb.Append('^');
+                                    sb.Append(Pad[3]);
+                                    sb.Append('^');
+
+                                    protocol.SendAsync(request, sb.ToString().ToBytes().ToArray());
                                 }
                                 break;
 
@@ -193,10 +202,18 @@ namespace ScpControl
 
                             case ScpRequest.ProfileList: // Profile List
                                 {
-                                    var body = scpMap.Active.ToBytes().ToArray();
+                                    var sb = new StringBuilder();
 
-                                    body = scpMap.Profiles.Aggregate(body,
-                                        (current, profile) => current.Concat(profile.ToBytes()).ToArray());
+                                    sb.Append(scpMap.Active);
+                                    sb.Append('^');
+
+                                    foreach (var profile in scpMap.Profiles)
+                                    {
+                                        sb.Append(profile);
+                                        sb.Append('^');
+                                    }
+
+                                    var body = sb.ToString().ToBytes().ToArray();
 
                                     protocol.SendAsync(request, body);
                                 }
@@ -233,9 +250,8 @@ namespace ScpControl
                                     serial = buffer[0];
 
                                     var data = new byte[11];
-                                    // TODO: investigate
-                                    var temp = m_Pad[serial].Local;
-                                    Log.DebugFormat("temp = {0}", temp);
+
+                                    Log.DebugFormat("Requested Pads local MAC = {0}", m_Pad[serial].Local);
 
                                     data[0] = serial;
                                     data[1] = (byte)m_Pad[serial].State;

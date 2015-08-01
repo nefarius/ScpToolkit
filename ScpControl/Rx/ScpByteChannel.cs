@@ -21,7 +21,13 @@ namespace ScpControl.Rx
         PadDetail = 0x0A
     }
 
-    public class ScpBytePacket
+    public interface IScpPacket<T>
+    {
+        ScpRequest Request { get; set; }
+        T Payload { get; set; }
+    }
+
+    public class ScpBytePacket : IScpPacket<byte[]>
     {
         public ScpRequest Request { get; set; }
         public byte[] Payload { get; set; }
@@ -64,7 +70,7 @@ namespace ScpControl.Rx
 
         public Task SendAsync(ScpRequest request)
         {
-            return SendAsync(new ScpBytePacket() { Request = request });
+            return SendAsync(new ScpBytePacket() { Request = request, Payload = new[] { (byte)0x00 } });
         }
 
         private static byte[] Convert(ScpBytePacket message)
