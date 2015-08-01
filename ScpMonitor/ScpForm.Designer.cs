@@ -34,7 +34,6 @@
             this.lblPad_2 = new System.Windows.Forms.Label();
             this.lblPad_3 = new System.Windows.Forms.Label();
             this.lblPad_4 = new System.Windows.Forms.Label();
-            this.tmrUpdate = new System.Windows.Forms.Timer(this.components);
             this.niTray = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tmConfig = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,10 +95,6 @@
             this.lblPad_4.Size = new System.Drawing.Size(167, 13);
             this.lblPad_4.TabIndex = 5;
             this.lblPad_4.Text = "Pad 4 : Disconnected";
-            // 
-            // tmrUpdate
-            // 
-            this.tmrUpdate.Tick += new System.EventHandler(this.tmrUpdate_Tick);
             // 
             // niTray
             // 
@@ -227,7 +222,6 @@
         private System.Windows.Forms.Label lblPad_2;
         private System.Windows.Forms.Label lblPad_3;
         private System.Windows.Forms.Label lblPad_4;
-        private System.Windows.Forms.Timer tmrUpdate;
         private System.Windows.Forms.NotifyIcon niTray;
         private System.Windows.Forms.ContextMenuStrip cmTray;
         private System.Windows.Forms.ToolStripMenuItem tmExit;

@@ -29,7 +29,6 @@ namespace ScpMonitor
             Settings.Default.RootHubCommandRxPort);
 
         private readonly SettingsForm _settings = new SettingsForm(null);
-        private readonly byte[] m_Buffer = new byte[2];
         private readonly RegistrySettings m_Config = new RegistrySettings();
         private readonly char[] m_Delim = { '^' };
 
@@ -45,8 +44,6 @@ namespace ScpMonitor
             btnUp_1.Tag = (byte)1;
             btnUp_2.Tag = (byte)2;
             btnUp_3.Tag = (byte)3;
-
-            m_Buffer[1] = 0x02;
 
             FormVisible = m_Config.Visible;
 
@@ -129,8 +126,17 @@ namespace ScpMonitor
                     switch (request)
                     {
                         case ScpRequest.StatusData:
+                            // translate response onto UI
                             if (buffer.Length > 0)
                                 Parse(buffer);
+
+                            // update UI
+                            UpdateUi();
+
+                            Thread.Sleep(100);
+
+                            // request next update
+                            _rootHubChannel.SendAsync(ScpRequest.StatusData);
                             break;
                         case ScpRequest.ConfigRead:
                             _settings.Response(packet);
@@ -220,50 +226,46 @@ namespace ScpMonitor
             btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
         }
 
-        private void tmrUpdate_Tick(object sender, EventArgs e)
+        private void UpdateUi()
         {
-            lock (this)
+            if (this.InvokeRequired)
             {
-                tmrUpdate.Enabled = false;
+                Invoke(new Action(UpdateUi));
+                return;
+            }
 
-                try
+            try
+            {
+                if (Visible && Location.X != -32000 && Location.Y != -32000)
                 {
-                    if (Visible && Location.X != -32000 && Location.Y != -32000)
-                    {
-                        FormVisible = true;
+                    FormVisible = true;
 
-                        FormX = Location.X;
-                        FormY = Location.Y;
-                        FormSaved = true;
-                    }
-                    else
-                    {
-                        FormVisible = false;
-                    }
-
-                    if (_settings.Visible && _settings.Location.X != -32000 && _settings.Location.Y != -32000)
-                    {
-                        ConfX = _settings.Location.X;
-                        ConfY = _settings.Location.Y;
-                        ConfSaved = true;
-                    }
-
-                    if (_profiles.Visible && _profiles.Location.X != -32000 && _profiles.Location.Y != -32000)
-                    {
-                        ProfX = _profiles.Location.X;
-                        ProfY = _profiles.Location.Y;
-                        ProfSaved = true;
-                    }
-
-                    if (_rxCommandClient.IsConnected)
-                        _rootHubChannel.SendAsync(ScpRequest.StatusData, m_Buffer);
+                    FormX = Location.X;
+                    FormY = Location.Y;
+                    FormSaved = true;
                 }
-                catch
+                else
                 {
-                    Clear();
+                    FormVisible = false;
                 }
 
-                tmrUpdate.Enabled = true;
+                if (_settings.Visible && _settings.Location.X != -32000 && _settings.Location.Y != -32000)
+                {
+                    ConfX = _settings.Location.X;
+                    ConfY = _settings.Location.Y;
+                    ConfSaved = true;
+                }
+
+                if (_profiles.Visible && _profiles.Location.X != -32000 && _profiles.Location.Y != -32000)
+                {
+                    ProfX = _profiles.Location.X;
+                    ProfY = _profiles.Location.Y;
+                    ProfSaved = true;
+                }
+            }
+            catch
+            {
+                Clear();
             }
         }
 
@@ -271,11 +273,7 @@ namespace ScpMonitor
         {
             Icon = niTray.Icon = Resources.Scp_All;
 
-            await Task.Run(() =>
-            {
-                Thread.Sleep(1000);
-                this.BeginInvoke(new Action(() => { tmrUpdate.Enabled = true; }));
-            });
+            await _rootHubChannel.SendAsync(ScpRequest.StatusData);
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
@@ -292,8 +290,6 @@ namespace ScpMonitor
             }
             else
             {
-                tmrUpdate.Enabled = false;
-
                 m_Config.Visible = FormVisible;
 
                 m_Config.FormSaved = FormSaved;
@@ -365,16 +361,9 @@ namespace ScpMonitor
 
         private void tmReset_Click(object sender, EventArgs e)
         {
-            lock (this)
-            {
-                tmrUpdate.Enabled = false;
-
-                Reset();
-                _settings.Reset();
-                _profiles.Reset();
-
-                tmrUpdate.Enabled = true;
-            }
+            Reset();
+            _settings.Reset();
+            _profiles.Reset();
         }
 
         private void tmExit_Click(object sender, EventArgs e)

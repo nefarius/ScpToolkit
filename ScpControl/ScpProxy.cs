@@ -38,76 +38,83 @@ namespace ScpControl
         {
             InitializeComponent();
 
-            #region Command cient
-
             try
             {
-                _rootHubCommandChannel = new ScpByteChannel(_rxCommandClient);
-                _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+                #region Command cient
+
+                try
+                {
+                    _rootHubCommandChannel = new ScpByteChannel(_rxCommandClient);
+                    _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+                    {
+                        var request = packet.Request;
+                        var buffer = packet.Payload;
+
+                        switch (request)
+                        {
+                            case ScpRequest.GetXml:
+                                m_Map.LoadXml(buffer.ToUtf8());
+                                m_Mapper.Initialize(m_Map);
+                                break;
+                            case ScpRequest.ProfileList:
+                                var data = buffer.ToUtf8();
+                                var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+
+                                _activeProfile = split[0];
+                                _activeProfileEvent.Set();
+                                break;
+                            case ScpRequest.PadDetail:
+                                var local = new byte[6];
+                                Array.Copy(buffer, 5, local, 0, local.Length);
+
+                                _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
+                                    local,
+                                    (DsConnection)buffer[3], (DsBattery)buffer[4]);
+
+                                _padDetailEvent.Set();
+                                break;
+                            case ScpRequest.NativeFeedAvailable:
+                                _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
+                                _nativeFeedEnabledEvent.Set();
+                                break;
+                        }
+                    });
+
+                    _rxCommandClient.ConnectAsync().Wait();
+                }
+                catch (Exception ex)
+                {
+                    Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
+                }
+
+                #endregion
+
+                #region Feed client
+
+                var rootHubFeedChannel = new ScpByteChannel(_rxFeedClient);
+                rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
                 {
                     var request = packet.Request;
                     var buffer = packet.Payload;
 
                     switch (request)
                     {
-                        case ScpRequest.GetXml:
-                            m_Map.LoadXml(buffer.ToUtf8());
-                            m_Mapper.Initialize(m_Map);
-                            break;
-                        case ScpRequest.ProfileList:
-                            var data = buffer.ToUtf8();
-                            var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+                        case ScpRequest.NativeFeed:
+                            var dsPacket = new DsPacket();
 
-                            _activeProfile = split[0];
-                            _activeProfileEvent.Set();
-                            break;
-                        case ScpRequest.PadDetail:
-                            var local = new byte[6];
-                            Array.Copy(buffer, 5, local, 0, local.Length);
-
-                            _padDetail = new DsDetail((DsPadId) buffer[0], (DsState) buffer[1], (DsModel) buffer[2],
-                                local,
-                                (DsConnection) buffer[3], (DsBattery) buffer[4]);
-
-                            _padDetailEvent.Set();
-                            break;
-                        case ScpRequest.NativeFeedAvailable:
-                            _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
-                            _nativeFeedEnabledEvent.Set();
+                            LogPacket(dsPacket.Load(buffer));
                             break;
                     }
                 });
 
-                _rxCommandClient.ConnectAsync().Wait();
+                _rxFeedClient.ConnectAsync().Wait();
+
+                #endregion
             }
             catch (Exception ex)
             {
-                Log.FatalFormat("Couldn't connect to root hub: {0}",ex);
+                Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
             }
-
-            #endregion
-
-            #region Feed client
-
-            var rootHubFeedChannel = new ScpByteChannel(_rxFeedClient);
-            rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
-            {
-                var request = packet.Request;
-                var buffer = packet.Payload;
-
-                switch (request)
-                {
-                    case ScpRequest.NativeFeed:
-                        var dsPacket = new DsPacket();
-
-                        LogPacket(dsPacket.Load(buffer));
-                        break;
-                }
-            });
-
-            _rxFeedClient.ConnectAsync().Wait();
-
-            #endregion
         }
 
         public ScpProxy(IContainer container)
@@ -130,18 +137,13 @@ namespace ScpControl
         {
             get
             {
-                try
-                {
-                    byte[] send = { 0, 6 };
-                    // send request to root hub
-                    _rootHubCommandChannel.SendAsync(ScpRequest.ProfileList, send);
-                    // wait for response to arrive
-                    _activeProfileEvent.WaitOne();
-                }
-                catch (Exception ex)
-                {
-                    Log.ErrorFormat("Unexpected error: {0}", ex);
-                }
+                if (!_rxCommandClient.IsConnected)
+                    return _activeProfile;
+
+                // send request to root hub
+                _rootHubCommandChannel.SendAsync(ScpRequest.ProfileList);
+                // wait for response to arrive
+                _activeProfileEvent.WaitOne();
 
                 return _activeProfile;
             }
@@ -154,18 +156,12 @@ namespace ScpControl
         {
             get
             {
-                try
-                {
-                    byte[] send = { 0, (byte)ScpRequest.NativeFeedAvailable };
+                if (!_rxCommandClient.IsConnected)
+                    return _nativeFeedAvailable;
 
-                    _rootHubCommandChannel.SendAsync(ScpRequest.NativeFeedAvailable, send);
+                _rootHubCommandChannel.SendAsync(ScpRequest.NativeFeedAvailable);
 
-                    _nativeFeedEnabledEvent.WaitOne();
-                }
-                catch (Exception ex)
-                {
-                    Log.ErrorFormat("Unexpected error: {0}", ex);
-                }
+                _nativeFeedEnabledEvent.WaitOne();
 
                 return _nativeFeedAvailable;
             }
@@ -215,21 +211,13 @@ namespace ScpControl
 
         public bool Load()
         {
-            var Loaded = false;
+            if (_rootHubCommandChannel == null)
+                return false;
 
-            try
-            {
-                // request configuration from root hub
-                _rootHubCommandChannel.SendAsync(ScpRequest.GetXml);
+            // request configuration from root hub
+            _rootHubCommandChannel.SendAsync(ScpRequest.GetXml);
 
-                Loaded = true;
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return Loaded;
+            return true;
         }
 
         public bool Save()
