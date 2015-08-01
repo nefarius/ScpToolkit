@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Net;
+using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using ReactiveSockets;
+using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
 
@@ -13,11 +12,10 @@ namespace ScpControl
 {
     public sealed partial class RootHub : ScpHub
     {
-        private CancellationTokenSource _udpWorkerCancellationToken = new CancellationTokenSource();
+        private volatile bool m_Suspended;
+        private readonly ReactiveListener _rxServer = new ReactiveListener(26760);
         private readonly BthHub bthHub = new BthHub();
         private readonly Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
-        private readonly UdpClient m_Client = new UdpClient();
-        private readonly IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
 
         private readonly byte[][] m_Native =
         {
@@ -32,7 +30,6 @@ namespace ScpControl
         };
 
         private readonly string[] m_Reserved = { string.Empty, string.Empty, string.Empty, string.Empty };
-        private readonly IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
 
         private readonly byte[][] m_XInput =
         {
@@ -42,9 +39,6 @@ namespace ScpControl
 
         private readonly BusDevice scpBus = new BusDevice();
         private readonly UsbHub usbHub = new UsbHub();
-        private Task _udpWorkerTask;
-        private UdpClient m_Server = new UdpClient();
-        private volatile bool m_Suspended;
 
         public RootHub()
         {
@@ -99,6 +93,178 @@ namespace ScpControl
                 Assembly.GetExecutingAssembly().GetName().Version);
             Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
 
+            _rxServer.Connections.Subscribe(socket =>
+            {
+                Log.InfoFormat("Client connected: {0}", socket.GetHashCode());
+                var protocol = new ScpByteChannel(socket);
+
+                protocol.Receiver.Subscribe(packet =>
+                {
+                    try
+                    {
+                        var buffer = packet.Payload;
+                        var request = packet.Request;
+
+                        byte serial;
+                        switch (request)
+                        {
+                            case ScpRequest.Status: // Status Request
+
+                                if (!Global.DisableNative)
+                                {
+                                    buffer[2] = (byte)Pad[0].State;
+                                    buffer[3] = (byte)Pad[1].State;
+                                    buffer[4] = (byte)Pad[2].State;
+                                    buffer[5] = (byte)Pad[3].State;
+                                }
+                                else
+                                {
+                                    buffer[2] = 0;
+                                    buffer[3] = 0;
+                                    buffer[4] = 0;
+                                    buffer[5] = 0;
+                                }
+
+                                protocol.SendAsync(new ScpBytePacket { Request = request, Payload = buffer });
+                                break;
+
+                            case ScpRequest.Rumble: // Rumble Request
+
+                                serial = buffer[0];
+
+                                if (Pad[serial].State == DsState.Connected)
+                                {
+                                    if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
+                                    {
+                                        m_Native[serial][0] = buffer[2];
+                                        m_Native[serial][1] = buffer[3];
+
+                                        Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
+                                    }
+                                }
+                                break;
+
+                            case ScpRequest.StatusData: // Status Data Request
+                                {
+                                    var body = Dongle.ToBytes().ToArray();
+
+                                    for (var i = 0; i < 4; i++)
+                                    {
+                                        body = body.Concat(Pad[i].ToString().ToBytes()).ToArray();
+                                    }
+
+                                    protocol.SendAsync(request, body);
+                                }
+                                break;
+
+                            case ScpRequest.ConfigRead: // Config Read Request
+                                {
+                                    protocol.SendAsync(request, Global.Packed);
+                                }
+                                break;
+
+                            case ScpRequest.ConfigWrite: // Config Write Request
+                                {
+                                    Global.Packed = buffer;
+                                }
+                                break;
+
+                            case ScpRequest.PadPromote: // Pad Promote Request
+                                {
+                                    int target = buffer[2];
+
+                                    lock (this)
+                                    {
+                                        if (Pad[target].State != DsState.Disconnected)
+                                        {
+                                            var swap = Pad[target];
+                                            Pad[target] = Pad[target - 1];
+                                            Pad[target - 1] = swap;
+
+                                            Pad[target].PadId = (DsPadId)(target);
+                                            Pad[target - 1].PadId = (DsPadId)(target - 1);
+
+                                            m_Reserved[target] = Pad[target].Local;
+                                            m_Reserved[target - 1] = Pad[target - 1].Local;
+                                        }
+                                    }
+                                }
+                                break;
+
+                            case ScpRequest.ProfileList: // Profile List
+                                {
+                                    var body = scpMap.Active.ToBytes().ToArray();
+
+                                    body = scpMap.Profiles.Aggregate(body,
+                                        (current, profile) => current.Concat(profile.ToBytes()).ToArray());
+
+                                    protocol.SendAsync(request, body);
+                                }
+                                break;
+
+                            case ScpRequest.SetActiveProfile: // Set Active Profile
+                                {
+                                    var data = new byte[buffer.Length - 2];
+
+                                    Array.Copy(buffer, 2, data, 0, data.Length);
+
+                                    scpMap.Active = data.ToUnicode();
+                                }
+                                break;
+
+                            case ScpRequest.GetXml: // Get XML
+                                {
+                                    protocol.SendAsync(request, scpMap.Xml.ToBytes().ToArray());
+                                }
+                                break;
+
+                            case ScpRequest.SetXml: // Set XML
+                                {
+                                    var data = new byte[buffer.Length - 2];
+
+                                    Array.Copy(buffer, 2, data, 0, data.Length);
+
+                                    scpMap.Xml = data.ToUtf8();
+                                }
+                                break;
+
+                            case ScpRequest.PadDetail: // Pad Detail
+                                {
+                                    serial = buffer[0];
+
+                                    var data = new byte[11];
+                                    // TODO: investigate
+                                    var temp = m_Pad[serial].Local;
+                                    Log.DebugFormat("temp = {0}", temp);
+
+                                    data[0] = serial;
+                                    data[1] = (byte)m_Pad[serial].State;
+                                    data[2] = (byte)m_Pad[serial].Model;
+                                    data[3] = (byte)m_Pad[serial].Connection;
+                                    data[4] = (byte)m_Pad[serial].Battery;
+                                    Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
+
+                                    protocol.SendAsync(request, data);
+                                }
+                                break;
+                        }
+                    }
+                    catch (SocketException sex)
+                    {
+                        Log.ErrorFormat("Socket exception: {0}", sex);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ErrorFormat("Unexpected error: {0}", ex);
+                    }
+                });
+
+                socket.Disconnected += (sender, e) => Log.InfoFormat("Socket disconnected {0}", sender.GetHashCode());
+                socket.Disposed += (sender, e) => Log.InfoFormat("Socket disposed {0}", sender.GetHashCode());
+            });
+
+            _rxServer.Start();
+
             scpMap.Open();
 
             opened |= scpBus.Open(Global.Bus);
@@ -121,234 +287,14 @@ namespace ScpControl
             m_Started |= usbHub.Start();
             m_Started |= bthHub.Start();
 
-            if (m_Started)
-                _udpWorkerTask = Task.Factory.StartNew(UdpWorker,
-                    _udpWorkerCancellationToken.Token);
-
             Log.Info("Root hub started");
 
             return m_Started;
         }
 
-        private void UdpWorker(object o)
-        {
-            var sb = new StringBuilder();
-            var remote = new IPEndPoint(IPAddress.Loopback, 0);
-            var token = (CancellationToken) o;
-
-            // create new UDP channel; unblock receive after 500ms
-            m_Server = new UdpClient(m_ServerEp) { Client = { ReceiveTimeout = 500 } };
-
-            Log.Debug("-- Controller : UDP_Worker_Thread Starting");
-            
-            // loop endlessly until parent requested cancellation
-            while (!token.IsCancellationRequested)
-            {
-                try
-                {
-                    // swallow exception on timeout; returns null if no data received
-                    var buffer = Log.TryCatchSilent(() => m_Server.Receive(ref remote));
-
-                    if (buffer == null)
-                        continue;
-
-                    byte serial;
-                    switch (buffer[1])
-                    {
-                        case 0x00: // Status Request
-
-                            if (!Global.DisableNative)
-                            {
-                                buffer[2] = (byte) Pad[0].State;
-                                buffer[3] = (byte) Pad[1].State;
-                                buffer[4] = (byte) Pad[2].State;
-                                buffer[5] = (byte) Pad[3].State;
-                            }
-                            else
-                            {
-                                buffer[2] = 0;
-                                buffer[3] = 0;
-                                buffer[4] = 0;
-                                buffer[5] = 0;
-                            }
-
-                            m_Server.Send(buffer, buffer.Length, remote);
-                            break;
-
-                        case 0x01: // Rumble Request
-
-                            serial = buffer[0];
-
-                            if (Pad[serial].State == DsState.Connected)
-                            {
-                                if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
-                                {
-                                    m_Native[serial][0] = buffer[2];
-                                    m_Native[serial][1] = buffer[3];
-
-                                    Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
-                                }
-                            }
-                            break;
-
-                        case 0x02: // Status Data Request
-                        {
-                            sb.Clear();
-                            sb.Append(Dongle);
-                            sb.Append('^');
-
-                            sb.Append(Pad[0]);
-                            sb.Append('^');
-                            sb.Append(Pad[1]);
-                            sb.Append('^');
-                            sb.Append(Pad[2]);
-                            sb.Append('^');
-                            sb.Append(Pad[3]);
-                            sb.Append('^');
-
-                            var data = Encoding.Unicode.GetBytes(sb.ToString());
-
-                            m_Server.Send(data, data.Length, remote);
-                        }
-                            break;
-
-                        case 0x03: // Config Read Request
-                        {
-                            var data = Global.Packed;
-
-                            m_Server.Send(data, data.Length, remote);
-                        }
-                            break;
-
-                        case 0x04: // Config Write Request
-                        {
-                            Global.Packed = buffer;
-                        }
-                            break;
-
-                        case 0x05: // Pad Promote Request
-                        {
-                            int target = buffer[2];
-
-                            lock (this)
-                            {
-                                if (Pad[target].State != DsState.Disconnected)
-                                {
-                                    var swap = Pad[target];
-                                    Pad[target] = Pad[target - 1];
-                                    Pad[target - 1] = swap;
-
-                                    Pad[target].PadId = (DsPadId) (target);
-                                    Pad[target - 1].PadId = (DsPadId) (target - 1);
-
-                                    m_Reserved[target] = Pad[target].Local;
-                                    m_Reserved[target - 1] = Pad[target - 1].Local;
-                                }
-                            }
-                        }
-                            break;
-
-                        case 0x06: // Profile List
-                        {
-                            sb.Clear();
-                            sb.Append(scpMap.Active);
-                            sb.Append('^');
-
-                            foreach (var profile in scpMap.Profiles)
-                            {
-                                sb.Append(profile);
-                                sb.Append('^');
-                            }
-
-                            var data = Encoding.Unicode.GetBytes(sb.ToString());
-
-                            m_Server.Send(data, data.Length, remote);
-                        }
-                            break;
-
-                        case 0x07: // Set Active Profile
-                        {
-                            var data = new byte[buffer.Length - 2];
-
-                            Array.Copy(buffer, 2, data, 0, data.Length);
-
-                            scpMap.Active = Encoding.Unicode.GetString(data);
-                        }
-                            break;
-
-                        case 0x08: // Get XML
-                        {
-                            var data = Encoding.UTF8.GetBytes(scpMap.Xml);
-
-                            m_Server.Send(data, data.Length, remote);
-                        }
-                            break;
-
-                        case 0x09: // Set XML
-                        {
-                            var data = new byte[buffer.Length - 2];
-
-                            Array.Copy(buffer, 2, data, 0, data.Length);
-
-                            scpMap.Xml = Encoding.UTF8.GetString(data);
-                        }
-                            break;
-
-                        case 0x0A: // Pad Detail
-                        {
-                            serial = buffer[0];
-
-                            var data = new byte[11];
-                            // TODO: investigate
-                            var temp = m_Pad[serial].Local;
-                            Log.DebugFormat("temp = {0}", temp);
-
-                            data[0] = serial;
-                            data[1] = (byte) m_Pad[serial].State;
-                            data[2] = (byte) m_Pad[serial].Model;
-                            data[3] = (byte) m_Pad[serial].Connection;
-                            data[4] = (byte) m_Pad[serial].Battery;
-                            Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
-
-                            m_Server.Send(data, data.Length, remote);
-                        }
-                            break;
-                    }
-                }
-                catch (SocketException sex)
-                {
-                    if (sex.NativeErrorCode == 10004)
-                        break;
-
-                    Log.ErrorFormat("Socket exception: {0}", sex);
-                }
-                catch (Exception ex)
-                {
-                    Log.ErrorFormat("Unexpected error: {0}", ex);
-                }
-            }
-
-            // TODO: status var shouldn't be necessary, refactor and remove!
-            m_Started = !m_Started;
-            m_Server.Close();
-
-            Log.Debug("-- Controller : UDP_Worker_Thread Exiting");
-        }
-
-        public new async Task<bool> Stop()
+        public override bool Stop()
         {
             Log.Info("Root hub stop requested");
-
-            // no need to stop if task isn't running anymore
-            if (_udpWorkerTask.Status != TaskStatus.Running)
-                return !m_Started;
-
-            // signal task to stop work
-            _udpWorkerCancellationToken.Cancel();
-            // wait until task completed
-            await Task.WhenAll(_udpWorkerTask);
-            // reset cancellation token
-            _udpWorkerCancellationToken = new CancellationTokenSource();
 
             scpMap.Stop();
             scpBus.Stop();
@@ -360,9 +306,9 @@ namespace ScpControl
             return !m_Started;
         }
 
-        public new async Task<bool> Close()
+        public override bool Close()
         {
-            await Stop();
+            Stop();
 
             Global.Save();
 
@@ -520,7 +466,8 @@ namespace ScpControl
                 m_Native[serial][0] = m_Native[serial][1] = 0;
             }
 
-            if (!Global.DisableNative) m_Client.Send(e.Report, e.Report.Length, m_ClientEp);
+            // TODO: fix!
+            //if (!Global.DisableNative) m_Client.Send(e.Report, e.Report.Length, m_ClientEp);
         }
 
         private class Cache

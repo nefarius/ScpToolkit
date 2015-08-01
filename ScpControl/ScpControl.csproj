@@ -42,11 +42,27 @@
     <Reference Include="MadMilkman.Ini">
       <HintPath>..\packages\MadMilkman.Ini.1.0.4.0\lib\net20\MadMilkman.Ini.dll</HintPath>
     </Reference>
+    <Reference Include="ReactiveSockets">
+      <HintPath>..\packages\ReactiveSockets.0.2.6\lib\net40\ReactiveSockets.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.5\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.5\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.5\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -88,6 +104,13 @@
       <DependentUpon>BthHub.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\CommonInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Rx\IChannel.cs" />
+    <Compile Include="Rx\ScpByteChannel.cs" />
     <Compile Include="ScpCore\BackingStore.cs" />
     <Compile Include="ScpCore\Global.cs" />
     <Compile Include="ScpCore\HCI.cs" />
@@ -119,6 +142,7 @@
     <Compile Include="ScpTimer.Designer.cs">
       <DependentUpon>ScpTimer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="UsbDevice.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -173,6 +197,7 @@
     <Compile Include="Utilities\IniConfig.cs" />
     <Compile Include="Utilities\KbmPost.cs" />
     <Compile Include="Utilities\OsInfoHelper.cs" />
+    <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ThemeUtil.cs" />
     <Compile Include="XmlMapper.cs">
       <SubType>Component</SubType>
@@ -218,6 +243,11 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="ScpControlClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="ScpControl.ini">

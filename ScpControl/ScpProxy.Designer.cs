@@ -28,18 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.NativeFeed_Worker = new System.ComponentModel.BackgroundWorker();
-            // 
-            // NativeFeed_Worker
-            // 
-            this.NativeFeed_Worker.WorkerReportsProgress = true;
-            this.NativeFeed_Worker.WorkerSupportsCancellation = true;
-            this.NativeFeed_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.NativeFeed_Worker_DoWork);
+
         }
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker NativeFeed_Worker;
 
     }
 }

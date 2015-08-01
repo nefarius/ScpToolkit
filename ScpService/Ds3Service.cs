@@ -55,8 +55,8 @@ namespace ScpService
             if (_mDs4Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mDs4Notify);
             if (_mBthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mBthNotify);
 
-            rootHub.Stop().Wait();
-            rootHub.Close().Wait();
+            rootHub.Stop();
+            rootHub.Close();
 
             Log.Info("Scarlet.Crush Productions DS3 Service Stopped");
         }

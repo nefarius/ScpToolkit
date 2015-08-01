@@ -1,11 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
-using System.Net.Sockets;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml;
 using log4net;
+using ReactiveSockets;
+using ScpControl.Properties;
+using ScpControl.Rx;
 using ScpControl.Utilities;
 
 namespace ScpControl
@@ -14,13 +19,13 @@ namespace ScpControl
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly char[] m_Delim = { '^' };
-        private readonly IPEndPoint m_ClientEp = new IPEndPoint(IPAddress.Loopback, 26761);
         private readonly XmlMapper m_Mapper = new XmlMapper();
-        private readonly UdpClient m_Server = new UdpClient();
-        private readonly IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
         private bool m_Active;
-        private UdpClient m_Client = new UdpClient();
         private XmlDocument m_Map = new XmlDocument();
+        private readonly ReactiveClient _rxClient = new ReactiveClient(Settings.Default.RxHost, Settings.Default.RxPort);
+        private ScpByteChannel _rootHubChannel;
+        private readonly ReactiveListener _rxServer = new ReactiveListener(26760);
+        private ScpByteChannel _serverProtocol;
 
         public ScpProxy()
         {
@@ -47,10 +52,11 @@ namespace ScpControl
 
                 try
                 {
-                    byte[] Send = { 0, 6 };
+                    byte[] send = { 0, 6 };
 
-                    if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
-                    {
+                    _rootHubChannel.SendAsync(ScpRequest.ProfileList, send);
+
+                    /*
                         var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
                         var Buffer = m_Server.Receive(ref ReferenceEp);
@@ -62,7 +68,7 @@ namespace ScpControl
 
                             Active = Split[0];
                         }
-                    }
+                    */
                 }
                 catch (Exception ex)
                 {
@@ -77,30 +83,31 @@ namespace ScpControl
         {
             get
             {
-                var Native = false;
+                var native = false;
 
                 try
                 {
-                    byte[] Send = { 0, 3 };
+                    byte[] send = { 0, 3 };
 
-                    if (m_Server.Send(Send, Send.Length, m_ServerEp) == Send.Length)
-                    {
+                    _rootHubChannel.SendAsync(ScpRequest.ConfigRead, send);
+
+                    /*
                         var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
                         var Buffer = m_Server.Receive(ref ReferenceEp);
 
                         if (Buffer.Length > 0)
                         {
-                            Native = Buffer[13] == 0;
+                            native = Buffer[13] == 0;
                         }
-                    }
+                    */
                 }
                 catch (Exception ex)
                 {
                     Log.ErrorFormat("Unexpected error: {0}", ex);
                 }
 
-                return Native;
+                return native;
             }
         }
 
@@ -112,10 +119,48 @@ namespace ScpControl
             {
                 if (!m_Active)
                 {
-                    m_Client = new UdpClient(m_ClientEp);
-                    m_Client.Client.ReceiveTimeout = 500;
+                    #region Client
 
-                    NativeFeed_Worker.RunWorkerAsync();
+                    _rootHubChannel = new ScpByteChannel(_rxClient);
+                    _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(message =>
+                    {
+                        var packet = new DsPacket();
+
+                        LogPacket(packet.Load(message.Payload));
+                    });
+
+                    _rxClient.ConnectAsync().Wait();
+
+                    #endregion
+
+                    #region Server
+
+                    _rxServer.Connections.Subscribe(socket =>
+                    {
+                        Log.InfoFormat("New socket connected {0}", socket.GetHashCode());
+
+                        _serverProtocol = new ScpByteChannel(socket);
+
+                        _serverProtocol.Receiver.Subscribe(packet =>
+                        {
+                            var request = packet.Request;
+                            var buffer = packet.Payload;
+
+                            switch (request)
+                            {
+                                case ScpRequest.GetXml:
+                                    m_Map.LoadXml(buffer.ToUtf8());
+                                    m_Mapper.Initialize(m_Map);
+                                    break;
+                            }
+                        });
+
+                        socket.Disconnected += (sender, e) => Log.InfoFormat("Socket disconnected {0}", sender.GetHashCode());
+                        socket.Disposed += (sender, e) => Log.InfoFormat("Socket disposed {0}", sender.GetHashCode());
+                    });
+
+                    #endregion
+
                     m_Active = true;
                 }
             }
@@ -133,7 +178,7 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    NativeFeed_Worker.CancelAsync();
+                    _rxClient.Disconnect();
                     m_Active = false;
                 }
             }
@@ -151,23 +196,7 @@ namespace ScpControl
 
             try
             {
-                byte[] Buffer = { 0, 0x08 };
-
-                if (m_Server.Send(Buffer, Buffer.Length, m_ServerEp) == Buffer.Length)
-                {
-                    var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                    Buffer = m_Server.Receive(ref ReferenceEp);
-
-                    if (Buffer.Length > 0)
-                    {
-                        var Data = Encoding.UTF8.GetString(Buffer);
-
-                        m_Map.LoadXml(Data);
-
-                        m_Mapper.Initialize(m_Map);
-                    }
-                }
+                _serverProtocol.SendAsync(ScpRequest.GetXml);
 
                 Loaded = true;
             }
@@ -181,7 +210,7 @@ namespace ScpControl
 
         public bool Save()
         {
-            var Saved = false;
+            var saved = false;
 
             try
             {
@@ -189,14 +218,15 @@ namespace ScpControl
                 {
                     if (m_Mapper.Construct(ref m_Map))
                     {
-                        var Data = Encoding.UTF8.GetBytes(m_Map.InnerXml);
-                        var Buffer = new byte[Data.Length + 2];
+                        var data = m_Map.InnerXml.ToBytes().ToArray();
+                        var buffer = new byte[data.Length + 2];
 
-                        Buffer[1] = 0x09;
-                        Array.Copy(Data, 0, Buffer, 2, Data.Length);
+                        buffer[1] = 0x09; // TODO: remove
+                        Array.Copy(data, 0, buffer, 2, data.Length);
 
-                        m_Client.Send(Buffer, Buffer.Length, m_ServerEp);
-                        Saved = true;
+                        _rootHubChannel.SendAsync(ScpRequest.SetXml, buffer);
+
+                        saved = true;
                     }
                 }
             }
@@ -205,27 +235,27 @@ namespace ScpControl
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Saved;
+            return saved;
         }
 
         public bool Select(Profile Target)
         {
-            var Selected = false;
+            var selected = false;
 
             try
             {
                 if (m_Active)
                 {
-                    var Data = Encoding.Unicode.GetBytes(Target.Name);
-                    var Send = new byte[Data.Length + 2];
+                    var data = Encoding.Unicode.GetBytes(Target.Name);
+                    var send = new byte[data.Length + 2];
 
-                    Send[1] = 0x07;
-                    Array.Copy(Data, 0, Send, 2, Data.Length);
+                    send[1] = 0x07; // TODO: remove
+                    Array.Copy(data, 0, send, 2, data.Length);
 
-                    m_Server.Send(Send, Send.Length, m_ServerEp);
+                    _rootHubChannel.SendAsync(ScpRequest.SetActiveProfile, send);
 
                     SetDefault(Target);
-                    Selected = true;
+                    selected = true;
                 }
             }
             catch (Exception ex)
@@ -233,7 +263,7 @@ namespace ScpControl
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Selected;
+            return selected;
         }
 
         public DsDetail Detail(DsPadId Pad)
@@ -242,23 +272,24 @@ namespace ScpControl
 
             try
             {
-                byte[] Buffer = { (byte)Pad, 0x0A };
+                byte[] buffer = { (byte)Pad, 0x0A };
 
-                if (m_Server.Send(Buffer, Buffer.Length, m_ServerEp) == Buffer.Length)
-                {
-                    var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
+                _rootHubChannel.SendAsync(ScpRequest.PadDetail, buffer);
 
-                    Buffer = m_Server.Receive(ref ReferenceEp);
+                /*
+                 * var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
-                    if (Buffer.Length > 0)
+                    buffer = m_Server.Receive(ref ReferenceEp);
+
+                    if (buffer.Length > 0)
                     {
                         var Local = new byte[6];
-                        Array.Copy(Buffer, 5, Local, 0, Local.Length);
+                        Array.Copy(buffer, 5, Local, 0, Local.Length);
 
-                        Detail = new DsDetail((DsPadId)Buffer[0], (DsState)Buffer[1], (DsModel)Buffer[2], Local,
-                            (DsConnection)Buffer[3], (DsBattery)Buffer[4]);
+                        Detail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2], Local,
+                            (DsConnection)buffer[3], (DsBattery)buffer[4]);
                     }
-                }
+                */
             }
             catch (Exception ex)
             {
@@ -276,9 +307,10 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    byte[] Buffer = { (byte)Pad, 0x01, Large, Small };
+                    byte[] buffer = { (byte)Pad, 0x01, Large, Small };
 
-                    m_Server.Send(Buffer, Buffer.Length, m_ServerEp);
+                    _rootHubChannel.SendAsync(ScpRequest.Rumble, buffer);
+
                     Rumbled = true;
                 }
             }
@@ -292,33 +324,33 @@ namespace ScpControl
 
         public bool Remap(string Target, DsPacket Packet)
         {
-            var Remapped = false;
+            var remapped = false;
 
             try
             {
                 if (m_Active)
                 {
-                    var Output = new byte[Packet.Native.Length];
+                    var output = new byte[Packet.Native.Length];
 
                     switch (Packet.Detail.Model)
                     {
                         case DsModel.DS3:
-                            if (m_Mapper.RemapDs3(m_Mapper.Map[Target], Packet.Native, Output))
+                            if (m_Mapper.RemapDs3(m_Mapper.Map[Target], Packet.Native, output))
                             {
-                                Array.Copy(Output, Packet.Native, Output.Length);
+                                Array.Copy(output, Packet.Native, output.Length);
                                 Packet.Remapped();
                             }
                             break;
                         case DsModel.DS4:
-                            if (m_Mapper.RemapDs4(m_Mapper.Map[Target], Packet.Native, Output))
+                            if (m_Mapper.RemapDs4(m_Mapper.Map[Target], Packet.Native, output))
                             {
-                                Array.Copy(Output, Packet.Native, Output.Length);
+                                Array.Copy(output, Packet.Native, output.Length);
                                 Packet.Remapped();
                             }
                             break;
                     }
 
-                    Remapped = true;
+                    remapped = true;
                 }
             }
             catch (Exception ex)
@@ -326,12 +358,12 @@ namespace ScpControl
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Remapped;
+            return remapped;
         }
 
         public bool SetDefault(Profile Profile)
         {
-            var Set = true;
+            var set = true;
 
             try
             {
@@ -344,26 +376,11 @@ namespace ScpControl
             }
             catch (Exception ex)
             {
-                Set = false;
+                set = false;
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Set;
-        }
-
-        private void NativeFeed_Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            var packet = new DsPacket();
-            var buffer = new byte[ReportEventArgs.Length];
-
-            while (!NativeFeed_Worker.CancellationPending)
-            {
-                Log.TryCatchSilent(() => m_Client.Client.Receive(buffer));
-                LogPacket(packet.Load(buffer));
-            }
-
-            m_Client.Close();
-            e.Cancel = true;
+            return set;
         }
 
         private void LogPacket(DsPacket Data)

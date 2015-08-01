@@ -3,9 +3,13 @@ using System.Configuration;
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ReactiveSockets;
 using ScpControl;
+using ScpControl.Rx;
 using ScpControl.Utilities;
 using ScpMonitor.Properties;
 
@@ -18,20 +22,20 @@ namespace ScpMonitor
         private byte[] m_Buffer = new byte[2];
         private RegistrySettings m_Config = new RegistrySettings();
         private bool m_Connected;
-        private char[] m_Delim = {'^'};
-        private UdpClient m_Server = new UdpClient();
-        private IPEndPoint m_ServerEp = new IPEndPoint(IPAddress.Loopback, 26760);
+        private char[] m_Delim = { '^' };
         private ProfilesForm Profiles = new ProfilesForm();
         private SettingsForm Settings = new SettingsForm();
+        private ReactiveClient _rxClient = new ReactiveClient("localhost", 26760);
+        private readonly ScpByteChannel _rootHubChannel;
 
         public ScpForm()
         {
             InitializeComponent();
-            btnUp_1.Tag = (byte) 1;
-            btnUp_2.Tag = (byte) 2;
-            btnUp_3.Tag = (byte) 3;
 
-            m_Server.Client.ReceiveTimeout = 250;
+            btnUp_1.Tag = (byte)1;
+            btnUp_2.Tag = (byte)2;
+            btnUp_3.Tag = (byte)3;
+
             m_Buffer[1] = 0x02;
 
             FormVisible = m_Config.Visible;
@@ -78,16 +82,34 @@ namespace ScpMonitor
             var SizeX = 50 + lblHost.Width + lblPad_1.Width;
             var SizeY = 20 + lblHost.Height;
 
-            lblPad_1.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*0));
-            lblPad_2.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*2));
-            lblPad_3.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*4));
-            lblPad_4.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*6));
+            lblPad_1.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 0));
+            lblPad_2.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 2));
+            lblPad_3.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 4));
+            lblPad_4.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 6));
 
             btnUp_1.Location = new Point(lblPad_2.Location.X - 26, lblPad_2.Location.Y - 6);
             btnUp_2.Location = new Point(lblPad_3.Location.X - 26, lblPad_3.Location.Y - 6);
             btnUp_3.Location = new Point(lblPad_4.Location.X - 26, lblPad_4.Location.Y - 6);
 
             ClientSize = new Size(SizeX, SizeY);
+
+            _rootHubChannel = new ScpByteChannel(_rxClient);
+
+            _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+            {
+                var request = packet.Request;
+                var buffer = packet.Payload;
+
+                switch (request)
+                {
+                    case ScpRequest.StatusData:
+                        if (buffer.Length > 0)
+                            Parse(buffer);
+                        break;
+                }
+            });
+
+            _rxClient.ConnectAsync().Wait();
         }
 
         public void Reset()
@@ -107,7 +129,7 @@ namespace ScpMonitor
                 niTray.ShowBalloonTip(3000);
             }
 
-            var Data = Encoding.Unicode.GetString(Buffer);
+            var Data = Buffer.ToUtf8();
             var Split = Data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
 
             lblHost.Text = Split[0];
@@ -181,14 +203,7 @@ namespace ScpMonitor
                         ProfSaved = true;
                     }
 
-                    if (m_Server.Send(m_Buffer, m_Buffer.Length, m_ServerEp) == m_Buffer.Length)
-                    {
-                        var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                        var Buffer = m_Server.Receive(ref ReferenceEp);
-
-                        if (Buffer.Length > 0) Parse(Buffer);
-                    }
+                    _rootHubChannel.SendAsync(ScpRequest.StatusData, m_Buffer);
                 }
                 catch
                 {
@@ -242,9 +257,9 @@ namespace ScpMonitor
 
         private void btnUp_Click(object sender, EventArgs e)
         {
-            byte[] Buffer = {0, 5, (byte) ((Button) sender).Tag};
+            byte[] buffer = { 0, 5, (byte)((Button)sender).Tag };
 
-            m_Server.Send(Buffer, Buffer.Length, m_ServerEp);
+            _rootHubChannel.SendAsync(ScpRequest.PadPromote, buffer);
         }
 
         private void niTray_Click(object sender, MouseEventArgs e)
@@ -313,80 +328,80 @@ namespace ScpMonitor
 
         private void Button_Enter(object sender, EventArgs e)
         {
-            ThemeUtil.UpdateFocus(((Button) sender).Handle);
+            ThemeUtil.UpdateFocus(((Button)sender).Handle);
         }
     }
 
-    [SettingsProvider(typeof (RegistryProvider))]
+    [SettingsProvider(typeof(RegistryProvider))]
     public class RegistrySettings : ApplicationSettingsBase
     {
         [UserScopedSetting, DefaultSettingValue("true")]
         public bool Visible
         {
-            get { return (bool) this["Visible"]; }
+            get { return (bool)this["Visible"]; }
             set { this["Visible"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
         public bool FormSaved
         {
-            get { return (bool) this["FormSaved"]; }
+            get { return (bool)this["FormSaved"]; }
             set { this["FormSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
         public bool ConfSaved
         {
-            get { return (bool) this["ConfSaved"]; }
+            get { return (bool)this["ConfSaved"]; }
             set { this["ConfSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
         public bool ProfSaved
         {
-            get { return (bool) this["ProfSaved"]; }
+            get { return (bool)this["ProfSaved"]; }
             set { this["ProfSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int FormX
         {
-            get { return (int) this["FormX"]; }
+            get { return (int)this["FormX"]; }
             set { this["FormX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int FormY
         {
-            get { return (int) this["FormY"]; }
+            get { return (int)this["FormY"]; }
             set { this["FormY"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ConfX
         {
-            get { return (int) this["ConfX"]; }
+            get { return (int)this["ConfX"]; }
             set { this["ConfX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ConfY
         {
-            get { return (int) this["ConfY"]; }
+            get { return (int)this["ConfY"]; }
             set { this["ConfY"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ProfX
         {
-            get { return (int) this["ProfX"]; }
+            get { return (int)this["ProfX"]; }
             set { this["ProfX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ProfY
         {
-            get { return (int) this["ProfY"]; }
+            get { return (int)this["ProfY"]; }
             set { this["ProfY"] = value; }
         }
     }

@@ -69,9 +69,9 @@ namespace ScpServer
             }
         }
 
-        private async void btnStop_Click(object sender, EventArgs e)
+        private void btnStop_Click(object sender, EventArgs e)
         {
-            if (await rootHub.Stop())
+            if (rootHub.Stop())
             {
                 btnStart.Enabled = true;
                 btnStop.Enabled = false;
