@@ -45,6 +45,8 @@ namespace ScpControl
         private readonly BusDevice scpBus = new BusDevice();
         private readonly UsbHub usbHub = new UsbHub();
 
+        #region Ctors
+
         public RootHub()
         {
             InitializeComponent();
@@ -68,6 +70,10 @@ namespace ScpControl
             usbHub.Report += On_Report;
         }
 
+        #endregion
+
+        #region Properties
+
         public IDsDevice[] Pad
         {
             get { return m_Pad; }
@@ -87,6 +93,10 @@ namespace ScpControl
         {
             get { return m_Started && bthHub.Pairable; }
         }
+
+        #endregion
+
+        #region Actions
 
         public override bool Open()
         {
@@ -422,6 +432,8 @@ namespace ScpControl
             return true;
         }
 
+        #endregion
+
         public override DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
         {
             if (m_Suspended) return DsPadId.None;
@@ -443,6 +455,8 @@ namespace ScpControl
 
             return DsPadId.None;
         }
+
+        #region Events
 
         protected override void On_Arrival(object sender, ArrivalEventArgs e)
         {
@@ -552,6 +566,10 @@ namespace ScpControl
             }
         }
 
+        #endregion
+
+        #region Internal helpers
+
         private class Cache
         {
             private readonly byte[] m_Mapped = new byte[ReportEventArgs.Length];
@@ -573,5 +591,7 @@ namespace ScpControl
                 get { return m_Mapped; }
             }
         }
+
+        #endregion
     }
 }
