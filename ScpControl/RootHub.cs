@@ -353,6 +353,7 @@ namespace ScpControl
                         _nativeFeedSubscribers.Remove(socket.GetHashCode());
                     }
                 };
+
                 socket.Disposed += (sender, e) =>
                 {
                     Log.InfoFormat("Client disposed from native feed channel {0}",
