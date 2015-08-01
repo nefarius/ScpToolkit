@@ -118,7 +118,7 @@ namespace ScpMonitor
                     Clear();
                 };
 
-                _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+                _rootHubChannel.Receiver.ObserveOn(SynchronizationContext.Current).Subscribe(packet =>
                 {
                     var request = packet.Request;
                     var buffer = packet.Payload;
@@ -132,11 +132,6 @@ namespace ScpMonitor
 
                             // update UI
                             UpdateUi();
-
-                            Thread.Sleep(100);
-
-                            // request next update
-                            _rootHubChannel.SendAsync(ScpRequest.StatusData);
                             break;
                         case ScpRequest.ConfigRead:
                             _settings.Response(packet);
@@ -160,97 +155,90 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
-        private void Parse(byte[] buffer)
+        private async void Parse(byte[] buffer)
         {
-            this.UiThread(() =>
+            if (!m_Connected)
             {
-                if (!m_Connected)
-                {
-                    m_Connected = true;
-                    tmConfig.Enabled = true;
-                    tmProfile.Enabled = true;
+                m_Connected = true;
+                tmConfig.Enabled = true;
+                tmProfile.Enabled = true;
 
-                    niTray.BalloonTipText = "Server Connected";
-                    niTray.ShowBalloonTip(3000);
-                }
-            });
+                niTray.BalloonTipText = "Server Connected";
+                niTray.ShowBalloonTip(3000);
+            }
 
             var data = buffer.ToUtf8();
             var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
 
-            this.UiThread(() =>
-            {
-                lblHost.Text = split[0];
+            lblHost.Text = split[0];
 
-                lblPad_1.Text = split[1];
-                lblPad_2.Text = split[2];
-                btnUp_1.Enabled = !split[2].Contains("Disconnected");
-                lblPad_3.Text = split[3];
-                btnUp_2.Enabled = !split[3].Contains("Disconnected");
-                lblPad_4.Text = split[4];
-                btnUp_3.Enabled = !split[4].Contains("Disconnected");
-            });
+            lblPad_1.Text = split[1];
+            lblPad_2.Text = split[2];
+            btnUp_1.Enabled = !split[2].Contains("Disconnected");
+            lblPad_3.Text = split[3];
+            btnUp_2.Enabled = !split[3].Contains("Disconnected");
+            lblPad_4.Text = split[4];
+            btnUp_3.Enabled = !split[4].Contains("Disconnected");
+
+            await Task.Delay(100);
+
+            // request next update
+            await _rootHubChannel.SendAsync(ScpRequest.StatusData);
         }
 
         private void Clear()
         {
-            this.UiThread(() =>
+            if (m_Connected)
             {
-                if (m_Connected)
-                {
-                    m_Connected = false;
-                    tmConfig.Enabled = false;
-                    tmProfile.Enabled = false;
+                m_Connected = false;
+                tmConfig.Enabled = false;
+                tmProfile.Enabled = false;
 
-                    niTray.BalloonTipText = "Server Disconnected";
-                    niTray.ShowBalloonTip(3000);
-                }
+                niTray.BalloonTipText = "Server Disconnected";
+                niTray.ShowBalloonTip(3000);
+            }
 
-                if (_settings.Visible) _settings.Hide();
-                if (_profiles.Visible) _profiles.Hide();
+            if (_settings.Visible) _settings.Hide();
+            if (_profiles.Visible) _profiles.Hide();
 
-                lblHost.Text = "Host Address : Disconnected";
+            lblHost.Text = "Host Address : Disconnected";
 
-                lblPad_1.Text = "Pad 1 : Disconnected";
-                lblPad_2.Text = "Pad 2 : Disconnected";
-                lblPad_3.Text = "Pad 3 : Disconnected";
-                lblPad_4.Text = "Pad 4 : Disconnected";
+            lblPad_1.Text = "Pad 1 : Disconnected";
+            lblPad_2.Text = "Pad 2 : Disconnected";
+            lblPad_3.Text = "Pad 3 : Disconnected";
+            lblPad_4.Text = "Pad 4 : Disconnected";
 
-                btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
-            });
+            btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
         }
 
         private void UpdateUi()
         {
-            this.UiThread(() =>
+            if (Visible && Location.X != -32000 && Location.Y != -32000)
             {
-                if (Visible && Location.X != -32000 && Location.Y != -32000)
-                {
-                    FormVisible = true;
+                FormVisible = true;
 
-                    FormX = Location.X;
-                    FormY = Location.Y;
-                    FormSaved = true;
-                }
-                else
-                {
-                    FormVisible = false;
-                }
+                FormX = Location.X;
+                FormY = Location.Y;
+                FormSaved = true;
+            }
+            else
+            {
+                FormVisible = false;
+            }
 
-                if (_settings.Visible && _settings.Location.X != -32000 && _settings.Location.Y != -32000)
-                {
-                    ConfX = _settings.Location.X;
-                    ConfY = _settings.Location.Y;
-                    ConfSaved = true;
-                }
+            if (_settings.Visible && _settings.Location.X != -32000 && _settings.Location.Y != -32000)
+            {
+                ConfX = _settings.Location.X;
+                ConfY = _settings.Location.Y;
+                ConfSaved = true;
+            }
 
-                if (_profiles.Visible && _profiles.Location.X != -32000 && _profiles.Location.Y != -32000)
-                {
-                    ProfX = _profiles.Location.X;
-                    ProfY = _profiles.Location.Y;
-                    ProfSaved = true;
-                }
-            });
+            if (_profiles.Visible && _profiles.Location.X != -32000 && _profiles.Location.Y != -32000)
+            {
+                ProfX = _profiles.Location.X;
+                ProfY = _profiles.Location.Y;
+                ProfSaved = true;
+            }
         }
 
         private void Form_Load(object sender, EventArgs e)
