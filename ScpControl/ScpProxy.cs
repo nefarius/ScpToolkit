@@ -91,20 +91,12 @@ namespace ScpControl
 
                 #region Feed client
 
-                var rootHubFeedChannel = new ScpByteChannel(_rxFeedClient);
-                rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+                var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
+                rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(buffer =>
                 {
-                    var request = packet.Request;
-                    var buffer = packet.Payload;
+                    var packet = new DsPacket();
 
-                    switch (request)
-                    {
-                        case ScpRequest.NativeFeed:
-                            var dsPacket = new DsPacket();
-
-                            LogPacket(dsPacket.Load(buffer));
-                            break;
-                    }
+                    LogPacket(packet.Load(buffer));
                 });
 
                 _rxFeedClient.ConnectAsync().Wait();

@@ -162,79 +162,67 @@ namespace ScpMonitor
 
         private void Parse(byte[] buffer)
         {
-            if (InvokeRequired)
+            this.UiThread(() =>
             {
-                Invoke(new Action(() =>
+                if (!m_Connected)
                 {
-                    Parse(buffer);
-                }));
-                return;
-            }
+                    m_Connected = true;
+                    tmConfig.Enabled = true;
+                    tmProfile.Enabled = true;
 
-            if (!m_Connected)
-            {
-                m_Connected = true;
-                tmConfig.Enabled = true;
-                tmProfile.Enabled = true;
-
-                niTray.BalloonTipText = "Server Connected";
-                niTray.ShowBalloonTip(3000);
-            }
+                    niTray.BalloonTipText = "Server Connected";
+                    niTray.ShowBalloonTip(3000);
+                }
+            });
 
             var data = buffer.ToUtf8();
             var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
 
-            lblHost.Text = split[0];
+            this.UiThread(() =>
+            {
+                lblHost.Text = split[0];
 
-            lblPad_1.Text = split[1];
-            lblPad_2.Text = split[2];
-            btnUp_1.Enabled = !split[2].Contains("Disconnected");
-            lblPad_3.Text = split[3];
-            btnUp_2.Enabled = !split[3].Contains("Disconnected");
-            lblPad_4.Text = split[4];
-            btnUp_3.Enabled = !split[4].Contains("Disconnected");
+                lblPad_1.Text = split[1];
+                lblPad_2.Text = split[2];
+                btnUp_1.Enabled = !split[2].Contains("Disconnected");
+                lblPad_3.Text = split[3];
+                btnUp_2.Enabled = !split[3].Contains("Disconnected");
+                lblPad_4.Text = split[4];
+                btnUp_3.Enabled = !split[4].Contains("Disconnected");
+            });
         }
 
         private void Clear()
         {
-            if (this.InvokeRequired)
+            this.UiThread(() =>
             {
-                this.Invoke(new Action(Clear));
-                return;
-            }
+                if (m_Connected)
+                {
+                    m_Connected = false;
+                    tmConfig.Enabled = false;
+                    tmProfile.Enabled = false;
 
-            if (m_Connected)
-            {
-                m_Connected = false;
-                tmConfig.Enabled = false;
-                tmProfile.Enabled = false;
+                    niTray.BalloonTipText = "Server Disconnected";
+                    niTray.ShowBalloonTip(3000);
+                }
 
-                niTray.BalloonTipText = "Server Disconnected";
-                niTray.ShowBalloonTip(3000);
-            }
+                if (_settings.Visible) _settings.Hide();
+                if (_profiles.Visible) _profiles.Hide();
 
-            if (_settings.Visible) _settings.Hide();
-            if (_profiles.Visible) _profiles.Hide();
+                lblHost.Text = "Host Address : Disconnected";
 
-            lblHost.Text = "Host Address : Disconnected";
+                lblPad_1.Text = "Pad 1 : Disconnected";
+                lblPad_2.Text = "Pad 2 : Disconnected";
+                lblPad_3.Text = "Pad 3 : Disconnected";
+                lblPad_4.Text = "Pad 4 : Disconnected";
 
-            lblPad_1.Text = "Pad 1 : Disconnected";
-            lblPad_2.Text = "Pad 2 : Disconnected";
-            lblPad_3.Text = "Pad 3 : Disconnected";
-            lblPad_4.Text = "Pad 4 : Disconnected";
-
-            btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
+                btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
+            });
         }
 
         private void UpdateUi()
         {
-            if (this.InvokeRequired)
-            {
-                Invoke(new Action(UpdateUi));
-                return;
-            }
-
-            try
+            this.UiThread(() =>
             {
                 if (Visible && Location.X != -32000 && Location.Y != -32000)
                 {
@@ -262,18 +250,14 @@ namespace ScpMonitor
                     ProfY = _profiles.Location.Y;
                     ProfSaved = true;
                 }
-            }
-            catch
-            {
-                Clear();
-            }
+            });
         }
 
-        private async void Form_Load(object sender, EventArgs e)
+        private void Form_Load(object sender, EventArgs e)
         {
             Icon = niTray.Icon = Resources.Scp_All;
 
-            await _rootHubChannel.SendAsync(ScpRequest.StatusData);
+            _rootHubChannel.SendAsync(ScpRequest.StatusData);
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
@@ -378,6 +362,8 @@ namespace ScpMonitor
         }
     }
 
+    #region Registry settings
+
     [SettingsProvider(typeof(RegistryProvider))]
     public class RegistrySettings : ApplicationSettingsBase
     {
@@ -451,4 +437,6 @@ namespace ScpMonitor
             set { this["ProfY"] = value; }
         }
     }
+
+    #endregion
 }

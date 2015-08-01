@@ -19,7 +19,7 @@ namespace ScpControl
         private volatile bool m_Suspended;
         private readonly ReactiveListener _rxCmdServer = new ReactiveListener(Settings.Default.RootHubCommandRxPort);
         private readonly ReactiveListener _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedRxPort);
-        private readonly IDictionary<int, ScpByteChannel> _nativeFeedSubscribers = new Dictionary<int, ScpByteChannel>();
+        private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers = new Dictionary<int, ScpNativeFeedChannel>();
         private readonly BthHub bthHub = new BthHub();
         private readonly Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
@@ -330,9 +330,12 @@ namespace ScpControl
             _rxFeedServer.Connections.Subscribe(socket =>
             {
                 Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
-                var protocol = new ScpByteChannel(socket);
+                var protocol = new ScpNativeFeedChannel(socket);
 
-                _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
+                lock (this)
+                {
+                    _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
+                }
 
                 protocol.Receiver.Subscribe(packet =>
                 {
@@ -345,7 +348,7 @@ namespace ScpControl
                         "Client disconnected from native feed channel {0}",
                         sender.GetHashCode());
 
-                    lock (this) // TODO: possible deadlock!
+                    lock (this)
                     {
                         _nativeFeedSubscribers.Remove(socket.GetHashCode());
                     }
@@ -355,7 +358,7 @@ namespace ScpControl
                     Log.InfoFormat("Client disposed from native feed channel {0}",
                         sender.GetHashCode());
 
-                    lock (this) // TODO: possible deadlock!
+                    lock (this)
                     {
                         _nativeFeedSubscribers.Remove(socket.GetHashCode());
                     }
@@ -487,58 +490,55 @@ namespace ScpControl
 
         protected override void On_Arrival(object sender, ArrivalEventArgs e)
         {
-            lock (this)
+            var bFound = false;
+            var arrived = e.Device;
+
+            for (var index = 0; index < m_Pad.Length && !bFound; index++)
             {
-                var bFound = false;
-                var arrived = e.Device;
-
-                for (var index = 0; index < m_Pad.Length && !bFound; index++)
+                if (arrived.Local == m_Reserved[index])
                 {
-                    if (arrived.Local == m_Reserved[index])
+                    if (m_Pad[index].State == DsState.Connected)
                     {
-                        if (m_Pad[index].State == DsState.Connected)
+                        if (m_Pad[index].Connection == DsConnection.BTH)
                         {
-                            if (m_Pad[index].Connection == DsConnection.BTH)
-                            {
-                                m_Pad[index].Disconnect();
-                            }
-
-                            if (m_Pad[index].Connection == DsConnection.USB)
-                            {
-                                arrived.Disconnect();
-
-                                e.Handled = false;
-                                return;
-                            }
+                            m_Pad[index].Disconnect();
                         }
 
-                        bFound = true;
+                        if (m_Pad[index].Connection == DsConnection.USB)
+                        {
+                            arrived.Disconnect();
 
-                        arrived.PadId = (DsPadId)index;
-                        m_Pad[index] = arrived;
+                            e.Handled = false;
+                            return;
+                        }
                     }
+
+                    bFound = true;
+
+                    arrived.PadId = (DsPadId)index;
+                    m_Pad[index] = arrived;
                 }
-
-                for (var index = 0; index < m_Pad.Length && !bFound; index++)
-                {
-                    if (m_Pad[index].State == DsState.Disconnected)
-                    {
-                        bFound = true;
-                        m_Reserved[index] = arrived.Local;
-
-                        arrived.PadId = (DsPadId)index;
-                        m_Pad[index] = arrived;
-                    }
-                }
-
-                if (bFound)
-                {
-                    scpBus.Plugin((int)arrived.PadId + 1);
-
-                    Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
-                }
-                e.Handled = bFound;
             }
+
+            for (var index = 0; index < m_Pad.Length && !bFound; index++)
+            {
+                if (m_Pad[index].State == DsState.Disconnected)
+                {
+                    bFound = true;
+                    m_Reserved[index] = arrived.Local;
+
+                    arrived.PadId = (DsPadId)index;
+                    m_Pad[index] = arrived;
+                }
+            }
+
+            if (bFound)
+            {
+                scpBus.Plugin((int)arrived.PadId + 1);
+
+                Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
+            }
+            e.Handled = bFound;
         }
 
         protected override void On_Report(object sender, ReportEventArgs e)
@@ -579,19 +579,25 @@ namespace ScpControl
                 m_Native[serial][0] = m_Native[serial][1] = 0;
             }
 
+            if(Global.DisableNative)
+                return;
+
             lock (this)
             {
                 // send native controller inputs to subscribed clients
-                foreach (var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
+                foreach (
+                    var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
                 {
                     try
                     {
 #if DEBUG
                         Log.DebugFormat(">> request: {0:D4}, length: {1}", (int)ScpRequest.NativeFeed, e.Report.Length);
 #endif
-                        channel.SendAsync(ScpRequest.NativeFeed, e.Report).Wait();
+                        channel.SendAsync(e.Report);
                     }
-                    catch (AggregateException) { }
+                    catch (AggregateException)
+                    {
+                    }
                 }
             }
         }
