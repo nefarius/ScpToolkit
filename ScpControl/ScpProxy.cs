@@ -27,8 +27,10 @@ namespace ScpControl
         private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedRxHost, Settings.Default.RootHubNativeFeedRxPort);
         private readonly AutoResetEvent _activeProfileEvent = new AutoResetEvent(false);
         private readonly AutoResetEvent _padDetailEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent _nativeFeedEnabledEvent = new AutoResetEvent(false);
         private string _activeProfile;
         private DsDetail _padDetail;
+        private bool _nativeFeedAvailable;
 
         public ScpProxy()
         {
@@ -64,6 +66,10 @@ namespace ScpControl
                             (DsConnection)buffer[3], (DsBattery)buffer[4]);
 
                         _padDetailEvent.Set();
+                        break;
+                    case ScpRequest.NativeFeedAvailable:
+                        _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
+                        _nativeFeedEnabledEvent.Set();
                         break;
                 }
             });
@@ -131,32 +137,20 @@ namespace ScpControl
         {
             get
             {
-                var native = false;
-
                 try
                 {
-                    byte[] send = { 0, 3 };
+                    byte[] send = { 0, (byte)ScpRequest.NativeFeedAvailable };
 
-                    _rootHubCommandChannel.SendAsync(ScpRequest.ConfigRead, send);
+                    _rootHubCommandChannel.SendAsync(ScpRequest.NativeFeedAvailable, send);
 
-                    // TODO: complete!
-                    /*
-                        var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                        var Buffer = m_Server.Receive(ref ReferenceEp);
-
-                        if (Buffer.Length > 0)
-                        {
-                            native = Buffer[13] == 0;
-                        }
-                    */
+                    _nativeFeedEnabledEvent.WaitOne();
                 }
                 catch (Exception ex)
                 {
                     Log.ErrorFormat("Unexpected error: {0}", ex);
                 }
 
-                return native;
+                return _nativeFeedAvailable;
             }
         }
 
@@ -187,8 +181,9 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    _rxCommandClient.Disconnect();
-                    _rxFeedClient.Disconnect();
+                    // TODO: improve
+                    //_rxCommandClient.Disconnect();
+                    //_rxFeedClient.Disconnect();
 
                     m_Active = false;
                 }
@@ -306,7 +301,7 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    byte[] buffer = { (byte)Pad, 0x01, Large, Small };
+                    byte[] buffer = { (byte)Pad, (byte)ScpRequest.Rumble, Large, Small };
 
                     _rootHubCommandChannel.SendAsync(ScpRequest.Rumble, buffer);
 

@@ -270,6 +270,10 @@ namespace ScpControl
                                     protocol.SendAsync(request, data);
                                 }
                                 break;
+                            case ScpRequest.NativeFeedAvailable:
+                                protocol.SendAsync(ScpRequest.NativeFeedAvailable,
+                                    BitConverter.GetBytes(!Global.DisableNative));
+                                break;
                         }
                     }
                     catch (SocketException sex)
@@ -312,14 +316,20 @@ namespace ScpControl
                         "Socket disconnected from native feed channel {0}",
                         sender.GetHashCode());
 
-                    _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                    lock (this) // TODO: possible deadlock!
+                    {
+                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                    }
                 };
                 socket.Disposed += (sender, e) =>
                 {
                     Log.InfoFormat("Socket disposed from native feed channel {0}",
                         sender.GetHashCode());
 
-                    _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                    lock (this) // TODO: possible deadlock!
+                    {
+                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                    }
                 };
             });
 
@@ -528,10 +538,17 @@ namespace ScpControl
                 m_Native[serial][0] = m_Native[serial][1] = 0;
             }
 
-            // send native controller inputs to subscribed clients
-            foreach (var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
+            lock (this)
             {
-                channel.SendAsync(ScpRequest.NativeFeed, e.Report);
+                // send native controller inputs to subscribed clients
+                foreach (var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
+                {
+                    try
+                    {
+                        channel.SendAsync(ScpRequest.NativeFeed, e.Report).Wait();
+                    }
+                    catch (AggregateException) { }
+                }
             }
         }
 

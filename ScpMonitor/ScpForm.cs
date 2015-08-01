@@ -3,7 +3,9 @@ using System.Configuration;
 using System.Drawing;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Windows.Forms;
+using log4net;
 using ReactiveSockets;
 using ScpControl;
 using ScpControl.Rx;
@@ -14,27 +16,33 @@ namespace ScpMonitor
 {
     public partial class ScpForm : Form
     {
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         protected bool FormSaved, ConfSaved, ProfSaved, FormVisible;
         protected int FormX, FormY, ConfX, ConfY, ProfX, ProfY;
         private bool m_Connected;
         private readonly ProfilesForm _profiles = new ProfilesForm();
         private readonly ScpByteChannel _rootHubChannel;
 
-        private readonly ReactiveClient _rxClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost,
+        private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost,
             Settings.Default.RootHubCommandRxPort);
 
         private readonly SettingsForm _settings = new SettingsForm(null);
         private readonly byte[] m_Buffer = new byte[2];
         private readonly RegistrySettings m_Config = new RegistrySettings();
-        private readonly char[] m_Delim = {'^'};
+        private readonly char[] m_Delim = { '^' };
 
         public ScpForm()
         {
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Log.FatalFormat("Unhandled exception: {0}", args.ExceptionObject);
+            };
+
             InitializeComponent();
 
-            btnUp_1.Tag = (byte) 1;
-            btnUp_2.Tag = (byte) 2;
-            btnUp_3.Tag = (byte) 3;
+            btnUp_1.Tag = (byte)1;
+            btnUp_2.Tag = (byte)2;
+            btnUp_3.Tag = (byte)3;
 
             m_Buffer[1] = 0x02;
 
@@ -82,10 +90,10 @@ namespace ScpMonitor
             var SizeX = 50 + lblHost.Width + lblPad_1.Width;
             var SizeY = 20 + lblHost.Height;
 
-            lblPad_1.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*0));
-            lblPad_2.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*2));
-            lblPad_3.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*4));
-            lblPad_4.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height/7*6));
+            lblPad_1.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 0));
+            lblPad_2.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 2));
+            lblPad_3.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 4));
+            lblPad_4.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 6));
 
             btnUp_1.Location = new Point(lblPad_2.Location.X - 26, lblPad_2.Location.Y - 6);
             btnUp_2.Location = new Point(lblPad_3.Location.X - 26, lblPad_3.Location.Y - 6);
@@ -93,7 +101,21 @@ namespace ScpMonitor
 
             ClientSize = new Size(SizeX, SizeY);
 
-            _rootHubChannel = new ScpByteChannel(_rxClient);
+            _rootHubChannel = new ScpByteChannel(_rxCommandClient);
+
+            _rxCommandClient.Disconnected += (sender, args) =>
+            {
+                Log.Info("Server connection has been closed");
+
+                Clear();
+            };
+
+            _rxCommandClient.Disposed += (sender, args) =>
+            {
+                Log.Info("Server connection has been disposed");
+
+                Clear();
+            };
 
             _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
             {
@@ -112,7 +134,7 @@ namespace ScpMonitor
                 }
             });
 
-            _rxClient.ConnectAsync().Wait();
+            _rxCommandClient.ConnectAsync().Wait();
 
             _settings = new SettingsForm(_rootHubChannel);
         }
@@ -156,6 +178,12 @@ namespace ScpMonitor
 
         private void Clear()
         {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(Clear));
+                return;
+            }
+
             if (m_Connected)
             {
                 m_Connected = false;
@@ -214,7 +242,8 @@ namespace ScpMonitor
                         ProfSaved = true;
                     }
 
-                    _rootHubChannel.SendAsync(ScpRequest.StatusData, m_Buffer);
+                    if (_rxCommandClient.IsConnected)
+                        _rootHubChannel.SendAsync(ScpRequest.StatusData, m_Buffer);
                 }
                 catch
                 {
@@ -268,9 +297,10 @@ namespace ScpMonitor
 
         private void btnUp_Click(object sender, EventArgs e)
         {
-            byte[] buffer = {0, 5, (byte) ((Button) sender).Tag};
+            byte[] buffer = { 0, 5, (byte)((Button)sender).Tag };
 
-            _rootHubChannel.SendAsync(ScpRequest.PadPromote, buffer);
+            if (_rxCommandClient.IsConnected)
+                _rootHubChannel.SendAsync(ScpRequest.PadPromote, buffer);
         }
 
         private void niTray_Click(object sender, MouseEventArgs e)
@@ -338,80 +368,80 @@ namespace ScpMonitor
 
         private void Button_Enter(object sender, EventArgs e)
         {
-            ThemeUtil.UpdateFocus(((Button) sender).Handle);
+            ThemeUtil.UpdateFocus(((Button)sender).Handle);
         }
     }
 
-    [SettingsProvider(typeof (RegistryProvider))]
+    [SettingsProvider(typeof(RegistryProvider))]
     public class RegistrySettings : ApplicationSettingsBase
     {
         [UserScopedSetting, DefaultSettingValue("true")]
         public bool Visible
         {
-            get { return (bool) this["Visible"]; }
+            get { return (bool)this["Visible"]; }
             set { this["Visible"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
         public bool FormSaved
         {
-            get { return (bool) this["FormSaved"]; }
+            get { return (bool)this["FormSaved"]; }
             set { this["FormSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
         public bool ConfSaved
         {
-            get { return (bool) this["ConfSaved"]; }
+            get { return (bool)this["ConfSaved"]; }
             set { this["ConfSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("false")]
         public bool ProfSaved
         {
-            get { return (bool) this["ProfSaved"]; }
+            get { return (bool)this["ProfSaved"]; }
             set { this["ProfSaved"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int FormX
         {
-            get { return (int) this["FormX"]; }
+            get { return (int)this["FormX"]; }
             set { this["FormX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int FormY
         {
-            get { return (int) this["FormY"]; }
+            get { return (int)this["FormY"]; }
             set { this["FormY"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ConfX
         {
-            get { return (int) this["ConfX"]; }
+            get { return (int)this["ConfX"]; }
             set { this["ConfX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ConfY
         {
-            get { return (int) this["ConfY"]; }
+            get { return (int)this["ConfY"]; }
             set { this["ConfY"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ProfX
         {
-            get { return (int) this["ProfX"]; }
+            get { return (int)this["ProfX"]; }
             set { this["ProfX"] = value; }
         }
 
         [UserScopedSetting, DefaultSettingValue("-32000")]
         public int ProfY
         {
-            get { return (int) this["ProfY"]; }
+            get { return (int)this["ProfY"]; }
             set { this["ProfY"] = value; }
         }
     }
