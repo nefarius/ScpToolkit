@@ -43,6 +43,7 @@
             this.btnUp_1 = new System.Windows.Forms.Button();
             this.btnUp_2 = new System.Windows.Forms.Button();
             this.btnUp_3 = new System.Windows.Forms.Button();
+            this.scpProxy = new ScpControl.ScpProxy(this.components);
             this.cmTray.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -184,6 +185,11 @@
             this.btnUp_3.Click += new System.EventHandler(this.btnUp_Click);
             this.btnUp_3.Enter += new System.EventHandler(this.Button_Enter);
             // 
+            // scpProxy
+            // 
+            this.scpProxy.StatusDataReceived += new System.EventHandler<ScpControl.Rx.ScpBytePacket>(this.scpProxy_StatusDataReceived);
+            this.scpProxy.ConfigReceived += new System.EventHandler<ScpControl.Rx.ScpBytePacket>(this.scpProxy_ConfigReceived);
+            // 
             // ScpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -231,6 +237,7 @@
         private System.Windows.Forms.Button btnUp_3;
         private System.Windows.Forms.ToolStripMenuItem tmReset;
         private System.Windows.Forms.ToolStripMenuItem tmProfile;
+        private ScpControl.ScpProxy scpProxy;
 
     }
 }

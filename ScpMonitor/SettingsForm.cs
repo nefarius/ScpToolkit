@@ -2,7 +2,9 @@
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
+using ScpControl;
 using ScpControl.Rx;
+using ScpControl.Utilities;
 using ScpMonitor.Properties;
 
 namespace ScpMonitor
@@ -10,12 +12,12 @@ namespace ScpMonitor
     public partial class SettingsForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly ScpCommandChannel _rootHubChannel;
         private readonly byte[] _mBuffer = new byte[17];
+        private readonly ScpProxy _proxy;
 
-        public SettingsForm(ScpCommandChannel protocol)
+        public SettingsForm(ScpProxy proxy)
         {
-            _rootHubChannel = protocol;
+            _proxy = proxy;
 
             InitializeComponent();
 
@@ -27,51 +29,42 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
-        public void Response(IScpPacket<byte[]> packet)
+        public void Response(ScpBytePacket packet)
         {
+            Log.Info("Received configuration response");
+
             var request = packet.Request;
             var buffer = packet.Payload;
 
             switch (request)
             {
                 case ScpRequest.ConfigRead:
-                    if (InvokeRequired)
+                    this.UiThread(() =>
                     {
-                        Invoke(new Action(() =>
-                        {
-                            tbIdle.Value = buffer[2];
-                            cbLX.Checked = buffer[3] == 1;
-                            cbLY.Checked = buffer[4] == 1;
-                            cbRX.Checked = buffer[5] == 1;
-                            cbRY.Checked = buffer[6] == 1;
-                            cbLED.Checked = buffer[7] == 1;
-                            cbRumble.Checked = buffer[8] == 1;
-                            cbTriggers.Checked = buffer[9] == 1;
-                            tbLatency.Value = buffer[10];
-                            tbLeft.Value = buffer[11];
-                            tbRight.Value = buffer[12];
-                            cbNative.Checked = buffer[13] == 1;
-                            cbSSP.Checked = buffer[14] == 1;
-                            tbBrightness.Value = buffer[15];
-                            cbForce.Checked = buffer[16] == 1;
-                        }));
-                    }
+                        tbIdle.Value = buffer[2];
+                        cbLX.Checked = buffer[3] == 1;
+                        cbLY.Checked = buffer[4] == 1;
+                        cbRX.Checked = buffer[5] == 1;
+                        cbRY.Checked = buffer[6] == 1;
+                        cbLED.Checked = buffer[7] == 1;
+                        cbRumble.Checked = buffer[8] == 1;
+                        cbTriggers.Checked = buffer[9] == 1;
+                        tbLatency.Value = buffer[10];
+                        tbLeft.Value = buffer[11];
+                        tbRight.Value = buffer[12];
+                        cbNative.Checked = buffer[13] == 1;
+                        cbSSP.Checked = buffer[14] == 1;
+                        tbBrightness.Value = buffer[15];
+                        cbForce.Checked = buffer[16] == 1;
+                    });
                     break;
             }
         }
 
         public void Request()
         {
-            try
-            {
-                _mBuffer[1] = (byte) ScpRequest.ConfigRead;
-
-                _rootHubChannel.SendAsync(ScpRequest.ConfigRead, _mBuffer);
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
+            _proxy.SubmitRequest(ScpRequest.ConfigRead);
+            Log.Info("Requested configuration response");
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -107,7 +100,8 @@ namespace ScpMonitor
             _mBuffer[15] = (byte) tbBrightness.Value;
             _mBuffer[16] = (byte) (cbForce.Checked ? 0x01 : 0x00);
 
-            _rootHubChannel.SendAsync(ScpRequest.ConfigWrite, _mBuffer);
+            _proxy.SubmitRequest(ScpRequest.ConfigWrite, _mBuffer);
+            Log.Info("Saved configuration");
 
             Hide();
         }
@@ -119,40 +113,40 @@ namespace ScpMonitor
 
         private void tbIdle_ValueChanged(object sender, EventArgs e)
         {
-            var Value = tbIdle.Value;
+            var value = tbIdle.Value;
 
-            if (Value == 0)
+            if (value == 0)
             {
                 lblIdle.Text = "Idle Timeout : Disabled";
             }
-            else if (Value == 1)
+            else if (value == 1)
             {
                 lblIdle.Text = "Idle Timeout : 1 minute";
             }
             else
             {
-                lblIdle.Text = string.Format("Idle Timeout : {0} minutes", Value);
+                lblIdle.Text = string.Format("Idle Timeout : {0} minutes", value);
             }
         }
 
         private void tbLatency_ValueChanged(object sender, EventArgs e)
         {
-            var Value = tbLatency.Value << 4;
+            var value = tbLatency.Value << 4;
 
-            lblLatency.Text = string.Format("DS3 Rumble Latency : {0} ms", Value);
+            lblLatency.Text = string.Format("DS3 Rumble Latency : {0} ms", value);
         }
 
         private void tbBrightness_ValueChanged(object sender, EventArgs e)
         {
-            var Value = tbBrightness.Value;
+            var value = tbBrightness.Value;
 
-            if (Value == 0)
+            if (value == 0)
             {
-                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : Disabled", Value);
+                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : Disabled", value);
             }
             else
             {
-                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : {0}", Value);
+                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : {0}", value);
             }
         }
     }

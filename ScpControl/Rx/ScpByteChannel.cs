@@ -28,7 +28,7 @@ namespace ScpControl.Rx
         T Payload { get; set; }
     }
 
-    public class ScpBytePacket : IScpPacket<byte[]>
+    public class ScpBytePacket : EventArgs, IScpPacket<byte[]>
     {
         public ScpRequest Request { get; set; }
         public byte[] Payload { get; set; }

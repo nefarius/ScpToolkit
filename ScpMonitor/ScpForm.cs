@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
-using ReactiveSockets;
 using ScpControl;
 using ScpControl.Rx;
 using ScpControl.Utilities;
@@ -23,12 +19,7 @@ namespace ScpMonitor
         protected int FormX, FormY, ConfX, ConfY, ProfX, ProfY;
         private bool m_Connected;
         private readonly ProfilesForm _profiles = new ProfilesForm();
-        private readonly ScpCommandChannel _rootHubChannel;
-
-        private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost,
-            Settings.Default.RootHubCommandRxPort);
-
-        private readonly SettingsForm _settings = new SettingsForm(null);
+        private readonly SettingsForm _settings;
         private readonly RegistrySettings m_Config = new RegistrySettings();
         private readonly char[] m_Delim = { '^' };
 
@@ -40,6 +31,8 @@ namespace ScpMonitor
             };
 
             InitializeComponent();
+
+            _settings = new SettingsForm(scpProxy);
 
             btnUp_1.Tag = (byte)1;
             btnUp_2.Tag = (byte)2;
@@ -99,55 +92,6 @@ namespace ScpMonitor
             btnUp_3.Location = new Point(lblPad_4.Location.X - 26, lblPad_4.Location.Y - 6);
 
             ClientSize = new Size(SizeX, SizeY);
-
-            try
-            {
-                _rootHubChannel = new ScpCommandChannel(_rxCommandClient);
-
-                _rxCommandClient.Disconnected += (sender, args) =>
-                {
-                    Log.Info("Server connection has been closed");
-
-                    Clear();
-                };
-
-                _rxCommandClient.Disposed += (sender, args) =>
-                {
-                    Log.Info("Server connection has been disposed");
-
-                    Clear();
-                };
-
-                _rootHubChannel.Receiver.ObserveOn(SynchronizationContext.Current).Subscribe(packet =>
-                {
-                    var request = packet.Request;
-                    var buffer = packet.Payload;
-
-                    switch (request)
-                    {
-                        case ScpRequest.StatusData:
-                            // translate response onto UI
-                            if (buffer.Length > 0)
-                                Parse(buffer);
-
-                            // update UI
-                            UpdateUi();
-                            break;
-                        case ScpRequest.ConfigRead:
-                            _settings.Response(packet);
-                            break;
-                    }
-                });
-
-                _rxCommandClient.ConnectAsync().Wait();
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Couldn't connect to root hub: {0}", ex);
-                return;
-            }
-
-            _settings = new SettingsForm(_rootHubChannel);
         }
 
         public void Reset()
@@ -155,7 +99,7 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
-        private async void Parse(byte[] buffer)
+        private void ParseStatusData(byte[] buffer)
         {
             if (!m_Connected)
             {
@@ -179,11 +123,6 @@ namespace ScpMonitor
             btnUp_2.Enabled = !split[3].Contains("Disconnected");
             lblPad_4.Text = split[4];
             btnUp_3.Enabled = !split[4].Contains("Disconnected");
-
-            await Task.Delay(100);
-
-            // request next update
-            await _rootHubChannel.SendAsync(ScpRequest.StatusData);
         }
 
         private void Clear()
@@ -245,7 +184,7 @@ namespace ScpMonitor
         {
             Icon = niTray.Icon = Resources.Scp_All;
 
-            _rootHubChannel.SendAsync(ScpRequest.StatusData);
+            scpProxy.SubmitRequest(ScpRequest.StatusData);
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
@@ -277,6 +216,8 @@ namespace ScpMonitor
                 m_Config.ProfY = ProfY;
 
                 m_Config.Save();
+
+                scpProxy.Stop();
             }
         }
 
@@ -284,8 +225,7 @@ namespace ScpMonitor
         {
             byte[] buffer = { 0, 5, (byte)((Button)sender).Tag };
 
-            if (_rxCommandClient.IsConnected)
-                _rootHubChannel.SendAsync(ScpRequest.PadPromote, buffer);
+            scpProxy.SubmitRequest(ScpRequest.PadPromote, buffer);
         }
 
         private void niTray_Click(object sender, MouseEventArgs e)
@@ -347,6 +287,25 @@ namespace ScpMonitor
         private void Button_Enter(object sender, EventArgs e)
         {
             ThemeUtil.UpdateFocus(((Button)sender).Handle);
+        }
+        
+        private async void scpProxy_StatusDataReceived(object sender, ScpBytePacket e)
+        {
+            this.UiThread(() =>
+            {
+                ParseStatusData(e.Payload);
+
+                UpdateUi();
+            });
+            
+            await Task.Delay(100);
+
+            scpProxy.SubmitRequest(ScpRequest.StatusData);
+        }
+
+        private void scpProxy_ConfigReceived(object sender, ScpBytePacket e)
+        {
+            _settings.Response(e);
         }
     }
 

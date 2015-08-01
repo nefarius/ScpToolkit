@@ -45,6 +45,17 @@ namespace ScpControl
                 try
                 {
                     _rootHubCommandChannel = new ScpCommandChannel(_rxCommandClient);
+
+                    _rxCommandClient.Disconnected += (sender, args) =>
+                    {
+                        Log.Info("Server connection has been closed");
+                    };
+
+                    _rxCommandClient.Disposed += (sender, args) =>
+                    {
+                        Log.Info("Server connection has been disposed");
+                    };
+
                     _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
                     {
                         var request = packet.Request;
@@ -55,6 +66,7 @@ namespace ScpControl
                             case ScpRequest.GetXml:
                                 m_Map.LoadXml(buffer.ToUtf8());
                                 m_Mapper.Initialize(m_Map);
+                                OnXmlReceived(packet);
                                 break;
                             case ScpRequest.ProfileList:
                                 var data = buffer.ToUtf8();
@@ -76,6 +88,12 @@ namespace ScpControl
                             case ScpRequest.NativeFeedAvailable:
                                 _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
                                 _nativeFeedEnabledEvent.Set();
+                                break;
+                            case ScpRequest.StatusData:
+                                OnStatusData(packet);
+                                break;
+                            case ScpRequest.ConfigRead:
+                                OnConfigReceived(packet);
                                 break;
                         }
                     });
@@ -120,6 +138,14 @@ namespace ScpControl
 
         #endregion
 
+        public event EventHandler<DsPacket> Packet;
+
+        public event EventHandler<ScpBytePacket> StatusDataReceived;
+
+        public event EventHandler<ScpBytePacket> XmlReceived;
+
+        public event EventHandler<ScpBytePacket> ConfigReceived;
+
         public XmlMapper Mapper
         {
             get { return m_Mapper; }
@@ -161,9 +187,7 @@ namespace ScpControl
                 return _nativeFeedAvailable;
             }
         }
-
-        public event EventHandler<DsPacket> Packet;
-
+        
         public bool Start()
         {
             try
@@ -190,8 +214,8 @@ namespace ScpControl
                 if (m_Active)
                 {
                     // TODO: improve
-                    //_rxCommandClient.Disconnect();
-                    //_rxFeedClient.Disconnect();
+                    _rxCommandClient.Disconnect();
+                    _rxFeedClient.Disconnect();
 
                     m_Active = false;
                 }
@@ -382,11 +406,45 @@ namespace ScpControl
             return set;
         }
 
+        public void SubmitRequest(ScpRequest request)
+        {
+            _rootHubCommandChannel.SendAsync(request);
+        }
+
+        public void SubmitRequest(ScpRequest request, byte[] payload)
+        {
+            _rootHubCommandChannel.SendAsync(request, payload);
+        }
+
         private void LogPacket(DsPacket data)
         {
             if (Packet != null)
             {
                 Packet(this, data);
+            }
+        }
+
+        private void OnStatusData(ScpBytePacket packet)
+        {
+            if (StatusDataReceived != null)
+            {
+                StatusDataReceived(this, packet);
+            }
+        }
+
+        private void OnXmlReceived(ScpBytePacket packet)
+        {
+            if (XmlReceived != null)
+            {
+                XmlReceived(this, packet);
+            }
+        }
+
+        private void OnConfigReceived(ScpBytePacket packet)
+        {
+            if (ConfigReceived != null)
+            {
+                ConfigReceived(this, packet);
             }
         }
     }
