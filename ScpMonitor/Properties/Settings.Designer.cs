@@ -26,18 +26,18 @@ namespace ScpMonitor.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
-        public string RootHubRxHost {
+        public string RootHubCommandRxHost {
             get {
-                return ((string)(this["RootHubRxHost"]));
+                return ((string)(this["RootHubCommandRxHost"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("26760")]
-        public int RootHubRxPort {
+        public int RootHubCommandRxPort {
             get {
-                return ((int)(this["RootHubRxPort"]));
+                return ((int)(this["RootHubCommandRxPort"]));
             }
         }
     }

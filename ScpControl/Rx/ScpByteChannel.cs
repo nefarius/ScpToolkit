@@ -18,7 +18,8 @@ namespace ScpControl.Rx
         SetActiveProfile = 0x07,
         GetXml = 0x08,
         SetXml = 0x09,
-        PadDetail = 0x0A
+        PadDetail = 0x0A,
+        NativeFeed = 0xFF
     }
 
     public interface IScpPacket<T>

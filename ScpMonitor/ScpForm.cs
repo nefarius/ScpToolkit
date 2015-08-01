@@ -20,8 +20,8 @@ namespace ScpMonitor
         private readonly ProfilesForm _profiles = new ProfilesForm();
         private readonly ScpByteChannel _rootHubChannel;
 
-        private readonly ReactiveClient _rxClient = new ReactiveClient(Settings.Default.RootHubRxHost,
-            Settings.Default.RootHubRxPort);
+        private readonly ReactiveClient _rxClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost,
+            Settings.Default.RootHubCommandRxPort);
 
         private readonly SettingsForm _settings = new SettingsForm(null);
         private readonly byte[] m_Buffer = new byte[2];

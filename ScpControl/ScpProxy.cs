@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Net;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
@@ -23,26 +22,23 @@ namespace ScpControl
         private readonly XmlMapper m_Mapper = new XmlMapper();
         private bool m_Active;
         private XmlDocument m_Map = new XmlDocument();
-        private readonly ReactiveClient _rxClient = new ReactiveClient(Settings.Default.RootHubRxHost, Settings.Default.RootHubRxPort);
-        private readonly ScpByteChannel _rootHubChannel;
-        private AutoResetEvent _activeProfileEvent = new AutoResetEvent(false);
+        private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost, Settings.Default.RootHubCommandRxPort);
+        private readonly ScpByteChannel _rootHubCommandChannel;
+        private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedRxHost, Settings.Default.RootHubNativeFeedRxPort);
+        private readonly AutoResetEvent _activeProfileEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent _padDetailEvent = new AutoResetEvent(false);
         private string _activeProfile;
-        private readonly ReactiveListener _rxServer = new ReactiveListener(26761);
-        private ScpByteChannel _serverProtocol;
+        private DsDetail _padDetail;
 
         public ScpProxy()
         {
             InitializeComponent();
 
-            #region Client
+            #region Command cient
 
-            _rootHubChannel = new ScpByteChannel(_rxClient);
-            _rootHubChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+            _rootHubCommandChannel = new ScpByteChannel(_rxCommandClient);
+            _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
             {
-                /* var packet = new DsPacket();
-
-                LogPacket(packet.Load(message.Payload)); */
-
                 var request = packet.Request;
                 var buffer = packet.Payload;
 
@@ -59,10 +55,42 @@ namespace ScpControl
                         _activeProfile = split[0];
                         _activeProfileEvent.Set();
                         break;
+                    case ScpRequest.PadDetail:
+                        var local = new byte[6];
+                        Array.Copy(buffer, 5, local, 0, local.Length);
+
+                        _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
+                            local,
+                            (DsConnection)buffer[3], (DsBattery)buffer[4]);
+
+                        _padDetailEvent.Set();
+                        break;
                 }
             });
 
-            _rxClient.ConnectAsync().Wait();
+            _rxCommandClient.ConnectAsync().Wait();
+
+            #endregion
+
+            #region Feed client
+
+            var rootHubFeedChannel = new ScpByteChannel(_rxFeedClient);
+            rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
+            {
+                var request = packet.Request;
+                var buffer = packet.Payload;
+
+                switch (request)
+                {
+                    case ScpRequest.NativeFeed:
+                        var dsPacket = new DsPacket();
+
+                        LogPacket(dsPacket.Load(buffer));
+                        break;
+                }
+            });
+
+            _rxFeedClient.ConnectAsync().Wait();
 
             #endregion
         }
@@ -85,9 +113,9 @@ namespace ScpControl
                 try
                 {
                     byte[] send = { 0, 6 };
-
-                    _rootHubChannel.SendAsync(ScpRequest.ProfileList, send);
-
+                    // send request to root hub
+                    _rootHubCommandChannel.SendAsync(ScpRequest.ProfileList, send);
+                    // wait for response to arrive
                     _activeProfileEvent.WaitOne();
                 }
                 catch (Exception ex)
@@ -109,8 +137,9 @@ namespace ScpControl
                 {
                     byte[] send = { 0, 3 };
 
-                    _rootHubChannel.SendAsync(ScpRequest.ConfigRead, send);
+                    _rootHubCommandChannel.SendAsync(ScpRequest.ConfigRead, send);
 
+                    // TODO: complete!
                     /*
                         var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
 
@@ -139,35 +168,7 @@ namespace ScpControl
             {
                 if (!m_Active)
                 {
-                    #region Server
-
-                    _rxServer.Connections.Subscribe(socket =>
-                    {
-                        Log.InfoFormat("New socket connected {0}", socket.GetHashCode());
-
-                        _serverProtocol = new ScpByteChannel(socket);
-
-                        _serverProtocol.Receiver.Subscribe(packet =>
-                        {
-                            var request = packet.Request;
-                            var buffer = packet.Payload;
-
-                            /*
-                            switch (request)
-                            {
-                                case ScpRequest.GetXml:
-                                    m_Map.LoadXml(buffer.ToUtf8());
-                                    m_Mapper.Initialize(m_Map);
-                                    break;
-                            }
-                             * */
-                        });
-
-                        socket.Disconnected += (sender, e) => Log.InfoFormat("Socket disconnected {0}", sender.GetHashCode());
-                        socket.Disposed += (sender, e) => Log.InfoFormat("Socket disposed {0}", sender.GetHashCode());
-                    });
-
-                    #endregion
+                    // TODO: remove or improve
 
                     m_Active = true;
                 }
@@ -186,7 +187,9 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    _rxClient.Disconnect();
+                    _rxCommandClient.Disconnect();
+                    _rxFeedClient.Disconnect();
+
                     m_Active = false;
                 }
             }
@@ -204,7 +207,8 @@ namespace ScpControl
 
             try
             {
-                _rootHubChannel.SendAsync(ScpRequest.GetXml);
+                // request configuration from root hub
+                _rootHubCommandChannel.SendAsync(ScpRequest.GetXml);
 
                 Loaded = true;
             }
@@ -229,10 +233,11 @@ namespace ScpControl
                         var data = m_Map.InnerXml.ToBytes().ToArray();
                         var buffer = new byte[data.Length + 2];
 
-                        buffer[1] = 0x09; // TODO: remove
+                        buffer[1] = (byte)ScpRequest.SetXml;
                         Array.Copy(data, 0, buffer, 2, data.Length);
 
-                        _rootHubChannel.SendAsync(ScpRequest.SetXml, buffer);
+                        // send config back to hub for storage
+                        _rootHubCommandChannel.SendAsync(ScpRequest.SetXml, buffer);
 
                         saved = true;
                     }
@@ -246,7 +251,7 @@ namespace ScpControl
             return saved;
         }
 
-        public bool Select(Profile Target)
+        public bool Select(Profile target)
         {
             var selected = false;
 
@@ -254,15 +259,16 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    var data = Encoding.Unicode.GetBytes(Target.Name);
+                    var data = Encoding.Unicode.GetBytes(target.Name);
                     var send = new byte[data.Length + 2];
 
-                    send[1] = 0x07; // TODO: remove
+                    send[1] = (byte)ScpRequest.SetActiveProfile;
                     Array.Copy(data, 0, send, 2, data.Length);
 
-                    _rootHubChannel.SendAsync(ScpRequest.SetActiveProfile, send);
+                    // request root hub to set new active profile
+                    _rootHubCommandChannel.SendAsync(ScpRequest.SetActiveProfile, send);
 
-                    SetDefault(Target);
+                    SetDefault(target);
                     selected = true;
                 }
             }
@@ -274,42 +280,27 @@ namespace ScpControl
             return selected;
         }
 
-        public DsDetail Detail(DsPadId Pad)
+        public DsDetail Detail(DsPadId pad)
         {
-            DsDetail Detail = null;
-
             try
             {
-                byte[] buffer = { (byte)Pad, 0x0A };
+                byte[] buffer = { (byte)pad, (byte)ScpRequest.PadDetail };
 
-                _rootHubChannel.SendAsync(ScpRequest.PadDetail, buffer);
+                _rootHubCommandChannel.SendAsync(ScpRequest.PadDetail, buffer).Wait();
 
-                /*
-                 * var ReferenceEp = new IPEndPoint(IPAddress.Loopback, 0);
-
-                    buffer = m_Server.Receive(ref ReferenceEp);
-
-                    if (buffer.Length > 0)
-                    {
-                        var Local = new byte[6];
-                        Array.Copy(buffer, 5, Local, 0, Local.Length);
-
-                        Detail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2], Local,
-                            (DsConnection)buffer[3], (DsBattery)buffer[4]);
-                    }
-                */
+                _padDetailEvent.WaitOne();
             }
             catch (Exception ex)
             {
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Detail;
+            return _padDetail;
         }
 
         public bool Rumble(DsPadId Pad, byte Large, byte Small)
         {
-            var Rumbled = false;
+            var rumbled = false;
 
             try
             {
@@ -317,9 +308,9 @@ namespace ScpControl
                 {
                     byte[] buffer = { (byte)Pad, 0x01, Large, Small };
 
-                    _rootHubChannel.SendAsync(ScpRequest.Rumble, buffer);
+                    _rootHubCommandChannel.SendAsync(ScpRequest.Rumble, buffer);
 
-                    Rumbled = true;
+                    rumbled = true;
                 }
             }
             catch (Exception ex)
@@ -327,10 +318,10 @@ namespace ScpControl
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Rumbled;
+            return rumbled;
         }
 
-        public bool Remap(string Target, DsPacket Packet)
+        public bool Remap(string target, DsPacket packet)
         {
             var remapped = false;
 
@@ -338,22 +329,22 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    var output = new byte[Packet.Native.Length];
+                    var output = new byte[packet.Native.Length];
 
-                    switch (Packet.Detail.Model)
+                    switch (packet.Detail.Model)
                     {
                         case DsModel.DS3:
-                            if (m_Mapper.RemapDs3(m_Mapper.Map[Target], Packet.Native, output))
+                            if (m_Mapper.RemapDs3(m_Mapper.Map[target], packet.Native, output))
                             {
-                                Array.Copy(output, Packet.Native, output.Length);
-                                Packet.Remapped();
+                                Array.Copy(output, packet.Native, output.Length);
+                                packet.Remapped();
                             }
                             break;
                         case DsModel.DS4:
-                            if (m_Mapper.RemapDs4(m_Mapper.Map[Target], Packet.Native, output))
+                            if (m_Mapper.RemapDs4(m_Mapper.Map[target], packet.Native, output))
                             {
-                                Array.Copy(output, Packet.Native, output.Length);
-                                Packet.Remapped();
+                                Array.Copy(output, packet.Native, output.Length);
+                                packet.Remapped();
                             }
                             break;
                     }
@@ -369,18 +360,18 @@ namespace ScpControl
             return remapped;
         }
 
-        public bool SetDefault(Profile Profile)
+        public bool SetDefault(Profile profile)
         {
             var set = true;
 
             try
             {
-                foreach (var Item in m_Mapper.Map.Values)
+                foreach (var item in m_Mapper.Map.Values)
                 {
-                    Item.Default = false;
+                    item.Default = false;
                 }
 
-                Profile.Default = true;
+                profile.Default = true;
             }
             catch (Exception ex)
             {
@@ -391,11 +382,11 @@ namespace ScpControl
             return set;
         }
 
-        private void LogPacket(DsPacket Data)
+        private void LogPacket(DsPacket data)
         {
             if (Packet != null)
             {
-                Packet(this, Data);
+                Packet(this, data);
             }
         }
     }

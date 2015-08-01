@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
@@ -15,7 +16,9 @@ namespace ScpControl
     public sealed partial class RootHub : ScpHub
     {
         private volatile bool m_Suspended;
-        private readonly ReactiveListener _rxServer = new ReactiveListener(Settings.Default.RootHubRxPort);
+        private readonly ReactiveListener _rxCmdServer = new ReactiveListener(Settings.Default.RootHubCommandRxPort);
+        private readonly ReactiveListener _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedRxPort);
+        private readonly IDictionary<int, ScpByteChannel> _nativeFeedSubscribers = new Dictionary<int, ScpByteChannel>();
         private readonly BthHub bthHub = new BthHub();
         private readonly Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
@@ -95,10 +98,14 @@ namespace ScpControl
                 Assembly.GetExecutingAssembly().GetName().Version);
             Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
 
-            _rxServer.Connections.Subscribe(socket =>
+            #region Command server
+
+            _rxCmdServer.Connections.Subscribe(socket =>
             {
-                Log.InfoFormat("Client connected: {0}", socket.GetHashCode());
+                Log.InfoFormat("Client connected on command channel: {0}", socket.GetHashCode());
                 var protocol = new ScpByteChannel(socket);
+
+                #region Incoming command requests
 
                 protocol.Receiver.Subscribe(packet =>
                 {
@@ -275,11 +282,50 @@ namespace ScpControl
                     }
                 });
 
-                socket.Disconnected += (sender, e) => Log.InfoFormat("Socket disconnected {0}", sender.GetHashCode());
-                socket.Disposed += (sender, e) => Log.InfoFormat("Socket disposed {0}", sender.GetHashCode());
+                socket.Disconnected += (sender, e) => Log.InfoFormat("Socket disconnected from command channel {0}", sender.GetHashCode());
+                socket.Disposed += (sender, e) => Log.InfoFormat("Socket disposed from command channel {0}", sender.GetHashCode());
+
+                #endregion
             });
 
-            _rxServer.Start();
+            _rxCmdServer.Start();
+
+            #endregion
+
+            #region Native feed server
+
+            _rxFeedServer.Connections.Subscribe(socket =>
+            {
+                Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
+                var protocol = new ScpByteChannel(socket);
+
+                _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
+
+                protocol.Receiver.Subscribe(packet =>
+                {
+                    Log.Debug("Uuuhh how did we end up here?!");
+                });
+
+                socket.Disconnected += (sender, e) =>
+                {
+                    Log.InfoFormat(
+                        "Socket disconnected from native feed channel {0}",
+                        sender.GetHashCode());
+
+                    _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                };
+                socket.Disposed += (sender, e) =>
+                {
+                    Log.InfoFormat("Socket disposed from native feed channel {0}",
+                        sender.GetHashCode());
+
+                    _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                };
+            });
+
+            _rxFeedServer.Start();
+
+            #endregion
 
             scpMap.Open();
 
@@ -335,7 +381,8 @@ namespace ScpControl
         {
             m_Suspended = true;
 
-            for (var index = 0; index < m_Pad.Length; index++) m_Pad[index].Disconnect();
+            foreach (var t in m_Pad)
+                t.Disconnect();
 
             scpBus.Suspend();
             usbHub.Suspend();
@@ -367,22 +414,21 @@ namespace ScpControl
 
         public override DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
         {
-            if (!m_Suspended)
+            if (m_Suspended) return DsPadId.None;
+
+            if (Class == UsbDs4.USB_CLASS_GUID)
             {
-                if (Class == UsbDs4.USB_CLASS_GUID)
-                {
-                    return usbHub.Notify(Notification, Class, Path);
-                }
+                return usbHub.Notify(Notification, Class, Path);
+            }
 
-                if (Class == UsbDs3.USB_CLASS_GUID)
-                {
-                    return usbHub.Notify(Notification, Class, Path);
-                }
+            if (Class == UsbDs3.USB_CLASS_GUID)
+            {
+                return usbHub.Notify(Notification, Class, Path);
+            }
 
-                if (Class == BthDongle.BTH_CLASS_GUID)
-                {
-                    bthHub.Notify(Notification, Class, Path);
-                }
+            if (Class == BthDongle.BTH_CLASS_GUID)
+            {
+                bthHub.Notify(Notification, Class, Path);
             }
 
             return DsPadId.None;
@@ -482,8 +528,11 @@ namespace ScpControl
                 m_Native[serial][0] = m_Native[serial][1] = 0;
             }
 
-            // TODO: fix!
-            //if (!Global.DisableNative) m_Client.Send(e.Report, e.Report.Length, m_ClientEp);
+            // send native controller inputs to subscribed clients
+            foreach (var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
+            {
+                channel.SendAsync(ScpRequest.NativeFeed, e.Report);
+            }
         }
 
         private class Cache
