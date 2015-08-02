@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using ReactiveSockets;
 
@@ -28,10 +29,20 @@ namespace ScpControl.Rx
         T Payload { get; set; }
     }
 
-    public class ScpCommandPacket : EventArgs, IScpPacket<byte[]>
+    public class ScpCommandPacket : EventArgs, IScpPacket<byte[]>, ICloneable
     {
         public ScpRequest Request { get; set; }
         public byte[] Payload { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        public ScpCommandPacket ForwardPacket()
+        {
+            return (ScpCommandPacket)Clone();
+        }
     }
 
     /// <summary>
@@ -51,10 +62,10 @@ namespace ScpControl.Rx
         {
             _socket = socket;
 
-            Receiver = from header in socket.Receiver.Buffer(sizeof (int))
-                let length = BitConverter.ToInt32(header.ToArray(), 0)
-                let body = socket.Receiver.Take(length).ToEnumerable().ToArray()
-                select new ScpCommandPacket {Request = (ScpRequest) body[0], Payload = body.Skip(1).ToArray()};
+            Receiver = from header in socket.Receiver.Buffer(sizeof(int))
+                       let length = BitConverter.ToInt32(header.ToArray(), 0)
+                       let body = socket.Receiver.Take(length).ToEnumerable().ToArray()
+                       select new ScpCommandPacket { Request = (ScpRequest)body[0], Payload = body.Skip(1).ToArray() };
         }
 
         public IObservable<ScpCommandPacket> Receiver { get; private set; }
@@ -73,12 +84,12 @@ namespace ScpControl.Rx
 
         public Task SendAsync(ScpRequest request, byte[] payload)
         {
-            return SendAsync(new ScpCommandPacket {Request = request, Payload = payload});
+            return SendAsync(new ScpCommandPacket { Request = request, Payload = payload });
         }
 
         public Task SendAsync(ScpRequest request)
         {
-            return SendAsync(new ScpCommandPacket {Request = request});
+            return SendAsync(new ScpCommandPacket { Request = request });
         }
 
         private static byte[] Convert(ScpCommandPacket message)
@@ -89,15 +100,15 @@ namespace ScpControl.Rx
             {
                 // build buffer with length, request and payload
                 var body = message.Payload;
-                var header = BitConverter.GetBytes(body.Length + sizeof (byte)).ToList();
-                header.Add((byte) message.Request);
+                var header = BitConverter.GetBytes(body.Length + sizeof(byte)).ToList();
+                header.Add((byte)message.Request);
                 payload = header.Concat(body).ToArray();
             }
             else
             {
                 // build buffer with length and request only
-                var header = BitConverter.GetBytes(sizeof (byte)).ToList();
-                header.Add((byte) message.Request);
+                var header = BitConverter.GetBytes(sizeof(byte)).ToList();
+                header.Add((byte)message.Request);
                 payload = header.ToArray();
             }
 

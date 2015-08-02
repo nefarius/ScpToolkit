@@ -188,7 +188,7 @@ namespace ScpControl
 
                                     var data = sb.ToString().ToBytes().ToArray();
 
-                                    protocol.SendAsync(request, data);
+                                    protocol.SendAsync(ScpRequest.StatusData, data);
 
 #if DEBUG
                                     Log.DebugFormat("Sent StatusData: {0}", data.Length);

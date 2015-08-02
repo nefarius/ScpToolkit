@@ -127,11 +127,11 @@ namespace ScpServer
 
         protected void btnDisconnect_Click(object sender, EventArgs e)
         {
-            for (var Index = 0; Index < Pad.Length; Index++)
+            for (var index = 0; index < Pad.Length; index++)
             {
-                if (Pad[Index].Checked)
+                if (Pad[index].Checked)
                 {
-                    rootHub.Pad[Index].Disconnect();
+                    rootHub.Pad[index].Disconnect();
                     break;
                 }
             }

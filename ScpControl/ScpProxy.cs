@@ -59,49 +59,7 @@ namespace ScpControl
                         OnRootHubDisconnected(args);
                     };
 
-                    _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
-                    {
-                        var request = packet.Request;
-                        var buffer = packet.Payload;
-
-                        switch (request)
-                        {
-                            case ScpRequest.GetXml:
-                                m_Map.LoadXml(buffer.ToUtf8());
-                                m_Mapper.Initialize(m_Map);
-                                OnXmlReceived(packet);
-                                break;
-                            case ScpRequest.ProfileList:
-                                var data = buffer.ToUtf8();
-                                var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
-
-                                _activeProfile = split[0];
-                                _activeProfileEvent.Set();
-                                break;
-                            case ScpRequest.PadDetail:
-                                var local = new byte[6];
-                                Array.Copy(buffer, 5, local, 0, local.Length);
-
-                                _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
-                                    local,
-                                    (DsConnection)buffer[3], (DsBattery)buffer[4]);
-
-                                if (!_padDetailEvent.Set())
-                                    Log.ErrorFormat("Couldn't signal pad detail event");
-                                break;
-                            case ScpRequest.NativeFeedAvailable:
-                                _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
-                                if (!_nativeFeedEnabledEvent.Set())
-                                    Log.ErrorFormat("Couldn't signal native feed available event");
-                                break;
-                            case ScpRequest.StatusData:
-                                OnStatusData(packet);
-                                break;
-                            case ScpRequest.ConfigRead:
-                                OnConfigReceived(packet);
-                                break;
-                        }
-                    });
+                    _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(OnIncomingPacket);
                 }
                 catch (Exception ex)
                 {
@@ -128,6 +86,56 @@ namespace ScpControl
             catch (Exception ex)
             {
                 Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
+            }
+        }
+
+        /// <summary>
+        ///     This is where responses from the root hub are getting processed
+        /// </summary>
+        /// <param name="packet">The received packet.</param>
+        private void OnIncomingPacket(ScpCommandPacket packet)
+        {
+            var request = packet.Request;
+            var buffer = packet.Payload;
+
+            switch (request)
+            {
+                case ScpRequest.GetXml:
+                    m_Map.LoadXml(buffer.ToUtf8());
+                    m_Mapper.Initialize(m_Map);
+
+                    OnXmlReceived(packet.ForwardPacket());
+                    break;
+                case ScpRequest.ProfileList:
+                    var data = buffer.ToUtf8();
+                    var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+
+                    _activeProfile = split[0];
+                    _activeProfileEvent.Set();
+                    break;
+                case ScpRequest.PadDetail:
+                    var local = new byte[6];
+                    Array.Copy(buffer, 5, local, 0, local.Length);
+
+                    _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
+                        local,
+                        (DsConnection)buffer[3], (DsBattery)buffer[4]);
+
+                    if (!_padDetailEvent.Set())
+                        Log.ErrorFormat("Couldn't signal pad detail event");
+                    break;
+                case ScpRequest.NativeFeedAvailable:
+                    _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
+
+                    if (!_nativeFeedEnabledEvent.Set())
+                        Log.ErrorFormat("Couldn't signal native feed available event");
+                    break;
+                case ScpRequest.StatusData:
+                    OnStatusData(packet.ForwardPacket());
+                    break;
+                case ScpRequest.ConfigRead:
+                    OnConfigReceived(packet.ForwardPacket());
+                    break;
             }
         }
 
