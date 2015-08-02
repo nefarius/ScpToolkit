@@ -39,7 +39,7 @@ namespace ScpControl
             set
             {
                 m_Proxy = value;
-                Proxy.Packet += Sample;
+                Proxy.NativeFeedReceived += Sample;
             }
         }
 

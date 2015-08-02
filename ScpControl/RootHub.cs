@@ -147,7 +147,7 @@ namespace ScpControl
                                     buffer[5] = 0;
                                 }
 
-                                protocol.SendAsync(new ScpCommandPacket { Request = request, Payload = buffer });
+                                protocol.SendAsync(request, buffer);
                                 break;
 
                             case ScpRequest.Rumble: // Rumble Request
@@ -188,7 +188,7 @@ namespace ScpControl
 
                                     var data = sb.ToString().ToBytes().ToArray();
 
-                                    protocol.SendAsync(request, data).Wait();
+                                    protocol.SendAsync(request, data);
 
 #if DEBUG
                                     Log.DebugFormat("Sent StatusData: {0}", data.Length);
@@ -416,9 +416,12 @@ namespace ScpControl
             usbHub.Stop();
             bthHub.Stop();
 
+            _rxCmdServer.Dispose();
+            _rxFeedServer.Dispose();
+
             Log.Info("Root hub stopped");
 
-            return !m_Started;
+            return true;
         }
 
         public override bool Close()
@@ -467,23 +470,23 @@ namespace ScpControl
 
         #endregion
 
-        public override DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
         {
             if (m_Suspended) return DsPadId.None;
 
             if (Class == UsbDs4.USB_CLASS_GUID)
             {
-                return usbHub.Notify(Notification, Class, Path);
+                return usbHub.Notify(notification, Class, Path);
             }
 
             if (Class == UsbDs3.USB_CLASS_GUID)
             {
-                return usbHub.Notify(Notification, Class, Path);
+                return usbHub.Notify(notification, Class, Path);
             }
 
             if (Class == BthDongle.BTH_CLASS_GUID)
             {
-                bthHub.Notify(Notification, Class, Path);
+                bthHub.Notify(notification, Class, Path);
             }
 
             return DsPadId.None;

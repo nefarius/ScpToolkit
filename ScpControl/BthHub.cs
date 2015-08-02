@@ -92,11 +92,11 @@ namespace ScpControl
             return base.Resume();
         }
 
-        public override DsPadId Notify(ScpDevice.Notified Notification, string Class, string Path)
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
         {
-            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", Notification, Class, Path);
+            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, Path);
 
-            switch (Notification)
+            switch (notification)
             {
                 case ScpDevice.Notified.Arrival:
                 {

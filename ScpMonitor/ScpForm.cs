@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -150,43 +151,13 @@ namespace ScpMonitor
             btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
         }
 
-        private void UpdateUi()
-        {
-            if (Visible && Location.X != -32000 && Location.Y != -32000)
-            {
-                FormVisible = true;
-
-                FormX = Location.X;
-                FormY = Location.Y;
-                FormSaved = true;
-            }
-            else
-            {
-                FormVisible = false;
-            }
-
-            if (_settings.Visible && _settings.Location.X != -32000 && _settings.Location.Y != -32000)
-            {
-                ConfX = _settings.Location.X;
-                ConfY = _settings.Location.Y;
-                ConfSaved = true;
-            }
-
-            if (_profiles.Visible && _profiles.Location.X != -32000 && _profiles.Location.Y != -32000)
-            {
-                ProfX = _profiles.Location.X;
-                ProfY = _profiles.Location.Y;
-                ProfSaved = true;
-            }
-        }
-
         private async void Form_Load(object sender, EventArgs e)
         {
             Icon = niTray.Icon = Resources.Scp_All;
 
             await scpProxy.Start();
 
-            scpProxy.SubmitRequest(ScpRequest.StatusData);
+            tmrUpdate.Enabled = !tmrUpdate.Enabled;
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)
@@ -290,24 +261,54 @@ namespace ScpMonitor
         {
             ThemeUtil.UpdateFocus(((Button)sender).Handle);
         }
-        
-        private async void scpProxy_StatusDataReceived(object sender, ScpCommandPacket e)
+
+        private void scpProxy_StatusDataReceived(object sender, ScpCommandPacket e)
         {
             this.UiThread(() =>
             {
                 ParseStatusData(e.Payload);
-
-                UpdateUi();
             });
-            
-            await Task.Delay(100);
-
-            scpProxy.SubmitRequest(ScpRequest.StatusData);
         }
 
         private void scpProxy_ConfigReceived(object sender, ScpCommandPacket e)
         {
             _settings.Response(e);
+        }
+
+        private void tmrUpdate_Tick(object sender, EventArgs e)
+        {
+            tmrUpdate.Enabled = !tmrUpdate.Enabled;
+
+            if (Visible && Location.X != -32000 && Location.Y != -32000)
+            {
+                FormVisible = true;
+
+                FormX = Location.X;
+                FormY = Location.Y;
+                FormSaved = true;
+            }
+            else
+            {
+                FormVisible = false;
+            }
+
+            if (_settings.Visible && _settings.Location.X != -32000 && _settings.Location.Y != -32000)
+            {
+                ConfX = _settings.Location.X;
+                ConfY = _settings.Location.Y;
+                ConfSaved = true;
+            }
+
+            if (_profiles.Visible && _profiles.Location.X != -32000 && _profiles.Location.Y != -32000)
+            {
+                ProfX = _profiles.Location.X;
+                ProfY = _profiles.Location.Y;
+                ProfSaved = true;
+            }
+
+            scpProxy.SubmitRequest(ScpRequest.StatusData).ConfigureAwait(false);
+
+            tmrUpdate.Enabled = !tmrUpdate.Enabled;
         }
     }
 

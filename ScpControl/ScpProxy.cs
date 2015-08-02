@@ -118,7 +118,7 @@ namespace ScpControl
 
                     var packet = new DsPacket();
 
-                    LogPacket(packet.Load(buffer));
+                    OnFeedPacketReceived(packet.Load(buffer));
                 });
 
                 #endregion
@@ -137,7 +137,7 @@ namespace ScpControl
 
         #endregion
 
-        public event EventHandler<DsPacket> Packet;
+        public event EventHandler<DsPacket> NativeFeedReceived;
 
         public event EventHandler<ScpCommandPacket> StatusDataReceived;
 
@@ -193,8 +193,8 @@ namespace ScpControl
             {
                 if (!m_Active)
                 {
-                    await _rxCommandClient.ConnectAsync();
-                    await _rxFeedClient.ConnectAsync();
+                    await _rxCommandClient.ConnectAsync().ConfigureAwait(false);
+                    await _rxFeedClient.ConnectAsync().ConfigureAwait(false);
 
                     m_Active = true;
                 }
@@ -312,9 +312,13 @@ namespace ScpControl
             {
                 byte[] buffer = { (byte)pad, (byte)ScpRequest.PadDetail };
 
-                _rootHubCommandChannel.SendAsync(ScpRequest.PadDetail, buffer).Wait();
+                _rootHubCommandChannel.SendAsync(ScpRequest.PadDetail, buffer);
 
-                _padDetailEvent.WaitOne();
+                if (!_padDetailEvent.WaitOne(500))
+                {
+                    Log.WarnFormat("Couldn't get details for pad ID {0}", pad);
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -324,7 +328,7 @@ namespace ScpControl
             return _padDetail;
         }
 
-        public bool Rumble(DsPadId Pad, byte Large, byte Small)
+        public bool Rumble(DsPadId pad, byte large, byte small)
         {
             var rumbled = false;
 
@@ -332,7 +336,7 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    byte[] buffer = { (byte)Pad, (byte)ScpRequest.Rumble, Large, Small };
+                    byte[] buffer = { (byte)pad, (byte)ScpRequest.Rumble, large, small };
 
                     _rootHubCommandChannel.SendAsync(ScpRequest.Rumble, buffer);
 
@@ -355,6 +359,9 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
+                    if (!m_Mapper.Map.Any())
+                        return false;
+
                     var output = new byte[packet.Native.Length];
 
                     switch (packet.Detail.Model)
@@ -408,21 +415,21 @@ namespace ScpControl
             return set;
         }
 
-        public void SubmitRequest(ScpRequest request)
+        public async Task SubmitRequest(ScpRequest request)
         {
-            _rootHubCommandChannel.SendAsync(request);
+            await _rootHubCommandChannel.SendAsync(request).ConfigureAwait(false);
         }
 
-        public void SubmitRequest(ScpRequest request, byte[] payload)
+        public async Task SubmitRequest(ScpRequest request, byte[] payload)
         {
-            _rootHubCommandChannel.SendAsync(request, payload);
+            await _rootHubCommandChannel.SendAsync(request, payload).ConfigureAwait(false);
         }
 
-        private void LogPacket(DsPacket data)
+        private void OnFeedPacketReceived(DsPacket data)
         {
-            if (Packet != null)
+            if (NativeFeedReceived != null)
             {
-                Packet(this, data);
+                NativeFeedReceived(this, data);
             }
         }
 
