@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
-using ScpControl.Rx;
+using ScpControl.Wcf;
 using ScpControl.Utilities;
 using ScpMonitor.Properties;
 
@@ -100,35 +100,6 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
-        private void ParseStatusData(byte[] buffer)
-        {
-            if (buffer == null)
-                return;
-
-            if (!m_Connected)
-            {
-                m_Connected = true;
-                tmConfig.Enabled = true;
-                tmProfile.Enabled = true;
-
-                niTray.BalloonTipText = "Server Connected";
-                niTray.ShowBalloonTip(3000);
-            }
-
-            var data = buffer.ToUtf8();
-            var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
-
-            lblHost.Text = split[0];
-
-            lblPad_1.Text = split[1];
-            lblPad_2.Text = split[2];
-            btnUp_1.Enabled = !split[2].Contains("Disconnected");
-            lblPad_3.Text = split[3];
-            btnUp_2.Enabled = !split[3].Contains("Disconnected");
-            lblPad_4.Text = split[4];
-            btnUp_3.Enabled = !split[4].Contains("Disconnected");
-        }
-
         /// <summary>
         ///     Root hub disconnected, reset user interface to defaults.
         /// </summary>
@@ -157,11 +128,11 @@ namespace ScpMonitor
             btnUp_1.Enabled = btnUp_2.Enabled = btnUp_3.Enabled = false;
         }
 
-        private async void Form_Load(object sender, EventArgs e)
+        private void Form_Load(object sender, EventArgs e)
         {
             Icon = niTray.Icon = Resources.Scp_All;
 
-            await scpProxy.Start();
+            scpProxy.Start();
 
             tmrUpdate.Enabled = !tmrUpdate.Enabled;
         }
@@ -202,9 +173,7 @@ namespace ScpMonitor
 
         private void btnUp_Click(object sender, EventArgs e)
         {
-            byte[] buffer = { 0, 5, (byte)((Button)sender).Tag };
-
-            scpProxy.SubmitRequest(ScpRequest.PadPromote, buffer);
+            scpProxy.PromotePad((byte)((Button)sender).Tag);
         }
 
         private void niTray_Click(object sender, MouseEventArgs e)
@@ -268,19 +237,6 @@ namespace ScpMonitor
             ThemeUtil.UpdateFocus(((Button)sender).Handle);
         }
 
-        private void scpProxy_StatusDataReceived(object sender, ScpCommandPacket e)
-        {
-            this.UiThread(() =>
-            {
-                ParseStatusData(e.Payload);
-            });
-        }
-
-        private void scpProxy_ConfigReceived(object sender, ScpCommandPacket e)
-        {
-            _settings.Response(e);
-        }
-
         private void tmrUpdate_Tick(object sender, EventArgs e)
         {
             tmrUpdate.Enabled = !tmrUpdate.Enabled;
@@ -312,7 +268,27 @@ namespace ScpMonitor
                 ProfSaved = true;
             }
 
-            scpProxy.SubmitRequest(ScpRequest.StatusData);
+            var data = scpProxy.StatusData;
+
+            if (!m_Connected)
+            {
+                m_Connected = true;
+                tmConfig.Enabled = true;
+                tmProfile.Enabled = true;
+
+                niTray.BalloonTipText = "Server Connected";
+                niTray.ShowBalloonTip(3000);
+            }
+
+            lblHost.Text = data[0];
+
+            lblPad_1.Text = data[1];
+            lblPad_2.Text = data[2];
+            btnUp_1.Enabled = !data[2].Contains("Disconnected");
+            lblPad_3.Text = data[3];
+            btnUp_2.Enabled = !data[3].Contains("Disconnected");
+            lblPad_4.Text = data[4];
+            btnUp_3.Enabled = !data[4].Contains("Disconnected");
 
             tmrUpdate.Enabled = !tmrUpdate.Enabled;
         }

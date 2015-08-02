@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScpPair", "ScpPair\ScpPair.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScpCustomHidProfiler", "ScpCustomHidProfiler\ScpCustomHidProfiler.csproj", "{B91691CD-7BE4-465C-83EF-F6BBA4954BAB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScpWcfServiceLibrary", "ScpWcfServiceLibrary\ScpWcfServiceLibrary.csproj", "{C36737E3-E411-4E00-BF98-44FD4D6E549F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +51,6 @@ Global
 		{B91691CD-7BE4-465C-83EF-F6BBA4954BAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B91691CD-7BE4-465C-83EF-F6BBA4954BAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B91691CD-7BE4-465C-83EF-F6BBA4954BAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C36737E3-E411-4E00-BF98-44FD4D6E549F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C36737E3-E411-4E00-BF98-44FD4D6E549F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C36737E3-E411-4E00-BF98-44FD4D6E549F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C36737E3-E411-4E00-BF98-44FD4D6E549F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,30 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Net.Mime;
-using System.Net.Sockets;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using ReactiveSockets;
-using ScpControl.Properties;
-using ScpControl.Rx;
+using System.ServiceModel;
+using ScpControl.Wcf;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
 
 namespace ScpControl
 {
-    public sealed partial class RootHub : ScpHub
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+    public sealed partial class RootHub : ScpHub, IScpCommandService
     {
         private volatile bool m_Suspended;
-        private readonly ReactiveListener _rxCmdServer = new ReactiveListener(Settings.Default.RootHubCommandRxPort);
-        private readonly ReactiveListener _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedRxPort);
-        private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers = new Dictionary<int, ScpNativeFeedChannel>();
+        private ServiceHost myServiceHost;
+        private bool serviceStarted;
         private readonly BthHub bthHub = new BthHub();
         private readonly Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
@@ -51,6 +42,167 @@ namespace ScpControl
         private readonly BusDevice scpBus = new BusDevice();
         private readonly UsbHub usbHub = new UsbHub();
 
+        public bool IsNativeFeedAvailable()
+        {
+            return !Global.DisableNative;
+        }
+
+        public string GetActiveProfile()
+        {
+            return scpMap.Active;
+        }
+
+        public string GetXml()
+        {
+            return scpMap.Xml;
+        }
+
+        public void SetXml(string xml)
+        {
+            scpMap.Xml = xml;
+        }
+
+        public void SetActiveProfile(Profile profile)
+        {
+            scpMap.Active = profile.Name;
+        }
+
+        public DsDetail GetPadDetail(DsPadId pad)
+        {
+            var serial = (byte)pad;
+
+            var data = new byte[11];
+
+            Log.DebugFormat("Requested Pads local MAC = {0}", m_Pad[serial].Local);
+
+            data[0] = serial;
+            data[1] = (byte)m_Pad[serial].State;
+            data[2] = (byte)m_Pad[serial].Model;
+            data[3] = (byte)m_Pad[serial].Connection;
+            data[4] = (byte)m_Pad[serial].Battery;
+
+            Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
+
+            return new DsDetail((DsPadId)data[0], (DsState)data[1], (DsModel)data[2],
+                m_Pad[serial].Local.ToBytes().ToArray(),
+                (DsConnection)data[3], (DsBattery)data[4]);
+        }
+
+        public bool Rumble(DsPadId pad, byte large, byte small)
+        {
+            var serial = (byte)pad;
+            if (Pad[serial].State == DsState.Connected)
+            {
+                if (large != m_Native[serial][0] || small != m_Native[serial][1])
+                {
+                    m_Native[serial][0] = large;
+                    m_Native[serial][1] = small;
+
+                    Pad[serial].Rumble(large, small);
+                }
+            }
+
+            return false;
+        }
+
+        public IEnumerable<string> GetProfileList()
+        {
+            return scpMap.Profiles;
+        }
+
+        public IEnumerable<byte> GetConfig()
+        {
+            return Global.Packed;
+        }
+
+        public void SetConfig(byte[] buffer)
+        {
+            Global.Packed = buffer;
+        }
+
+        public IEnumerable<string> GetStatusData()
+        {
+            var list = new List<string>
+            {
+                Dongle,
+                Pad[0].ToString(),
+                Pad[1].ToString(),
+                Pad[2].ToString(),
+                Pad[3].ToString()
+            };
+
+            return list;
+        }
+
+        public void PromotePad(byte pad)
+        {
+            int target = pad;
+
+            if (Pad[target].State != DsState.Disconnected)
+            {
+                var swap = Pad[target];
+                Pad[target] = Pad[target - 1];
+                Pad[target - 1] = swap;
+
+                Pad[target].PadId = (DsPadId)(target);
+                Pad[target - 1].PadId = (DsPadId)(target - 1);
+
+                m_Reserved[target] = Pad[target].Local;
+                m_Reserved[target - 1] = Pad[target - 1].Local;
+            }
+        }
+
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
+        {
+            if (m_Suspended) return DsPadId.None;
+
+            // forward message for wired DS4 to usb hub
+            if (Class == UsbDs4.USB_CLASS_GUID)
+            {
+                return usbHub.Notify(notification, Class, Path);
+            }
+
+            // forward message for wired DS3 to usb hub
+            if (Class == UsbDs3.USB_CLASS_GUID)
+            {
+                return usbHub.Notify(notification, Class, Path);
+            }
+
+            // forward message for any wireless device to bluetooth hub
+            if (Class == BthDongle.BTH_CLASS_GUID)
+            {
+                bthHub.Notify(notification, Class, Path);
+            }
+
+            return DsPadId.None;
+        }
+
+        #region Internal helpers
+
+        private class Cache
+        {
+            private readonly byte[] m_Mapped = new byte[ReportEventArgs.Length];
+            private readonly byte[] m_Report = new byte[BusDevice.ReportSize];
+            private readonly byte[] m_Rumble = new byte[BusDevice.RumbleSize];
+
+            public byte[] Report
+            {
+                get { return m_Report; }
+            }
+
+            public byte[] Rumble
+            {
+                get { return m_Rumble; }
+            }
+
+            public byte[] Mapped
+            {
+                get { return m_Mapped; }
+            }
+        }
+
+        #endregion
+
         #region Ctors
 
         public RootHub()
@@ -64,7 +216,8 @@ namespace ScpControl
             usbHub.Report += On_Report;
         }
 
-        public RootHub(IContainer container) : this()
+        public RootHub(IContainer container)
+            : this()
         {
             container.Add(this);
         }
@@ -107,258 +260,6 @@ namespace ScpControl
                 Assembly.GetExecutingAssembly().GetName().Version);
             Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
 
-            #region Command server
-
-            _rxCmdServer.Connections.SubscribeOn(Scheduler.CurrentThread).ObserveOn(Scheduler.CurrentThread).Subscribe(socket =>
-            {
-                Log.InfoFormat("Client connected on command channel: {0}", socket.GetHashCode());
-                var protocol = new ScpCommandChannel(socket);
-
-                #region Incoming command requests
-
-                protocol.Receiver.Subscribe(packet =>
-                {
-                    var sb = new StringBuilder();
-                    var buffer = packet.Payload;
-                    var request = packet.Request;
-
-                    byte serial;
-                    switch (request)
-                    {
-                        case ScpRequest.Status: // Status Request
-
-                            if (!Global.DisableNative)
-                            {
-                                lock (Pad)
-                                {
-                                    buffer[2] = (byte) Pad[0].State;
-                                    buffer[3] = (byte) Pad[1].State;
-                                    buffer[4] = (byte) Pad[2].State;
-                                    buffer[5] = (byte) Pad[3].State;
-                                }
-                            }
-                            else
-                            {
-                                buffer[2] = 0;
-                                buffer[3] = 0;
-                                buffer[4] = 0;
-                                buffer[5] = 0;
-                            }
-
-                            protocol.SendAsync(request, buffer);
-                            break;
-
-                        case ScpRequest.Rumble: // Rumble Request
-
-                            serial = buffer[0];
-
-                            lock (Pad)
-                            {
-                                if (Pad[serial].State == DsState.Connected)
-                                {
-                                    if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
-                                    {
-                                        m_Native[serial][0] = buffer[2];
-                                        m_Native[serial][1] = buffer[3];
-
-                                        Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
-                                    }
-                                }
-                            }
-                            break;
-
-                        case ScpRequest.StatusData: // Status Data Request
-                            {
-                                sb.Clear();
-
-                                lock (Dongle)
-                                {
-                                    sb.Append(Dongle);
-                                }
-                                sb.Append('^');
-
-                                lock (Pad)
-                                {
-                                    sb.Append(Pad[0]);
-                                    sb.Append('^');
-                                    sb.Append(Pad[1]);
-                                    sb.Append('^');
-                                    sb.Append(Pad[2]);
-                                    sb.Append('^');
-                                    sb.Append(Pad[3]);
-                                    sb.Append('^');
-                                }
-
-                                var data = sb.ToString().ToBytes().ToArray();
-
-                                protocol.SendAsync(ScpRequest.StatusData, data);
-                            }
-                            break;
-
-                        case ScpRequest.ConfigRead: // Config Read Request
-                            {
-                                protocol.SendAsync(request, Global.Packed);
-                            }
-                            break;
-
-                        case ScpRequest.ConfigWrite: // Config Write Request
-                            {
-                                Global.Packed = buffer;
-                            }
-                            break;
-
-                        case ScpRequest.PadPromote: // Pad Promote Request
-                            {
-                                int target = buffer[2];
-
-                                lock (this)
-                                {
-                                    if (Pad[target].State != DsState.Disconnected)
-                                    {
-                                        var swap = Pad[target];
-                                        Pad[target] = Pad[target - 1];
-                                        Pad[target - 1] = swap;
-
-                                        Pad[target].PadId = (DsPadId)(target);
-                                        Pad[target - 1].PadId = (DsPadId)(target - 1);
-
-                                        m_Reserved[target] = Pad[target].Local;
-                                        m_Reserved[target - 1] = Pad[target - 1].Local;
-                                    }
-                                }
-                            }
-                            break;
-
-                        case ScpRequest.ProfileList: // Profile List
-                            {
-                                sb.Clear();
-
-                                sb.Append(scpMap.Active);
-                                sb.Append('^');
-
-                                foreach (var profile in scpMap.Profiles)
-                                {
-                                    sb.Append(profile);
-                                    sb.Append('^');
-                                }
-
-                                var body = sb.ToString().ToBytes().ToArray();
-
-                                protocol.SendAsync(request, body);
-                            }
-                            break;
-
-                        case ScpRequest.SetActiveProfile: // Set Active Profile
-                            {
-                                var data = new byte[buffer.Length - 2];
-
-                                Array.Copy(buffer, 2, data, 0, data.Length);
-
-                                scpMap.Active = data.ToUtf8();
-                            }
-                            break;
-
-                        case ScpRequest.GetXml: // Get XML
-                            {
-                                protocol.SendAsync(request, scpMap.Xml.ToBytes().ToArray());
-                            }
-                            break;
-
-                        case ScpRequest.SetXml: // Set XML
-                            {
-                                lock (scpMap)
-                                {
-                                    var data = new byte[buffer.Length - 2];
-
-                                    Array.Copy(buffer, 2, data, 0, data.Length);
-
-                                    scpMap.Xml = data.ToUtf8();
-                                }
-                            }
-                            break;
-
-                        case ScpRequest.PadDetail: // Pad Detail
-                            {
-                                serial = buffer[0];
-
-                                var data = new byte[11];
-
-                                Log.DebugFormat("Requested Pads local MAC = {0}", m_Pad[serial].Local);
-
-                                lock (m_Pad)
-                                {
-                                    data[0] = serial;
-                                    data[1] = (byte)m_Pad[serial].State;
-                                    data[2] = (byte)m_Pad[serial].Model;
-                                    data[3] = (byte)m_Pad[serial].Connection;
-                                    data[4] = (byte)m_Pad[serial].Battery;
-                                    
-                                    Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
-                                }
-
-                                protocol.SendAsync(request, data);
-                            }
-                            break;
-                        case ScpRequest.NativeFeedAvailable:
-                            protocol.SendAsync(ScpRequest.NativeFeedAvailable,
-                                BitConverter.GetBytes(!Global.DisableNative));
-                            break;
-                    }
-                });
-
-                socket.Disconnected += (sender, e) => Log.InfoFormat("Client disconnected from command channel {0}", sender.GetHashCode());
-                socket.Disposed += (sender, e) => Log.InfoFormat("Client disposed from command channel {0}", sender.GetHashCode());
-
-                #endregion
-            });
-
-            #endregion
-
-            #region Native feed server
-
-            _rxFeedServer.Connections.SubscribeOn(Scheduler.Immediate).Subscribe(socket =>
-            {
-                Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
-
-                var protocol = new ScpNativeFeedChannel(socket);
-
-                lock (this)
-                {
-                    _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
-                }
-
-                protocol.Receiver.Subscribe(packet =>
-                {
-                    // feed is one-way only
-                    Log.Debug("Uuuhh how did we end up here?!");
-                });
-
-                socket.Disconnected += (sender, e) =>
-                {
-                    Log.InfoFormat(
-                        "Client disconnected from native feed channel {0}",
-                        sender.GetHashCode());
-
-                    lock (this)
-                    {
-                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
-                    }
-                };
-
-                socket.Disposed += (sender, e) =>
-                {
-                    Log.InfoFormat("Client disposed from native feed channel {0}",
-                        sender.GetHashCode());
-
-                    lock (this)
-                    {
-                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
-                    }
-                };
-            });
-
-            #endregion
-
             scpMap.Open();
 
             opened |= scpBus.Open(Global.Bus);
@@ -375,24 +276,18 @@ namespace ScpControl
 
             Log.Info("Starting root hub");
 
-            try
+            if (!serviceStarted)
             {
-                _rxCmdServer.Start();
-            }
-            catch (SocketException sex)
-            {
-                Log.FatalFormat("Couldn't start command server: {0}", sex);
-                return false;
-            }
+                var baseAddress = new Uri("net.tcp://localhost:26760/ScpRootHubService");
 
-            try
-            {
-                _rxFeedServer.Start();
-            }
-            catch (SocketException sex)
-            {
-                Log.FatalFormat("Couldn't start native feed server: {0}", sex);
-                return false;
+                var binding = new NetTcpBinding();
+
+                myServiceHost = new ServiceHost(typeof(RootHub), baseAddress);
+                myServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
+
+                myServiceHost.Open();
+
+                serviceStarted = true;
             }
 
             scpMap.Start();
@@ -414,9 +309,6 @@ namespace ScpControl
             scpBus.Stop();
             usbHub.Stop();
             bthHub.Stop();
-
-            _rxCmdServer.Dispose();
-            _rxFeedServer.Dispose();
 
             Log.Info("Root hub stopped");
 
@@ -472,31 +364,6 @@ namespace ScpControl
 
         #endregion
 
-        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
-        {
-            if (m_Suspended) return DsPadId.None;
-
-            // forward message for wired DS4 to usb hub
-            if (Class == UsbDs4.USB_CLASS_GUID)
-            {
-                return usbHub.Notify(notification, Class, Path);
-            }
-
-            // forward message for wired DS3 to usb hub
-            if (Class == UsbDs3.USB_CLASS_GUID)
-            {
-                return usbHub.Notify(notification, Class, Path);
-            }
-
-            // forward message for any wireless device to bluetooth hub
-            if (Class == BthDongle.BTH_CLASS_GUID)
-            {
-                bthHub.Notify(notification, Class, Path);
-            }
-
-            return DsPadId.None;
-        }
-
         #region Events
 
         protected override void On_Arrival(object sender, ArrivalEventArgs e)
@@ -528,7 +395,7 @@ namespace ScpControl
 
                         bFound = true;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         m_Pad[index] = arrived;
                     }
                 }
@@ -540,7 +407,7 @@ namespace ScpControl
                         bFound = true;
                         m_Reserved[index] = arrived.Local;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         m_Pad[index] = arrived;
                     }
                 }
@@ -596,47 +463,7 @@ namespace ScpControl
             if (Global.DisableNative)
                 return;
 
-            lock (this)
-            {
-                // send native controller inputs to subscribed clients
-                foreach (
-                    var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
-                {
-                    try
-                    {
-                        channel.SendAsync(e.Report);
-                    }
-                    catch (AggregateException)
-                    {
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        #region Internal helpers
-
-        private class Cache
-        {
-            private readonly byte[] m_Mapped = new byte[ReportEventArgs.Length];
-            private readonly byte[] m_Report = new byte[BusDevice.ReportSize];
-            private readonly byte[] m_Rumble = new byte[BusDevice.RumbleSize];
-
-            public byte[] Report
-            {
-                get { return m_Report; }
-            }
-
-            public byte[] Rumble
-            {
-                get { return m_Rumble; }
-            }
-
-            public byte[] Mapped
-            {
-                get { return m_Mapped; }
-            }
+            // TODO: implement feed!
         }
 
         #endregion

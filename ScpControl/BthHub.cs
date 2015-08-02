@@ -20,7 +20,10 @@ namespace ScpControl
 
         public string Dongle
         {
-            get { return _device.ToString(); }
+            get
+            {
+                return _device!=null ? _device.ToString() : "<UNKNOWN>";
+            }
         }
 
         public string Master

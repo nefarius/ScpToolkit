@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
-using ScpControl.Rx;
+using ScpControl.Wcf;
 using ScpControl.Utilities;
 using ScpMonitor.Properties;
 
@@ -29,42 +30,28 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
-        public void Response(ScpCommandPacket packet)
-        {
-            Log.Info("Received configuration response");
-
-            var request = packet.Request;
-            var buffer = packet.Payload;
-
-            switch (request)
-            {
-                case ScpRequest.ConfigRead:
-                    this.UiThread(() =>
-                    {
-                        tbIdle.Value = buffer[2];
-                        cbLX.Checked = buffer[3] == 1;
-                        cbLY.Checked = buffer[4] == 1;
-                        cbRX.Checked = buffer[5] == 1;
-                        cbRY.Checked = buffer[6] == 1;
-                        cbLED.Checked = buffer[7] == 1;
-                        cbRumble.Checked = buffer[8] == 1;
-                        cbTriggers.Checked = buffer[9] == 1;
-                        tbLatency.Value = buffer[10];
-                        tbLeft.Value = buffer[11];
-                        tbRight.Value = buffer[12];
-                        cbNative.Checked = buffer[13] == 1;
-                        cbSSP.Checked = buffer[14] == 1;
-                        tbBrightness.Value = buffer[15];
-                        cbForce.Checked = buffer[16] == 1;
-                    });
-                    break;
-            }
-        }
-
         public void Request()
         {
-            _proxy.SubmitRequest(ScpRequest.ConfigRead);
-            Log.Info("Requested configuration response");
+            byte[] buffer = _proxy.ReadConfig().ToArray();
+
+            this.UiThread(() =>
+            {
+                tbIdle.Value = buffer[2];
+                cbLX.Checked = buffer[3] == 1;
+                cbLY.Checked = buffer[4] == 1;
+                cbRX.Checked = buffer[5] == 1;
+                cbRY.Checked = buffer[6] == 1;
+                cbLED.Checked = buffer[7] == 1;
+                cbRumble.Checked = buffer[8] == 1;
+                cbTriggers.Checked = buffer[9] == 1;
+                tbLatency.Value = buffer[10];
+                tbLeft.Value = buffer[11];
+                tbRight.Value = buffer[12];
+                cbNative.Checked = buffer[13] == 1;
+                cbSSP.Checked = buffer[14] == 1;
+                tbBrightness.Value = buffer[15];
+                cbForce.Checked = buffer[16] == 1;
+            });
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -83,24 +70,24 @@ namespace ScpMonitor
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            _mBuffer[1] = (byte) ScpRequest.ConfigWrite;
-            _mBuffer[2] = (byte) tbIdle.Value;
-            _mBuffer[3] = (byte) (cbLX.Checked ? 0x01 : 0x00);
-            _mBuffer[4] = (byte) (cbLY.Checked ? 0x01 : 0x00);
-            _mBuffer[5] = (byte) (cbRX.Checked ? 0x01 : 0x00);
-            _mBuffer[6] = (byte) (cbRY.Checked ? 0x01 : 0x00);
-            _mBuffer[7] = (byte) (cbLED.Checked ? 0x01 : 0x00);
-            _mBuffer[8] = (byte) (cbRumble.Checked ? 0x01 : 0x00);
-            _mBuffer[9] = (byte) (cbTriggers.Checked ? 0x01 : 0x00);
-            _mBuffer[10] = (byte) tbLatency.Value;
-            _mBuffer[11] = (byte) tbLeft.Value;
-            _mBuffer[12] = (byte) tbRight.Value;
-            _mBuffer[13] = (byte) (cbNative.Checked ? 0x01 : 0x00);
-            _mBuffer[14] = (byte) (cbSSP.Checked ? 0x01 : 0x00);
-            _mBuffer[15] = (byte) tbBrightness.Value;
-            _mBuffer[16] = (byte) (cbForce.Checked ? 0x01 : 0x00);
+            _mBuffer[1] = (byte)0x00;
+            _mBuffer[2] = (byte)tbIdle.Value;
+            _mBuffer[3] = (byte)(cbLX.Checked ? 0x01 : 0x00);
+            _mBuffer[4] = (byte)(cbLY.Checked ? 0x01 : 0x00);
+            _mBuffer[5] = (byte)(cbRX.Checked ? 0x01 : 0x00);
+            _mBuffer[6] = (byte)(cbRY.Checked ? 0x01 : 0x00);
+            _mBuffer[7] = (byte)(cbLED.Checked ? 0x01 : 0x00);
+            _mBuffer[8] = (byte)(cbRumble.Checked ? 0x01 : 0x00);
+            _mBuffer[9] = (byte)(cbTriggers.Checked ? 0x01 : 0x00);
+            _mBuffer[10] = (byte)tbLatency.Value;
+            _mBuffer[11] = (byte)tbLeft.Value;
+            _mBuffer[12] = (byte)tbRight.Value;
+            _mBuffer[13] = (byte)(cbNative.Checked ? 0x01 : 0x00);
+            _mBuffer[14] = (byte)(cbSSP.Checked ? 0x01 : 0x00);
+            _mBuffer[15] = (byte)tbBrightness.Value;
+            _mBuffer[16] = (byte)(cbForce.Checked ? 0x01 : 0x00);
 
-            _proxy.SubmitRequest(ScpRequest.ConfigWrite, _mBuffer);
+            _proxy.WriteConfig(_mBuffer);
             Log.Info("Saved configuration");
 
             Hide();

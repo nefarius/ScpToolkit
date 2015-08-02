@@ -32,19 +32,17 @@ namespace ScpMonitor
 
         public void Request()
         {
-            if (scpProxy.Load())
-            {
-                m_SelectedProfile = m_Active = scpProxy.Active;
+            m_SelectedProfile = m_Active = scpProxy.ActiveProfile;
 
-                cbProfile.Items.Clear();
-                cbProfile.Items.AddRange(scpProxy.Mapper.Profiles);
-                cbProfile.SelectedItem = m_SelectedProfile;
+            cbProfile.Items.Clear();
+            cbProfile.Items.AddRange(scpProxy.Mapper.Profiles);
+            cbProfile.SelectedItem = m_SelectedProfile;
 
-                cbPad.SelectedIndex = m_SelectedPad = 0;
-                m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
+            cbPad.SelectedIndex = m_SelectedPad = 0;
+            m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
 
-                ResetControls();
-            }
+            ResetControls();
+
 
             m_Editing = false;
             m_CanSave = true;

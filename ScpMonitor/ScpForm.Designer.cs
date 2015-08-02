@@ -193,8 +193,6 @@
             // 
             // scpProxy
             // 
-            this.scpProxy.StatusDataReceived += new System.EventHandler<ScpControl.Rx.ScpCommandPacket>(this.scpProxy_StatusDataReceived);
-            this.scpProxy.ConfigReceived += new System.EventHandler<ScpControl.Rx.ScpCommandPacket>(this.scpProxy_ConfigReceived);
             this.scpProxy.RootHubDisconnected += new System.EventHandler<System.EventArgs>(this.scpProxy_RootHubDisconnected);
             // 
             // ScpForm

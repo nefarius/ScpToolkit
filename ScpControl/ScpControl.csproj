@@ -42,9 +42,6 @@
     <Reference Include="MadMilkman.Ini">
       <HintPath>..\packages\MadMilkman.Ini.1.0.4.0\lib\net20\MadMilkman.Ini.dll</HintPath>
     </Reference>
-    <Reference Include="ReactiveSockets">
-      <HintPath>..\packages\ReactiveSockets.0.2.6\lib\net40\ReactiveSockets.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -66,6 +63,8 @@
     <Reference Include="System.Reactive.Windows.Forms">
       <HintPath>..\packages\Rx-WinForms.2.2.5\lib\net45\System.Reactive.Windows.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -112,9 +111,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Rx\IChannel.cs" />
-    <Compile Include="Rx\ScpCommandChannel.cs" />
-    <Compile Include="Rx\ScpNativeFeedChannel.cs" />
+    <Compile Include="Wcf\ScpCommandChannel.cs" />
     <Compile Include="ScpCore\BackingStore.cs" />
     <Compile Include="ScpCore\Global.cs" />
     <Compile Include="ScpCore\HCI.cs" />

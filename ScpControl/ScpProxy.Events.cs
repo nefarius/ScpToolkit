@@ -1,5 +1,5 @@
 ﻿using System;
-using ScpControl.Rx;
+using ScpControl.Wcf;
 
 namespace ScpControl
 {
@@ -8,12 +8,6 @@ namespace ScpControl
         #region Public events
 
         public event EventHandler<DsPacket> NativeFeedReceived;
-
-        public event EventHandler<ScpCommandPacket> StatusDataReceived;
-
-        public event EventHandler<ScpCommandPacket> XmlReceived;
-
-        public event EventHandler<ScpCommandPacket> ConfigReceived;
 
         public event EventHandler<EventArgs> RootHubDisconnected;
 
@@ -26,30 +20,6 @@ namespace ScpControl
             if (NativeFeedReceived != null)
             {
                 NativeFeedReceived(this, data);
-            }
-        }
-
-        private void OnStatusData(ScpCommandPacket packet)
-        {
-            if (StatusDataReceived != null)
-            {
-                StatusDataReceived(this, packet);
-            }
-        }
-
-        private void OnXmlReceived(ScpCommandPacket packet)
-        {
-            if (XmlReceived != null)
-            {
-                XmlReceived(this, packet);
-            }
-        }
-
-        private void OnConfigReceived(ScpCommandPacket packet)
-        {
-            if (ConfigReceived != null)
-            {
-                ConfigReceived(this, packet);
             }
         }
 

@@ -1,39 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
+using System.ServiceModel;
 using System.Xml;
 using log4net;
-using ReactiveSockets;
-using ScpControl.Properties;
-using ScpControl.Rx;
-using ScpControl.Utilities;
+using ScpControl.Wcf;
 
 namespace ScpControl
 {
     public sealed partial class ScpProxy : Component
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly char[] m_Delim = { '^' };
-        private string _activeProfile;
-        private bool _nativeFeedAvailable;
-        private DsDetail _padDetail;
         private bool m_Active;
         private XmlDocument m_Map = new XmlDocument();
-        private readonly AutoResetEvent _activeProfileEvent = new AutoResetEvent(false);
-        private readonly AutoResetEvent _nativeFeedEnabledEvent = new AutoResetEvent(false);
-        private readonly AutoResetEvent _padDetailEvent = new AutoResetEvent(false);
-        private readonly ScpCommandChannel _rootHubCommandChannel;
 
-        private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost,
-            Settings.Default.RootHubCommandRxPort);
-
-        private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedRxHost,
-            Settings.Default.RootHubNativeFeedRxPort);
+        private IScpCommandService _rootHub;
 
         private readonly XmlMapper m_Mapper = new XmlMapper();
 
@@ -45,49 +28,49 @@ namespace ScpControl
         /// <summary>
         ///     Gets the currently active profile.
         /// </summary>
-        public string Active
+        public string ActiveProfile
         {
-            get
-            {
-                if (!_rxCommandClient.IsConnected)
-                    return _activeProfile;
-
-                // send request to root hub
-                _rootHubCommandChannel.SendAsync(ScpRequest.ProfileList);
-                // wait for response to arrive
-                _activeProfileEvent.WaitOne(500);
-
-                return _activeProfile;
-            }
+            get { return _rootHub.GetActiveProfile(); }
         }
 
         /// <summary>
         ///     Checks if the native feed is available.
         /// </summary>
-        public bool Enabled
+        public bool IsNativeFeedAvailable
         {
-            get
-            {
-                if (!_rxCommandClient.IsConnected)
-                    return _nativeFeedAvailable;
-
-                _rootHubCommandChannel.SendAsync(ScpRequest.NativeFeedAvailable);
-
-                if (_nativeFeedEnabledEvent.WaitOne(500)) return _nativeFeedAvailable;
-
-                Log.Warn("no response received");
-                return false;
-            }
+            get { return _rootHub.IsNativeFeedAvailable(); }
         }
 
-        public async Task<bool> Start()
+        public IList<string> StatusData
+        {
+            get { return _rootHub.GetStatusData().ToList(); }
+        }
+
+        public void PromotePad(byte pad)
+        {
+            _rootHub.PromotePad(pad);
+        }
+
+        public IEnumerable<byte> ReadConfig()
+        {
+            return _rootHub.GetConfig();
+        }
+
+        public void WriteConfig(byte[] config)
+        {
+            _rootHub.SetConfig(config);
+        }
+
+        public bool Start()
         {
             try
             {
                 if (!m_Active)
                 {
-                    await _rxCommandClient.ConnectAsync().ConfigureAwait(false);
-                    await _rxFeedClient.ConnectAsync().ConfigureAwait(false);
+                    var address = new EndpointAddress(new Uri("net.tcp://localhost:26760/ScpRootHubService"));
+                    var binding = new NetTcpBinding();
+                    var factory = new ChannelFactory<IScpCommandService>(binding, address);
+                    _rootHub = factory.CreateChannel(address);
 
                     m_Active = true;
                 }
@@ -106,12 +89,6 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    if (_rxCommandClient.IsConnected)
-                        _rxCommandClient.Disconnect();
-
-                    if (_rxFeedClient.IsConnected)
-                        _rxFeedClient.Disconnect();
-
                     m_Active = false;
                 }
             }
@@ -121,17 +98,6 @@ namespace ScpControl
             }
 
             return !m_Active;
-        }
-
-        public bool Load()
-        {
-            if (_rootHubCommandChannel == null)
-                return false;
-
-            // request configuration from root hub
-            _rootHubCommandChannel.SendAsync(ScpRequest.GetXml);
-
-            return true;
         }
 
         public bool Save()
@@ -144,14 +110,7 @@ namespace ScpControl
                 {
                     if (m_Mapper.Construct(ref m_Map))
                     {
-                        var data = m_Map.InnerXml.ToBytes().ToArray();
-                        var buffer = new byte[data.Length + 2];
-
-                        buffer[1] = (byte)ScpRequest.SetXml;
-                        Array.Copy(data, 0, buffer, 2, data.Length);
-
-                        // send config back to hub for storage
-                        _rootHubCommandChannel.SendAsync(ScpRequest.SetXml, buffer);
+                        _rootHub.SetXml(m_Map.InnerXml);
 
                         saved = true;
                     }
@@ -173,8 +132,7 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    // request root hub to set new active profile
-                    _rootHubCommandChannel.SendAsync(ScpRequest.SetActiveProfile, target.Name.ToBytes().ToArray());
+                    _rootHub.SetActiveProfile(target);
 
                     SetDefault(target);
                     selected = true;
@@ -195,47 +153,12 @@ namespace ScpControl
         /// <returns>The pad details returned from the root hub.</returns>
         public DsDetail Detail(DsPadId pad)
         {
-            try
-            {
-                byte[] buffer = { (byte)pad, (byte)ScpRequest.PadDetail };
-
-                _rootHubCommandChannel.SendAsync(ScpRequest.PadDetail, buffer);
-
-                if (!_padDetailEvent.WaitOne(500))
-                {
-                    Log.WarnFormat("Couldn't get details for pad ID {0}", pad);
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return _padDetail;
+            return _rootHub.GetPadDetail(pad);
         }
 
         public bool Rumble(DsPadId pad, byte large, byte small)
         {
-            var rumbled = false;
-
-            try
-            {
-                if (m_Active)
-                {
-                    byte[] buffer = { (byte)pad, (byte)ScpRequest.Rumble, large, small };
-
-                    _rootHubCommandChannel.SendAsync(ScpRequest.Rumble, buffer);
-
-                    rumbled = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return rumbled;
+            return _rootHub.Rumble(pad, large, small);
         }
 
         public bool Remap(string target, DsPacket packet)
@@ -302,126 +225,11 @@ namespace ScpControl
             return set;
         }
 
-        public void SubmitRequest(ScpRequest request)
-        {
-            lock (_rootHubCommandChannel)
-                _rootHubCommandChannel.SendAsync(request).ConfigureAwait(false);
-        }
-
-        public void SubmitRequest(ScpRequest request, byte[] payload)
-        {
-            lock (_rootHubCommandChannel)
-                _rootHubCommandChannel.SendAsync(request, payload).ConfigureAwait(false);
-        }
-
         #region Ctors
 
         public ScpProxy()
         {
             InitializeComponent();
-
-            try
-            {
-                #region Command cient
-
-                try
-                {
-                    _rootHubCommandChannel = new ScpCommandChannel(_rxCommandClient);
-
-                    _rxCommandClient.Disconnected += (sender, args) =>
-                    {
-                        Log.Info("Server connection has been closed");
-                        OnRootHubDisconnected(args);
-                    };
-
-                    _rxCommandClient.Disposed += (sender, args) =>
-                    {
-                        Log.Info("Server connection has been disposed");
-                        OnRootHubDisconnected(args);
-                    };
-
-                    _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default)
-                        .ObserveOn(Scheduler.CurrentThread).Subscribe(OnIncomingPacket);
-                }
-                catch (Exception ex)
-                {
-                    Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
-                }
-
-                #endregion
-
-                #region Feed client
-
-                var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
-                rootHubFeedChannel.Receiver.SubscribeOn(Scheduler.Immediate).Subscribe(buffer =>
-                {
-                    if (buffer.Length <= 0)
-                        return;
-
-                    var packet = new DsPacket();
-
-                    OnFeedPacketReceived(packet.Load(buffer));
-                });
-
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
-            }
-        }
-
-        /// <summary>
-        ///     This is where responses from the root hub are getting processed
-        /// </summary>
-        /// <param name="packet">The received packet.</param>
-        private void OnIncomingPacket(ScpCommandPacket packet)
-        {
-            Log.DebugFormat("CMD IN Thread ID: {0}", Thread.CurrentThread.ManagedThreadId);
-
-            var request = packet.Request;
-            var buffer = packet.Payload;
-
-            switch (request)
-            {
-                case ScpRequest.GetXml:
-                    m_Map.LoadXml(buffer.ToUtf8());
-                    m_Mapper.Initialize(m_Map);
-
-                    OnXmlReceived(packet.ForwardPacket());
-                    break;
-                case ScpRequest.ProfileList:
-                    var data = buffer.ToUtf8();
-                    var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
-
-                    _activeProfile = split[0];
-                    _activeProfileEvent.Set();
-                    break;
-                case ScpRequest.PadDetail:
-                    var local = new byte[6];
-                    Array.Copy(buffer, 5, local, 0, local.Length);
-
-                    _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
-                        local,
-                        (DsConnection)buffer[3], (DsBattery)buffer[4]);
-
-                    if (!_padDetailEvent.Set())
-                        Log.ErrorFormat("Couldn't signal pad detail event");
-                    break;
-                case ScpRequest.NativeFeedAvailable:
-                    _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
-
-                    if (!_nativeFeedEnabledEvent.Set())
-                        Log.ErrorFormat("Couldn't signal native feed available event");
-                    break;
-                case ScpRequest.StatusData:
-                    OnStatusData(packet.ForwardPacket());
-
-                    break;
-                case ScpRequest.ConfigRead:
-                    OnConfigReceived(packet.ForwardPacket());
-                    break;
-            }
         }
 
         public ScpProxy(IContainer container)
