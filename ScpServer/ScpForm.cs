@@ -153,9 +153,9 @@ namespace ScpServer
             {
                 if (m.Msg == ScpDevice.WM_DEVICECHANGE)
                 {
-                    var Type = m.WParam.ToInt32();
+                    var type = m.WParam.ToInt32();
 
-                    switch (Type)
+                    switch (type)
                     {
                         case ScpDevice.DBT_DEVICEARRIVAL:
                         case ScpDevice.DBT_DEVICEQUERYREMOVE:
@@ -178,10 +178,10 @@ namespace ScpServer
 
                                 var Class = "{" + new Guid(deviceInterface.dbcc_classguid).ToString().ToUpper() + "}";
 
-                                var Path = new string(deviceInterface.dbcc_name);
-                                Path = Path.Substring(0, Path.IndexOf('\0')).ToUpper();
+                                var path = new string(deviceInterface.dbcc_name);
+                                path = path.Substring(0, path.IndexOf('\0')).ToUpper();
 
-                                rootHub.Notify((ScpDevice.Notified) Type, Class, Path);
+                                rootHub.Notify((ScpDevice.Notified) type, Class, path);
                             }
                             break;
                     }
