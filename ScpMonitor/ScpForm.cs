@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Drawing;
-using System.Net;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
@@ -26,10 +24,12 @@ namespace ScpMonitor
 
         public ScpForm()
         {
+#if DEBUG
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Log.FatalFormat("Unhandled exception: {0}", args.ExceptionObject);
             };
+#endif
 
             InitializeComponent();
 
@@ -102,6 +102,9 @@ namespace ScpMonitor
 
         private void ParseStatusData(byte[] buffer)
         {
+            if (buffer == null)
+                return;
+
             if (!m_Connected)
             {
                 m_Connected = true;

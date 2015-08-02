@@ -132,6 +132,7 @@ namespace ScpControl
                     break;
                 case ScpRequest.StatusData:
                     OnStatusData(packet.ForwardPacket());
+
                     break;
                 case ScpRequest.ConfigRead:
                     OnConfigReceived(packet.ForwardPacket());
@@ -147,7 +148,6 @@ namespace ScpControl
 
         #endregion
 
-        
         public XmlMapper Mapper
         {
             get { return m_Mapper; }
