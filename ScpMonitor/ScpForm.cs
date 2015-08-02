@@ -126,6 +126,9 @@ namespace ScpMonitor
             btnUp_3.Enabled = !split[4].Contains("Disconnected");
         }
 
+        /// <summary>
+        ///     Root hub disconnected, reset user interface to defaults.
+        /// </summary>
         private void Clear()
         {
             if (m_Connected)
@@ -309,6 +312,11 @@ namespace ScpMonitor
             scpProxy.SubmitRequest(ScpRequest.StatusData).ConfigureAwait(false);
 
             tmrUpdate.Enabled = !tmrUpdate.Enabled;
+        }
+
+        private void scpProxy_RootHubDisconnected(object sender, EventArgs e)
+        {
+            this.UiThread(Clear);
         }
     }
 

@@ -50,11 +50,13 @@ namespace ScpControl
                     _rxCommandClient.Disconnected += (sender, args) =>
                     {
                         Log.Info("Server connection has been closed");
+                        OnRootHubDisconnected(args);
                     };
 
                     _rxCommandClient.Disposed += (sender, args) =>
                     {
                         Log.Info("Server connection has been disposed");
+                        OnRootHubDisconnected(args);
                     };
 
                     _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(packet =>
@@ -137,14 +139,7 @@ namespace ScpControl
 
         #endregion
 
-        public event EventHandler<DsPacket> NativeFeedReceived;
-
-        public event EventHandler<ScpCommandPacket> StatusDataReceived;
-
-        public event EventHandler<ScpCommandPacket> XmlReceived;
-
-        public event EventHandler<ScpCommandPacket> ConfigReceived;
-
+        
         public XmlMapper Mapper
         {
             get { return m_Mapper; }
@@ -419,42 +414,6 @@ namespace ScpControl
         {
             await _rootHubCommandChannel.SendAsync(request, payload).ConfigureAwait(false);
         }
-
-        #region Event methods
-
-        private void OnFeedPacketReceived(DsPacket data)
-        {
-            if (NativeFeedReceived != null)
-            {
-                NativeFeedReceived(this, data);
-            }
-        }
-
-        private void OnStatusData(ScpCommandPacket packet)
-        {
-            if (StatusDataReceived != null)
-            {
-                StatusDataReceived(this, packet);
-            }
-        }
-
-        private void OnXmlReceived(ScpCommandPacket packet)
-        {
-            if (XmlReceived != null)
-            {
-                XmlReceived(this, packet);
-            }
-        }
-
-        private void OnConfigReceived(ScpCommandPacket packet)
-        {
-            if (ConfigReceived != null)
-            {
-                ConfigReceived(this, packet);
-            }
-        }
-
-        #endregion
     }
 
     public class DsPacket : EventArgs

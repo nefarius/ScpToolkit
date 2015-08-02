@@ -43,8 +43,8 @@
             this.btnUp_1 = new System.Windows.Forms.Button();
             this.btnUp_2 = new System.Windows.Forms.Button();
             this.btnUp_3 = new System.Windows.Forms.Button();
-            this.scpProxy = new ScpControl.ScpProxy(this.components);
             this.tmrUpdate = new System.Windows.Forms.Timer(this.components);
+            this.scpProxy = new ScpControl.ScpProxy(this.components);
             this.cmTray.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -186,14 +186,15 @@
             this.btnUp_3.Click += new System.EventHandler(this.btnUp_Click);
             this.btnUp_3.Enter += new System.EventHandler(this.Button_Enter);
             // 
+            // tmrUpdate
+            // 
+            this.tmrUpdate.Tick += new System.EventHandler(this.tmrUpdate_Tick);
+            // 
             // scpProxy
             // 
             this.scpProxy.StatusDataReceived += new System.EventHandler<ScpControl.Rx.ScpCommandPacket>(this.scpProxy_StatusDataReceived);
             this.scpProxy.ConfigReceived += new System.EventHandler<ScpControl.Rx.ScpCommandPacket>(this.scpProxy_ConfigReceived);
-            // 
-            // tmrUpdate
-            // 
-            this.tmrUpdate.Tick += new System.EventHandler(this.tmrUpdate_Tick);
+            this.scpProxy.RootHubDisconnected += new System.EventHandler<System.EventArgs>(this.scpProxy_RootHubDisconnected);
             // 
             // ScpForm
             // 
