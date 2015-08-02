@@ -10,7 +10,7 @@ using ScpControl.Utilities;
 
 namespace ScpControl
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
         private volatile bool m_Suspended;
@@ -282,7 +282,7 @@ namespace ScpControl
 
                 var binding = new NetTcpBinding();
 
-                myServiceHost = new ServiceHost(typeof(RootHub), baseAddress);
+                myServiceHost = new ServiceHost(this, baseAddress);
                 myServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
 
                 myServiceHost.Open();
