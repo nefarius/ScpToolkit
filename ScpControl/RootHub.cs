@@ -121,191 +121,171 @@ namespace ScpControl
                 protocol.Receiver.Subscribe(packet =>
                 {
                     var sb = new StringBuilder();
+                    var buffer = packet.Payload;
+                    var request = packet.Request;
 
-                    try
+                    byte serial;
+                    switch (request)
                     {
-                        var buffer = packet.Payload;
-                        var request = packet.Request;
+                        case ScpRequest.Status: // Status Request
 
-                        byte serial;
-                        switch (request)
-                        {
-                            case ScpRequest.Status: // Status Request
+                            if (!Global.DisableNative)
+                            {
+                                buffer[2] = (byte)Pad[0].State;
+                                buffer[3] = (byte)Pad[1].State;
+                                buffer[4] = (byte)Pad[2].State;
+                                buffer[5] = (byte)Pad[3].State;
+                            }
+                            else
+                            {
+                                buffer[2] = 0;
+                                buffer[3] = 0;
+                                buffer[4] = 0;
+                                buffer[5] = 0;
+                            }
 
-                                if (!Global.DisableNative)
+                            protocol.SendAsync(request, buffer);
+                            break;
+
+                        case ScpRequest.Rumble: // Rumble Request
+
+                            serial = buffer[0];
+
+                            if (Pad[serial].State == DsState.Connected)
+                            {
+                                if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
                                 {
-                                    buffer[2] = (byte)Pad[0].State;
-                                    buffer[3] = (byte)Pad[1].State;
-                                    buffer[4] = (byte)Pad[2].State;
-                                    buffer[5] = (byte)Pad[3].State;
+                                    m_Native[serial][0] = buffer[2];
+                                    m_Native[serial][1] = buffer[3];
+
+                                    Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
                                 }
-                                else
+                            }
+                            break;
+
+                        case ScpRequest.StatusData: // Status Data Request
+                            {
+                                sb.Clear();
+
+                                sb.Append(Dongle);
+                                sb.Append('^');
+
+                                sb.Append(Pad[0]);
+                                sb.Append('^');
+                                sb.Append(Pad[1]);
+                                sb.Append('^');
+                                sb.Append(Pad[2]);
+                                sb.Append('^');
+                                sb.Append(Pad[3]);
+                                sb.Append('^');
+
+                                var data = sb.ToString().ToBytes().ToArray();
+
+                                protocol.SendAsync(ScpRequest.StatusData, data);
+                            }
+                            break;
+
+                        case ScpRequest.ConfigRead: // Config Read Request
+                            {
+                                protocol.SendAsync(request, Global.Packed);
+                            }
+                            break;
+
+                        case ScpRequest.ConfigWrite: // Config Write Request
+                            {
+                                Global.Packed = buffer;
+                            }
+                            break;
+
+                        case ScpRequest.PadPromote: // Pad Promote Request
+                            {
+                                int target = buffer[2];
+
+                                lock (this)
                                 {
-                                    buffer[2] = 0;
-                                    buffer[3] = 0;
-                                    buffer[4] = 0;
-                                    buffer[5] = 0;
+                                    if (Pad[target].State != DsState.Disconnected)
+                                    {
+                                        var swap = Pad[target];
+                                        Pad[target] = Pad[target - 1];
+                                        Pad[target - 1] = swap;
+
+                                        Pad[target].PadId = (DsPadId)(target);
+                                        Pad[target - 1].PadId = (DsPadId)(target - 1);
+
+                                        m_Reserved[target] = Pad[target].Local;
+                                        m_Reserved[target - 1] = Pad[target - 1].Local;
+                                    }
+                                }
+                            }
+                            break;
+
+                        case ScpRequest.ProfileList: // Profile List
+                            {
+                                sb.Clear();
+
+                                sb.Append(scpMap.Active);
+                                sb.Append('^');
+
+                                foreach (var profile in scpMap.Profiles)
+                                {
+                                    sb.Append(profile);
+                                    sb.Append('^');
                                 }
 
-                                protocol.SendAsync(request, buffer);
-                                break;
+                                var body = sb.ToString().ToBytes().ToArray();
 
-                            case ScpRequest.Rumble: // Rumble Request
+                                protocol.SendAsync(request, body);
+                            }
+                            break;
 
+                        case ScpRequest.SetActiveProfile: // Set Active Profile
+                            {
+                                var data = new byte[buffer.Length - 2];
+
+                                Array.Copy(buffer, 2, data, 0, data.Length);
+
+                                scpMap.Active = data.ToUtf8();
+                            }
+                            break;
+
+                        case ScpRequest.GetXml: // Get XML
+                            {
+                                protocol.SendAsync(request, scpMap.Xml.ToBytes().ToArray());
+                            }
+                            break;
+
+                        case ScpRequest.SetXml: // Set XML
+                            {
+                                var data = new byte[buffer.Length - 2];
+
+                                Array.Copy(buffer, 2, data, 0, data.Length);
+
+                                scpMap.Xml = data.ToUtf8();
+                            }
+                            break;
+
+                        case ScpRequest.PadDetail: // Pad Detail
+                            {
                                 serial = buffer[0];
 
-                                if (Pad[serial].State == DsState.Connected)
-                                {
-                                    if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
-                                    {
-                                        m_Native[serial][0] = buffer[2];
-                                        m_Native[serial][1] = buffer[3];
+                                var data = new byte[11];
 
-                                        Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
-                                    }
-                                }
-                                break;
+                                Log.DebugFormat("Requested Pads local MAC = {0}", m_Pad[serial].Local);
 
-                            case ScpRequest.StatusData: // Status Data Request
-                                {
-#if DEBUG
-                                    Log.Debug("Received StatusData request");
-#endif
+                                data[0] = serial;
+                                data[1] = (byte)m_Pad[serial].State;
+                                data[2] = (byte)m_Pad[serial].Model;
+                                data[3] = (byte)m_Pad[serial].Connection;
+                                data[4] = (byte)m_Pad[serial].Battery;
+                                Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
 
-                                    sb.Clear();
-
-                                    sb.Append(Dongle);
-                                    sb.Append('^');
-
-                                    sb.Append(Pad[0]);
-                                    sb.Append('^');
-                                    sb.Append(Pad[1]);
-                                    sb.Append('^');
-                                    sb.Append(Pad[2]);
-                                    sb.Append('^');
-                                    sb.Append(Pad[3]);
-                                    sb.Append('^');
-
-                                    var data = sb.ToString().ToBytes().ToArray();
-
-                                    protocol.SendAsync(ScpRequest.StatusData, data);
-
-#if DEBUG
-                                    Log.DebugFormat("Sent StatusData: {0}", data.Length);
-#endif
-                                }
-                                break;
-
-                            case ScpRequest.ConfigRead: // Config Read Request
-                                {
-                                    protocol.SendAsync(request, Global.Packed);
-                                }
-                                break;
-
-                            case ScpRequest.ConfigWrite: // Config Write Request
-                                {
-                                    Global.Packed = buffer;
-                                }
-                                break;
-
-                            case ScpRequest.PadPromote: // Pad Promote Request
-                                {
-                                    int target = buffer[2];
-
-                                    lock (this)
-                                    {
-                                        if (Pad[target].State != DsState.Disconnected)
-                                        {
-                                            var swap = Pad[target];
-                                            Pad[target] = Pad[target - 1];
-                                            Pad[target - 1] = swap;
-
-                                            Pad[target].PadId = (DsPadId)(target);
-                                            Pad[target - 1].PadId = (DsPadId)(target - 1);
-
-                                            m_Reserved[target] = Pad[target].Local;
-                                            m_Reserved[target - 1] = Pad[target - 1].Local;
-                                        }
-                                    }
-                                }
-                                break;
-
-                            case ScpRequest.ProfileList: // Profile List
-                                {
-                                    sb.Clear();
-
-                                    sb.Append(scpMap.Active);
-                                    sb.Append('^');
-
-                                    foreach (var profile in scpMap.Profiles)
-                                    {
-                                        sb.Append(profile);
-                                        sb.Append('^');
-                                    }
-
-                                    var body = sb.ToString().ToBytes().ToArray();
-
-                                    protocol.SendAsync(request, body);
-                                }
-                                break;
-
-                            case ScpRequest.SetActiveProfile: // Set Active Profile
-                                {
-                                    var data = new byte[buffer.Length - 2];
-
-                                    Array.Copy(buffer, 2, data, 0, data.Length);
-
-                                    scpMap.Active = data.ToUtf8();
-                                }
-                                break;
-
-                            case ScpRequest.GetXml: // Get XML
-                                {
-                                    protocol.SendAsync(request, scpMap.Xml.ToBytes().ToArray());
-                                }
-                                break;
-
-                            case ScpRequest.SetXml: // Set XML
-                                {
-                                    var data = new byte[buffer.Length - 2];
-
-                                    Array.Copy(buffer, 2, data, 0, data.Length);
-
-                                    scpMap.Xml = data.ToUtf8();
-                                }
-                                break;
-
-                            case ScpRequest.PadDetail: // Pad Detail
-                                {
-                                    serial = buffer[0];
-
-                                    var data = new byte[11];
-
-                                    Log.DebugFormat("Requested Pads local MAC = {0}", m_Pad[serial].Local);
-
-                                    data[0] = serial;
-                                    data[1] = (byte)m_Pad[serial].State;
-                                    data[2] = (byte)m_Pad[serial].Model;
-                                    data[3] = (byte)m_Pad[serial].Connection;
-                                    data[4] = (byte)m_Pad[serial].Battery;
-                                    Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
-
-                                    protocol.SendAsync(request, data);
-                                }
-                                break;
-                            case ScpRequest.NativeFeedAvailable:
-                                protocol.SendAsync(ScpRequest.NativeFeedAvailable,
-                                    BitConverter.GetBytes(!Global.DisableNative));
-                                break;
-                        }
-                    }
-                    catch (SocketException sex)
-                    {
-                        Log.ErrorFormat("Socket exception: {0}", sex);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ErrorFormat("Unexpected error: {0}", ex);
+                                protocol.SendAsync(request, data);
+                            }
+                            break;
+                        case ScpRequest.NativeFeedAvailable:
+                            protocol.SendAsync(ScpRequest.NativeFeedAvailable,
+                                BitConverter.GetBytes(!Global.DisableNative));
+                            break;
                     }
                 });
 
