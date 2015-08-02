@@ -255,7 +255,7 @@ namespace ScpControl
 
                                     Array.Copy(buffer, 2, data, 0, data.Length);
 
-                                    scpMap.Active = data.ToUnicode();
+                                    scpMap.Active = data.ToUtf8();
                                 }
                                 break;
 

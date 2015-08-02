@@ -181,9 +181,10 @@ namespace ScpControl
 
                 _rootHubCommandChannel.SendAsync(ScpRequest.NativeFeedAvailable);
 
-                _nativeFeedEnabledEvent.WaitOne(500);
+                if (_nativeFeedEnabledEvent.WaitOne(500)) return _nativeFeedAvailable;
 
-                return _nativeFeedAvailable;
+                Log.Warn("no response received");
+                return false;
             }
         }
 
@@ -280,14 +281,8 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    var data = Encoding.Unicode.GetBytes(target.Name);
-                    var send = new byte[data.Length + 2];
-
-                    send[1] = (byte)ScpRequest.SetActiveProfile;
-                    Array.Copy(data, 0, send, 2, data.Length);
-
                     // request root hub to set new active profile
-                    _rootHubCommandChannel.SendAsync(ScpRequest.SetActiveProfile, send);
+                    _rootHubCommandChannel.SendAsync(ScpRequest.SetActiveProfile, target.Name.ToBytes().ToArray());
 
                     SetDefault(target);
                     selected = true;
@@ -425,6 +420,8 @@ namespace ScpControl
             await _rootHubCommandChannel.SendAsync(request, payload).ConfigureAwait(false);
         }
 
+        #region Event methods
+
         private void OnFeedPacketReceived(DsPacket data)
         {
             if (NativeFeedReceived != null)
@@ -456,6 +453,8 @@ namespace ScpControl
                 ConfigReceived(this, packet);
             }
         }
+
+        #endregion
     }
 
     public class DsPacket : EventArgs
