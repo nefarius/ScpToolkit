@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Net.Mime;
 using System.Net.Sockets;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using ReactiveSockets;
 using ScpControl.Properties;
 using ScpControl.Rx;
@@ -105,7 +109,7 @@ namespace ScpControl
 
             #region Command server
 
-            _rxCmdServer.Connections.Subscribe(socket =>
+            _rxCmdServer.Connections.SubscribeOn(Scheduler.CurrentThread).ObserveOn(Scheduler.CurrentThread).Subscribe(socket =>
             {
                 Log.InfoFormat("Client connected on command channel: {0}", socket.GetHashCode());
                 var protocol = new ScpCommandChannel(socket);
@@ -312,7 +316,7 @@ namespace ScpControl
 
             #region Native feed server
 
-            _rxFeedServer.Connections.Subscribe(socket =>
+            _rxFeedServer.Connections.SubscribeOn(Scheduler.Immediate).Subscribe(socket =>
             {
                 Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
 

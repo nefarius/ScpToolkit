@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -20,135 +19,23 @@ namespace ScpControl
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly char[] m_Delim = { '^' };
-        private readonly XmlMapper m_Mapper = new XmlMapper();
+        private string _activeProfile;
+        private bool _nativeFeedAvailable;
+        private DsDetail _padDetail;
         private bool m_Active;
         private XmlDocument m_Map = new XmlDocument();
-        private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost, Settings.Default.RootHubCommandRxPort);
-        private readonly ScpCommandChannel _rootHubCommandChannel;
-        private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedRxHost, Settings.Default.RootHubNativeFeedRxPort);
         private readonly AutoResetEvent _activeProfileEvent = new AutoResetEvent(false);
-        private readonly AutoResetEvent _padDetailEvent = new AutoResetEvent(false);
         private readonly AutoResetEvent _nativeFeedEnabledEvent = new AutoResetEvent(false);
-        private string _activeProfile;
-        private DsDetail _padDetail;
-        private bool _nativeFeedAvailable;
+        private readonly AutoResetEvent _padDetailEvent = new AutoResetEvent(false);
+        private readonly ScpCommandChannel _rootHubCommandChannel;
 
-        #region Ctors
+        private readonly ReactiveClient _rxCommandClient = new ReactiveClient(Settings.Default.RootHubCommandRxHost,
+            Settings.Default.RootHubCommandRxPort);
 
-        public ScpProxy()
-        {
-            InitializeComponent();
+        private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedRxHost,
+            Settings.Default.RootHubNativeFeedRxPort);
 
-            try
-            {
-                #region Command cient
-
-                try
-                {
-                    _rootHubCommandChannel = new ScpCommandChannel(_rxCommandClient);
-
-                    _rxCommandClient.Disconnected += (sender, args) =>
-                    {
-                        Log.Info("Server connection has been closed");
-                        OnRootHubDisconnected(args);
-                    };
-
-                    _rxCommandClient.Disposed += (sender, args) =>
-                    {
-                        Log.Info("Server connection has been disposed");
-                        OnRootHubDisconnected(args);
-                    };
-
-                    _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(OnIncomingPacket);
-                }
-                catch (Exception ex)
-                {
-                    Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
-                }
-
-                #endregion
-
-                #region Feed client
-
-                var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
-                rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(buffer =>
-                {
-                    if (buffer.Length <= 0)
-                        return;
-
-                    var packet = new DsPacket();
-
-                    OnFeedPacketReceived(packet.Load(buffer));
-                });
-
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
-            }
-        }
-
-        /// <summary>
-        ///     This is where responses from the root hub are getting processed
-        /// </summary>
-        /// <param name="packet">The received packet.</param>
-        private void OnIncomingPacket(ScpCommandPacket packet)
-        {
-            Log.DebugFormat("CMD IN Thread ID: {0}", Thread.CurrentThread.ManagedThreadId);
-
-            var request = packet.Request;
-            var buffer = packet.Payload;
-
-            switch (request)
-            {
-                case ScpRequest.GetXml:
-                    m_Map.LoadXml(buffer.ToUtf8());
-                    m_Mapper.Initialize(m_Map);
-
-                    OnXmlReceived(packet.ForwardPacket());
-                    break;
-                case ScpRequest.ProfileList:
-                    var data = buffer.ToUtf8();
-                    var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
-
-                    _activeProfile = split[0];
-                    _activeProfileEvent.Set();
-                    break;
-                case ScpRequest.PadDetail:
-                    var local = new byte[6];
-                    Array.Copy(buffer, 5, local, 0, local.Length);
-
-                    _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
-                        local,
-                        (DsConnection)buffer[3], (DsBattery)buffer[4]);
-
-                    if (!_padDetailEvent.Set())
-                        Log.ErrorFormat("Couldn't signal pad detail event");
-                    break;
-                case ScpRequest.NativeFeedAvailable:
-                    _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
-
-                    if (!_nativeFeedEnabledEvent.Set())
-                        Log.ErrorFormat("Couldn't signal native feed available event");
-                    break;
-                case ScpRequest.StatusData:
-                    OnStatusData(packet.ForwardPacket());
-
-                    break;
-                case ScpRequest.ConfigRead:
-                    OnConfigReceived(packet.ForwardPacket());
-                    break;
-            }
-        }
-
-        public ScpProxy(IContainer container)
-            : this()
-        {
-            container.Add(this);
-        }
-
-        #endregion
+        private readonly XmlMapper m_Mapper = new XmlMapper();
 
         public XmlMapper Mapper
         {
@@ -426,16 +313,134 @@ namespace ScpControl
             lock (_rootHubCommandChannel)
                 _rootHubCommandChannel.SendAsync(request, payload).ConfigureAwait(false);
         }
+
+        #region Ctors
+
+        public ScpProxy()
+        {
+            InitializeComponent();
+
+            try
+            {
+                #region Command cient
+
+                try
+                {
+                    _rootHubCommandChannel = new ScpCommandChannel(_rxCommandClient);
+
+                    _rxCommandClient.Disconnected += (sender, args) =>
+                    {
+                        Log.Info("Server connection has been closed");
+                        OnRootHubDisconnected(args);
+                    };
+
+                    _rxCommandClient.Disposed += (sender, args) =>
+                    {
+                        Log.Info("Server connection has been disposed");
+                        OnRootHubDisconnected(args);
+                    };
+
+                    _rootHubCommandChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default)
+                        .ObserveOn(Scheduler.CurrentThread).Subscribe(OnIncomingPacket);
+                }
+                catch (Exception ex)
+                {
+                    Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
+                }
+
+                #endregion
+
+                #region Feed client
+
+                var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
+                rootHubFeedChannel.Receiver.SubscribeOn(Scheduler.Immediate).Subscribe(buffer =>
+                {
+                    if (buffer.Length <= 0)
+                        return;
+
+                    var packet = new DsPacket();
+
+                    OnFeedPacketReceived(packet.Load(buffer));
+                });
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Couldn't connect to root hub: {0}", ex);
+            }
+        }
+
+        /// <summary>
+        ///     This is where responses from the root hub are getting processed
+        /// </summary>
+        /// <param name="packet">The received packet.</param>
+        private void OnIncomingPacket(ScpCommandPacket packet)
+        {
+            Log.DebugFormat("CMD IN Thread ID: {0}", Thread.CurrentThread.ManagedThreadId);
+
+            var request = packet.Request;
+            var buffer = packet.Payload;
+
+            switch (request)
+            {
+                case ScpRequest.GetXml:
+                    m_Map.LoadXml(buffer.ToUtf8());
+                    m_Mapper.Initialize(m_Map);
+
+                    OnXmlReceived(packet.ForwardPacket());
+                    break;
+                case ScpRequest.ProfileList:
+                    var data = buffer.ToUtf8();
+                    var split = data.Split(m_Delim, StringSplitOptions.RemoveEmptyEntries);
+
+                    _activeProfile = split[0];
+                    _activeProfileEvent.Set();
+                    break;
+                case ScpRequest.PadDetail:
+                    var local = new byte[6];
+                    Array.Copy(buffer, 5, local, 0, local.Length);
+
+                    _padDetail = new DsDetail((DsPadId)buffer[0], (DsState)buffer[1], (DsModel)buffer[2],
+                        local,
+                        (DsConnection)buffer[3], (DsBattery)buffer[4]);
+
+                    if (!_padDetailEvent.Set())
+                        Log.ErrorFormat("Couldn't signal pad detail event");
+                    break;
+                case ScpRequest.NativeFeedAvailable:
+                    _nativeFeedAvailable = BitConverter.ToBoolean(buffer, 0);
+
+                    if (!_nativeFeedEnabledEvent.Set())
+                        Log.ErrorFormat("Couldn't signal native feed available event");
+                    break;
+                case ScpRequest.StatusData:
+                    OnStatusData(packet.ForwardPacket());
+
+                    break;
+                case ScpRequest.ConfigRead:
+                    OnConfigReceived(packet.ForwardPacket());
+                    break;
+            }
+        }
+
+        public ScpProxy(IContainer container)
+            : this()
+        {
+            container.Add(this);
+        }
+
+        #endregion
     }
 
     public class DsPacket : EventArgs
     {
-        private DsDetail m_Detail = new DsDetail();
         private Ds3Button m_Ds3Button = Ds3Button.None;
         private Ds4Button m_Ds4Button = Ds4Button.None;
-        private byte[] m_Local = new byte[6];
-        private byte[] m_Native = new byte[96];
         private int m_Packet;
+        private readonly DsDetail m_Detail = new DsDetail();
+        private readonly byte[] m_Local = new byte[6];
+        private readonly byte[] m_Native = new byte[96];
 
         internal DsPacket()
         {
@@ -526,12 +531,7 @@ namespace ScpControl
 
     public class DsDetail
     {
-        private DsBattery m_Charge;
-        private byte[] m_Local = new byte[6];
-        private DsConnection m_Mode;
-        private DsModel m_Model;
-        private DsPadId m_Serial;
-        private DsState m_State;
+        private readonly byte[] m_Local = new byte[6];
 
         internal DsDetail()
         {
@@ -539,29 +539,18 @@ namespace ScpControl
 
         internal DsDetail(DsPadId PadId, DsState State, DsModel Model, byte[] Mac, DsConnection Mode, DsBattery Level)
         {
-            m_Serial = PadId;
-            m_State = State;
-            m_Model = Model;
-            m_Mode = Mode;
-            m_Charge = Level;
+            Pad = PadId;
+            this.State = State;
+            this.Model = Model;
+            this.Mode = Mode;
+            Charge = Level;
 
             Array.Copy(Mac, m_Local, m_Local.Length);
         }
 
-        public DsPadId Pad
-        {
-            get { return m_Serial; }
-        }
-
-        public DsState State
-        {
-            get { return m_State; }
-        }
-
-        public DsModel Model
-        {
-            get { return m_Model; }
-        }
+        public DsPadId Pad { get; private set; }
+        public DsState State { get; private set; }
+        public DsModel Model { get; private set; }
 
         public string Local
         {
@@ -572,24 +561,17 @@ namespace ScpControl
             }
         }
 
-        public DsConnection Mode
-        {
-            get { return m_Mode; }
-        }
-
-        public DsBattery Charge
-        {
-            get { return m_Charge; }
-        }
+        public DsConnection Mode { get; private set; }
+        public DsBattery Charge { get; private set; }
 
         internal DsDetail Load(DsPadId PadId, DsState State, DsModel Model, byte[] Mac, DsConnection Mode,
             DsBattery Level)
         {
-            m_Serial = PadId;
-            m_State = State;
-            m_Model = Model;
-            m_Mode = Mode;
-            m_Charge = Level;
+            Pad = PadId;
+            this.State = State;
+            this.Model = Model;
+            this.Mode = Mode;
+            Charge = Level;
 
             Array.Copy(Mac, m_Local, m_Local.Length);
 
