@@ -60,16 +60,9 @@ namespace ScpControl
             usbHub.Report += On_Report;
         }
 
-        public RootHub(IContainer container)
+        public RootHub(IContainer container) : this()
         {
             container.Add(this);
-            InitializeComponent();
-
-            bthHub.Arrival += On_Arrival;
-            usbHub.Arrival += On_Arrival;
-
-            bthHub.Report += On_Report;
-            usbHub.Report += On_Report;
         }
 
         #endregion

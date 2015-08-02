@@ -61,11 +61,10 @@ namespace ScpControl.Rx
         {
             _socket = socket;
 
-            Receiver = (from header in socket.Receiver.Buffer(sizeof (int))
+            Receiver = from header in socket.Receiver.Buffer(sizeof (int))
                 let length = BitConverter.ToInt32(header.ToArray(), 0)
                 let body = socket.Receiver.Take(length).ToEnumerable().ToArray()
-                select new ScpCommandPacket {Request = (ScpRequest) body[0], Payload = body.Skip(1).ToArray()}).Catch(
-                    Observable.Empty<ScpCommandPacket>());
+                select new ScpCommandPacket {Request = (ScpRequest) body[0], Payload = body.Skip(1).ToArray()};
         }
 
         public IObservable<ScpCommandPacket> Receiver { get; private set; }
