@@ -95,6 +95,8 @@ namespace ScpControl
         /// <param name="packet">The received packet.</param>
         private void OnIncomingPacket(ScpCommandPacket packet)
         {
+            Log.DebugFormat("CMD IN Thread ID: {0}", Thread.CurrentThread.ManagedThreadId);
+
             var request = packet.Request;
             var buffer = packet.Payload;
 
@@ -413,14 +415,16 @@ namespace ScpControl
             return set;
         }
 
-        public async Task SubmitRequest(ScpRequest request)
+        public void SubmitRequest(ScpRequest request)
         {
-            await _rootHubCommandChannel.SendAsync(request).ConfigureAwait(false);
+            lock (_rootHubCommandChannel)
+                _rootHubCommandChannel.SendAsync(request).ConfigureAwait(false);
         }
 
-        public async Task SubmitRequest(ScpRequest request, byte[] payload)
+        public void SubmitRequest(ScpRequest request, byte[] payload)
         {
-            await _rootHubCommandChannel.SendAsync(request, payload).ConfigureAwait(false);
+            lock (_rootHubCommandChannel)
+                _rootHubCommandChannel.SendAsync(request, payload).ConfigureAwait(false);
         }
     }
 

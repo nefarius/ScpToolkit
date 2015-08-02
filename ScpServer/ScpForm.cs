@@ -28,7 +28,6 @@ namespace ScpServer
                 Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject);
             };
 #endif
-
             ThemeUtil.SetTheme(lvDebug);
 
             Pad[0] = rbPad_1;
@@ -204,18 +203,18 @@ namespace ScpServer
             lblHost.Text = rootHub.Dongle;
             lblHost.Enabled = btnStop.Enabled;
 
-            for (var Index = 0; Index < Pad.Length; Index++)
+            for (var index = 0; index < Pad.Length; index++)
             {
-                Pad[Index].Text = rootHub.Pad[Index].ToString();
-                Pad[Index].Enabled = rootHub.Pad[Index].State == DsState.Connected;
-                Pad[Index].Checked = Pad[Index].Enabled && Pad[Index].Checked;
+                Pad[index].Text = rootHub.Pad[index].ToString();
+                Pad[index].Enabled = rootHub.Pad[index].State == DsState.Connected;
+                Pad[index].Checked = Pad[index].Enabled && Pad[index].Checked;
 
-                bSelected = bSelected || Pad[Index].Checked;
-                bDisconnect = bDisconnect || rootHub.Pad[Index].Connection == DsConnection.BTH;
+                bSelected = bSelected || Pad[index].Checked;
+                bDisconnect = bDisconnect || rootHub.Pad[index].Connection == DsConnection.BTH;
 
                 bPair = bPair ||
-                        (Pad[Index].Checked && rootHub.Pad[Index].Connection == DsConnection.USB &&
-                         rootHub.Master != rootHub.Pad[Index].Remote);
+                        (Pad[index].Checked && rootHub.Pad[index].Connection == DsConnection.USB &&
+                         rootHub.Master != rootHub.Pad[index].Remote);
             }
 
             btnBoth.Enabled = btnLeft.Enabled = btnRight.Enabled = btnOff.Enabled = bSelected && btnStop.Enabled;

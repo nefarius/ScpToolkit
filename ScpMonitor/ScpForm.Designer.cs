@@ -188,7 +188,7 @@
             // 
             // tmrUpdate
             // 
-            this.tmrUpdate.Interval = 1000;
+            this.tmrUpdate.Interval = 50;
             this.tmrUpdate.Tick += new System.EventHandler(this.tmrUpdate_Tick);
             // 
             // scpProxy

@@ -200,11 +200,11 @@ namespace ScpMonitor
             }
         }
 
-        private async void btnUp_Click(object sender, EventArgs e)
+        private void btnUp_Click(object sender, EventArgs e)
         {
             byte[] buffer = { 0, 5, (byte)((Button)sender).Tag };
 
-            await scpProxy.SubmitRequest(ScpRequest.PadPromote, buffer);
+            scpProxy.SubmitRequest(ScpRequest.PadPromote, buffer);
         }
 
         private void niTray_Click(object sender, MouseEventArgs e)
@@ -281,7 +281,7 @@ namespace ScpMonitor
             _settings.Response(e);
         }
 
-        private async void tmrUpdate_Tick(object sender, EventArgs e)
+        private void tmrUpdate_Tick(object sender, EventArgs e)
         {
             tmrUpdate.Enabled = !tmrUpdate.Enabled;
 
@@ -312,7 +312,7 @@ namespace ScpMonitor
                 ProfSaved = true;
             }
 
-            await scpProxy.SubmitRequest(ScpRequest.StatusData);
+            scpProxy.SubmitRequest(ScpRequest.StatusData);
 
             tmrUpdate.Enabled = !tmrUpdate.Enabled;
         }

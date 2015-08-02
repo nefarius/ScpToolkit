@@ -6,6 +6,7 @@ using System.Net.Mime;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using ReactiveSockets;
 using ScpControl.Properties;
 using ScpControl.Rx;
@@ -131,10 +132,13 @@ namespace ScpControl
 
                             if (!Global.DisableNative)
                             {
-                                buffer[2] = (byte)Pad[0].State;
-                                buffer[3] = (byte)Pad[1].State;
-                                buffer[4] = (byte)Pad[2].State;
-                                buffer[5] = (byte)Pad[3].State;
+                                lock (Pad)
+                                {
+                                    buffer[2] = (byte) Pad[0].State;
+                                    buffer[3] = (byte) Pad[1].State;
+                                    buffer[4] = (byte) Pad[2].State;
+                                    buffer[5] = (byte) Pad[3].State;
+                                }
                             }
                             else
                             {
@@ -151,14 +155,17 @@ namespace ScpControl
 
                             serial = buffer[0];
 
-                            if (Pad[serial].State == DsState.Connected)
+                            lock (Pad)
                             {
-                                if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
+                                if (Pad[serial].State == DsState.Connected)
                                 {
-                                    m_Native[serial][0] = buffer[2];
-                                    m_Native[serial][1] = buffer[3];
+                                    if (buffer[2] != m_Native[serial][0] || buffer[3] != m_Native[serial][1])
+                                    {
+                                        m_Native[serial][0] = buffer[2];
+                                        m_Native[serial][1] = buffer[3];
 
-                                    Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
+                                        Pad[buffer[0]].Rumble(buffer[2], buffer[3]);
+                                    }
                                 }
                             }
                             break;
@@ -167,17 +174,23 @@ namespace ScpControl
                             {
                                 sb.Clear();
 
-                                sb.Append(Dongle);
+                                lock (Dongle)
+                                {
+                                    sb.Append(Dongle);
+                                }
                                 sb.Append('^');
 
-                                sb.Append(Pad[0]);
-                                sb.Append('^');
-                                sb.Append(Pad[1]);
-                                sb.Append('^');
-                                sb.Append(Pad[2]);
-                                sb.Append('^');
-                                sb.Append(Pad[3]);
-                                sb.Append('^');
+                                lock (Pad)
+                                {
+                                    sb.Append(Pad[0]);
+                                    sb.Append('^');
+                                    sb.Append(Pad[1]);
+                                    sb.Append('^');
+                                    sb.Append(Pad[2]);
+                                    sb.Append('^');
+                                    sb.Append(Pad[3]);
+                                    sb.Append('^');
+                                }
 
                                 var data = sb.ToString().ToBytes().ToArray();
 
@@ -256,11 +269,14 @@ namespace ScpControl
 
                         case ScpRequest.SetXml: // Set XML
                             {
-                                var data = new byte[buffer.Length - 2];
+                                lock (scpMap)
+                                {
+                                    var data = new byte[buffer.Length - 2];
 
-                                Array.Copy(buffer, 2, data, 0, data.Length);
+                                    Array.Copy(buffer, 2, data, 0, data.Length);
 
-                                scpMap.Xml = data.ToUtf8();
+                                    scpMap.Xml = data.ToUtf8();
+                                }
                             }
                             break;
 
@@ -272,12 +288,16 @@ namespace ScpControl
 
                                 Log.DebugFormat("Requested Pads local MAC = {0}", m_Pad[serial].Local);
 
-                                data[0] = serial;
-                                data[1] = (byte)m_Pad[serial].State;
-                                data[2] = (byte)m_Pad[serial].Model;
-                                data[3] = (byte)m_Pad[serial].Connection;
-                                data[4] = (byte)m_Pad[serial].Battery;
-                                Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
+                                lock (m_Pad)
+                                {
+                                    data[0] = serial;
+                                    data[1] = (byte)m_Pad[serial].State;
+                                    data[2] = (byte)m_Pad[serial].Model;
+                                    data[3] = (byte)m_Pad[serial].Connection;
+                                    data[4] = (byte)m_Pad[serial].Battery;
+                                    
+                                    Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
+                                }
 
                                 protocol.SendAsync(request, data);
                             }
@@ -302,6 +322,7 @@ namespace ScpControl
             _rxFeedServer.Connections.Subscribe(socket =>
             {
                 Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
+
                 var protocol = new ScpNativeFeedChannel(socket);
 
                 lock (this)
@@ -311,6 +332,7 @@ namespace ScpControl
 
                 protocol.Receiver.Subscribe(packet =>
                 {
+                    // feed is one-way only
                     Log.Debug("Uuuhh how did we end up here?!");
                 });
 
@@ -417,8 +439,11 @@ namespace ScpControl
         {
             m_Suspended = true;
 
-            foreach (var t in m_Pad)
-                t.Disconnect();
+            lock (m_Pad)
+            {
+                foreach (var t in m_Pad)
+                    t.Disconnect();
+            }
 
             scpBus.Suspend();
             usbHub.Suspend();
@@ -454,16 +479,19 @@ namespace ScpControl
         {
             if (m_Suspended) return DsPadId.None;
 
+            // forward message for wired DS4 to usb hub
             if (Class == UsbDs4.USB_CLASS_GUID)
             {
                 return usbHub.Notify(notification, Class, Path);
             }
 
+            // forward message for wired DS3 to usb hub
             if (Class == UsbDs3.USB_CLASS_GUID)
             {
                 return usbHub.Notify(notification, Class, Path);
             }
 
+            // forward message for any wireless device to bluetooth hub
             if (Class == BthDongle.BTH_CLASS_GUID)
             {
                 bthHub.Notify(notification, Class, Path);
@@ -479,42 +507,45 @@ namespace ScpControl
             var bFound = false;
             var arrived = e.Device;
 
-            for (var index = 0; index < m_Pad.Length && !bFound; index++)
+            lock (m_Pad)
             {
-                if (arrived.Local == m_Reserved[index])
+                for (var index = 0; index < m_Pad.Length && !bFound; index++)
                 {
-                    if (m_Pad[index].State == DsState.Connected)
+                    if (arrived.Local == m_Reserved[index])
                     {
-                        if (m_Pad[index].Connection == DsConnection.BTH)
+                        if (m_Pad[index].State == DsState.Connected)
                         {
-                            m_Pad[index].Disconnect();
+                            if (m_Pad[index].Connection == DsConnection.BTH)
+                            {
+                                m_Pad[index].Disconnect();
+                            }
+
+                            if (m_Pad[index].Connection == DsConnection.USB)
+                            {
+                                arrived.Disconnect();
+
+                                e.Handled = false;
+                                return;
+                            }
                         }
 
-                        if (m_Pad[index].Connection == DsConnection.USB)
-                        {
-                            arrived.Disconnect();
+                        bFound = true;
 
-                            e.Handled = false;
-                            return;
-                        }
+                        arrived.PadId = (DsPadId) index;
+                        m_Pad[index] = arrived;
                     }
-
-                    bFound = true;
-
-                    arrived.PadId = (DsPadId)index;
-                    m_Pad[index] = arrived;
                 }
-            }
 
-            for (var index = 0; index < m_Pad.Length && !bFound; index++)
-            {
-                if (m_Pad[index].State == DsState.Disconnected)
+                for (var index = 0; index < m_Pad.Length && !bFound; index++)
                 {
-                    bFound = true;
-                    m_Reserved[index] = arrived.Local;
+                    if (m_Pad[index].State == DsState.Disconnected)
+                    {
+                        bFound = true;
+                        m_Reserved[index] = arrived.Local;
 
-                    arrived.PadId = (DsPadId)index;
-                    m_Pad[index] = arrived;
+                        arrived.PadId = (DsPadId) index;
+                        m_Pad[index] = arrived;
+                    }
                 }
             }
 
