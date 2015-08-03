@@ -43,7 +43,10 @@ namespace ScpControl
 
         public IList<string> StatusData
         {
-            get { return _rootHub.GetStatusData().ToList(); }
+            get
+            {
+                return _rootHub.GetStatusData().ToList();
+            }
         }
 
         public void PromotePad(byte pad)
@@ -70,6 +73,7 @@ namespace ScpControl
                     var address = new EndpointAddress(new Uri("net.tcp://localhost:26760/ScpRootHubService"));
                     var binding = new NetTcpBinding();
                     var factory = new ChannelFactory<IScpCommandService>(binding, address);
+
                     _rootHub = factory.CreateChannel(address);
 
                     m_Active = true;
@@ -239,6 +243,11 @@ namespace ScpControl
         }
 
         #endregion
+
+        public void OnDisconnect()
+        {
+            //OnRootHubDisconnected(this, null);
+        }
     }
 
     public class DsPacket : EventArgs

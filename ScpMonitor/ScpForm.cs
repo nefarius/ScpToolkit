@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.Linq;
 using System.Reflection;
+using System.ServiceModel;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
@@ -268,7 +271,15 @@ namespace ScpMonitor
                 ProfSaved = true;
             }
 
-            var data = scpProxy.StatusData;
+            IList<string> data;
+            try
+            {
+                data = scpProxy.StatusData;
+            }
+            catch (CommunicationException) { return; }
+
+            if (data == null)
+                return;
 
             if (!m_Connected)
             {
@@ -295,6 +306,8 @@ namespace ScpMonitor
 
         private void scpProxy_RootHubDisconnected(object sender, EventArgs e)
         {
+            this.UiThread(() => tmrUpdate.Enabled = !tmrUpdate.Enabled);
+
             this.UiThread(Clear);
         }
     }

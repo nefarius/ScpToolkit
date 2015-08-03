@@ -23,11 +23,11 @@ namespace ScpControl
             }
         }
 
-        private void OnRootHubDisconnected(EventArgs args)
+        private void OnRootHubDisconnected(object sender, EventArgs args)
         {
             if (RootHubDisconnected != null)
             {
-                RootHubDisconnected(this, args);
+                RootHubDisconnected(sender, args);
             }
         }
 

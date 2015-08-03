@@ -1,0 +1,719 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Libarius</name>
+    </assembly>
+    <members>
+        <member name="T:Libarius.Compression.QuickLZ.QuickLZ">
+            <summary>
+                QuickLZ data compression library
+            </summary>
+        </member>
+        <member name="M:Libarius.Compression.QuickLZ.QuickLZ.sizeDecompressed(System.Byte[])">
+            <summary>
+                Returns the size in bytes needed to store the decompressed data.
+            </summary>
+            <param name="source">Compressed content.</param>
+            <returns>The decompressed size in bytes.</returns>
+        </member>
+        <member name="M:Libarius.Compression.QuickLZ.QuickLZ.sizeCompressed(System.Byte[])">
+            <summary>
+                Returns the size in bytes needed to store the compressed data.
+            </summary>
+            <param name="source">Uncompressed content.</param>
+            <returns>The compressed size in bytes.</returns>
+        </member>
+        <member name="M:Libarius.Compression.QuickLZ.QuickLZ.compress(System.Byte[],System.Int32)">
+            <summary>
+                Compresses the supplied byte array at the given level.
+            </summary>
+            <param name="source">The uncompressed content.</param>
+            <param name="level">The compression level to use.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.GetGroups(System.String)">
+            <summary>
+                Returns a list of groups the supplied user is member of.
+            </summary>
+            <param name="userName">Username</param>
+            <returns>A list of groups on success, otherwise an empty list</returns>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.IsUserInGroup(System.Guid)">
+            <summary>
+                Checks if the current user is member of the supplied group.
+            </summary>
+            <param name="gUid">The groups unique identifier.</param>
+            <returns>True if the user is a mamber, false otherwise.</returns>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.IsUserInGroup(System.String)">
+            <summary>
+                Checks if the current user is member of the supplied group.
+            </summary>
+            <param name="gUid">The groups unique identifier.</param>
+            <returns>True if the user is a mamber, false otherwise.</returns>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.IsUserInGroup(System.String,System.String)">
+            <summary>
+                Checks if the provided user is member of the supplied group.
+            </summary>
+            <param name="userName">The logon name of the user.</param>
+            <param name="gUid">The groups unique identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.IsUserInGroup(System.String,System.Guid)">
+            <summary>
+                Checks if the provided user is member of the supplied group.
+            </summary>
+            <param name="userName">The logon name of the user.</param>
+            <param name="gUid">The groups unique identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.GetObjectDistinguishedName(Libarius.Active_Directory.AdHelper.ObjectClass,Libarius.Active_Directory.AdHelper.ReturnType,System.String,System.String)">
+            <summary>
+                Searches for provided object in directory and resolves it to distinguished name.
+            </summary>
+            <param name="objectCls">The object class to search for.</param>
+            <param name="returnValue">The format of the returned string.</param>
+            <param name="objectName">The common name of the object to search for.</param>
+            <param name="ldapDomain">The LDAP domain to search in.</param>
+            <returns></returns>
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.ConvertDNtoGuid(System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.ConvertGuidToOctectString(System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.ConvertGuidToDn(System.String)">
+            <remarks>Currently broken!</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.EnableUserAccount(System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.DisableUserAccount(System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.Unlock(System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.ResetPassword(System.String,System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.CreateUserAccount(System.String,System.String,System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.AttributeValuesMultiString(System.String,System.String,System.Collections.Generic.List{System.String},System.Boolean)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.AttributeValuesSingleString(System.String,System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.Groups(System.String,System.Boolean)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="M:Libarius.Active_Directory.AdHelper.AddToGroup(System.String,System.String)">
+            <remarks>http://www.codeproject.com/Articles/18102/Howto-Almost-Everything-In-Active-Directory-via-C</remarks>
+        </member>
+        <member name="P:Libarius.Active_Directory.AdHelper.FullName">
+            <summary>
+                Gets the current users full name from the domains directory.
+            </summary>
+        </member>
+        <member name="P:Libarius.Active_Directory.AdHelper.MachineDomain">
+            <summary>
+                Returns the current machines domain name.
+            </summary>
+        </member>
+        <member name="P:Libarius.Active_Directory.AdHelper.MachineSite">
+            <summary>
+                Returns the current machines site name.
+            </summary>
+        </member>
+        <member name="P:Libarius.Active_Directory.AdHelper.IsInActiveDirectory">
+            <summary>
+                Primitive check if current session is logged on to a domain.
+            </summary>
+        </member>
+        <member name="T:Libarius.Core.ExceptionExtensions">
+            <summary>
+                <see href="http://stackoverflow.com/questions/9314172/getting-all-messages-from-innerexceptions"/>
+            </summary>
+        </member>
+        <member name="T:Libarius.Filesystem.FilesystemHelper">
+            <summary>
+                Utility class to provide some common file system tasks.
+            </summary>
+        </member>
+        <member name="M:Libarius.Filesystem.FilesystemHelper.IsFileLocked(System.IO.FileInfo)">
+            <summary>
+                Checks if a file is locked e.g. the file can't get exclusive read access.
+            </summary>
+            <param name="file">The file info to check.</param>
+            <returns>True if file is locked, false otherwise.</returns>
+        </member>
+        <member name="T:Libarius.GDI.BitonalConverter">
+            <summary>
+                <see href="http://www.codeproject.com/Articles/15186/Bitonal-TIFF-Image-Converter-for-NET" />
+            </summary>
+        </member>
+        <member name="M:Libarius.GDI.BitonalConverter.ConvertToMono2(System.Drawing.Bitmap)">
+            <summary>
+                Performs a basic color/greyscale to 1-bit per pixel (monochrome) conversion.
+            </summary>
+            <param name="source">The original bitmap.</param>
+            <returns>The converted monochrome bitmap.</returns>
+        </member>
+        <member name="M:Libarius.GDI.BitonalConverter.ConvertTo1Bit(System.Drawing.Bitmap)">
+            <summary>
+                <see href="http://stackoverflow.com/questions/11472597/converting-a-bitmap-to-monochrome" />
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Libarius.GDI.MultiframeTiff">
+            <summary>
+                Represents a multi-frame/multiple pages TIFF image file.
+            </summary>
+        </member>
+        <member name="M:Libarius.Images.TiffHelper.SaveAsTiff(System.Drawing.Bitmap,System.String)">
+            <summary>
+                <see href="http://www.codeproject.com/Articles/15186/Bitonal-TIFF-Image-Converter-for-NET">Original source.</see>
+            </summary>
+            <param name="source"></param>
+            <param name="filename"></param>
+        </member>
+        <member name="T:Libarius.Logging.EventLogExtensions">
+            <summary>
+                Provides extension methods for the EventLog class.
+            </summary>
+        </member>
+        <member name="M:Libarius.Logging.EventLogExtensions.WriteInformation(System.Diagnostics.EventLog,System.String,System.Object[])">
+            <summary>
+                Writes an information to the event log.
+            </summary>
+            <param name="log">The event log to extend.</param>
+            <param name="format">The format string of the message.</param>
+            <param name="objs">Additional optional parameters of the message.</param>
+        </member>
+        <member name="M:Libarius.Logging.EventLogExtensions.WriteError(System.Diagnostics.EventLog,System.String,System.Object[])">
+            <summary>
+                Writes an error to the event log.
+            </summary>
+            <param name="log">The event log to extend.</param>
+            <param name="format">The format string of the message.</param>
+            <param name="objs">Additional optional parameters of the message.</param>
+        </member>
+        <member name="M:Libarius.Logging.EventLogExtensions.WriteWarning(System.Diagnostics.EventLog,System.String,System.Object[])">
+            <summary>
+                Writes a warning to the event log.
+            </summary>
+            <param name="log">The event log to extend.</param>
+            <param name="format">The format string of the message.</param>
+            <param name="objs">Additional optional parameters of the message.</param>
+        </member>
+        <member name="T:Libarius.Network.IpHelper">
+            <summary>
+                Utility class for common IP tasks.
+            </summary>
+        </member>
+        <member name="P:Libarius.Network.IpHelper.PrivateIpAddress">
+            <summary>
+                Returns the private IP address from the first adapter found on the client machine.
+            </summary>
+        </member>
+        <member name="P:Libarius.Network.IpHelper.PublicIpAddress">
+            <summary>
+                Queries checkip.dyndns.org to retrieve the public visible IP address.
+            </summary>
+        </member>
+        <member name="P:Libarius.Network.IpHelper.DefaultGatewayAdresses">
+            <summary>
+                Returns the default gateway.
+            </summary>
+        </member>
+        <member name="P:Libarius.Network.IpHelper.DhcpServerAddresses">
+            <summary>
+                Returns the active connections dhcp server addresses.
+            </summary>
+        </member>
+        <member name="P:Libarius.Network.IpHelper.DnsServerAddresses">
+            <summary>
+                Returns the active connections dns server addresses.
+            </summary>
+        </member>
+        <member name="M:Libarius.Network.UPnP.Discover">
+            <summary>
+                Sends out a NOTIFY request and waits for an answer.
+            </summary>
+            <returns>Returns true on success and false if no answer was received.</returns>
+        </member>
+        <member name="M:Libarius.Network.UPnP.ForwardPort(System.Int32,System.Net.Sockets.ProtocolType,System.String)">
+            <summary>
+                Requests the UPnP device to forward a specific port to the current hosts local IP address.
+            </summary>
+            <param name="port">Number of external (e.g. WAN) port to forward.</param>
+            <param name="protocol">Desired protocol.</param>
+            <param name="description">Description the device should name this new forwarding rule.</param>
+        </member>
+        <member name="M:Libarius.Network.UPnP.ForwardPort(System.Int32,System.Int32,System.Net.Sockets.ProtocolType,System.String)">
+            <summary>
+                Requests the UPnP device to forward a specific external port to a defined internal port at the current hosts local
+                IP address.
+            </summary>
+            <param name="externalPort">Number of external (e.g. WAN) port to forward.</param>
+            <param name="localPort">Number of local port to get forwarded to.</param>
+            <param name="protocol">Desired protocol.</param>
+            <param name="description">Description the device should name this new forwarding rule.</param>
+        </member>
+        <member name="M:Libarius.Network.UPnP.ForwardPort(System.Int32,System.Int32,System.Net.IPAddress,System.Net.Sockets.ProtocolType,System.String)">
+            <summary>
+                Requests the UPnP device to forward a specific port to a defined internal IP address and port number.
+            </summary>
+            <param name="externalPort">Number of external (e.g. WAN) port to forward.</param>
+            <param name="localPort">Number of local port to get forwarded to.</param>
+            <param name="localIp">Desired target hosts local IP address.</param>
+            <param name="protocol">Desired protocol.</param>
+            <param name="description">Description the device should name this new forwarding rule.</param>
+        </member>
+        <member name="M:Libarius.Network.UPnP.DeleteForwardingRule(System.Int32,System.Net.Sockets.ProtocolType)">
+            <summary>
+                Requests the UPnP device to delete a specified forwarded external port.
+            </summary>
+            <param name="port">Number of external (e.g. WAN) port which is currently forwarded.</param>
+            <param name="protocol">The protocol the target forwarding is registered under.</param>
+        </member>
+        <member name="P:Libarius.Network.UPnP.ExternalIp">
+            <summary>
+                Returns the WAN IP address the UPnP device discovered. This doesn't have to be the public IP address.
+            </summary>
+        </member>
+        <member name="T:Libarius.System.LimitInstance">
+            <summary>
+                Provides a check if a named instance already exists on the current system.
+            </summary>
+        </member>
+        <member name="M:Libarius.System.LimitInstance.#ctor(System.String)">
+            <summary>
+                Creates new named instance check.
+            </summary>
+            <param name="instanceName">The name of the instance to create or check.</param>
+        </member>
+        <member name="M:Libarius.System.LimitInstance.Dispose">
+            <summary>
+                Releases the underlying mutex.
+            </summary>
+        </member>
+        <member name="P:Libarius.System.LimitInstance.IsOnlyInstance">
+            <summary>
+                Checks is the current named instance is the only one on the system.
+            </summary>
+        </member>
+        <member name="T:Libarius.System.SystemHelper">
+            <summary>
+                Utility class to provide some common system tasks.
+            </summary>
+        </member>
+        <member name="M:Libarius.System.SystemHelper.Logoff">
+            <summary>
+                Requests the current session to log off.
+            </summary>
+        </member>
+        <member name="M:Libarius.System.SystemHelper.Reboot">
+            <summary>
+                Requests a system reboot.
+            </summary>
+            <returns>Returns true if the request was successful, false otherwise.</returns>
+        </member>
+        <member name="P:Libarius.System.SystemHelper.TeamViewerId">
+            <summary>
+                Gets the TeamViewer ID if installed.
+            </summary>
+        </member>
+        <member name="P:Libarius.System.SystemHelper.ApplicationName">
+            <summary>
+                Gets the current assemblys name without path and extension.
+            </summary>
+        </member>
+        <member name="P:Libarius.System.SystemHelper.LocalAppDataPath">
+            <summary>
+                Gets the current users local application data path.
+            </summary>
+        </member>
+        <member name="P:Libarius.System.SystemHelper.UpTime">
+            <summary>
+                Returns the passed time span since last reboot.
+            </summary>
+        </member>
+        <member name="P:Libarius.System.SystemHelper.OsFriendlyName">
+            <summary>
+                Returns the friendly OS name.
+                <remarks>http://stackoverflow.com/questions/577634/how-to-get-the-friendly-os-version-name</remarks>
+            </summary>
+        </member>
+        <member name="T:Libarius.Text.StringHelper">
+            <summary>
+                Provides utility methods for string interaction.
+            </summary>
+        </member>
+        <member name="M:Libarius.Text.StringHelper.ToUtf8(System.String)">
+            <summary>
+                Converts a string of foreign encoding to UTF-8.
+            </summary>
+            <param name="input">The source string.</param>
+            <returns>The UTF-8 encoded string.</returns>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.NullEventStorage">
+            <summary>
+            Null event strorage disables error recovery by returning now for the last time an event fired.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.IEventStorage">
+            <summary>
+            IEventStorage is used to provide persistance of schedule during service shutdowns.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.LocalEventStorage">
+            <summary>
+            Local event strorage keeps the last time in memory so that skipped events are not recovered.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.FileEventStorage">
+            <summary>
+            FileEventStorage saves the last time in an XmlDocument so that recovery will include periods that the 
+            process is shutdown.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.IScheduledItem">
+            <summary>
+            IScheduledItem represents a scheduled event.  You can query it for the number of events that occur
+            in a time interval and for the remaining interval before the next event.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.IScheduledItem.AddEventsInInterval(System.DateTime,System.DateTime,System.Collections.ArrayList)">
+            <summary>
+            Returns the times of the events that occur in the given time interval.  The interval is closed
+            at the start and open at the end so that intervals can be stacked without overlapping.
+            </summary>
+            <param name="Begin">The beginning of the interval</param>
+            <param name="End">The end of the interval</param>
+            <returns>All events >= Begin and &lt; End </returns>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.IScheduledItem.NextRunTime(System.DateTime,System.Boolean)">
+            <summary>
+            Returns the next run time of the scheduled item.  Optionally excludes the starting time.
+            </summary>
+            <param name="time">The starting time of the interval</param>
+            <param name="IncludeStartTime">if true then the starting time is included in the query false, it is excluded.</param>
+            <returns>The next execution time either on or after the starting time.</returns>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.IParameterSetter">
+            <summary>
+            IParameterSetter represents a serialized parameter list.  This is used to provide a partial specialized
+            method call.  This is useful for remote invocation of method calls.  For example if you have a method with
+            3 parameters.  The first 2 might represent static data such as a report and a storage location.  The third
+            might be the time that the report is invoked, which is only known when the method is invoked.  Using this,
+            you just pass the method and the first 2 parameters to a timer object, which supplies the 3rd parameter.
+            Without these objects, you would have to generate a custom object type for each method you wished to 
+            execute in this manner and store the static parameters as instance variables.  
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.IParameterSetter.reset">
+            <summary>
+            This resets the setter to the beginning.  It is used for setters that rely on positional state
+            information.  It is called prior to setting any method values.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.IParameterSetter.GetParameterValue(System.Reflection.ParameterInfo,System.Int32,System.Object@)">
+            <summary>
+            This method is used to both query support for setting a parameter and actually set the value.
+            True is returned if the parameter passed in is updated.
+            </summary>
+            <param name="pi">The reflection information about this parameter.</param>
+            <param name="ParameterLoc">The location of the prameter in the parameter list.</param>
+            <param name="parameter">The parameter object</param>
+            <returns>true if the parameter is matched and false otherwise</returns>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.OrderParameterSetter">
+            <summary>
+            This setter object takes a simple object array full of parameter data.  It applys the objects in order
+            to the method parameter list.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.NamedParameterSetter">
+            <summary>
+            This setter object stores the parameter data in a Hashtable and uses the hashtable keys to match 
+            the parameter names of the method to the parameter data.  This allows methods to be called like 
+            stored procedures, with the parameters being passed in independent of order.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ParameterSetterList">
+            <summary>
+            ParameterSetterList maintains a collection of IParameterSetter objects and applies them in order to each
+            parameter of the method.  Each time a match occurs the next parameter is tried starting with the first 
+            setter object until it is matched.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.IMethodCall">
+            <summary>
+            IMethodCall represents a partially specified parameter data list and a method.  This allows methods to be 
+            dynamically late invoked for things like timers and other event driven frameworks.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.DelegateMethodCall">
+            <summary>
+            Method call captures the data required to do a defered method call.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.MethodCallBase">
+            <summary>
+            This is a base class that handles the Parameter list management for the 2 dynamic method call methods.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ReportTimer">
+            <summary>
+            Summary description for ReportTimer.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ScheduleTimerBase">
+            <summary>
+            ScheduleTimer represents a timer that fires on a more human friendly schedule.  For example it is easy to 
+            set it to fire every day at 6:00PM.  It is useful for batch jobs or alarms that might be difficult to 
+            schedule with the native .net timers.
+            It is similar to the .net timer that it is based on with the start and stop methods functioning similarly.
+            The main difference is the event uses a different delegate and arguement since the .net timer argument 
+            class is not creatable.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.AddJob(Libarius.Timer.ScheduleTimer.IScheduledItem,System.Delegate,System.Object[])">
+            <summary>
+            Adds a job to the timer.  This method passes in a delegate and the parameters similar to the Invoke method of windows forms.
+            </summary>
+            <param name="Schedule">The schedule that this delegate is to be run on.</param>
+            <param name="f">The delegate to run</param>
+            <param name="Params">The method parameters to pass if you leave any DateTime parameters unbound, then they will be set with the scheduled run time of the 
+            method.  Any unbound object parameters will get this Job object passed in.</param>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.AddAsyncJob(Libarius.Timer.ScheduleTimer.IScheduledItem,System.Delegate,System.Object[])">
+            <summary>
+            Adds a job to the timer to operate asyncronously.
+            </summary>
+            <param name="Schedule">The schedule that this delegate is to be run on.</param>
+            <param name="f">The delegate to run</param>
+            <param name="Params">The method parameters to pass if you leave any DateTime parameters unbound, then they will be set with the scheduled run time of the 
+            method.  Any unbound object parameters will get this Job object passed in.</param>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.AddJob(Libarius.Timer.ScheduleTimer.TimerJob)">
+            <summary>
+            Adds a job to the timer.  
+            </summary>
+            <param name="Event"></param>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.ClearJobs">
+            <summary>
+            Clears out all scheduled jobs.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.Start">
+            <summary>
+            Begins executing all assigned jobs at the scheduled times
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.Stop">
+            <summary>
+            Halts executing all jobs.  When the timer is restarted all jobs that would have run while the timer was stopped are re-tried.
+            </summary>
+        </member>
+        <member name="F:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.EventStorage">
+            <summary>
+            EventStorage determines the method used to store the last event fire time.  It defaults to keeping it in memory.
+            </summary>
+        </member>
+        <member name="F:Libarius.Timer.ScheduleTimer.ScheduleTimerBase.MAX_INTERVAL">
+            <summary>
+            This is here to enhance accuracy.  Even if nothing is scheduled the timer sleeps for a maximum of 1 minute.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ScheduledItems.BlockWrapper">
+            <summary>
+            This class will be used to implement a filter that enables a window of activity.  For cases where you want to 
+            run every 15 minutes between 6:00 AM and 5:00 PM.  Or just on weekdays or weekends.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ScheduledItems.EventInstance">
+            <summary>
+            There have been quite a few requests to allow scheduling of multiple delegates and method parameter data
+            from the same timer.  This class allows you to match the event with the time that it fired.  I want to keep
+            the same simple implementation of the EventQueue and interval classes since they can be reused elsewhere.
+            The timer should be responsible for matching this data up.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ScheduledItems.EventQueue">
+            <summary>
+            The event queue is a collection of scheduled items that represents the union of all child scheduled items.
+            This is useful for events that occur every 10 minutes or at multiple intervals not covered by the simple
+            scheduled items.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduledItems.EventQueue.Add(Libarius.Timer.ScheduleTimer.IScheduledItem)">
+            <summary>
+            Adds a ScheduledTime to the queue.
+            </summary>
+            <param name="time">The scheduled time to add</param>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduledItems.EventQueue.Clear">
+            <summary>
+            Clears the list of scheduled times.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduledItems.EventQueue.AddEventsInInterval(System.DateTime,System.DateTime,System.Collections.ArrayList)">
+            <summary>
+            Adds the running time for all events in the list.
+            </summary>
+            <param name="Begin">The beginning time of the interval</param>
+            <param name="End">The end time of the interval</param>
+            <param name="List">The list to add times to.</param>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduledItems.EventQueue.NextRunTime(System.DateTime,System.Boolean)">
+            <summary>
+            Returns the first time after the starting time for all events in the list.
+            </summary>
+            <param name="time">The starting time.</param>
+            <param name="AllowExact">If this is true then it allows the return time to match the time parameter, false forces the return time to be greater then the time parameter</param>
+            <returns>Either the next event after the input time or greater or equal to depending on the AllowExact parameter.</returns>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ScheduledItems.ScheduledTime">
+            <summary>
+            This class represents a simple schedule.  It can represent a repeating event that occurs anywhere from every
+            second to once a month.  It consists of an enumeration to mark the interval and an offset from that interval.
+            For example new ScheduledTime(Hourly, new TimeSpan(0, 15, 0)) would represent an event that fired 15 minutes
+            after the hour every hour.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduledItems.ScheduledTime.#ctor(System.String,System.String)">
+            <summary>
+            intializes a simple scheduled time element from a pair of strings.  
+            Here are the supported formats
+            
+            BySecond - single integer representing the offset in ms
+            ByMinute - A comma seperate list of integers representing the number of seconds and ms
+            Hourly - A comma seperated list of integers representing the number of minutes, seconds and ms
+            Daily - A time in hh:mm:ss AM/PM format
+            Weekly - n, time where n represents an integer and time is a time in the Daily format
+            Monthly - the same format as weekly.
+            
+            </summary>
+            <param name="StrBase">A string representing the base enumeration for the scheduled time</param>
+            <param name="StrOffset">A string representing the offset for the time.</param>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ScheduledItems.SimpleInterval">
+            <summary>
+            The simple interval represents the simple scheduling that .net supports natively.  It consists of a start
+            absolute time and an interval that is counted off from the start time.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ScheduledItems.SingleEvent">
+            <summary>Single event represents an event which only fires once.</summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.Filter">
+            <summary>
+            This is an empty filter that does not filter any of the events.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.IResultFilter">
+            <summary>
+            The IResultFilter interface represents filters that either sort the events for an interval or
+            remove duplicate events either selecting the first or the last event.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.FirstEventFilter">
+            <summary>
+            This causes only the first event of the interval to be counted.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.LastEventFilter">
+            <summary>
+            This causes only the last event of the interval to be counted.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.ScheduleTimer.AddEvent(Libarius.Timer.ScheduleTimer.IScheduledItem)">
+            <summary>
+            Add event is used in conjunction with the Elaspsed event handler.  Set the Elapsed handler, add your schedule and call start.
+            </summary>
+            <param name="Schedule">The schedule to fire the event at.  Adding additional schedules will cause the event to fire whenever either schedule calls for it.</param>
+        </member>
+        <member name="E:Libarius.Timer.ScheduleTimer.ScheduleTimer.Elapsed">
+            <summary>
+            The event to fire when you only need to fire one event.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ExceptionEventArgs">
+            <summary>
+            ExceptionEventArgs allows exceptions to be captured and sent to the OnError event of the timer.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.ExceptionEventHandler">
+            <summary>
+            ExceptionEventHandler is the method type used by the OnError event for the timer.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.TimerJob">
+            <summary>
+            Timer job groups a schedule, syncronization data, a result filter, method information and an enabled state so that multiple jobs
+            can be managed by the same timer.  Each one operating independently of the others with different syncronization and recovery settings.
+            </summary>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.TimerJobList">
+            <summary>
+            Timer job manages a group of timer jobs.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.TimerJobList.NextRunTime(System.DateTime)">
+            <summary>
+            Gets the next time any of the jobs in the list will run.  Allows matching the exact start time.  If no matches are found the return
+            is DateTime.MaxValue;
+            </summary>
+            <param name="time">The starting time for the interval being queried.  This time is included in the interval</param>
+            <returns>The first absolute date one of the jobs will execute on.  If none of the jobs needs to run DateTime.MaxValue is returned.</returns>
+        </member>
+        <member name="T:Libarius.Timer.ScheduleTimer.TimerParameterSetter">
+            <summary>
+            The timer job allows delegates to be specified with unbound parameters.  This ParameterSetter assigns all unbound datetime parameters
+            with the specified time and all unbound object parameters with the calling object.
+            </summary>
+        </member>
+        <member name="M:Libarius.Timer.ScheduleTimer.TimerParameterSetter.#ctor(System.DateTime,System.Object)">
+            <summary>
+            Initalize the ParameterSetter with the time to pass to unbound time parameters and object to pass to unbound object parameters.
+            </summary>
+            <param name="time">The time to pass to the unbound DateTime parameters</param>
+            <param name="sender">The object to pass to the unbound object parameters</param>
+        </member>
+        <member name="T:Libarius.WPF.WindowSettings">
+            <summary>
+                Persists a Window's Size, Location and WindowState to UserScopeSettings
+                <remarks>http://jake.ginnivan.net/remembering-wpf-window-positions/</remarks>
+            </summary>
+        </member>
+        <member name="M:Libarius.WPF.WindowSettings.OnSaveInvalidated(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+                Called when Save is changed on an object.
+            </summary>
+        </member>
+        <member name="M:Libarius.WPF.WindowSettings.LoadWindowState">
+            <summary>
+                Load the Window Size Location and State from the settings object
+            </summary>
+        </member>
+        <member name="M:Libarius.WPF.WindowSettings.SaveWindowState">
+            <summary>
+                Save the Window Size, Location and State to the settings object
+            </summary>
+        </member>
+        <member name="F:Libarius.WPF.WindowSettings.SaveProperty">
+            <summary>
+                Register the "Save" attached property and the "OnSaveInvalidated" callback
+            </summary>
+        </member>
+    </members>
+</doc>

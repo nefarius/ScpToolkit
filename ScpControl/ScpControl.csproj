@@ -35,6 +35,9 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Libarius">
+      <HintPath>..\packages\Libarius.1.14.0\lib\Libarius.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
@@ -105,6 +108,7 @@
     <Compile Include="BthHub.Designer.cs">
       <DependentUpon>BthHub.cs</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -243,6 +247,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Libarius.XML" />
     <Content Include="ScpMapper.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>

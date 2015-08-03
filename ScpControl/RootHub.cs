@@ -4,43 +4,46 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
-using ScpControl.Wcf;
+using Libarius.System;
+using ScpControl.Exceptions;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
+using ScpControl.Wcf;
 
 namespace ScpControl
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true, InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(IncludeExceptionDetailInFaults = false, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
-        private volatile bool m_Suspended;
-        private ServiceHost myServiceHost;
-        private bool serviceStarted;
-        private readonly BthHub bthHub = new BthHub();
-        private readonly Cache[] m_Cache = { new Cache(), new Cache(), new Cache(), new Cache() };
+        private readonly LimitInstance _limitInstance = new LimitInstance("ScpDsxRootHub");
+        private volatile bool _mSuspended;
+        private ServiceHost _rootHubServiceHost;
+        private bool _serviceStarted;
+        private readonly BthHub _bthHub = new BthHub();
+        private readonly Cache[] _mCache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
-        private readonly byte[][] m_Native =
+        private readonly byte[][] _mNative =
         {
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
             new byte[2] {0, 0}
         };
 
-        private readonly IDsDevice[] m_Pad =
+        private readonly IDsDevice[] _mPad =
         {
             new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
             new DsNull(DsPadId.Four)
         };
 
-        private readonly string[] m_Reserved = { string.Empty, string.Empty, string.Empty, string.Empty };
+        private readonly string[] _mReserved = { string.Empty, string.Empty, string.Empty, string.Empty };
 
-        private readonly byte[][] m_XInput =
+        private readonly byte[][] _mXInput =
         {
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
             new byte[2] {0, 0}
         };
 
-        private readonly BusDevice scpBus = new BusDevice();
-        private readonly UsbHub usbHub = new UsbHub();
+        private readonly BusDevice _scpBus = new BusDevice();
+        private readonly UsbHub _usbHub = new UsbHub();
 
         public bool IsNativeFeedAvailable()
         {
@@ -73,18 +76,18 @@ namespace ScpControl
 
             var data = new byte[11];
 
-            Log.DebugFormat("Requested Pads local MAC = {0}", m_Pad[serial].Local);
+            Log.DebugFormat("Requested Pads local MAC = {0}", _mPad[serial].Local);
 
             data[0] = serial;
-            data[1] = (byte)m_Pad[serial].State;
-            data[2] = (byte)m_Pad[serial].Model;
-            data[3] = (byte)m_Pad[serial].Connection;
-            data[4] = (byte)m_Pad[serial].Battery;
+            data[1] = (byte)_mPad[serial].State;
+            data[2] = (byte)_mPad[serial].Model;
+            data[3] = (byte)_mPad[serial].Connection;
+            data[4] = (byte)_mPad[serial].Battery;
 
-            Array.Copy(m_Pad[serial].BD_Address, 0, data, 5, m_Pad[serial].BD_Address.Length);
+            Array.Copy(_mPad[serial].BD_Address, 0, data, 5, _mPad[serial].BD_Address.Length);
 
             return new DsDetail((DsPadId)data[0], (DsState)data[1], (DsModel)data[2],
-                m_Pad[serial].Local.ToBytes().ToArray(),
+                _mPad[serial].Local.ToBytes().ToArray(),
                 (DsConnection)data[3], (DsBattery)data[4]);
         }
 
@@ -93,10 +96,10 @@ namespace ScpControl
             var serial = (byte)pad;
             if (Pad[serial].State == DsState.Connected)
             {
-                if (large != m_Native[serial][0] || small != m_Native[serial][1])
+                if (large != _mNative[serial][0] || small != _mNative[serial][1])
                 {
-                    m_Native[serial][0] = large;
-                    m_Native[serial][1] = small;
+                    _mNative[serial][0] = large;
+                    _mNative[serial][1] = small;
 
                     Pad[serial].Rumble(large, small);
                 }
@@ -122,6 +125,9 @@ namespace ScpControl
 
         public IEnumerable<string> GetStatusData()
         {
+            if (!_serviceStarted)
+                return default(IEnumerable<string>);
+
             var list = new List<string>
             {
                 Dongle,
@@ -147,31 +153,31 @@ namespace ScpControl
                 Pad[target].PadId = (DsPadId)(target);
                 Pad[target - 1].PadId = (DsPadId)(target - 1);
 
-                m_Reserved[target] = Pad[target].Local;
-                m_Reserved[target - 1] = Pad[target - 1].Local;
+                _mReserved[target] = Pad[target].Local;
+                _mReserved[target - 1] = Pad[target - 1].Local;
             }
         }
 
         public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
         {
-            if (m_Suspended) return DsPadId.None;
+            if (_mSuspended) return DsPadId.None;
 
             // forward message for wired DS4 to usb hub
             if (Class == UsbDs4.USB_CLASS_GUID)
             {
-                return usbHub.Notify(notification, Class, Path);
+                return _usbHub.Notify(notification, Class, Path);
             }
 
             // forward message for wired DS3 to usb hub
             if (Class == UsbDs3.USB_CLASS_GUID)
             {
-                return usbHub.Notify(notification, Class, Path);
+                return _usbHub.Notify(notification, Class, Path);
             }
 
             // forward message for any wireless device to bluetooth hub
             if (Class == BthDongle.BTH_CLASS_GUID)
             {
-                bthHub.Notify(notification, Class, Path);
+                _bthHub.Notify(notification, Class, Path);
             }
 
             return DsPadId.None;
@@ -209,11 +215,11 @@ namespace ScpControl
         {
             InitializeComponent();
 
-            bthHub.Arrival += On_Arrival;
-            usbHub.Arrival += On_Arrival;
+            _bthHub.Arrival += On_Arrival;
+            _usbHub.Arrival += On_Arrival;
 
-            bthHub.Report += On_Report;
-            usbHub.Report += On_Report;
+            _bthHub.Report += On_Report;
+            _usbHub.Report += On_Report;
         }
 
         public RootHub(IContainer container)
@@ -228,22 +234,22 @@ namespace ScpControl
 
         public IDsDevice[] Pad
         {
-            get { return m_Pad; }
+            get { return _mPad; }
         }
 
         public string Dongle
         {
-            get { return bthHub.Dongle; }
+            get { return _bthHub.Dongle; }
         }
 
         public string Master
         {
-            get { return bthHub.Master; }
+            get { return _bthHub.Master; }
         }
 
         public bool Pairable
         {
-            get { return m_Started && bthHub.Pairable; }
+            get { return m_Started && _bthHub.Pairable; }
         }
 
         #endregion
@@ -262,9 +268,9 @@ namespace ScpControl
 
             scpMap.Open();
 
-            opened |= scpBus.Open(Global.Bus);
-            opened |= usbHub.Open();
-            opened |= bthHub.Open();
+            opened |= _scpBus.Open(Global.Bus);
+            opened |= _usbHub.Open();
+            opened |= _bthHub.Open();
 
             Global.Load();
             return opened;
@@ -272,29 +278,32 @@ namespace ScpControl
 
         public override bool Start()
         {
+            if (!_limitInstance.IsOnlyInstance)
+                throw new RootHubAlreadyStartedException();
+
             if (m_Started) return m_Started;
 
             Log.Info("Starting root hub");
 
-            if (!serviceStarted)
+            if (!_serviceStarted)
             {
                 var baseAddress = new Uri("net.tcp://localhost:26760/ScpRootHubService");
 
                 var binding = new NetTcpBinding();
 
-                myServiceHost = new ServiceHost(this, baseAddress);
-                myServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
+                _rootHubServiceHost = new ServiceHost(this, baseAddress);
+                _rootHubServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
 
-                myServiceHost.Open();
+                _rootHubServiceHost.Open();
 
-                serviceStarted = true;
+                _serviceStarted = true;
             }
 
             scpMap.Start();
 
-            m_Started |= scpBus.Start();
-            m_Started |= usbHub.Start();
-            m_Started |= bthHub.Start();
+            m_Started |= _scpBus.Start();
+            m_Started |= _usbHub.Start();
+            m_Started |= _bthHub.Start();
 
             Log.Info("Root hub started");
 
@@ -305,10 +314,14 @@ namespace ScpControl
         {
             Log.Info("Root hub stop requested");
 
+            _serviceStarted = false;
+
+            _rootHubServiceHost.Close(new TimeSpan(0, 0, 1));
+
             scpMap.Stop();
-            scpBus.Stop();
-            usbHub.Stop();
-            bthHub.Stop();
+            _scpBus.Stop();
+            _usbHub.Stop();
+            _bthHub.Stop();
 
             Log.Info("Root hub stopped");
 
@@ -326,17 +339,17 @@ namespace ScpControl
 
         public override bool Suspend()
         {
-            m_Suspended = true;
+            _mSuspended = true;
 
-            lock (m_Pad)
+            lock (_mPad)
             {
-                foreach (var t in m_Pad)
+                foreach (var t in _mPad)
                     t.Disconnect();
             }
 
-            scpBus.Suspend();
-            usbHub.Suspend();
-            bthHub.Suspend();
+            _scpBus.Suspend();
+            _usbHub.Suspend();
+            _bthHub.Suspend();
 
             Log.Debug("++ Suspended");
             return true;
@@ -346,19 +359,19 @@ namespace ScpControl
         {
             Log.Debug("++ Resumed");
 
-            scpBus.Resume();
-            for (var index = 0; index < m_Pad.Length; index++)
+            _scpBus.Resume();
+            for (var index = 0; index < _mPad.Length; index++)
             {
-                if (m_Pad[index].State != DsState.Disconnected)
+                if (_mPad[index].State != DsState.Disconnected)
                 {
-                    scpBus.Plugin(index + 1);
+                    _scpBus.Plugin(index + 1);
                 }
             }
 
-            usbHub.Resume();
-            bthHub.Resume();
+            _usbHub.Resume();
+            _bthHub.Resume();
 
-            m_Suspended = false;
+            _mSuspended = false;
             return true;
         }
 
@@ -371,20 +384,20 @@ namespace ScpControl
             var bFound = false;
             var arrived = e.Device;
 
-            lock (m_Pad)
+            lock (_mPad)
             {
-                for (var index = 0; index < m_Pad.Length && !bFound; index++)
+                for (var index = 0; index < _mPad.Length && !bFound; index++)
                 {
-                    if (arrived.Local == m_Reserved[index])
+                    if (arrived.Local == _mReserved[index])
                     {
-                        if (m_Pad[index].State == DsState.Connected)
+                        if (_mPad[index].State == DsState.Connected)
                         {
-                            if (m_Pad[index].Connection == DsConnection.BTH)
+                            if (_mPad[index].Connection == DsConnection.BTH)
                             {
-                                m_Pad[index].Disconnect();
+                                _mPad[index].Disconnect();
                             }
 
-                            if (m_Pad[index].Connection == DsConnection.USB)
+                            if (_mPad[index].Connection == DsConnection.USB)
                             {
                                 arrived.Disconnect();
 
@@ -396,26 +409,26 @@ namespace ScpControl
                         bFound = true;
 
                         arrived.PadId = (DsPadId)index;
-                        m_Pad[index] = arrived;
+                        _mPad[index] = arrived;
                     }
                 }
 
-                for (var index = 0; index < m_Pad.Length && !bFound; index++)
+                for (var index = 0; index < _mPad.Length && !bFound; index++)
                 {
-                    if (m_Pad[index].State == DsState.Disconnected)
+                    if (_mPad[index].State == DsState.Disconnected)
                     {
                         bFound = true;
-                        m_Reserved[index] = arrived.Local;
+                        _mReserved[index] = arrived.Local;
 
                         arrived.PadId = (DsPadId)index;
-                        m_Pad[index] = arrived;
+                        _mPad[index] = arrived;
                     }
                 }
             }
 
             if (bFound)
             {
-                scpBus.Plugin((int)arrived.PadId + 1);
+                _scpBus.Plugin((int)arrived.PadId + 1);
 
                 Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
             }
@@ -427,28 +440,28 @@ namespace ScpControl
             int serial = e.Report[(int)DsOffset.Pad];
             var model = (DsModel)e.Report[(int)DsOffset.Model];
 
-            var report = m_Cache[serial].Report;
-            var rumble = m_Cache[serial].Rumble;
-            var mapped = m_Cache[serial].Mapped;
+            var report = _mCache[serial].Report;
+            var rumble = _mCache[serial].Rumble;
+            var mapped = _mCache[serial].Mapped;
 
-            if (scpMap.Remap(model, serial, m_Pad[serial].Local, e.Report, mapped))
+            if (scpMap.Remap(model, serial, _mPad[serial].Local, e.Report, mapped))
             {
-                scpBus.Parse(mapped, report, model);
+                _scpBus.Parse(mapped, report, model);
             }
             else
             {
-                scpBus.Parse(e.Report, report, model);
+                _scpBus.Parse(e.Report, report, model);
             }
 
-            if (scpBus.Report(report, rumble) && (DsState)e.Report[1] == DsState.Connected)
+            if (_scpBus.Report(report, rumble) && (DsState)e.Report[1] == DsState.Connected)
             {
                 var Large = rumble[3];
                 var Small = rumble[4];
 
-                if (rumble[1] == 0x08 && (Large != m_XInput[serial][0] || Small != m_XInput[serial][1]))
+                if (rumble[1] == 0x08 && (Large != _mXInput[serial][0] || Small != _mXInput[serial][1]))
                 {
-                    m_XInput[serial][0] = Large;
-                    m_XInput[serial][1] = Small;
+                    _mXInput[serial][0] = Large;
+                    _mXInput[serial][1] = Small;
 
                     Pad[serial].Rumble(Large, Small);
                 }
@@ -456,8 +469,8 @@ namespace ScpControl
 
             if ((DsState)e.Report[1] != DsState.Connected)
             {
-                m_XInput[serial][0] = m_XInput[serial][1] = 0;
-                m_Native[serial][0] = m_Native[serial][1] = 0;
+                _mXInput[serial][0] = _mXInput[serial][1] = 0;
+                _mNative[serial][0] = _mNative[serial][1] = 0;
             }
 
             if (Global.DisableNative)
