@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
-using ScpControl.Wcf;
 using ScpControl.Utilities;
 using ScpMonitor.Properties;
 

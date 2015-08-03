@@ -2,16 +2,10 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ScpControl.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="RootHubCommandRxHost" Type="System.String" Scope="Application">
+    <Setting Name="RootHubNativeFeedHost" Type="System.String" Scope="Application">
       <Value Profile="(Default)">localhost</Value>
     </Setting>
-    <Setting Name="RootHubCommandRxPort" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">26760</Value>
-    </Setting>
-    <Setting Name="RootHubNativeFeedRxHost" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">localhost</Value>
-    </Setting>
-    <Setting Name="RootHubNativeFeedRxPort" Type="System.Int32" Scope="Application">
+    <Setting Name="RootHubNativeFeedPort" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">26761</Value>
     </Setting>
   </Settings>

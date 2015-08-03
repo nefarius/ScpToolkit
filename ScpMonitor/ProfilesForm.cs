@@ -42,8 +42,7 @@ namespace ScpMonitor
             m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
 
             ResetControls();
-
-
+            
             m_Editing = false;
             m_CanSave = true;
 

@@ -45,6 +45,10 @@
     <Reference Include="MadMilkman.Ini">
       <HintPath>..\packages\MadMilkman.Ini.1.0.4.0\lib\net20\MadMilkman.Ini.dll</HintPath>
     </Reference>
+    <Reference Include="ReactiveSockets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ReactiveSockets.0.2.6\lib\net40\ReactiveSockets.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
@@ -115,6 +119,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Rx\IChannel.cs" />
+    <Compile Include="Rx\ScpNativeFeedChannel.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\BackingStore.cs" />
     <Compile Include="ScpCore\Global.cs" />

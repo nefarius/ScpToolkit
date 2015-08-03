@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.ServiceModel;
 using System.Xml;
 using log4net;
+using ReactiveSockets;
+using ScpControl.Properties;
+using ScpControl.Rx;
 using ScpControl.Wcf;
 
 namespace ScpControl
 {
     public sealed partial class ScpProxy : Component
     {
+        private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedHost, Settings.Default.RootHubNativeFeedPort);
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private bool m_Active;
         private XmlDocument m_Map = new XmlDocument();
@@ -76,6 +82,23 @@ namespace ScpControl
 
                     _rootHub = factory.CreateChannel(address);
 
+                    #region Feed client
+
+                    var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
+                    rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(buffer =>
+                    {
+                        if (buffer.Length <= 0)
+                            return;
+
+                        var packet = new DsPacket();
+
+                        OnFeedPacketReceived(packet.Load(buffer));
+                    });
+
+                    _rxFeedClient.ConnectAsync();
+
+                    #endregion
+                    
                     m_Active = true;
                 }
             }

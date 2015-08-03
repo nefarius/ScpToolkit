@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.ServiceModel;
 using Libarius.System;
+using ReactiveSockets;
 using ScpControl.Exceptions;
+using ScpControl.Properties;
+using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
 using ScpControl.Wcf;
@@ -16,6 +20,8 @@ namespace ScpControl
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
         private readonly LimitInstance _limitInstance = new LimitInstance("ScpDsxRootHub");
+        private readonly ReactiveListener _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedPort);
+        private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers = new Dictionary<int, ScpNativeFeedChannel>();
         private volatile bool _mSuspended;
         private ServiceHost _rootHubServiceHost;
         private bool _serviceStarted;
@@ -266,6 +272,49 @@ namespace ScpControl
                 Assembly.GetExecutingAssembly().GetName().Version);
             Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
 
+            #region Native feed server
+
+            _rxFeedServer.Connections.Subscribe(socket =>
+            {
+                Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
+                var protocol = new ScpNativeFeedChannel(socket);
+
+                lock (this)
+                {
+                    _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
+                }
+
+                protocol.Receiver.Subscribe(packet =>
+                {
+                    Log.Debug("Uuuhh how did we end up here?!");
+                });
+
+                socket.Disconnected += (sender, e) =>
+                {
+                    Log.InfoFormat(
+                        "Client disconnected from native feed channel {0}",
+                        sender.GetHashCode());
+
+                    lock (this)
+                    {
+                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                    }
+                };
+
+                socket.Disposed += (sender, e) =>
+                {
+                    Log.InfoFormat("Client disposed from native feed channel {0}",
+                        sender.GetHashCode());
+
+                    lock (this)
+                    {
+                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
+                    }
+                };
+            });
+
+            #endregion
+
             scpMap.Open();
 
             opened |= _scpBus.Open(Global.Bus);
@@ -299,6 +348,16 @@ namespace ScpControl
                 _serviceStarted = true;
             }
 
+            try
+            {
+                _rxFeedServer.Start();
+            }
+            catch (SocketException sex)
+            {
+                Log.FatalFormat("Couldn't start native feed server: {0}", sex);
+                return false;
+            }
+
             scpMap.Start();
 
             m_Started |= _scpBus.Start();
@@ -316,7 +375,11 @@ namespace ScpControl
 
             _serviceStarted = false;
 
-            _rootHubServiceHost.Close(new TimeSpan(0, 0, 1));
+            _rootHubServiceHost.Close();
+
+            _rxFeedServer.Dispose();
+
+            Log.Info("Root hub stopped");
 
             scpMap.Stop();
             _scpBus.Stop();
@@ -476,7 +539,21 @@ namespace ScpControl
             if (Global.DisableNative)
                 return;
 
-            // TODO: implement feed!
+            lock (this)
+            {
+                // send native controller inputs to subscribed clients
+                foreach (
+                    var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
+                {
+                    try
+                    {
+                        channel.SendAsync(e.Report);
+                    }
+                    catch (AggregateException)
+                    {
+                    }
+                }
+            }
         }
 
         #endregion
