@@ -111,7 +111,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Wcf\ScpCommandChannel.cs" />
+    <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\BackingStore.cs" />
     <Compile Include="ScpCore\Global.cs" />
     <Compile Include="ScpCore\HCI.cs" />
