@@ -10,13 +10,14 @@ using ScpControl.Utilities;
 
 namespace ScpControl
 {
+    /// <summary>
+    ///     Communication logic for Bluetooth host dongles.
+    /// </summary>
     public sealed partial class BthDongle : ScpDevice, IBthDevice
     {
         public const string BTH_CLASS_GUID = "{2F87C733-60E0-4355-8515-95D6978418B2}";
         private CancellationTokenSource _hciCancellationTokenSource = new CancellationTokenSource();
-        private Task _hciWorkerTask;
         private CancellationTokenSource _l2CapCancellationTokenSource = new CancellationTokenSource();
-        private Task _l2CapWorkerTask;
         private string m_HCI_Version = string.Empty;
         private byte m_Id = 0x01;
         private string m_LMP_Version = string.Empty;
@@ -129,13 +130,12 @@ namespace ScpControl
 
         public override bool Start()
         {
-            if (IsActive)
-            {
-                m_State = DsState.Connected;
+            if (!IsActive) return State == DsState.Connected;
 
-                _hciWorkerTask = Task.Factory.StartNew(HicWorker, _hciCancellationTokenSource.Token);
-                _l2CapWorkerTask = Task.Factory.StartNew(L2CapWorker, _l2CapCancellationTokenSource.Token);
-            }
+            m_State = DsState.Connected;
+
+            Task.Factory.StartNew(HicWorker, _hciCancellationTokenSource.Token);
+            Task.Factory.StartNew(L2CapWorker, _l2CapCancellationTokenSource.Token);
 
             return State == DsState.Connected;
         }
