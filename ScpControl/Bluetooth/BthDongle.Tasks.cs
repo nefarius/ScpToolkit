@@ -144,7 +144,7 @@ namespace ScpControl.Bluetooth
                 {
                     if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
-                        var connection = Get(buffer[0], buffer[1]);
+                        var connection = GetConnection(buffer[0], buffer[1]);
 
                         if (connection == null)
                             continue;

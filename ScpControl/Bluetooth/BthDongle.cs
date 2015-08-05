@@ -219,16 +219,16 @@ namespace ScpControl.Bluetooth
             return connection;
         }
 
-        private BthDevice Get(byte lsb, byte msb)
+        private BthDevice GetConnection(byte lsb, byte msb)
         {
             var hande = new BthHandle(lsb, msb);
 
             return (!_connected.Any() | !_connected.ContainsKey(hande)) ? null : _connected[hande];
         }
 
-        private void Remove(byte Lsb, byte Msb)
+        private void Remove(byte lsb, byte msb)
         {
-            var connection = new BthHandle(Lsb, Msb);
+            var connection = new BthHandle(lsb, msb);
 
             if (!_connected.ContainsKey(connection))
                 return;
