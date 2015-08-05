@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using ScpControl;
+using ScpControl.ScpCore;
 using ScpControl.Utilities;
 
 namespace ScpCustomHidProfiler 

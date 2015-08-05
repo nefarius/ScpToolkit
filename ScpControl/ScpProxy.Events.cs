@@ -1,4 +1,5 @@
 ﻿using System;
+using ScpControl.ScpCore;
 using ScpControl.Wcf;
 
 namespace ScpControl

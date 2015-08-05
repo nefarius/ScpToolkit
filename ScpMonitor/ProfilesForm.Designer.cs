@@ -1,4 +1,6 @@
-﻿namespace ScpMonitor
+﻿using ScpControl.ScpCore;
+
+namespace ScpMonitor
 {
     partial class ProfilesForm
     {
@@ -388,7 +390,7 @@
             // 
             // scpProxy
             // 
-            this.scpProxy.NativeFeedReceived += new System.EventHandler<ScpControl.DsPacket>(this.Parse);
+            this.scpProxy.NativeFeedReceived += new System.EventHandler<DsPacket>(this.Parse);
             // 
             // axL
             // 
