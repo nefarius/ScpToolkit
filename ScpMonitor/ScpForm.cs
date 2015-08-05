@@ -21,16 +21,13 @@ namespace ScpMonitor
         private readonly ProfilesForm _profiles = new ProfilesForm();
         private readonly SettingsForm _settings;
         private readonly RegistrySettings m_Config = new RegistrySettings();
-        private readonly char[] m_Delim = { '^' };
 
         public ScpForm()
         {
-#if DEBUG
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Log.FatalFormat("Unhandled exception: {0}", args.ExceptionObject);
             };
-#endif
 
             InitializeComponent();
 

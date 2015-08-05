@@ -22,12 +22,11 @@ namespace ScpServer
         {
             InitializeComponent();
 
-#if DEBUG
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject);
             };
-#endif
+
             ThemeUtil.SetTheme(lvDebug);
 
             Pad[0] = rbPad_1;
