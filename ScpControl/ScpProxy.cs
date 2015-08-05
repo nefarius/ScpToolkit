@@ -70,17 +70,23 @@ namespace ScpControl
             _rootHub.SetConfig(config);
         }
 
+        #region Component actions
+
         public bool Start()
         {
             try
             {
                 if (!m_Active)
                 {
+                    #region WCF client
+
                     var address = new EndpointAddress(new Uri("net.tcp://localhost:26760/ScpRootHubService"));
                     var binding = new NetTcpBinding();
                     var factory = new ChannelFactory<IScpCommandService>(binding, address);
 
                     _rootHub = factory.CreateChannel(address);
+
+                    #endregion
 
                     #region Feed client
 
@@ -112,6 +118,7 @@ namespace ScpControl
 
         public bool Stop()
         {
+            // TODO: refactor useless bits
             try
             {
                 if (m_Active)
@@ -126,6 +133,8 @@ namespace ScpControl
 
             return !m_Active;
         }
+
+        #endregion
 
         public bool Save()
         {
@@ -266,11 +275,6 @@ namespace ScpControl
         }
 
         #endregion
-
-        public void OnDisconnect()
-        {
-            //OnRootHubDisconnected(this, null);
-        }
     }
 
     public class DsPacket : EventArgs
