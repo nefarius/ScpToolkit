@@ -32,7 +32,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
 5. Extract the archive to a location of your choice.
 6. Create a directory where you want the Service to run from. (e.g `C:\Program Files\Scarlet.Crush Productions`)
 7. Copy the contents of the `bin` directory to the location you created.
-8. Run `ScpDriver.exe`. You may be propted to permit execution as administrator. Please accept or the installation fill fail.
+8. Run `ScpDriver.exe`. You may be propted to permit execution as administrator. Please accept or the installation will fail.
 9. The next step depends on your operating system:
  - XP/Vista: check the Force Install option.
  - Win 7/8/8.1: leave it unchecked.
