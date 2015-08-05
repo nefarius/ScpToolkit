@@ -76,6 +76,15 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bluetooth\BthDongle.Hci.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Bluetooth\BthDongle.L2cap.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Bluetooth\BthDongle.Tasks.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BthConnection.cs">
       <SubType>Component</SubType>
     </Compile>
