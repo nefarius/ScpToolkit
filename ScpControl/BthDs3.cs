@@ -97,7 +97,7 @@ namespace ScpControl
 
             if (bdc.SupportedMacs.Any(m => Local.StartsWith(m))) // Fix up for Fake DS3
             {
-                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", Remote_Name, Local);
+                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
 
                 m_Enable[0] = 0xA3;
 
@@ -106,9 +106,9 @@ namespace ScpControl
                 m_Report[5] = 0x00;
             }
 
-            if (bdc.SupportedNames.Any(n => Remote_Name.EndsWith(n))) // Fix up for Fake DS3
+            if (bdc.SupportedNames.Any(n => RemoteName.EndsWith(n))) // Fix up for Fake DS3
             {
-                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", Remote_Name, Local);
+                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
 
                 m_Report[3] = 0x00;
                 m_Report[5] = 0x00;
@@ -117,7 +117,7 @@ namespace ScpControl
             m_Queued = 1;
             m_Blocked = true;
             m_Last = DateTime.Now;
-            m_Device.HID_Command(HCI_Handle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Enable);
+            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Enable);
 
             return base.Start();
         }
@@ -219,7 +219,7 @@ namespace ScpControl
                     m_Last = DateTime.Now;
                     m_Blocked = true;
 
-                    m_Device.HID_Command(HCI_Handle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
+                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
                 }
                 else
                 {
@@ -235,7 +235,7 @@ namespace ScpControl
 
             if (m_Init < m_InitReport.Length)
             {
-                m_Device.HID_Command(HCI_Handle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), m_InitReport[m_Init++]);
+                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), m_InitReport[m_Init++]);
             }
             else if (m_Init == m_InitReport.Length)
             {
@@ -278,7 +278,7 @@ namespace ScpControl
                             m_Blocked = true;
                             m_Queued--;
 
-                            m_Device.HID_Command(HCI_Handle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
+                            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
                         }
                     }
                 }

@@ -63,7 +63,7 @@ namespace ScpControl
 
         public string Local
         {
-            get { return m_Mac; }
+            get { return MacDisplayName; }
         }
 
         public string Remote
@@ -83,7 +83,7 @@ namespace ScpControl
 
         public virtual bool Start()
         {
-            Array.Copy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
+            Array.Copy(LocalMac, 0, m_ReportArgs.Report, (int) DsOffset.Address, LocalMac.Length);
 
             m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
             m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;

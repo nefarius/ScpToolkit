@@ -14,9 +14,9 @@ namespace ScpControl
         private BthHandle[] m_L2CAP_Cmd_Handle = new BthHandle[2];
         private BthHandle[] m_L2CAP_Int_Handle = new BthHandle[2];
         private BthHandle[] m_L2CAP_Svc_Handle = new BthHandle[2];
-        protected byte[] m_Local = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-        private DsModel m_Model = DsModel.DS3;
-        protected string m_Remote_Name = string.Empty, m_Mac = string.Empty;
+        protected byte[] LocalMac = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        private DsModel _model = DsModel.DS3;
+        protected string m_Remote_Name = string.Empty, MacDisplayName = string.Empty;
 
         public BthConnection()
         {
@@ -30,36 +30,36 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        public BthConnection(BthHandle HCI_Handle)
+        public BthConnection(BthHandle hciHandle)
         {
             InitializeComponent();
 
-            m_HCI_Handle = HCI_Handle;
+            m_HCI_Handle = hciHandle;
         }
 
-        public virtual BthHandle HCI_Handle
+        public virtual BthHandle HciHandle
         {
             get { return m_HCI_Handle; }
         }
 
         public virtual byte[] BD_Address
         {
-            get { return m_Local; }
+            get { return LocalMac; }
             set
             {
-                m_Local = value;
-                m_Mac = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
-                    m_Local[3], m_Local[4], m_Local[5]);
+                LocalMac = value;
+                MacDisplayName = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", LocalMac[0], LocalMac[1], LocalMac[2],
+                    LocalMac[3], LocalMac[4], LocalMac[5]);
             }
         }
 
-        public virtual string Remote_Name
+        public virtual string RemoteName
         {
             get { return m_Remote_Name; }
             set
             {
                 m_Remote_Name = value;
-                if (m_Remote_Name == "Wireless Controller") m_Model = DsModel.DS4;
+                if (m_Remote_Name == "Wireless Controller") _model = DsModel.DS4;
             }
         }
 
@@ -75,7 +75,7 @@ namespace ScpControl
 
         public virtual DsModel Model
         {
-            get { return m_Model; }
+            get { return _model; }
         }
 
         public static ushort DCID
@@ -97,9 +97,9 @@ namespace ScpControl
 
         #endregion
 
-        public virtual byte[] Set(L2CAP.PSM ConnectionType, byte Lsb, byte Msb, ushort Dcid = 0)
+        public virtual byte[] Set(L2CAP.PSM connectionType, byte Lsb, byte Msb, ushort Dcid = 0)
         {
-            switch (ConnectionType)
+            switch (connectionType)
             {
                 case L2CAP.PSM.HID_Command:
 
@@ -131,24 +131,24 @@ namespace ScpControl
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
-        public virtual byte[] Set(L2CAP.PSM ConnectionType, byte[] Handle)
+        public virtual byte[] Set(L2CAP.PSM connectionType, byte[] handle)
         {
-            return Set(ConnectionType, Handle[0], Handle[1]);
+            return Set(connectionType, handle[0], handle[1]);
         }
 
-        public virtual byte[] Get_DCID(byte Lsb, byte Msb)
+        public virtual byte[] Get_DCID(byte lsb, byte msb)
         {
-            if (m_L2CAP_Cmd_Handle[0].Equals(Lsb, Msb))
+            if (m_L2CAP_Cmd_Handle[0].Equals(lsb, msb))
             {
                 return m_L2CAP_Cmd_Handle[1].Bytes;
             }
 
-            if (m_L2CAP_Int_Handle[0].Equals(Lsb, Msb))
+            if (m_L2CAP_Int_Handle[0].Equals(lsb, msb))
             {
                 return m_L2CAP_Int_Handle[1].Bytes;
             }
 
-            if (m_L2CAP_Svc_Handle[0].Equals(Lsb, Msb))
+            if (m_L2CAP_Svc_Handle[0].Equals(lsb, msb))
             {
                 return m_L2CAP_Svc_Handle[1].Bytes;
             }
@@ -156,9 +156,9 @@ namespace ScpControl
             throw new Exception("L2CAP DCID Not Found");
         }
 
-        public virtual byte[] Get_DCID(L2CAP.PSM ConnectionType)
+        public virtual byte[] Get_DCID(L2CAP.PSM connectionType)
         {
-            switch (ConnectionType)
+            switch (connectionType)
             {
                 case L2CAP.PSM.HID_Command:
 
@@ -176,11 +176,11 @@ namespace ScpControl
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
-        public virtual byte[] Get_SCID(byte Lsb, byte Msb)
+        public virtual byte[] Get_SCID(byte lsb, byte msb)
         {
             try
             {
-                if (m_L2CAP_Cmd_Handle[1].Equals(Lsb, Msb))
+                if (m_L2CAP_Cmd_Handle[1].Equals(lsb, msb))
                 {
                     return m_L2CAP_Cmd_Handle[0].Bytes;
                 }
@@ -192,7 +192,7 @@ namespace ScpControl
 
             try
             {
-                if (m_L2CAP_Int_Handle[1].Equals(Lsb, Msb))
+                if (m_L2CAP_Int_Handle[1].Equals(lsb, msb))
                 {
                     return m_L2CAP_Int_Handle[0].Bytes;
                 }
@@ -204,7 +204,7 @@ namespace ScpControl
 
             try
             {
-                if (m_L2CAP_Svc_Handle[1].Equals(Lsb, Msb))
+                if (m_L2CAP_Svc_Handle[1].Equals(lsb, msb))
                 {
                     return m_L2CAP_Svc_Handle[0].Bytes;
                 }
@@ -217,9 +217,9 @@ namespace ScpControl
             throw new Exception("L2CAP SCID Not Found");
         }
 
-        public virtual byte[] Get_SCID(L2CAP.PSM ConnectionType)
+        public virtual byte[] Get_SCID(L2CAP.PSM connectionType)
         {
-            switch (ConnectionType)
+            switch (connectionType)
             {
                 case L2CAP.PSM.HID_Command:
 
@@ -240,12 +240,12 @@ namespace ScpControl
         public override string ToString()
         {
             return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2} - {6}",
-                m_Local[5],
-                m_Local[4],
-                m_Local[3],
-                m_Local[2],
-                m_Local[1],
-                m_Local[0],
+                LocalMac[5],
+                LocalMac[4],
+                LocalMac[3],
+                LocalMac[2],
+                LocalMac[1],
+                LocalMac[0],
                 m_Remote_Name
                 );
         }
