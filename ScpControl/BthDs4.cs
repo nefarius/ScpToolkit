@@ -6,11 +6,14 @@ namespace ScpControl
 {
     public partial class BthDs4 : BthDevice
     {
-        protected static int R = 9, G = 10, B = 11; // Led Offsets
-        private byte m_Brightness = Global.Brightness;
-        protected bool m_DisableLightBar, m_Flash;
+        private const int R = 9; // Led Offsets
+        private const int G = 10; // Led Offsets
+        private const int B = 11; // Led Offsets
+        private byte _mBrightness = Global.Brightness;
+        private bool _mDisableLightBar;
+        private bool _mFlash;
 
-        private byte[][] m_InitReport =
+        private readonly byte[][] _hidInitReport =
         {
             new byte[]
             {
@@ -122,7 +125,7 @@ namespace ScpControl
             }
         };
 
-        private byte[] m_Report =
+        private readonly byte[] _hidReport =
         {
             0x52, 0x11,
             0xB0, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
@@ -147,7 +150,7 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        public BthDs4(IBthDevice Device, byte[] Master, byte Lsb, byte Msb) : base(Device, Master, Lsb, Msb)
+        public BthDs4(IBthDevice device, byte[] master, byte lsb, byte msb) : base(device, master, lsb, msb)
         {
         }
 
@@ -162,35 +165,35 @@ namespace ScpControl
                 switch (value)
                 {
                     case DsPadId.One: // Blue
-                        m_Report[R] = 0x00;
-                        m_Report[G] = 0x00;
-                        m_Report[B] = m_Brightness;
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = 0x00;
+                        _hidReport[B] = _mBrightness;
                         break;
                     case DsPadId.Two: // Green
-                        m_Report[R] = 0x00;
-                        m_Report[G] = m_Brightness;
-                        m_Report[B] = 0x00;
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = _mBrightness;
+                        _hidReport[B] = 0x00;
                         break;
                     case DsPadId.Three: // Yellow
-                        m_Report[R] = m_Brightness;
-                        m_Report[G] = m_Brightness;
-                        m_Report[B] = 0x00;
+                        _hidReport[R] = _mBrightness;
+                        _hidReport[G] = _mBrightness;
+                        _hidReport[B] = 0x00;
                         break;
                     case DsPadId.Four: // Cyan
-                        m_Report[R] = 0x00;
-                        m_Report[G] = m_Brightness;
-                        m_Report[B] = m_Brightness;
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = _mBrightness;
+                        _hidReport[B] = _mBrightness;
                         break;
                     case DsPadId.None: // Red
-                        m_Report[R] = m_Brightness;
-                        m_Report[G] = 0x00;
-                        m_Report[B] = 0x00;
+                        _hidReport[R] = _mBrightness;
+                        _hidReport[G] = 0x00;
+                        _hidReport[B] = 0x00;
                         break;
                 }
 
                 if (Global.DisableLightBar)
                 {
-                    m_Report[R] = m_Report[G] = m_Report[B] = m_Report[12] = m_Report[13] = 0x00;
+                    _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
                 }
 
                 m_Queued = 1;
@@ -264,29 +267,29 @@ namespace ScpControl
                 report[18] ^= 0x1;
             }
 
-            for (var Index = 8; Index < 84; Index++)
+            for (var index = 8; index < 84; index++)
             {
-                m_ReportArgs.Report[Index] = report[Index + 3];
+                m_ReportArgs.Report[index] = report[index + 3];
             }
 
             m_ReportArgs.Report[8] = report[9];
 
             // Buttons
-            for (var Index = 16; Index < 18 && !active; Index++)
+            for (var index = 16; index < 18 && !active; index++)
             {
-                if (report[Index] != 0) active = true;
+                if (report[index] != 0) active = true;
             }
 
             // Axis
-            for (var Index = 12; Index < 16 && !active; Index++)
+            for (var index = 12; index < 16 && !active; index++)
             {
-                if (report[Index] < 117 || report[Index] > 137) active = true;
+                if (report[index] < 117 || report[index] > 137) active = true;
             }
 
             // Triggers
-            for (var Index = 19; Index < 21 && !active; Index++)
+            for (var index = 19; index < 21 && !active; index++)
             {
-                if (report[Index] != 0) active = true;
+                if (report[index] != 0) active = true;
             }
 
             if (active)
@@ -318,20 +321,20 @@ namespace ScpControl
             {
                 if (Global.DisableRumble)
                 {
-                    m_Report[7] = 0;
-                    m_Report[8] = 0;
+                    _hidReport[7] = 0;
+                    _hidReport[8] = 0;
                 }
                 else
                 {
-                    m_Report[7] = small;
-                    m_Report[8] = large;
+                    _hidReport[7] = small;
+                    _hidReport[8] = large;
                 }
 
                 if (!m_Blocked)
                 {
                     m_Last = DateTime.Now;
                     m_Blocked = true;
-                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
+                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
                 }
                 else
                 {
@@ -346,11 +349,11 @@ namespace ScpControl
         {
             var retVal = false;
 
-            if (m_Init < m_InitReport.Length)
+            if (m_Init < _hidInitReport.Length)
             {
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), m_InitReport[m_Init++]);
+                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), _hidInitReport[m_Init++]);
             }
-            else if (m_Init == m_InitReport.Length)
+            else if (m_Init == _hidInitReport.Length)
             {
                 m_Init++;
                 retVal = true;
@@ -369,41 +372,41 @@ namespace ScpControl
                     {
                         if (Battery < DsBattery.Medium)
                         {
-                            if (!m_Flash)
+                            if (!_mFlash)
                             {
-                                m_Report[12] = m_Report[13] = 0x40;
+                                _hidReport[12] = _hidReport[13] = 0x40;
 
-                                m_Flash = true;
+                                _mFlash = true;
                                 m_Queued = 1;
                             }
                         }
                         else
                         {
-                            if (m_Flash)
+                            if (_mFlash)
                             {
-                                m_Report[12] = m_Report[13] = 0x00;
+                                _hidReport[12] = _hidReport[13] = 0x00;
 
-                                m_Flash = false;
+                                _mFlash = false;
                                 m_Queued = 1;
                             }
                         }
                     }
 
-                    if (Global.Brightness != m_Brightness)
+                    if (Global.Brightness != _mBrightness)
                     {
-                        m_Brightness = Global.Brightness;
+                        _mBrightness = Global.Brightness;
                         PadId = PadId;
                     }
 
-                    if (Global.DisableLightBar != m_DisableLightBar)
+                    if (Global.DisableLightBar != _mDisableLightBar)
                     {
-                        m_DisableLightBar = Global.DisableLightBar;
+                        _mDisableLightBar = Global.DisableLightBar;
                         PadId = PadId;
                     }
 
                     if ((now - m_Last).TotalMilliseconds >= 500)
                     {
-                        if (m_Report[7] > 0x00 || m_Report[8] > 0x00)
+                        if (_hidReport[7] > 0x00 || _hidReport[8] > 0x00)
                         {
                             m_Queued = 1;
                         }
@@ -415,7 +418,7 @@ namespace ScpControl
                         m_Blocked = true;
                         m_Queued--;
 
-                        m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
+                        m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
                     }
                 }
             }
