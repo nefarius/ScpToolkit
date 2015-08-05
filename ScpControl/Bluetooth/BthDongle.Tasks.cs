@@ -612,9 +612,10 @@ namespace ScpControl.Bluetooth
 
                                     for (var i = 0; i < 6; i++) BD_Addr[i] = Buffer[i + 3];
 
-                                    // TODO: move to INI
-                                    if (Name.StartsWith("PLAYSTATION(R)3") || Name == "Navigation Controller" ||
-                                        Name == "Wireless Controller")
+                                    var hci = IniConfig.Instance.Hci;
+
+                                    if (hci.SupportedNames.Any(n => Name.StartsWith(n)) 
+                                        || hci.SupportedNames.Any(n => Name == n))
                                     {
                                         nameList.Add(bd, nm.ToString());
 

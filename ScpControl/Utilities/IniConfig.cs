@@ -52,6 +52,12 @@ namespace ScpControl.Utilities
                     ini.Sections["BthDs3"].Keys["SupportedMacs"].TryParseValue(out values);
                     BthDs3.SupportedMacs = values;
                 }
+
+                Hci = new HciCfg();
+                {
+                    ini.Sections["HCI"].Keys["SupportedNames"].TryParseValue(out values);
+                    Hci.SupportedNames = values;
+                }
             }
             catch (Exception ex)
             {
@@ -66,6 +72,7 @@ namespace ScpControl.Utilities
 
         public BthDongleCfg BthDongle { get; private set; }
         public BthDs3Cfg BthDs3 { get; private set; }
+        public HciCfg Hci { get; private set; }
 
         public class BthDongleCfg
         {
@@ -76,6 +83,11 @@ namespace ScpControl.Utilities
         public class BthDs3Cfg
         {
             public IEnumerable<string> SupportedMacs { get; set; }
+            public IEnumerable<string> SupportedNames { get; set; }
+        }
+
+        public class HciCfg
+        {
             public IEnumerable<string> SupportedNames { get; set; }
         }
     }
