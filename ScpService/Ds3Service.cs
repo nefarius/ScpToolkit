@@ -6,6 +6,7 @@ using System.ServiceProcess;
 using System.Threading;
 using log4net;
 using ScpControl;
+using ScpControl.Bluetooth;
 using ScpControl.Exceptions;
 
 namespace ScpService

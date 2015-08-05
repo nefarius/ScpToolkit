@@ -1,4 +1,4 @@
-﻿namespace ScpControl
+﻿namespace ScpControl.Bluetooth
 {
     sealed partial class BthDongle
     {

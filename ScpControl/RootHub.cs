@@ -7,6 +7,7 @@ using System.Reflection;
 using System.ServiceModel;
 using Libarius.System;
 using ReactiveSockets;
+using ScpControl.Bluetooth;
 using ScpControl.Exceptions;
 using ScpControl.Properties;
 using ScpControl.Rx;

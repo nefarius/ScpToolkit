@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
+using ScpControl.Bluetooth;
 using ScpControl.Exceptions;
 using ScpControl.Utilities;
 using ScpServer.Properties;

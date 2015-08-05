@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
 
-namespace ScpControl
+namespace ScpControl.Bluetooth
 {
     /// <summary>
     ///     Communication logic for Bluetooth host dongles.
@@ -18,12 +18,12 @@ namespace ScpControl
         public const string BTH_CLASS_GUID = "{2F87C733-60E0-4355-8515-95D6978418B2}";
         private CancellationTokenSource _hciCancellationTokenSource = new CancellationTokenSource();
         private CancellationTokenSource _l2CapCancellationTokenSource = new CancellationTokenSource();
-        private string m_HCI_Version = string.Empty;
-        private byte m_Id = 0x01;
-        private string m_LMP_Version = string.Empty;
-        private byte[] m_Local = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        private DsState m_State = DsState.Disconnected;
-        private readonly ConnectionList m_Connected = new ConnectionList();
+        private string _hciVersion = string.Empty;
+        private byte _hidReportId = 0x01;
+        private string _lmpVersion = string.Empty;
+        private byte[] _localMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        private DsState _state = DsState.Disconnected;
+        private readonly ConnectionList _connected = new ConnectionList();
 
         public BthDongle()
             : base(BTH_CLASS_GUID)
@@ -45,26 +45,26 @@ namespace ScpControl
         {
             get
             {
-                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[5], m_Local[4], m_Local[3],
-                    m_Local[2], m_Local[1], m_Local[0]);
+                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", _localMac[5], _localMac[4], _localMac[3],
+                    _localMac[2], _localMac[1], _localMac[0]);
             }
         }
 
-        public string HCI_Version
+        public string HciVersion
         {
-            get { return m_HCI_Version; }
-            set { m_HCI_Version = value; }
+            get { return _hciVersion; }
+            set { _hciVersion = value; }
         }
 
-        public string LMP_Version
+        public string LmpVersion
         {
-            get { return m_LMP_Version; }
-            set { m_LMP_Version = value; }
+            get { return _lmpVersion; }
+            set { _lmpVersion = value; }
         }
 
         public DsState State
         {
-            get { return m_State; }
+            get { return _state; }
         }
 
         public bool Initialised { get; private set; }
@@ -96,9 +96,9 @@ namespace ScpControl
         public event EventHandler<ArrivalEventArgs> Arrival;
         public event EventHandler<ReportEventArgs> Report;
 
-        private bool LogArrival(IDsDevice Arrived)
+        private bool LogArrival(IDsDevice arrived)
         {
-            var args = new ArrivalEventArgs(Arrived);
+            var args = new ArrivalEventArgs(arrived);
 
             if (Arrival != null)
             {
@@ -112,7 +112,7 @@ namespace ScpControl
         {
             if (base.Open(instance))
             {
-                m_State = DsState.Reserved;
+                _state = DsState.Reserved;
             }
 
             return State == DsState.Reserved;
@@ -122,7 +122,7 @@ namespace ScpControl
         {
             if (base.Open(devicePath))
             {
-                m_State = DsState.Reserved;
+                _state = DsState.Reserved;
             }
 
             return State == DsState.Reserved;
@@ -132,7 +132,7 @@ namespace ScpControl
         {
             if (!IsActive) return State == DsState.Connected;
 
-            m_State = DsState.Connected;
+            _state = DsState.Connected;
 
             Task.Factory.StartNew(HicWorker, _hciCancellationTokenSource.Token);
             Task.Factory.StartNew(L2CapWorker, _l2CapCancellationTokenSource.Token);
@@ -142,37 +142,36 @@ namespace ScpControl
 
         public override bool Stop()
         {
-            if (IsActive)
+            if (!IsActive) return base.Stop();
+
+            _state = DsState.Reserved;
+
+            // disconnect all connected devices gracefully
+            foreach (var device in _connected.Values)
             {
-                m_State = DsState.Reserved;
-
-                // disconnect all connected devices gracefully
-                foreach (var device in m_Connected.Values)
-                {
-                    device.Disconnect();
-                    device.Stop();
-                }
-
-                // notify tasks to stop work
-                _hciCancellationTokenSource.Cancel();
-                _l2CapCancellationTokenSource.Cancel();
-                // reset tokens
-                _hciCancellationTokenSource = new CancellationTokenSource();
-                _l2CapCancellationTokenSource = new CancellationTokenSource();
-
-                m_Connected.Clear();
+                device.Disconnect();
+                device.Stop();
             }
+
+            // notify tasks to stop work
+            _hciCancellationTokenSource.Cancel();
+            _l2CapCancellationTokenSource.Cancel();
+            // reset tokens
+            _hciCancellationTokenSource = new CancellationTokenSource();
+            _l2CapCancellationTokenSource = new CancellationTokenSource();
+
+            _connected.Clear();
 
             return base.Stop();
         }
 
         public override bool Close()
         {
-            var Closed = base.Close();
+            var closed = base.Close();
 
-            m_State = DsState.Disconnected;
+            _state = DsState.Disconnected;
 
-            return Closed;
+            return closed;
         }
 
         public override string ToString()
@@ -185,8 +184,8 @@ namespace ScpControl
                         return
                             string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}\n\nReserved",
                                 Local,
-                                m_HCI_Version,
-                                m_LMP_Version
+                                _hciVersion,
+                                _lmpVersion
                                 );
                     }
                     return "Host Address : <Error>";
@@ -196,8 +195,8 @@ namespace ScpControl
                     {
                         return string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}",
                             Local,
-                            m_HCI_Version,
-                            m_LMP_Version
+                            _hciVersion,
+                            _lmpVersion
                             );
                     }
                     return "Host Address : <Error>";
@@ -206,39 +205,39 @@ namespace ScpControl
             return "Host Address : Disconnected";
         }
 
-        private BthDevice Add(byte Lsb, byte Msb, string Name)
+        private BthDevice Add(byte lsb, byte msb, string name)
         {
-            BthDevice Connection = null;
+            BthDevice connection = null;
 
-            if (m_Connected.Count < 4)
+            if (_connected.Count < 4)
             {
-                if (Name == "Wireless Controller")
-                    Connection = new BthDs4(this, m_Local, Lsb, Msb);
+                if (name == "Wireless Controller")
+                    connection = new BthDs4(this, _localMac, lsb, msb);
                 else
-                    Connection = new BthDs3(this, m_Local, Lsb, Msb);
+                    connection = new BthDs3(this, _localMac, lsb, msb);
 
-                m_Connected[Connection.HciHandle] = Connection;
+                _connected[connection.HciHandle] = connection;
             }
 
-            return Connection;
+            return connection;
         }
 
-        private BthDevice Get(byte Lsb, byte Msb)
+        private BthDevice Get(byte lsb, byte msb)
         {
-            var hande = new BthHandle(Lsb, Msb);
+            var hande = new BthHandle(lsb, msb);
 
-            return (!m_Connected.Any() | !m_Connected.ContainsKey(hande)) ? null : m_Connected[hande];
+            return (!_connected.Any() | !_connected.ContainsKey(hande)) ? null : _connected[hande];
         }
 
         private void Remove(byte Lsb, byte Msb)
         {
             var connection = new BthHandle(Lsb, Msb);
 
-            if (!m_Connected.ContainsKey(connection))
+            if (!_connected.ContainsKey(connection))
                 return;
 
-            m_Connected[connection].Stop();
-            m_Connected.Remove(connection);
+            _connected[connection].Stop();
+            _connected.Remove(connection);
         }
 
         private class ConnectionList : SortedDictionary<BthHandle, BthDevice>
@@ -258,7 +257,7 @@ namespace ScpControl
 
         private void OnCompletedCount(byte Lsb, byte Msb, ushort Count)
         {
-            if (Count > 0) m_Connected[new BthHandle(Lsb, Msb)].Completed();
+            if (Count > 0) _connected[new BthHandle(Lsb, Msb)].Completed();
         }
 
         private void On_Report(object sender, ReportEventArgs e)
@@ -302,7 +301,7 @@ namespace ScpControl
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
                                 (byte)L2CAP.Code.L2CAP_Connection_Response);
 
-                            L2CAP_Configuration_Request(Connection.HciHandle.Bytes, m_Id++, L2_SCID);
+                            L2CAP_Configuration_Request(Connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
                                 (byte)L2CAP.Code.L2CAP_Configuration_Request);
                             break;
@@ -441,7 +440,7 @@ namespace ScpControl
                                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
                                                 (byte)L2CAP.Code.L2CAP_Connection_Response);
 
-                                            L2CAP_Configuration_Request(connection.HciHandle.Bytes, m_Id++, L2_SCID);
+                                            L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
                                                 (byte)L2CAP.Code.L2CAP_Configuration_Request);
                                             break;
@@ -459,7 +458,7 @@ namespace ScpControl
 
                                                 connection.Set(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
 
-                                                L2CAP_Configuration_Request(connection.HciHandle.Bytes, m_Id++, L2_SCID);
+                                                L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                                                 Log.DebugFormat("<< {0} [{1:X2}]",
                                                     L2CAP.Code.L2CAP_Configuration_Request,
                                                     (byte)L2CAP.Code.L2CAP_Configuration_Request);
@@ -502,7 +501,7 @@ namespace ScpControl
                                                     var DCID = BthConnection.DCID++;
                                                     L2_DCID = new byte[2] { (byte)((DCID >> 0) & 0xFF), (byte)((DCID >> 8) & 0xFF) };
 
-                                                    L2CAP_Connection_Request(connection.HciHandle.Bytes, m_Id++,
+                                                    L2CAP_Connection_Request(connection.HciHandle.Bytes, _hidReportId++,
                                                         L2_DCID,
                                                         L2CAP.PSM.HID_Service);
                                                     Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
@@ -571,7 +570,7 @@ namespace ScpControl
                                 L2_DCID = connection.Get_DCID(L2CAP.PSM.HID_Service);
                                 L2_SCID = connection.Get_SCID(L2CAP.PSM.HID_Service);
 
-                                L2CAP_Disconnection_Request(connection.HciHandle.Bytes, m_Id++, L2_SCID, L2_DCID);
+                                L2CAP_Disconnection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID, L2_DCID);
                                 Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Request,
                                     (byte)L2CAP.Code.L2CAP_Disconnection_Request);
                             }
@@ -673,7 +672,7 @@ namespace ScpControl
 
                                     if (Command == HCI.Command.HCI_Read_BD_ADDR && Buffer[5] == 0)
                                     {
-                                        m_Local = new[] { Buffer[6], Buffer[7], Buffer[8], Buffer[9], Buffer[10], Buffer[11] };
+                                        _localMac = new[] { Buffer[6], Buffer[7], Buffer[8], Buffer[9], Buffer[10], Buffer[11] };
 
                                         Transfered = HCI_Read_Buffer_Size();
                                     }
@@ -688,12 +687,12 @@ namespace ScpControl
 
                                     if (Command == HCI.Command.HCI_Read_Local_Version_Info && Buffer[5] == 0)
                                     {
-                                        HCI_Version = string.Format("{0}.{1:X4}", Buffer[6], Buffer[8] << 8 | Buffer[7]);
-                                        LMP_Version = string.Format("{0}.{1:X4}", Buffer[9],
+                                        HciVersion = string.Format("{0}.{1:X4}", Buffer[6], Buffer[8] << 8 | Buffer[7]);
+                                        LmpVersion = string.Format("{0}.{1:X4}", Buffer[9],
                                             Buffer[13] << 8 | Buffer[12]);
 
                                         Log.DebugFormat("-- Master {0}, HCI_Version {1}, LMP_Version {2}", Local,
-                                            HCI_Version, LMP_Version);
+                                            HciVersion, LmpVersion);
 
                                         if (Global.DisableSSP)
                                         {

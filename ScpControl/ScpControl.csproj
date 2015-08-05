@@ -88,10 +88,10 @@
     <Compile Include="BthDevice.Designer.cs">
       <DependentUpon>BthDevice.cs</DependentUpon>
     </Compile>
-    <Compile Include="BthDongle.cs">
+    <Compile Include="Bluetooth\BthDongle.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BthDongle.Designer.cs">
+    <Compile Include="Bluetooth\BthDongle.Designer.cs">
       <DependentUpon>BthDongle.cs</DependentUpon>
     </Compile>
     <Compile Include="BthDs3.cs">
@@ -229,7 +229,7 @@
     <EmbeddedResource Include="BthDevice.resx">
       <DependentUpon>BthDevice.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BthDongle.resx">
+    <EmbeddedResource Include="Bluetooth\BthDongle.resx">
       <DependentUpon>BthDongle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ScpMapper.resx">
