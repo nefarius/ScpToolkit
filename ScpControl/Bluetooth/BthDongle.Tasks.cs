@@ -136,7 +136,7 @@ namespace ScpControl.Bluetooth
 
             var transfered = 0;
 
-            Log.DebugFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting [{0:X2},{1:X2}]", m_BulkIn, m_BulkOut);
+            Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", m_BulkIn, m_BulkOut);
 
             while (!token.IsCancellationRequested)
             {
@@ -326,14 +326,13 @@ namespace ScpControl.Bluetooth
                 }
             }
 
-            Log.Debug("-- Bluetooth  : L2CAP_Worker_Thread Exiting");
+            Log.Info("-- Bluetooth  : L2CAP_Worker_Thread Exiting");
         }
 
         private void HicWorker(object o)
         {
             var token = (CancellationToken)o;
             var nameList = new SortedDictionary<string, string>();
-            StringBuilder nm = new StringBuilder(), debug = new StringBuilder();
 
             var bStarted = false;
             var bd = string.Empty;
@@ -599,7 +598,7 @@ namespace ScpControl.Bluetooth
 
                                     bd = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", Buffer[8], Buffer[7],
                                         Buffer[6], Buffer[5], Buffer[4], Buffer[3]);
-                                    nm = new StringBuilder();
+                                    var nm = new StringBuilder();
 
                                     for (var Index = 9; Index < Buffer.Length; Index++)
                                     {
