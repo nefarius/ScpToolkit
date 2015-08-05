@@ -2,7 +2,7 @@
 
 namespace ScpControl.Exceptions
 {
-    class RootHubAlreadyStartedException : Exception
+    public class RootHubAlreadyStartedException : Exception
     {
         public RootHubAlreadyStartedException()
         {

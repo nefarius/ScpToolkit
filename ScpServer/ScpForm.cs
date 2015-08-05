@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
+using ScpControl.Exceptions;
 using ScpControl.Utilities;
 using ScpServer.Properties;
 
@@ -52,7 +53,6 @@ namespace ScpServer
 
         private void Form_Close(object sender, FormClosingEventArgs e)
         {
-            rootHub.Stop();
             rootHub.Close();
 
             if (m_Ds3Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_Ds3Notify);
@@ -62,10 +62,18 @@ namespace ScpServer
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            if (rootHub.Open() && rootHub.Start())
+            try
             {
-                btnStart.Enabled = false;
-                btnStop.Enabled = true;
+                if (rootHub.Open() && rootHub.Start())
+                {
+                    btnStart.Enabled = false;
+                    btnStop.Enabled = true;
+                }
+            }
+            catch (RootHubAlreadyStartedException rhex)
+            {
+                Log.Fatal(rhex.Message);
+                MessageBox.Show(rhex.Message, "Error starting server", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

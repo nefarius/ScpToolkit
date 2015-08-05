@@ -6,6 +6,7 @@ using System.ServiceProcess;
 using System.Threading;
 using log4net;
 using ScpControl;
+using ScpControl.Exceptions;
 
 namespace ScpService
 {
@@ -41,8 +42,17 @@ namespace ScpService
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
-            rootHub.Open();
-            rootHub.Start();
+            try
+            {
+                rootHub.Open();
+                rootHub.Start();
+            }
+            catch (RootHubAlreadyStartedException rhex)
+            {
+                Log.FatalFormat("Couldn't start the ScpService: {0}", rhex.Message);
+                Stop();
+                return;
+            }
 
             ScpDevice.RegisterNotify(_mServiceHandle, new Guid(UsbDs3.USB_CLASS_GUID), ref _mDs3Notify, false);
             ScpDevice.RegisterNotify(_mServiceHandle, new Guid(UsbDs4.USB_CLASS_GUID), ref _mDs4Notify, false);

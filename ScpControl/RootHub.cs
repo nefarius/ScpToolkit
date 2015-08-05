@@ -19,7 +19,7 @@ namespace ScpControl
     [ServiceBehavior(IncludeExceptionDetailInFaults = false, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
-        private readonly LimitInstance _limitInstance = new LimitInstance("ScpDsxRootHub");
+        private readonly LimitInstance _limitInstance = new LimitInstance(@"Global\ScpDsxRootHub");
         private readonly ReactiveListener _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedPort);
         private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers = new Dictionary<int, ScpNativeFeedChannel>();
         private volatile bool _mSuspended;
@@ -327,8 +327,15 @@ namespace ScpControl
 
         public override bool Start()
         {
-            if (!_limitInstance.IsOnlyInstance)
-                throw new RootHubAlreadyStartedException();
+            try
+            {
+                if (!_limitInstance.IsOnlyInstance) // existing root hub running as desktop app
+                    throw new RootHubAlreadyStartedException("The root hub is already running, please close the ScpServer first!");
+            }
+            catch (UnauthorizedAccessException) // existing root hub running as service
+            {
+                throw new RootHubAlreadyStartedException("The root hub is already running, please stop the ScpService first!");
+            }
 
             if (m_Started) return m_Started;
 
@@ -375,11 +382,11 @@ namespace ScpControl
 
             _serviceStarted = false;
 
-            _rootHubServiceHost.Close();
+            if (_rootHubServiceHost != null)
+                _rootHubServiceHost.Close();
 
-            _rxFeedServer.Dispose();
-
-            Log.Info("Root hub stopped");
+            if (_rxFeedServer != null)
+                _rxFeedServer.Dispose();
 
             scpMap.Stop();
             _scpBus.Stop();
