@@ -346,7 +346,7 @@ namespace ScpControl.Bluetooth
             var Command = HCI.Command.HCI_Null;
             var Connection = new BthConnection();
 
-            Log.DebugFormat("-- Bluetooth  : HCI_Worker_Thread Starting [{0:X2}]", m_IntIn);
+            Log.InfoFormat("-- Bluetooth  : HCI_Worker_Thread Starting (IN: {0:X2})", m_IntIn);
 
             HCI_Reset();
 
@@ -384,7 +384,7 @@ namespace ScpControl.Bluetooth
                                             case HCI.Command.HCI_Set_Event_Mask:
 
                                                 Global.DisableSSP = true;
-                                                Log.Debug(
+                                                Log.Warn(
                                                     "-- Simple Pairing not supported on this device. [SSP Disabled]");
                                                 Transfered = HCI_Write_Scan_Enable();
                                                 break;
@@ -433,7 +433,7 @@ namespace ScpControl.Bluetooth
                                         LmpVersion = string.Format("{0}.{1:X4}", Buffer[9],
                                             Buffer[13] << 8 | Buffer[12]);
 
-                                        Log.DebugFormat("-- Master {0}, HCI_Version {1}, LMP_Version {2}", Local,
+                                        Log.InfoFormat("-- Master {0}, HCI_Version {1}, LMP_Version {2}", Local,
                                             HciVersion, LmpVersion);
 
                                         if (Global.DisableSSP)
@@ -455,7 +455,7 @@ namespace ScpControl.Bluetooth
                                         else
                                         {
                                             Global.DisableSSP = true;
-                                            Log.Debug("-- Simple Pairing not supported on this device. [SSP Disabled]");
+                                            Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
                                             Transfered = HCI_Write_Scan_Enable();
                                         }
@@ -475,7 +475,7 @@ namespace ScpControl.Bluetooth
                                         else
                                         {
                                             Global.DisableSSP = true;
-                                            Log.Debug("-- Simple Pairing not supported on this device. [SSP Disabled]");
+                                            Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
                                             Transfered = HCI_Write_Scan_Enable();
                                         }
@@ -490,7 +490,7 @@ namespace ScpControl.Bluetooth
                                         else
                                         {
                                             Global.DisableSSP = true;
-                                            Log.Debug("-- Simple Pairing not supported on this device. [SSP Disabled]");
+                                            Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
                                             Transfered = HCI_Write_Scan_Enable();
                                         }
@@ -608,10 +608,11 @@ namespace ScpControl.Bluetooth
 
                                     var Name = nm.ToString();
 
-                                    Log.DebugFormat("-- Remote Name : {0} - {1}", bd, Name);
+                                    Log.InfoFormat("-- Remote Name : {0} - {1}", bd, Name);
 
                                     for (var i = 0; i < 6; i++) BD_Addr[i] = Buffer[i + 3];
 
+                                    // TODO: move to INI
                                     if (Name.StartsWith("PLAYSTATION(R)3") || Name == "Navigation Controller" ||
                                         Name == "Wireless Controller")
                                     {
@@ -669,7 +670,7 @@ namespace ScpControl.Bluetooth
 
             HCI_Reset();
 
-            Log.Debug("-- Bluetooth  : HCI_Worker_Thread Exiting");
+            Log.Info("-- Bluetooth  : HCI_Worker_Thread Exiting");
         }
 
         #endregion
