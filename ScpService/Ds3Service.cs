@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
@@ -15,6 +16,7 @@ namespace ScpService
 {
     public partial class Ds3Service : ServiceBase
     {
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IntPtr _mBthNotify = IntPtr.Zero;
         private ScpDevice.ServiceControlHandlerEx _mControlHandler;
@@ -42,18 +44,53 @@ namespace ScpService
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                     Assembly.GetExecutingAssembly().GetName().Version);
 
+            Log.InfoFormat("Settings working directory to {0}", WorkingDirectory);
+            Directory.SetCurrentDirectory(WorkingDirectory);
+
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
-            var bthDrivers = IniConfig.Instance.BthDongleDriver;
-
-            foreach (var hardwareId in bthDrivers.HardwareIds)
+            // install compatible bluetooth dongles
             {
-                Log.DebugFormat("DeviceId = {0}", bthDrivers.DeviceGuid);
-                Log.DebugFormat("hardwareId = {0}", hardwareId);
-                var result = WdiWrapper.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, @"D:\Temp", "BthDongle.inf",
-                    IntPtr.Zero);
-                Log.DebugFormat("result = {0}", result);
+                var bthDrivers = IniConfig.Instance.BthDongleDriver;
+
+                foreach (var hardwareId in bthDrivers.HardwareIds)
+                {
+                    Log.DebugFormat("DeviceGUID = {0}", bthDrivers.DeviceGuid);
+                    Log.DebugFormat("HardwareId = {0}", hardwareId);
+                    var result = WdiWrapper.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
+                        "BthDongle.inf",
+                        IntPtr.Zero);
+                    Log.DebugFormat("result = {0}", result);
+                }
+            }
+
+            // install compatible DS3 controllers
+            {
+                var ds3Drivers = IniConfig.Instance.Ds3Driver;
+
+                foreach (var hardwareId in ds3Drivers.HardwareIds)
+                {
+                    Log.DebugFormat("DeviceGUID = {0}", ds3Drivers.DeviceGuid);
+                    Log.DebugFormat("HardwareId = {0}", hardwareId);
+                    var result = WdiWrapper.InstallWinUsbDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
+                        "Ds3Controller.inf", IntPtr.Zero);
+                    Log.DebugFormat("result = {0}", result);
+                }
+            }
+
+            // install compatible DS4 controllers
+            {
+                var ds4Drivers = IniConfig.Instance.Ds3Driver;
+
+                foreach (var hardwareId in ds4Drivers.HardwareIds)
+                {
+                    Log.DebugFormat("DeviceGUID = {0}", ds4Drivers.DeviceGuid);
+                    Log.DebugFormat("HardwareId = {0}", hardwareId);
+                    var result = WdiWrapper.InstallWinUsbDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
+                        "Ds4Controller.inf", IntPtr.Zero);
+                    Log.DebugFormat("result = {0}", result);
+                }
             }
 
             try
