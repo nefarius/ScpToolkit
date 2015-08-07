@@ -6,6 +6,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
  * [Original PCSX2 forums thread](http://forums.pcsx2.net/Thread-XInput-Wrapper-for-DS3-and-Play-com-USB-Dual-DS2-Controller)
  * [MadMilkman.Ini parsing library by Mario Z.](https://github.com/MarioZ/MadMilkman.Ini)
  * [reactivesockets library by Daniel Cazzulino](https://github.com/clariuslabs/reactivesockets)
+ * [Windows Driver Installer library for USB devices](https://github.com/pbatard/libwdi)
  * To be extended...
 
 ## Installation requirements
