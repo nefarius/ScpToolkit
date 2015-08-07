@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using log4net;
 using MadMilkman.Ini;
@@ -19,7 +20,13 @@ namespace ScpControl.Utilities
         /// </summary>
         private IniConfig()
         {
-            var ini = new IniFile();
+            var iniOpts = new IniOptions()
+            {
+                CommentStarter = IniCommentStarter.Semicolon,
+                KeyDuplicate = IniDuplication.Allowed
+            };
+
+            var ini = new IniFile(iniOpts);
             var fullPath = Path.Combine(WorkingDirectory, CfgFile);
 
             if (!File.Exists(fullPath))
@@ -33,31 +40,24 @@ namespace ScpControl.Utilities
             {
                 ini.Load(fullPath);
 
-                string[] values;
-
-                BthDongle = new BthDongleCfg();
+                BthDongle = new BthDongleCfg()
                 {
-                    ini.Sections["BthDongle"].Keys["SupportedNames"].TryParseValue(out values);
-                    BthDongle.SupportedNames = values;
+                    SupportedNames =
+                        ini.Sections["BthDongle"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value),
+                    SupportedMacs = ini.Sections["BthDongle"].Keys.Where(k => k.Name == "SupportedMac").Select(v => v.Value)
+                };
 
-                    ini.Sections["BthDongle"].Keys["SupportedMacs"].TryParseValue(out values);
-                    BthDongle.SupportedMacs = values;
-                }
-
-                BthDs3 = new BthDs3Cfg();
+                BthDs3 = new BthDs3Cfg()
                 {
-                    ini.Sections["BthDs3"].Keys["SupportedNames"].TryParseValue(out values);
-                    BthDs3.SupportedNames = values;
-
-                    ini.Sections["BthDs3"].Keys["SupportedMacs"].TryParseValue(out values);
-                    BthDs3.SupportedMacs = values;
-                }
-
-                Hci = new HciCfg();
+                    SupportedNames =
+                        ini.Sections["BthDs3"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value),
+                    SupportedMacs = ini.Sections["BthDs3"].Keys.Where(k => k.Name == "SupportedMac").Select(v => v.Value)
+                };
+                
+                Hci = new HciCfg()
                 {
-                    ini.Sections["HCI"].Keys["SupportedNames"].TryParseValue(out values);
-                    Hci.SupportedNames = values;
-                }
+                    SupportedNames = ini.Sections["HCI"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value)
+                };
             }
             catch (Exception ex)
             {
