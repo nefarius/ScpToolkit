@@ -121,20 +121,24 @@ namespace ScpControl.Driver
         [DllImport("libwdi.dll", EntryPoint = "wdi_get_wdf_version", ExactSpelling = false)]
         private static extern int wdi_get_wdf_version();
 
-        public static WdiErrorCode InstallWinUsbDriver(string hardwareId, string driverPath, string infName, IntPtr hwnd)
+        public static WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName, IntPtr hwnd)
         {
             var result = WdiErrorCode.WDI_SUCCESS;
             IntPtr pList = IntPtr.Zero;
-            var listOpts = new wdi_options_create_list()
+            var listOpts = new wdi_options_create_list
             {
                 list_all = true,
                 list_hubs = false,
                 trim_whitespaces = false
             };
 
-            var prepOpts = new wdi_options_prepare_driver() { driver_type = WdiDriverType.WDI_WINUSB };
+            var prepOpts = new wdi_options_prepare_driver
+            {
+                driver_type = WdiDriverType.WDI_WINUSB,
+                device_guid = deviceGuid
+            };
 
-            var intOpts = new wdi_options_install_driver() { hWnd = hwnd };
+            var intOpts = new wdi_options_install_driver { hWnd = hwnd };
 
             wdi_create_list(ref pList, ref listOpts);
             var devices = pList;

@@ -52,7 +52,8 @@ namespace ScpServer
             tmrUpdate.Enabled = true;
             btnStart_Click(sender, e);
 
-            WdiWrapper.Test(this.Handle);
+            // TODO: TEST, remove!
+            WdiWrapper.InstallWinUsbDriver(@"USB\VID_0A12&PID_0001&REV_8891", "{2F87C733-60E0-4355-8515-95D6978418B2}",@"D:\Temp", "SCP.inf", Handle);
         }
 
         private void Form_Close(object sender, FormClosingEventArgs e)
