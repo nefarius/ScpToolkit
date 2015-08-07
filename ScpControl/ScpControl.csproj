@@ -121,6 +121,7 @@
     <Compile Include="BthHub.Designer.cs">
       <DependentUpon>BthHub.cs</DependentUpon>
     </Compile>
+    <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

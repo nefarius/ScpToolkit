@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using log4net;
 using ScpControl;
 using ScpControl.Bluetooth;
+using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.Utilities;
 using ScpServer.Properties;
@@ -50,6 +51,8 @@ namespace ScpServer
 
             tmrUpdate.Enabled = true;
             btnStart_Click(sender, e);
+
+            WdiWrapper.Test(this.Handle);
         }
 
         private void Form_Close(object sender, FormClosingEventArgs e)
