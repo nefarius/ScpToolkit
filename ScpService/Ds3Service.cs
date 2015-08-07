@@ -7,7 +7,9 @@ using System.Threading;
 using log4net;
 using ScpControl;
 using ScpControl.Bluetooth;
+using ScpControl.Driver;
 using ScpControl.Exceptions;
+using ScpControl.Utilities;
 
 namespace ScpService
 {
@@ -42,6 +44,17 @@ namespace ScpService
 
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
+
+            var bthDrivers = IniConfig.Instance.BthDongleDriver;
+
+            foreach (var hardwareId in bthDrivers.HardwareIds)
+            {
+                Log.DebugFormat("DeviceId = {0}", bthDrivers.DeviceGuid);
+                Log.DebugFormat("hardwareId = {0}", hardwareId);
+                var result = WdiWrapper.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, @"D:\Temp", "BthDongle.inf",
+                    IntPtr.Zero);
+                Log.DebugFormat("result = {0}", result);
+            }
 
             try
             {

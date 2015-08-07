@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using Libarius.Text;
 
 namespace ScpControl.Driver
 {
@@ -123,7 +124,7 @@ namespace ScpControl.Driver
 
         public static WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName, IntPtr hwnd)
         {
-            var result = WdiErrorCode.WDI_SUCCESS;
+            var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
             IntPtr pList = IntPtr.Zero;
             var listOpts = new wdi_options_create_list
             {
@@ -147,7 +148,7 @@ namespace ScpControl.Driver
             {
                 var info = (wdi_device_info)Marshal.PtrToStructure(pList, typeof(wdi_device_info));
 
-                if (info.hardware_id.StartsWith(hardwareId))
+                if (string.CompareOrdinal(info.hardware_id, hardwareId) == 0)
                 {
                     if (wdi_prepare_driver(pList, driverPath, infName, ref prepOpts) == WdiErrorCode.WDI_SUCCESS)
                     {
