@@ -58,6 +58,18 @@ namespace ScpControl.Utilities
                 {
                     SupportedNames = ini.Sections["HCI"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value)
                 };
+
+                Ds3Driver = new Ds3DriverCfg()
+                {
+                    DeviceGuid = ini.Sections["DualShock 3 Controllers"].Keys["DeviceGuid"].Value,
+                    HardwareIds = ini.Sections["DualShock 3 Controllers"].Keys.Where(k => k.Name == "HardwareId").Select(v => v.Value)
+                };
+
+                BthDongleDriver = new BthDongleDriverCfg()
+                {
+                    DeviceGuid = ini.Sections["Bluetooth Dongles"].Keys["DeviceGuid"].Value,
+                    HardwareIds = ini.Sections["Bluetooth Dongles"].Keys.Where(k => k.Name == "HardwareId").Select(v => v.Value)
+                };
             }
             catch (Exception ex)
             {
@@ -73,6 +85,8 @@ namespace ScpControl.Utilities
         public BthDongleCfg BthDongle { get; private set; }
         public BthDs3Cfg BthDs3 { get; private set; }
         public HciCfg Hci { get; private set; }
+        public Ds3DriverCfg Ds3Driver { get; private set; }
+        public BthDongleDriverCfg BthDongleDriver { get; private set; }
 
         public class BthDongleCfg
         {
@@ -89,6 +103,18 @@ namespace ScpControl.Utilities
         public class HciCfg
         {
             public IEnumerable<string> SupportedNames { get; set; }
+        }
+
+        public class Ds3DriverCfg
+        {
+            public string DeviceGuid { get; set; }
+            public IEnumerable<string> HardwareIds { get; set; }
+        }
+
+        public class BthDongleDriverCfg
+        {
+            public string DeviceGuid { get; set; }
+            public IEnumerable<string> HardwareIds { get; set; }
         }
     }
 }
