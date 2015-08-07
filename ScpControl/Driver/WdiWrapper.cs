@@ -147,7 +147,7 @@ namespace ScpControl.Driver
             {
                 var info = (wdi_device_info)Marshal.PtrToStructure(pList, typeof(wdi_device_info));
 
-                if (string.CompareOrdinal(info.hardware_id, hardwareId) == 0)
+                if (info.hardware_id.StartsWith(hardwareId))
                 {
                     if (wdi_prepare_driver(pList, driverPath, infName, ref prepOpts) == WdiErrorCode.WDI_SUCCESS)
                     {
