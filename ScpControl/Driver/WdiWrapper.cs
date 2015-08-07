@@ -29,6 +29,15 @@ namespace ScpControl.Driver
         WDI_ERROR_OTHER = -99
     }
 
+    public enum WdiLogLevel 
+    {
+        WDI_LOG_LEVEL_DEBUG,
+        WDI_LOG_LEVEL_INFO,
+        WDI_LOG_LEVEL_WARNING,
+        WDI_LOG_LEVEL_ERROR,
+        WDI_LOG_LEVEL_NONE
+    }
+
     public static class WdiWrapper
     {
         public enum WdiDriverType : int
@@ -117,10 +126,23 @@ namespace ScpControl.Driver
             ref wdi_options_install_driver options);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_destroy_list", ExactSpelling = false)]
-        private static extern int wdi_destroy_list(IntPtr list);
+        private static extern WdiErrorCode wdi_destroy_list(IntPtr list);
         
         [DllImport("libwdi.dll", EntryPoint = "wdi_get_wdf_version", ExactSpelling = false)]
         private static extern int wdi_get_wdf_version();
+
+        [DllImport("libwdi.dll", EntryPoint = "wdi_set_log_level", ExactSpelling = false)]
+        private static extern int wdi_set_log_level(WdiLogLevel level);
+
+        [DllImport("libwdi.dll", EntryPoint = "wdi_register_logger", ExactSpelling = false)]
+        private static extern int wdi_register_logger(IntPtr hWnd, UInt32 message, UInt32 buffsize);
+
+        [DllImport("libwdi.dll", EntryPoint = "wdi_read_logger", ExactSpelling = false)]
+        private static extern int wdi_read_logger(IntPtr buffer, UInt32 buffer_size,
+            ref UInt32 message_size);
+
+        [DllImport("libwdi.dll", EntryPoint = "wdi_unregister_logger", ExactSpelling = false)]
+        private static extern int wdi_unregister_logger(IntPtr hWnd);
 
         public static WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName, IntPtr hwnd)
         {
@@ -150,11 +172,12 @@ namespace ScpControl.Driver
 
                 if (string.CompareOrdinal(info.hardware_id, hardwareId) == 0)
                 {
-                    if (wdi_prepare_driver(pList, driverPath, infName, ref prepOpts) == WdiErrorCode.WDI_SUCCESS)
+                    if ((result = wdi_prepare_driver(pList, driverPath, infName, ref prepOpts)) == WdiErrorCode.WDI_SUCCESS)
                     {
                         result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
-                        break;
                     }
+
+                    break;
                 }
 
                 pList = info.next;
