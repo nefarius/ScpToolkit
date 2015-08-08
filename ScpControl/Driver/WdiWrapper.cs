@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
-using Libarius.Text;
 
 namespace ScpControl.Driver
 {
