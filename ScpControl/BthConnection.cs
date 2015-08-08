@@ -136,6 +136,13 @@ namespace ScpControl
             return Set(connectionType, handle[0], handle[1]);
         }
 
+        /// <summary>
+        ///     Destination Channel Identifier.
+        /// </summary>
+        /// <remarks>Used as the device local end point for an L2CAP transmission. It represents the channel endpoint on the device receiving the message. It is a device local name only. See also SCID.</remarks>
+        /// <param name="lsb"></param>
+        /// <param name="msb"></param>
+        /// <returns></returns>
         public virtual byte[] Get_DCID(byte lsb, byte msb)
         {
             if (m_L2CAP_Cmd_Handle[0].Equals(lsb, msb))
@@ -156,6 +163,12 @@ namespace ScpControl
             throw new Exception("L2CAP DCID Not Found");
         }
 
+        /// <summary>
+        ///     Destination Channel Identifier.
+        /// </summary>
+        /// <remarks>Used as the device local end point for an L2CAP transmission. It represents the channel endpoint on the device receiving the message. It is a device local name only. See also SCID.</remarks>
+        /// <param name="connectionType"></param>
+        /// <returns></returns>
         public virtual byte[] Get_DCID(L2CAP.PSM connectionType)
         {
             switch (connectionType)
@@ -176,6 +189,13 @@ namespace ScpControl
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
+        /// <summary>
+        ///     Source Channel Identifier.
+        /// </summary>
+        /// <remarks>Used in the L2CAP layer to indicate the channel endpoint on the device sending the L2CAP message. It is a device local name only.</remarks>
+        /// <param name="lsb"></param>
+        /// <param name="msb"></param>
+        /// <returns></returns>
         public virtual byte[] Get_SCID(byte lsb, byte msb)
         {
             try
@@ -217,6 +237,12 @@ namespace ScpControl
             throw new Exception("L2CAP SCID Not Found");
         }
 
+        /// <summary>
+        ///     Source Channel Identifier.
+        /// </summary>
+        /// <remarks>Used in the L2CAP layer to indicate the channel endpoint on the device sending the L2CAP message. It is a device local name only.</remarks>
+        /// <param name="connectionType"></param>
+        /// <returns>Source Channel Identifier.</returns>
         public virtual byte[] Get_SCID(L2CAP.PSM connectionType)
         {
             switch (connectionType)
