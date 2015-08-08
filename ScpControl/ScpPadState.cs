@@ -137,7 +137,7 @@ namespace ScpControl
                                 }
                                 catch (Exception ex)
                                 {
-                                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                                    Log.ErrorFormat("Unexpected error sampling DS3 packet: {0}", ex);
                                 }
                                 break;
 
@@ -149,7 +149,7 @@ namespace ScpControl
                                 }
                                 catch (Exception ex)
                                 {
-                                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                                    Log.ErrorFormat("Unexpected error sampling DS4 packet: {0}", ex);
                                 }
                                 break;
                         }

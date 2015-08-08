@@ -38,7 +38,10 @@ namespace ScpControl.Bluetooth
                             L2_SCID = new byte[2] { buffer[14], buffer[15] };
                             L2_DCID = connection.Set((L2CAP.PSM)buffer[12], L2_SCID);
 
-                            if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM)buffer[12]) connection.Started = true;
+                            if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM)buffer[12])
+                            {
+                                connection.Started = true;
+                            }
 
                             L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID, L2_DCID, 0x00);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
@@ -324,7 +327,7 @@ namespace ScpControl.Bluetooth
                 }
                 catch (Exception ex)
                 {
-                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                    Log.ErrorFormat("Unexpected error in L2CAP_Worker_Thread: {0}", ex);
                 }
             }
 
@@ -616,7 +619,7 @@ namespace ScpControl.Bluetooth
 
                                     var hci = IniConfig.Instance.Hci;
 
-                                    if (hci.SupportedNames.Any(n => Name.StartsWith(n)) 
+                                    if (hci.SupportedNames.Any(n => Name.StartsWith(n))
                                         || hci.SupportedNames.Any(n => Name == n))
                                     {
                                         nameList.Add(bd, nm.ToString());
