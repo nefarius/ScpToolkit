@@ -144,7 +144,7 @@ namespace ScpControl
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
                 };
 
-                Array.Copy(Global.BD_Link, 0, buffer, 7, Global.BD_Link.Length);
+                Array.Copy(Global.BdLink, 0, buffer, 7, Global.BdLink.Length);
 
                 if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
                 {
@@ -181,7 +181,7 @@ namespace ScpControl
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
-            Array.Copy(Global.BD_Link, 0, buffer, 7, Global.BD_Link.Length);
+            Array.Copy(Global.BdLink, 0, buffer, 7, Global.BdLink.Length);
 
             if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
             {

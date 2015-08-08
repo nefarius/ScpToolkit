@@ -1,189 +1,185 @@
-﻿namespace ScpControl.ScpCore
+﻿using ScpControl.Properties;
+
+namespace ScpControl.ScpCore
 {
     public static class Global
     {
-        private static BackingStore m_Config = new BackingStore();
-
-        private static byte[] m_BD_Link =
+        private static readonly byte[] m_BD_Link =
         {
             0x56, 0xE8, 0x81, 0x38, 0x08, 0x06, 0x51, 0x41, 0xC0, 0x7F, 0x12, 0xAA,
             0xD9, 0x66, 0x3C, 0xCE
         };
 
-        private static int m_IdleTimeout = 60000;
-        private static int m_Latency = 16;
+        private const int IdleTimeoutMultiplier = 60000;
+        private const int LatencyMultiplier = 16;
 
         public static bool FlipLX
         {
-            get { return m_Config.LX; }
-            set { m_Config.LX = value; }
+            get { return Settings.Default.FlipAxisLx; }
+            set { Settings.Default.FlipAxisLx = value; }
         }
 
         public static bool FlipLY
         {
-            get { return m_Config.LY; }
-            set { m_Config.LY = value; }
+            get { return Settings.Default.FlipAxisLy; }
+            set { Settings.Default.FlipAxisLy = value; }
         }
 
         public static bool FlipRX
         {
-            get { return m_Config.RX; }
-            set { m_Config.RX = value; }
+            get { return Settings.Default.FlipAxisRx; }
+            set { Settings.Default.FlipAxisRx = value; }
         }
 
         public static bool FlipRY
         {
-            get { return m_Config.RY; }
-            set { m_Config.RY = value; }
+            get { return Settings.Default.FlipAxisRy; }
+            set { Settings.Default.FlipAxisRy = value; }
         }
 
         public static bool DisableLED
         {
-            get { return m_Config.LED; }
-            set { m_Config.LED = value; }
+            get { return Settings.Default.DisableLed; }
+            set { Settings.Default.DisableLed = value; }
         }
 
         public static bool DisableRumble
         {
-            get { return m_Config.Rumble; }
-            set { m_Config.Rumble = value; }
+            get { return Settings.Default.DisableRumble; }
+            set { Settings.Default.DisableRumble = value; }
         }
 
         public static bool SwapTriggers
         {
-            get { return m_Config.Triggers; }
-            set { m_Config.Triggers = value; }
+            get { return Settings.Default.SwapTriggers; }
+            set { Settings.Default.SwapTriggers = value; }
         }
 
         public static bool DisableLightBar
         {
-            get { return m_Config.Brightness == 0; }
+            get { return Settings.Default.Ds4LightBarBrightness == 0; }
         }
 
         public static bool IdleDisconnect
         {
-            get { return m_Config.Idle != 0; }
+            get { return Settings.Default.IdleTimout != 0; }
         }
 
         public static int IdleTimeout
         {
-            get { return m_Config.Idle; }
-            set { m_Config.Idle = value * m_IdleTimeout; }
+            get { return Settings.Default.IdleTimout; }
+            set { Settings.Default.IdleTimout = value*IdleTimeoutMultiplier; }
         }
 
         public static int Latency
         {
-            get { return m_Config.Latency; }
-            set { m_Config.Latency = value * m_Latency; }
+            get { return Settings.Default.Ds3RumbleLatency; }
+            set { Settings.Default.Ds3RumbleLatency = value*LatencyMultiplier; }
         }
 
         public static byte DeadZoneL
         {
-            get { return m_Config.DeadL; }
-            set { m_Config.DeadL = value; }
+            get { return Settings.Default.DeadZoneL; }
+            set { Settings.Default.DeadZoneL = value; }
         }
 
         public static byte DeadZoneR
         {
-            get { return m_Config.DeadR; }
-            set { m_Config.DeadR = value; }
+            get { return Settings.Default.DeadZoneR; }
+            set { Settings.Default.DeadZoneR = value; }
         }
 
         public static bool DisableNative
         {
-            get { return m_Config.Native; }
-            set { m_Config.Native = value; }
+            get { return Settings.Default.DisableNativeFeed; }
+            set { Settings.Default.DisableNativeFeed = value; }
         }
 
         public static bool DisableSSP
         {
-            get { return m_Config.SSP; }
-            set { m_Config.SSP = value; }
+            get { return Settings.Default.DisableSecureSimplePairing; }
+            set { Settings.Default.DisableSecureSimplePairing = value; }
         }
 
         public static byte Brightness
         {
-            get { return m_Config.Brightness; }
-            set { m_Config.Brightness = value; }
+            get { return Settings.Default.Ds4LightBarBrightness; }
+            set { Settings.Default.Ds4LightBarBrightness = value; }
         }
 
         public static int Bus
         {
-            get { return m_Config.Bus; }
-            set { m_Config.Bus = value; }
+            get { return Settings.Default.BusId; }
+            set { Settings.Default.BusId = value; }
         }
 
         public static bool Repair
         {
-            get { return m_Config.Repair; }
-            set { m_Config.Repair = value; }
+            get { return Settings.Default.Ds4Repair; }
+            set { Settings.Default.Ds4Repair = value; }
         }
 
+        /// <summary>
+        ///     Represents the currently active global configurations as byte array.
+        /// </summary>
         public static byte[] Packed
         {
             get
             {
-                var Buffer = new byte[17];
+                var buffer = new byte[17];
 
-                Buffer[1] = 0x03;
-                Buffer[2] = (byte)(IdleTimeout / m_IdleTimeout);
-                Buffer[3] = (byte)(FlipLX ? 0x01 : 0x00);
-                Buffer[4] = (byte)(FlipLY ? 0x01 : 0x00);
-                Buffer[5] = (byte)(FlipRX ? 0x01 : 0x00);
-                Buffer[6] = (byte)(FlipRY ? 0x01 : 0x00);
-                Buffer[7] = (byte)(DisableLED ? 0x01 : 0x00);
-                Buffer[8] = (byte)(DisableRumble ? 0x01 : 0x00);
-                Buffer[9] = (byte)(SwapTriggers ? 0x01 : 0x00);
-                Buffer[10] = (byte)(Latency / m_Latency);
-                Buffer[11] = DeadZoneL;
-                Buffer[12] = DeadZoneR;
-                Buffer[13] = (byte)(DisableNative ? 0x01 : 0x00);
-                Buffer[14] = (byte)(DisableSSP ? 0x01 : 0x00);
-                Buffer[15] = Brightness;
-                Buffer[16] = (byte)(Repair ? 0x01 : 0x00);
-                ;
+                buffer[1] = 0x03;
+                buffer[2] = (byte) (IdleTimeout/IdleTimeoutMultiplier);
+                buffer[3] = (byte) (FlipLX ? 0x01 : 0x00);
+                buffer[4] = (byte) (FlipLY ? 0x01 : 0x00);
+                buffer[5] = (byte) (FlipRX ? 0x01 : 0x00);
+                buffer[6] = (byte) (FlipRY ? 0x01 : 0x00);
+                buffer[7] = (byte) (DisableLED ? 0x01 : 0x00);
+                buffer[8] = (byte) (DisableRumble ? 0x01 : 0x00);
+                buffer[9] = (byte) (SwapTriggers ? 0x01 : 0x00);
+                buffer[10] = (byte) (Latency/LatencyMultiplier);
+                buffer[11] = DeadZoneL;
+                buffer[12] = DeadZoneR;
+                buffer[13] = (byte) (DisableNative ? 0x01 : 0x00);
+                buffer[14] = (byte) (DisableSSP ? 0x01 : 0x00);
+                buffer[15] = Brightness;
+                buffer[16] = (byte) (Repair ? 0x01 : 0x00);
 
-                return Buffer;
+                return buffer;
             }
             set
             {
-                try
-                {
-                    IdleTimeout = value[2];
-                    FlipLX = value[3] == 0x01;
-                    FlipLY = value[4] == 0x01;
-                    FlipRX = value[5] == 0x01;
-                    FlipRY = value[6] == 0x01;
-                    DisableLED = value[7] == 0x01;
-                    DisableRumble = value[8] == 0x01;
-                    SwapTriggers = value[9] == 0x01;
-                    Latency = value[10];
-                    DeadZoneL = value[11];
-                    DeadZoneR = value[12];
-                    DisableNative = value[13] == 0x01;
-                    DisableSSP = value[14] == 0x01;
-                    Brightness = value[15];
-                    Repair = value[16] == 0x01;
-                }
-                catch
-                {
-                }
+                IdleTimeout = value[2];
+                FlipLX = value[3] == 0x01;
+                FlipLY = value[4] == 0x01;
+                FlipRX = value[5] == 0x01;
+                FlipRY = value[6] == 0x01;
+                DisableLED = value[7] == 0x01;
+                DisableRumble = value[8] == 0x01;
+                SwapTriggers = value[9] == 0x01;
+                Latency = value[10];
+                DeadZoneL = value[11];
+                DeadZoneR = value[12];
+                DisableNative = value[13] == 0x01;
+                DisableSSP = value[14] == 0x01;
+                Brightness = value[15];
+                Repair = value[16] == 0x01;
             }
         }
 
-        public static byte[] BD_Link
+        public static byte[] BdLink
         {
             get { return m_BD_Link; }
         }
 
         public static void Load()
         {
-            m_Config.Load();
+            Settings.Default.Reload();
         }
 
         public static void Save()
         {
-            m_Config.Save();
+            Settings.Default.Save();
         }
     }
 }
