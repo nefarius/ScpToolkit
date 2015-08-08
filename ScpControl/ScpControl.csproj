@@ -265,7 +265,19 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DIFxAPI\amd64\DIFxAPI.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DIFxAPI\x86\DIFxAPI.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libarius.XML" />
+    <Content Include="libwdi\amd64\libwdi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libwdi\x86\libwdi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="ScpMapper.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>

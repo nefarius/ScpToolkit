@@ -60,7 +60,7 @@ namespace ScpService
                 {
                     Log.DebugFormat("DeviceGUID = {0}", bthDrivers.DeviceGuid);
                     Log.DebugFormat("HardwareId = {0}", hardwareId);
-                    var result = WdiWrapper.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
+                    var result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
                         "BthDongle.inf",
                         IntPtr.Zero);
                     Log.DebugFormat("result = {0}", result);
@@ -76,7 +76,7 @@ namespace ScpService
                 {
                     Log.DebugFormat("DeviceGUID = {0}", ds3Drivers.DeviceGuid);
                     Log.DebugFormat("HardwareId = {0}", hardwareId);
-                    var result = WdiWrapper.InstallWinUsbDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
+                    var result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
                         "Ds3Controller.inf", IntPtr.Zero);
                     Log.DebugFormat("result = {0}", result);
                 }
@@ -91,7 +91,7 @@ namespace ScpService
                 {
                     Log.DebugFormat("DeviceGUID = {0}", ds4Drivers.DeviceGuid);
                     Log.DebugFormat("HardwareId = {0}", hardwareId);
-                    var result = WdiWrapper.InstallWinUsbDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
+                    var result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
                         "Ds4Controller.inf", IntPtr.Zero);
                     Log.DebugFormat("result = {0}", result);
                 }

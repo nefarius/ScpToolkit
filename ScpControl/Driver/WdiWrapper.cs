@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using log4net;
 using Libarius.Text;
 
 namespace ScpControl.Driver
@@ -29,7 +32,7 @@ namespace ScpControl.Driver
         WDI_ERROR_OTHER = -99
     }
 
-    public enum WdiLogLevel 
+    public enum WdiLogLevel
     {
         WDI_LOG_LEVEL_DEBUG,
         WDI_LOG_LEVEL_INFO,
@@ -38,8 +41,26 @@ namespace ScpControl.Driver
         WDI_LOG_LEVEL_NONE
     }
 
-    public static class WdiWrapper
+    public class WdiWrapper
     {
+        private static readonly Lazy<WdiWrapper> LazyInstance = new Lazy<WdiWrapper>(() => new WdiWrapper());
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        public static WdiWrapper Instance
+        {
+            get { return LazyInstance.Value; }
+        }
+
+        private WdiWrapper()
+        {
+            var libTargetPath = Path.Combine(WorkingDirectory, "libwdi.dll");
+            var libSourcePath = Path.Combine(WorkingDirectory, Environment.Is64BitProcess ? @"libwdi\amd64\libwdi.dll" : @"libwdi\x86\libwdi.dll");
+            Log.DebugFormat("libwdi source path: {0}", libSourcePath);
+
+            File.Copy(libSourcePath, libTargetPath, true);
+        }
+
         public enum WdiDriverType : int
         {
             WDI_WINUSB,
@@ -127,7 +148,7 @@ namespace ScpControl.Driver
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_destroy_list", ExactSpelling = false)]
         private static extern WdiErrorCode wdi_destroy_list(IntPtr list);
-        
+
         [DllImport("libwdi.dll", EntryPoint = "wdi_get_wdf_version", ExactSpelling = false)]
         private static extern int wdi_get_wdf_version();
 
@@ -144,7 +165,7 @@ namespace ScpControl.Driver
         [DllImport("libwdi.dll", EntryPoint = "wdi_unregister_logger", ExactSpelling = false)]
         private static extern int wdi_unregister_logger(IntPtr hWnd);
 
-        public static WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName, IntPtr hwnd)
+        public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName, IntPtr hwnd)
         {
             var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
             IntPtr pList = IntPtr.Zero;
@@ -187,20 +208,20 @@ namespace ScpControl.Driver
 
             return result;
         }
-        
-        public static string GetErrorMessage(WdiErrorCode errcode)
+
+        public string GetErrorMessage(WdiErrorCode errcode)
         {
             var msgPtr = wdi_strerror((int)errcode);
             return Marshal.PtrToStringAnsi(msgPtr);
         }
 
-        public static string GetVendorName(ushort vendorId)
+        public string GetVendorName(ushort vendorId)
         {
             var namePtr = wdi_get_vendor_name(vendorId);
             return Marshal.PtrToStringAnsi(namePtr);
         }
 
-        public static int WdfVersion
+        public int WdfVersion
         {
             get { return wdi_get_wdf_version(); }
         }
