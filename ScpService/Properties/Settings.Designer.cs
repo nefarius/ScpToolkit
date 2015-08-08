@@ -22,5 +22,32 @@ namespace ScpService.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InstallBluetoothDongles {
+            get {
+                return ((bool)(this["InstallBluetoothDongles"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InstallDualShock3Controllers {
+            get {
+                return ((bool)(this["InstallDualShock3Controllers"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InstallDualShock4Controllers {
+            get {
+                return ((bool)(this["InstallDualShock4Controllers"]));
+            }
+        }
     }
 }

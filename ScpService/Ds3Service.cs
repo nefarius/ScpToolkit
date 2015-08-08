@@ -11,6 +11,7 @@ using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.Utilities;
+using ScpService.Properties;
 
 namespace ScpService
 {
@@ -51,6 +52,7 @@ namespace ScpService
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
             // install compatible bluetooth dongles
+            if(Settings.Default.InstallBluetoothDongles)
             {
                 var bthDrivers = IniConfig.Instance.BthDongleDriver;
 
@@ -66,6 +68,7 @@ namespace ScpService
             }
 
             // install compatible DS3 controllers
+            if(Settings.Default.InstallDualShock3Controllers)
             {
                 var ds3Drivers = IniConfig.Instance.Ds3Driver;
 
@@ -80,6 +83,7 @@ namespace ScpService
             }
 
             // install compatible DS4 controllers
+            if(Settings.Default.InstallDualShock4Controllers)
             {
                 var ds4Drivers = IniConfig.Instance.Ds3Driver;
 
