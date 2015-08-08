@@ -85,7 +85,7 @@ namespace ScpService
             // install compatible DS4 controllers
             if(Settings.Default.InstallDualShock4Controllers)
             {
-                var ds4Drivers = IniConfig.Instance.Ds3Driver;
+                var ds4Drivers = IniConfig.Instance.Ds4Driver;
 
                 foreach (var hardwareId in ds4Drivers.HardwareIds)
                 {

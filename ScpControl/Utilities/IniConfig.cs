@@ -65,6 +65,12 @@ namespace ScpControl.Utilities
                     HardwareIds = ini.Sections["DualShock 3 Controllers"].Keys.Where(k => k.Name == "HardwareId").Select(v => v.Value)
                 };
 
+                Ds4Driver = new Ds4DriverCfg()
+                {
+                    DeviceGuid = ini.Sections["DualShock 4 Controllers"].Keys["DeviceGuid"].Value,
+                    HardwareIds = ini.Sections["DualShock 4 Controllers"].Keys.Where(k => k.Name == "HardwareId").Select(v => v.Value)
+                };
+
                 BthDongleDriver = new BthDongleDriverCfg()
                 {
                     DeviceGuid = ini.Sections["Bluetooth Dongles"].Keys["DeviceGuid"].Value,
@@ -86,6 +92,7 @@ namespace ScpControl.Utilities
         public BthDs3Cfg BthDs3 { get; private set; }
         public HciCfg Hci { get; private set; }
         public Ds3DriverCfg Ds3Driver { get; private set; }
+        public Ds4DriverCfg Ds4Driver { get; private set; }
         public BthDongleDriverCfg BthDongleDriver { get; private set; }
 
         public class BthDongleCfg
@@ -106,6 +113,12 @@ namespace ScpControl.Utilities
         }
 
         public class Ds3DriverCfg
+        {
+            public string DeviceGuid { get; set; }
+            public IEnumerable<string> HardwareIds { get; set; }
+        }
+
+        public class Ds4DriverCfg
         {
             public string DeviceGuid { get; set; }
             public IEnumerable<string> HardwareIds { get; set; }
