@@ -58,7 +58,14 @@ namespace ScpControl.Driver
             var libSourcePath = Path.Combine(WorkingDirectory, Environment.Is64BitProcess ? @"libwdi\amd64\libwdi.dll" : @"libwdi\x86\libwdi.dll");
             Log.DebugFormat("libwdi source path: {0}", libSourcePath);
 
-            File.Copy(libSourcePath, libTargetPath, true);
+            try
+            {
+                File.Copy(libSourcePath, libTargetPath, true);
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Couldn't prepare libwdi.dll: {0}", ex);
+            }
         }
 
         public enum WdiDriverType : int
@@ -69,6 +76,8 @@ namespace ScpControl.Driver
             WDI_USER,
             WDI_NB_DRIVERS
         }
+
+        #region Structs
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         private struct wdi_device_info
@@ -124,6 +133,10 @@ namespace ScpControl.Driver
             public UInt32 pending_install_timeout;
         }
 
+        #endregion
+
+        #region P/Invoke
+
         [DllImport("libwdi.dll", EntryPoint = "wdi_strerror", ExactSpelling = false)]
         private static extern IntPtr wdi_strerror(int errcode);
 
@@ -165,10 +178,24 @@ namespace ScpControl.Driver
         [DllImport("libwdi.dll", EntryPoint = "wdi_unregister_logger", ExactSpelling = false)]
         private static extern int wdi_unregister_logger(IntPtr hWnd);
 
+        #endregion
+
+        /// <summary>
+        ///     Replaces the device driver of given device with WinUSB.
+        /// </summary>
+        /// <param name="hardwareId">Hardware-ID of the device to change the driver for.</param>
+        /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
+        /// <param name="driverPath">Temporary path for driver auto-creation.</param>
+        /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
+        /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
+        /// <returns></returns>
         public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName, IntPtr hwnd)
         {
+            // default return value is no matching device found
             var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
-            IntPtr pList = IntPtr.Zero;
+            // pointer to write device list to
+            var pList = IntPtr.Zero;
+            // list all USB devices, not only driverless ones
             var listOpts = new wdi_options_create_list
             {
                 list_all = true,
@@ -176,34 +203,45 @@ namespace ScpControl.Driver
                 trim_whitespaces = false
             };
 
+            // use WinUSB and overrride device GUID
             var prepOpts = new wdi_options_prepare_driver
             {
                 driver_type = WdiDriverType.WDI_WINUSB,
                 device_guid = deviceGuid
             };
 
+            // set parent window handle (may be IntPtr.Zero)
             var intOpts = new wdi_options_install_driver { hWnd = hwnd };
 
+            // receive USB device list
             wdi_create_list(ref pList, ref listOpts);
+            // save original pointer to free list
             var devices = pList;
 
+            // loop through linked list until last element
             while (pList != IntPtr.Zero)
             {
+                // translate device info to managed object
                 var info = (wdi_device_info)Marshal.PtrToStructure(pList, typeof(wdi_device_info));
 
+                // does the HID of the current device match the desired HID
                 if (string.CompareOrdinal(info.hardware_id, hardwareId) == 0)
                 {
+                    // prepare driver installation (generates the signed driver and installation helpers)
                     if ((result = wdi_prepare_driver(pList, driverPath, infName, ref prepOpts)) == WdiErrorCode.WDI_SUCCESS)
                     {
+                        // install/replace the current devices driver
                         result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
                     }
 
                     break;
                 }
 
+                // continue with next device
                 pList = info.next;
             }
 
+            // free used memory
             wdi_destroy_list(devices);
 
             return result;
