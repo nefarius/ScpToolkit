@@ -171,7 +171,7 @@ namespace ScpControl
 
         public override DsPadId Notify(ScpDevice.Notified notification, String Class, String Path)
         {
-            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, Path);
+            Log.InfoFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, Path);
 
             switch (notification)
             {
@@ -191,11 +191,11 @@ namespace ScpControl
                             Log.Debug("-- DS4 Arrival Event");
                         }
 
-                        Log.DebugFormat("Arrival event for unknown GUID {0} received", Class);
+                        Log.InfoFormat("Arrival event for GUID {0} received", Class);
 
                         if (arrived.Open(Path))
                         {
-                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.Local);
+                            Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
 
                             if (LogArrival(arrived))
                             {
@@ -231,7 +231,7 @@ namespace ScpControl
                         {
                             if (_device[index].State == DsState.Connected && Path == _device[index].Path)
                             {
-                                Log.DebugFormat("-- Device Removal [{0}]", _device[index].Local);
+                                Log.InfoFormat("-- Device Removal [{0}]", _device[index].Local);
 
                                 _device[index].Stop();
                             }
