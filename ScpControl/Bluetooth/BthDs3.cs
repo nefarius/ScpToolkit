@@ -10,7 +10,7 @@ namespace ScpControl.Bluetooth
     {
         private byte[] m_Enable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
 
-        private byte[][] m_InitReport =
+        private readonly byte[][] _hidInitReport =
         {
             new byte[] {0x02, 0x00, 0x0F, 0x00, 0x08, 0x35, 0x03, 0x19, 0x12, 0x00, 0x00, 0x03, 0x00},
             new byte[]
@@ -42,9 +42,9 @@ namespace ScpControl.Bluetooth
             }
         };
 
-        private byte[] m_Leds = { 0x02, 0x04, 0x08, 0x10 };
+        private readonly byte[] _leds = { 0x02, 0x04, 0x08, 0x10 };
 
-        private byte[] m_Report =
+        private readonly byte[] _hidReport =
         {
             0x52, 0x01,
             0x00, 0xFF, 0x00, 0xFF, 0x00,
@@ -84,7 +84,7 @@ namespace ScpControl.Bluetooth
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                m_Report[11] = m_Leds[m_ControllerId];
+                _hidReport[11] = _leds[m_ControllerId];
             }
         }
 
@@ -101,17 +101,17 @@ namespace ScpControl.Bluetooth
 
                 m_Enable[0] = 0xA3;
 
-                m_Report[0] = 0xA2;
-                m_Report[3] = 0x00;
-                m_Report[5] = 0x00;
+                _hidReport[0] = 0xA2;
+                _hidReport[3] = 0x00;
+                _hidReport[5] = 0x00;
             }
 
             if (bdc.SupportedNames.Any(n => RemoteName.EndsWith(n))) // Fix up for Fake DS3
             {
                 Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
 
-                m_Report[3] = 0x00;
-                m_Report[5] = 0x00;
+                _hidReport[3] = 0x00;
+                _hidReport[5] = 0x00;
             }
 
             m_Queued = 1;
@@ -205,13 +205,13 @@ namespace ScpControl.Bluetooth
             {
                 if (Global.DisableRumble)
                 {
-                    m_Report[4] = 0;
-                    m_Report[6] = 0;
+                    _hidReport[4] = 0;
+                    _hidReport[6] = 0;
                 }
                 else
                 {
-                    m_Report[4] = (byte)(small > 0 ? 0x01 : 0x00);
-                    m_Report[6] = large;
+                    _hidReport[4] = (byte)(small > 0 ? 0x01 : 0x00);
+                    _hidReport[6] = large;
                 }
 
                 if (!m_Blocked && Global.Latency == 0)
@@ -219,7 +219,7 @@ namespace ScpControl.Bluetooth
                     m_Last = DateTime.Now;
                     m_Blocked = true;
 
-                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
+                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
                 }
                 else
                 {
@@ -233,11 +233,11 @@ namespace ScpControl.Bluetooth
         {
             var retVal = false;
 
-            if (m_Init < m_InitReport.Length)
+            if (m_Init < _hidInitReport.Length)
             {
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), m_InitReport[m_Init++]);
+                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), _hidInitReport[m_Init++]);
             }
-            else if (m_Init == m_InitReport.Length)
+            else if (m_Init == _hidInitReport.Length)
             {
                 m_Init++;
                 retVal = true;
@@ -260,15 +260,15 @@ namespace ScpControl.Bluetooth
 
                         if (Battery < DsBattery.Medium)
                         {
-                            m_Report[11] ^= m_Leds[m_ControllerId];
+                            _hidReport[11] ^= _leds[m_ControllerId];
                         }
                         else
                         {
-                            m_Report[11] |= m_Leds[m_ControllerId];
+                            _hidReport[11] |= _leds[m_ControllerId];
                         }
                     }
 
-                    if (Global.DisableLED) m_Report[11] = 0;
+                    if (Global.DisableLED) _hidReport[11] = 0;
 
                     if (!m_Blocked && m_Queued > 0)
                     {
@@ -278,7 +278,7 @@ namespace ScpControl.Bluetooth
                             m_Blocked = true;
                             m_Queued--;
 
-                            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Report);
+                            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
                         }
                     }
                 }
