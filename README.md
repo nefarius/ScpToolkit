@@ -10,11 +10,11 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
  * To be extended...
 
 ## Installation requirements
- * [Microsoft .NET Framework 4.5](http://www.microsoft.com/de-at/download/details.aspx?id=42642)
- * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/de-at/download/details.aspx?id=40784)
- * [DirectX Runtime](https://www.microsoft.com/de-at/download/details.aspx?id=35)
+ * [Microsoft .NET Framework 4.5](https://www.microsoft.com/en-US/download/details.aspx?id=42642)
+ * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=40784)
+ * [DirectX Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=35)
   * Already integrated in Windows 8.x or greater
- * [Xbox 360 Controller driver](https://www.microsoft.com/hardware/de-at/d/xbox-360-controller-for-windows)
+ * [Xbox 360 Controller driver](https://www.microsoft.com/hardware/en-US/d/xbox-360-controller-for-windows)
   * Already integrated in Windows 8.x or greater
  * At least one supported Sony DualShock 3/4 controller (see **Compatible Controllers**)
  * Administrator rights *during driver setup*
