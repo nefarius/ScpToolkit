@@ -164,7 +164,7 @@
     <Compile Include="ScpTimer.Designer.cs">
       <DependentUpon>ScpTimer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="UsbDevice.cs">
       <SubType>Component</SubType>
     </Compile>
