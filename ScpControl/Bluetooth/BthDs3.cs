@@ -203,7 +203,7 @@ namespace ScpControl.Bluetooth
         {
             lock (this)
             {
-                if (GlobalConfiguration.DisableRumble)
+                if (GlobalConfiguration.Instance.DisableRumble)
                 {
                     _hidReport[4] = 0;
                     _hidReport[6] = 0;
@@ -214,7 +214,7 @@ namespace ScpControl.Bluetooth
                     _hidReport[6] = large;
                 }
 
-                if (!m_Blocked && GlobalConfiguration.Latency == 0)
+                if (!m_Blocked && GlobalConfiguration.Instance.Latency == 0)
                 {
                     m_Last = DateTime.Now;
                     m_Blocked = true;
@@ -268,11 +268,11 @@ namespace ScpControl.Bluetooth
                         }
                     }
 
-                    if (GlobalConfiguration.DisableLED) _hidReport[11] = 0;
+                    if (GlobalConfiguration.Instance.DisableLED) _hidReport[11] = 0;
 
                     if (!m_Blocked && m_Queued > 0)
                     {
-                        if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Latency)
+                        if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Latency)
                         {
                             m_Last = now;
                             m_Blocked = true;

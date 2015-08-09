@@ -100,7 +100,7 @@ namespace ScpControl
             {
                 var transfered = 0;
 
-                if (GlobalConfiguration.DisableRumble)
+                if (GlobalConfiguration.Instance.DisableRumble)
                 {
                     m_Report[2] = 0;
                     m_Report[4] = 0;
@@ -111,7 +111,7 @@ namespace ScpControl
                     m_Report[4] = large;
                 }
 
-                m_Report[9] = (byte)(GlobalConfiguration.DisableLED ? 0 : m_Leds[m_ControllerId]);
+                m_Report[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : m_Leds[m_ControllerId]);
 
                 return SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
             }
@@ -214,7 +214,7 @@ namespace ScpControl
                         m_Report[9] |= m_Leds[m_ControllerId];
                     }
 
-                    if (GlobalConfiguration.DisableLED) m_Report[9] = 0;
+                    if (GlobalConfiguration.Instance.DisableLED) m_Report[9] = 0;
 
                     SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
                 }

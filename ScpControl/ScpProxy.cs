@@ -61,14 +61,14 @@ namespace ScpControl
             _rootHub.PromotePad(pad);
         }
 
-        public IEnumerable<byte> ReadConfig()
+        public GlobalConfiguration ReadConfig()
         {
-            return _rootHub.GetConfig();
+            return _rootHub.RequestConfiguration();
         }
 
-        public void WriteConfig(byte[] config)
+        public void WriteConfig(GlobalConfiguration config)
         {
-            _rootHub.SetConfig(config);
+            _rootHub.SubmitConfiguration(config);
         }
 
         #region Component actions

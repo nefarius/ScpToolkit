@@ -10,7 +10,7 @@ namespace ScpControl
         private const int G = 7; // Led Offsets
         private const int B = 8; // Led Offsets
         public static string USB_CLASS_GUID = "{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}";
-        private byte m_Brightness = GlobalConfiguration.Brightness;
+        private byte m_Brightness = GlobalConfiguration.Instance.Brightness;
         private bool m_DisableLightBar;
 
         private byte[] m_Report =
@@ -74,7 +74,7 @@ namespace ScpControl
                         break;
                 }
 
-                if (GlobalConfiguration.DisableLightBar)
+                if (GlobalConfiguration.Instance.DisableLightBar)
                 {
                     m_Report[R] = m_Report[G] = m_Report[B] = m_Report[12] = m_Report[13] = 0x00;
                 }
@@ -135,7 +135,7 @@ namespace ScpControl
         {
             m_Model = (byte) DsModel.DS4;
 
-            if (GlobalConfiguration.Repair)
+            if (GlobalConfiguration.Instance.Repair)
             {
                 var transfered = 0;
                 byte[] buffer =
@@ -144,7 +144,7 @@ namespace ScpControl
                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
                 };
 
-                Array.Copy(GlobalConfiguration.BdLink, 0, buffer, 7, GlobalConfiguration.BdLink.Length);
+                Array.Copy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
 
                 if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
                 {
@@ -181,7 +181,7 @@ namespace ScpControl
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
-            Array.Copy(GlobalConfiguration.BdLink, 0, buffer, 7, GlobalConfiguration.BdLink.Length);
+            Array.Copy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
 
             if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
             {
@@ -263,7 +263,7 @@ namespace ScpControl
 
                     m_Last = now;
 
-                    if (!GlobalConfiguration.DisableLightBar)
+                    if (!GlobalConfiguration.Instance.DisableLightBar)
                     {
                         if (Battery != DsBattery.Charged)
                         {
@@ -275,15 +275,15 @@ namespace ScpControl
                         }
                     }
 
-                    if (GlobalConfiguration.Brightness != m_Brightness)
+                    if (GlobalConfiguration.Instance.Brightness != m_Brightness)
                     {
-                        m_Brightness = GlobalConfiguration.Brightness;
+                        m_Brightness = GlobalConfiguration.Instance.Brightness;
                         PadId = PadId;
                     }
 
-                    if (GlobalConfiguration.DisableLightBar != m_DisableLightBar)
+                    if (GlobalConfiguration.Instance.DisableLightBar != m_DisableLightBar)
                     {
-                        m_DisableLightBar = GlobalConfiguration.DisableLightBar;
+                        m_DisableLightBar = GlobalConfiguration.Instance.DisableLightBar;
                         PadId = PadId;
                     }
 

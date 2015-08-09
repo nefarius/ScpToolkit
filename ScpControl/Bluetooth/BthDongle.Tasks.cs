@@ -388,7 +388,7 @@ namespace ScpControl.Bluetooth
                                             case HCI.Command.HCI_Write_Authentication_Enable:
                                             case HCI.Command.HCI_Set_Event_Mask:
 
-                                                GlobalConfiguration.DisableSSP = true;
+                                                GlobalConfiguration.Instance.DisableSSP = true;
                                                 Log.Warn(
                                                     "-- Simple Pairing not supported on this device. [SSP Disabled]");
                                                 Transfered = HCI_Write_Scan_Enable();
@@ -441,7 +441,7 @@ namespace ScpControl.Bluetooth
                                         Log.InfoFormat("-- Master {0}, HCI_Version {1}, LMP_Version {2}", Local,
                                             HciVersion, LmpVersion);
 
-                                        if (GlobalConfiguration.DisableSSP)
+                                        if (GlobalConfiguration.Instance.DisableSSP)
                                         {
                                             Transfered = HCI_Write_Scan_Enable();
                                         }
@@ -459,7 +459,7 @@ namespace ScpControl.Bluetooth
                                         }
                                         else
                                         {
-                                            GlobalConfiguration.DisableSSP = true;
+                                            GlobalConfiguration.Instance.DisableSSP = true;
                                             Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
                                             Transfered = HCI_Write_Scan_Enable();
@@ -479,7 +479,7 @@ namespace ScpControl.Bluetooth
                                         }
                                         else
                                         {
-                                            GlobalConfiguration.DisableSSP = true;
+                                            GlobalConfiguration.Instance.DisableSSP = true;
                                             Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
                                             Transfered = HCI_Write_Scan_Enable();
@@ -494,7 +494,7 @@ namespace ScpControl.Bluetooth
                                         }
                                         else
                                         {
-                                            GlobalConfiguration.DisableSSP = true;
+                                            GlobalConfiguration.Instance.DisableSSP = true;
                                             Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
                                             Transfered = HCI_Write_Scan_Enable();

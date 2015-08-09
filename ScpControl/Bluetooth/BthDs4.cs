@@ -9,7 +9,7 @@ namespace ScpControl.Bluetooth
         private const int R = 9; // Led Offsets
         private const int G = 10; // Led Offsets
         private const int B = 11; // Led Offsets
-        private byte _mBrightness = GlobalConfiguration.Brightness;
+        private byte _mBrightness = GlobalConfiguration.Instance.Brightness;
         private bool _mDisableLightBar;
         private bool _mFlash;
 
@@ -191,7 +191,7 @@ namespace ScpControl.Bluetooth
                         break;
                 }
 
-                if (GlobalConfiguration.DisableLightBar)
+                if (GlobalConfiguration.Instance.DisableLightBar)
                 {
                     _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
                 }
@@ -319,7 +319,7 @@ namespace ScpControl.Bluetooth
         {
             lock (this)
             {
-                if (GlobalConfiguration.DisableRumble)
+                if (GlobalConfiguration.Instance.DisableRumble)
                 {
                     _hidReport[7] = 0;
                     _hidReport[8] = 0;
@@ -368,7 +368,7 @@ namespace ScpControl.Bluetooth
             {
                 if (m_State == DsState.Connected)
                 {
-                    if (!GlobalConfiguration.DisableLightBar)
+                    if (!GlobalConfiguration.Instance.DisableLightBar)
                     {
                         if (Battery < DsBattery.Medium)
                         {
@@ -392,15 +392,15 @@ namespace ScpControl.Bluetooth
                         }
                     }
 
-                    if (GlobalConfiguration.Brightness != _mBrightness)
+                    if (GlobalConfiguration.Instance.Brightness != _mBrightness)
                     {
-                        _mBrightness = GlobalConfiguration.Brightness;
+                        _mBrightness = GlobalConfiguration.Instance.Brightness;
                         PadId = PadId;
                     }
 
-                    if (GlobalConfiguration.DisableLightBar != _mDisableLightBar)
+                    if (GlobalConfiguration.Instance.DisableLightBar != _mDisableLightBar)
                     {
-                        _mDisableLightBar = GlobalConfiguration.DisableLightBar;
+                        _mDisableLightBar = GlobalConfiguration.Instance.DisableLightBar;
                         PadId = PadId;
                     }
 

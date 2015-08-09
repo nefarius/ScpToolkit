@@ -32,10 +32,10 @@ namespace ScpControl.Wcf
         IEnumerable<string> GetProfileList();
 
         [OperationContract]
-        IEnumerable<byte> GetConfig();
+        GlobalConfiguration RequestConfiguration();
 
         [OperationContract]
-        void SetConfig(byte[] buffer);
+        void SubmitConfiguration(GlobalConfiguration configuration);
 
         [OperationContract]
         IEnumerable<string> GetStatusData();

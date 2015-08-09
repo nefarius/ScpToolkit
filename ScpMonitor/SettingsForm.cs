@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using log4net;
 using ScpControl;
-using ScpControl.Wcf;
-using ScpControl.Utilities;
+using ScpControl.ScpCore;
 using ScpMonitor.Properties;
 
 namespace ScpMonitor
@@ -15,6 +13,7 @@ namespace ScpMonitor
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly byte[] _mBuffer = new byte[17];
         private readonly ScpProxy _proxy;
+        private GlobalConfiguration _config;
 
         public SettingsForm(ScpProxy proxy)
         {
@@ -32,26 +31,23 @@ namespace ScpMonitor
 
         public void Request()
         {
-            byte[] buffer = _proxy.ReadConfig().ToArray();
+            _config = _proxy.ReadConfig();
 
-            this.UiThread(() =>
-            {
-                tbIdle.Value = buffer[2];
-                cbLX.Checked = buffer[3] == 1;
-                cbLY.Checked = buffer[4] == 1;
-                cbRX.Checked = buffer[5] == 1;
-                cbRY.Checked = buffer[6] == 1;
-                cbLED.Checked = buffer[7] == 1;
-                cbRumble.Checked = buffer[8] == 1;
-                cbTriggers.Checked = buffer[9] == 1;
-                tbLatency.Value = buffer[10];
-                tbLeft.Value = buffer[11];
-                tbRight.Value = buffer[12];
-                cbNative.Checked = buffer[13] == 1;
-                cbSSP.Checked = buffer[14] == 1;
-                tbBrightness.Value = buffer[15];
-                cbForce.Checked = buffer[16] == 1;
-            });
+            tbIdle.Value = _config.IdleTimeout / GlobalConfiguration.IdleTimeoutMultiplier;
+            cbLX.Checked = _config.FlipLX;
+            cbLY.Checked = _config.FlipLY;
+            cbRX.Checked = _config.FlipRX;
+            cbRY.Checked = _config.FlipRY;
+            cbLED.Checked = _config.DisableLED;
+            cbRumble.Checked = _config.DisableRumble;
+            cbTriggers.Checked = _config.SwapTriggers;
+            tbLatency.Value = _config.Latency / GlobalConfiguration.LatencyMultiplier;
+            tbLeft.Value = _config.DeadZoneL;
+            tbRight.Value = _config.DeadZoneR;
+            cbNative.Checked = _config.DisableNative;
+            cbSSP.Checked = _config.DisableSSP;
+            tbBrightness.Value = _config.Brightness;
+            cbForce.Checked = _config.Repair;
         }
 
         private void Form_Load(object sender, EventArgs e)
@@ -70,24 +66,24 @@ namespace ScpMonitor
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            _mBuffer[1] = (byte)0x00;
-            _mBuffer[2] = (byte)tbIdle.Value;
-            _mBuffer[3] = (byte)(cbLX.Checked ? 0x01 : 0x00);
-            _mBuffer[4] = (byte)(cbLY.Checked ? 0x01 : 0x00);
-            _mBuffer[5] = (byte)(cbRX.Checked ? 0x01 : 0x00);
-            _mBuffer[6] = (byte)(cbRY.Checked ? 0x01 : 0x00);
-            _mBuffer[7] = (byte)(cbLED.Checked ? 0x01 : 0x00);
-            _mBuffer[8] = (byte)(cbRumble.Checked ? 0x01 : 0x00);
-            _mBuffer[9] = (byte)(cbTriggers.Checked ? 0x01 : 0x00);
-            _mBuffer[10] = (byte)tbLatency.Value;
-            _mBuffer[11] = (byte)tbLeft.Value;
-            _mBuffer[12] = (byte)tbRight.Value;
-            _mBuffer[13] = (byte)(cbNative.Checked ? 0x01 : 0x00);
-            _mBuffer[14] = (byte)(cbSSP.Checked ? 0x01 : 0x00);
-            _mBuffer[15] = (byte)tbBrightness.Value;
-            _mBuffer[16] = (byte)(cbForce.Checked ? 0x01 : 0x00);
+            _config.IdleTimeout = tbIdle.Value * GlobalConfiguration.IdleTimeoutMultiplier;
+            _config.FlipLX = cbLX.Checked;
+            _config.FlipLY = cbLY.Checked;
+            _config.FlipRX = cbRX.Checked;
+            _config.FlipRY = cbRY.Checked;
+            _config.DisableLED = cbLED.Checked;
+            _config.DisableRumble = cbRumble.Checked;
+            _config.SwapTriggers = cbTriggers.Checked;
+            _config.Latency = tbLatency.Value * GlobalConfiguration.LatencyMultiplier;
+            _config.DeadZoneL = (byte)tbLeft.Value;
+            _config.DeadZoneR = (byte)tbRight.Value;
+            _config.DisableNative = cbNative.Checked;
+            _config.DisableSSP = cbSSP.Checked;
+            _config.Brightness = (byte)tbBrightness.Value;
+            _config.Repair = cbForce.Checked;
 
-            _proxy.WriteConfig(_mBuffer);
+            _proxy.WriteConfig(_config);
+
             Log.Info("Saved configuration");
 
             Hide();
