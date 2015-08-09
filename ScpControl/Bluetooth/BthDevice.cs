@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using ScpControl.ScpCore;
 
-namespace ScpControl
+namespace ScpControl.Bluetooth
 {
     public partial class BthDevice : BthConnection, IDsDevice
     {

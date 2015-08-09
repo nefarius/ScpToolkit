@@ -4,7 +4,7 @@ using System.Reflection;
 using log4net;
 using ScpControl.ScpCore;
 
-namespace ScpControl
+namespace ScpControl.Bluetooth
 {
     public partial class BthConnection : Component, IEquatable<BthConnection>, IComparable<BthConnection>
     {

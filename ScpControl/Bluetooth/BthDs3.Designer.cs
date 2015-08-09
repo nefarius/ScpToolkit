@@ -1,4 +1,4 @@
-﻿namespace ScpControl
+﻿namespace ScpControl.Bluetooth
 {
     partial class BthDs3
     {

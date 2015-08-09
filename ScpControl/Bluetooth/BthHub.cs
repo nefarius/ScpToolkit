@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using ScpControl.Bluetooth;
 
-namespace ScpControl
+namespace ScpControl.Bluetooth
 {
     public partial class BthHub : ScpHub
     {

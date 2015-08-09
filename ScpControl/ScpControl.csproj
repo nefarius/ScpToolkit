@@ -85,16 +85,16 @@
     <Compile Include="Bluetooth\BthDongle.Tasks.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BthConnection.cs">
+    <Compile Include="Bluetooth\BthConnection.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BthConnection.Designer.cs">
+    <Compile Include="Bluetooth\BthConnection.Designer.cs">
       <DependentUpon>BthConnection.cs</DependentUpon>
     </Compile>
-    <Compile Include="BthDevice.cs">
+    <Compile Include="Bluetooth\BthDevice.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BthDevice.Designer.cs">
+    <Compile Include="Bluetooth\BthDevice.Designer.cs">
       <DependentUpon>BthDevice.cs</DependentUpon>
     </Compile>
     <Compile Include="Bluetooth\BthDongle.cs">
@@ -103,22 +103,22 @@
     <Compile Include="Bluetooth\BthDongle.Designer.cs">
       <DependentUpon>BthDongle.cs</DependentUpon>
     </Compile>
-    <Compile Include="BthDs3.cs">
+    <Compile Include="Bluetooth\BthDs3.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BthDs3.Designer.cs">
+    <Compile Include="Bluetooth\BthDs3.Designer.cs">
       <DependentUpon>BthDs3.cs</DependentUpon>
     </Compile>
-    <Compile Include="BthDs4.cs">
+    <Compile Include="Bluetooth\BthDs4.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BthDs4.Designer.cs">
+    <Compile Include="Bluetooth\BthDs4.Designer.cs">
       <DependentUpon>BthDs4.cs</DependentUpon>
     </Compile>
-    <Compile Include="BthHub.cs">
+    <Compile Include="Bluetooth\BthHub.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="BthHub.Designer.cs">
+    <Compile Include="Bluetooth\BthHub.Designer.cs">
       <DependentUpon>BthHub.cs</DependentUpon>
     </Compile>
     <Compile Include="Driver\WdiWrapper.cs" />
@@ -235,7 +235,7 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BthDevice.resx">
+    <EmbeddedResource Include="Bluetooth\BthDevice.resx">
       <DependentUpon>BthDevice.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Bluetooth\BthDongle.resx">
