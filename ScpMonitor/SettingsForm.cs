@@ -11,9 +11,9 @@ namespace ScpMonitor
     public partial class SettingsForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private GlobalConfiguration _config;
         private readonly byte[] _mBuffer = new byte[17];
         private readonly ScpProxy _proxy;
-        private GlobalConfiguration _config;
 
         public SettingsForm(ScpProxy proxy)
         {
@@ -31,7 +31,7 @@ namespace ScpMonitor
         {
             _config = _proxy.ReadConfig();
 
-            tbIdle.Value = _config.IdleTimeout / GlobalConfiguration.IdleTimeoutMultiplier;
+            tbIdle.Value = _config.IdleTimeout/GlobalConfiguration.IdleTimeoutMultiplier;
             cbLX.Checked = _config.FlipLX;
             cbLY.Checked = _config.FlipLY;
             cbRX.Checked = _config.FlipRX;
@@ -39,7 +39,7 @@ namespace ScpMonitor
             cbLED.Checked = _config.DisableLED;
             cbRumble.Checked = _config.DisableRumble;
             cbTriggers.Checked = _config.SwapTriggers;
-            tbLatency.Value = _config.Latency / GlobalConfiguration.LatencyMultiplier;
+            tbLatency.Value = _config.Latency/GlobalConfiguration.LatencyMultiplier;
             tbLeft.Value = _config.DeadZoneL;
             tbRight.Value = _config.DeadZoneR;
             cbNative.Checked = _config.DisableNative;
@@ -64,7 +64,7 @@ namespace ScpMonitor
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            _config.IdleTimeout = tbIdle.Value * GlobalConfiguration.IdleTimeoutMultiplier;
+            _config.IdleTimeout = tbIdle.Value*GlobalConfiguration.IdleTimeoutMultiplier;
             _config.FlipLX = cbLX.Checked;
             _config.FlipLY = cbLY.Checked;
             _config.FlipRX = cbRX.Checked;
@@ -72,12 +72,12 @@ namespace ScpMonitor
             _config.DisableLED = cbLED.Checked;
             _config.DisableRumble = cbRumble.Checked;
             _config.SwapTriggers = cbTriggers.Checked;
-            _config.Latency = tbLatency.Value * GlobalConfiguration.LatencyMultiplier;
-            _config.DeadZoneL = (byte)tbLeft.Value;
-            _config.DeadZoneR = (byte)tbRight.Value;
+            _config.Latency = tbLatency.Value*GlobalConfiguration.LatencyMultiplier;
+            _config.DeadZoneL = (byte) tbLeft.Value;
+            _config.DeadZoneR = (byte) tbRight.Value;
             _config.DisableNative = cbNative.Checked;
             _config.DisableSSP = cbSSP.Checked;
-            _config.Brightness = (byte)tbBrightness.Value;
+            _config.Brightness = (byte) tbBrightness.Value;
             _config.Repair = cbForce.Checked;
 
             _proxy.WriteConfig(_config);
@@ -121,14 +121,9 @@ namespace ScpMonitor
         {
             var value = tbBrightness.Value;
 
-            if (value == 0)
-            {
-                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : Disabled");
-            }
-            else
-            {
-                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : {0}", value);
-            }
+            lblBrightness.Text = value == 0
+                ? string.Format("DS4 Light Bar Brightness : Disabled")
+                : string.Format("DS4 Light Bar Brightness : {0}%", ((value*100)/255));
         }
     }
 }

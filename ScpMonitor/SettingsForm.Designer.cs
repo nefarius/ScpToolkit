@@ -323,9 +323,9 @@
             this.lblBrightness.AutoSize = true;
             this.lblBrightness.Location = new System.Drawing.Point(12, 333);
             this.lblBrightness.Name = "lblBrightness";
-            this.lblBrightness.Size = new System.Drawing.Size(155, 13);
+            this.lblBrightness.Size = new System.Drawing.Size(157, 13);
             this.lblBrightness.TabIndex = 7;
-            this.lblBrightness.Text = "DS4 Light Bar Brightness :  128";
+            this.lblBrightness.Text = "DS4 Light Bar Brightness :  50%";
             // 
             // tbBrightness
             // 
