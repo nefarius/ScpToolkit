@@ -1,0 +1,103 @@
+; =============================================================================
+; Copyright (c) Scarlet.Crush Productions 2012, 2013. All rights reserved.
+;
+; Ds3WinUsb.inf
+; =============================================================================
+
+[Version]
+Signature         = "$Windows NT$"
+Class             = UsbDevice
+ClassGuid         = {88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider          = %ProviderName%
+DriverVer         = 05/05/2013, 1.0.0.103
+CatalogFile       = Ds3WinUsb.cat
+
+; =============================================================================
+
+[ClassInstall32]
+Addreg = SCPWinUsbClassReg
+
+[SCPWinUsbClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-20
+
+; =============================================================================
+
+[DestinationDirs]
+CoInstallers_CopyFiles = 11
+
+[Manufacturer]
+%ProviderName% = SCProductions, NTx86, NTamd64
+
+[SourceDisksNames]
+1 = %DISK_NAME%,,,\x86
+2 = %DISK_NAME%,,,\amd64
+
+[SCProductions.NTx86]
+%DeviceName% = USB_Install, USB\VID_054C&PID_0268
+%DeviceName% = USB_Install, USB\VID_054C&PID_042F
+
+[SourceDisksFiles.x86]
+WinUSBCoInstaller2.dll  = 1
+WdfCoInstaller01009.dll = 1
+
+[SCProductions.NTamd64]
+%DeviceName% = USB_Install, USB\VID_054C&PID_0268
+%DeviceName% = USB_Install, USB\VID_054C&PID_042F
+
+[SourceDisksFiles.amd64]
+WinUSBCoInstaller2.dll  = 2
+WdfCoInstaller01009.dll = 2
+
+; =============================================================================
+
+[USB_Install]
+Include = WinUsb.inf
+Needs   = WINUSB.NT
+
+[USB_Install.Services]
+Include     = WinUsb.inf
+AddService  = WinUSB,0x00000002,WinUSB_ServiceInstall
+
+[WinUSB_ServiceInstall]
+DisplayName     = %WinUSB_SvcDesc%
+ServiceType     = 1
+StartType       = 3
+ErrorControl    = 1
+ServiceBinary   = %12%\WinUSB.sys
+
+; =============================================================================
+
+[USB_Install.Wdf]
+KmdfService = WINUSB, WinUSB_Install
+
+[WinUSB_Install]
+KmdfLibraryVersion = 1.9
+
+[USB_Install.HW]
+AddReg = Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}"
+
+[USB_Install.CoInstallers]
+AddReg    = CoInstallers_AddReg
+CopyFiles = CoInstallers_CopyFiles
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WdfCoInstaller01009.dll,WdfCoInstaller","WinUSBCoInstaller2.dll"
+
+[CoInstallers_CopyFiles]
+WinUSBCoInstaller2.dll
+WdfCoInstaller01009.dll
+
+; =============================================================================
+
+[Strings]
+ProviderName    = "Scarlet.Crush Productions"
+DeviceName      = "USB DS3 Device"
+WinUSB_SvcDesc  = "USB DS3 Driver"
+DISK_NAME       = "USB DS3 WinUsb Installation Media"
+ClassName       = "Universal Serial Bus devices"
+
+; =============================================================================

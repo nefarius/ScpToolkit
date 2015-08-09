@@ -1,0 +1,71 @@
+; =============================================================================
+; Copyright (c) Scarlet.Crush Productions. All rights reserved.
+;
+; ScpVBus.inf
+; =============================================================================
+
+[Version]
+Provider          = %SCProd%
+Signature         = "$Windows NT$"
+Class             = System
+ClassGuid         = {4D36E97D-E325-11CE-BFC1-08002BE10318}
+DriverVer         = 05/05/2013, 1.0.0.103
+CatalogFile       = ScpVBus.cat
+
+; =============================================================================
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[Manufacturer]
+%SCProd% = SCProductions, NTx86, NTamd64
+
+[SourceDisksNames]
+1 = %MediaDescription%
+
+[SCProductions.NTx86]
+%ScpVBus.DeviceDesc% = ScpVBus_Install, root\ScpVBus
+
+[SourceDisksFiles.x86]
+ScpVBus.sys = 1, .\x86,
+
+[SCProductions.NTamd64]
+%ScpVBus.DeviceDesc% = ScpVBus_Install, root\ScpVBus
+
+[SourceDisksFiles.amd64]
+ScpVBus.sys = 1, .\amd64,
+
+; =============================================================================
+
+[ScpVBus_Install.NT]
+CopyFiles = ScpVBus_Install.NT.Copy
+
+[ScpVBus_Install.NT.hw]
+AddReg = ScpVBus_Device_AddReg
+
+[ScpVBus_Install.NT.Copy]
+ScpVBus.sys
+
+[ScpVBus_Device_AddReg]
+
+[ScpVBus_Install.NT.Services]
+AddService = ScpVBus, %SPSVCINST_ASSOCSERVICE%, ScpVBus_Service_Inst
+
+[ScpVBus_Service_Inst]
+DisplayName    = %ScpVBus.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START 
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\ScpVBus.sys
+LoadOrderGroup = Extended Base
+
+; =============================================================================
+
+[Strings]
+SCProd                 = "Scarlet.Crush Productions"
+MediaDescription       = "Scp Virtual Bus Installation Media"
+ScpVBus.DeviceDesc     = "Scp Virtual Bus Driver"
+ScpVBus.SVCDESC        = "Scp Virtual Bus Driver"
+SPSVCINST_ASSOCSERVICE = 0x00000002
+
+; =============================================================================

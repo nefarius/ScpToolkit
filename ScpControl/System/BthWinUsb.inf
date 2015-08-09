@@ -1,0 +1,227 @@
+; =============================================================================
+; Copyright (c) Scarlet.Crush Productions 2012, 2013. All rights reserved.
+;
+; BthWinUsb.inf
+; =============================================================================
+
+[Version]
+Signature         = "$Windows NT$"
+Class             = UsbDevice
+ClassGuid         = {88BAE032-5A81-49f0-BC3D-A4FF138216D6}
+Provider          = %ProviderName%
+DriverVer         = 05/05/2013, 1.0.0.103
+CatalogFile       = BthWinUsb.cat
+
+; =============================================================================
+
+[ClassInstall32]
+Addreg = SCPWinUsbClassReg
+
+[SCPWinUsbClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-20
+
+; =============================================================================
+
+[DestinationDirs]
+CoInstallers_CopyFiles = 11
+
+[Manufacturer]
+%ProviderName% = SCProductions, NTx86, NTamd64
+
+[SourceDisksNames]
+1 = %DISK_NAME%,,,\x86
+2 = %DISK_NAME%,,,\amd64
+
+[SCProductions.NTx86]
+%DeviceName% = USB_Install, USB\VID_03F0&PID_231D
+%DeviceName% = USB_Install, USB\VID_044E&PID_3010
+%DeviceName% = USB_Install, USB\VID_045E&PID_3500
+%DeviceName% = USB_Install, USB\VID_0461&PID_4D75
+%DeviceName% = USB_Install, USB\VID_046D&PID_C709
+%DeviceName% = USB_Install, USB\VID_047D&PID_105E
+%DeviceName% = USB_Install, USB\VID_0489&PID_E011
+%DeviceName% = USB_Install, USB\VID_0489&PID_E027
+%DeviceName% = USB_Install, USB\VID_0489&PID_E042
+%DeviceName% = USB_Install, USB\VID_0489&PID_E04D
+%DeviceName% = USB_Install, USB\VID_0489&PID_E04E
+%DeviceName% = USB_Install, USB\VID_04CA&PID_3006
+%DeviceName% = USB_Install, USB\VID_050D&PID_016A
+%DeviceName% = USB_Install, USB\VID_050D&PID_065A
+%DeviceName% = USB_Install, USB\VID_05AC&PID_8216
+%DeviceName% = USB_Install, USB\VID_05AC&PID_821A
+%DeviceName% = USB_Install, USB\VID_05AC&PID_821D
+%DeviceName% = USB_Install, USB\VID_05AC&PID_821F
+%DeviceName% = USB_Install, USB\VID_05AC&PID_8286
+%DeviceName% = USB_Install, USB\VID_07D1&PID_F101
+%DeviceName% = USB_Install, USB\VID_0930&PID_0214
+%DeviceName% = USB_Install, USB\VID_0930&PID_0215
+%DeviceName% = USB_Install, USB\VID_0A12&PID_0001
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_200A
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2021
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2100
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2101
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2146
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2148
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2150
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2153
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2154
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_217D
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2190
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2198
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21B4
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21E1
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21E3
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21E8
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1715
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1783
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1785
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1788
+%DeviceName% = USB_Install, USB\VID_0B05&PID_179C
+%DeviceName% = USB_Install, USB\VID_0B05&PID_17B5
+%DeviceName% = USB_Install, USB\VID_0B05&PID_B700
+%DeviceName% = USB_Install, USB\VID_0BDA&PID_0724
+%DeviceName% = USB_Install, USB\VID_0BDA&PID_8723
+%DeviceName% = USB_Install, USB\VID_0C10&PID_0000
+%DeviceName% = USB_Install, USB\VID_0CF3&PID_3002
+%DeviceName% = USB_Install, USB\VID_0CF3&PID_3004
+%DeviceName% = USB_Install, USB\VID_0CF3&PID_3005
+%DeviceName% = USB_Install, USB\VID_0DB0&PID_3801
+%DeviceName% = USB_Install, USB\VID_0DF6&PID_2200
+%DeviceName% = USB_Install, USB\VID_0E5E&PID_6622
+%DeviceName% = USB_Install, USB\VID_1131&PID_1001
+%DeviceName% = USB_Install, USB\VID_1131&PID_1004
+%DeviceName% = USB_Install, USB\VID_1286&PID_2044&MI_00
+%DeviceName% = USB_Install, USB\VID_13D3&PID_3304
+%DeviceName% = USB_Install, USB\VID_13D3&PID_3315
+%DeviceName% = USB_Install, USB\VID_413C&PID_8126 
+%DeviceName% = USB_Install, USB\VID_413C&PID_8197
+%DeviceName% = USB_Install, USB\VID_8086&PID_0189
+%DeviceName% = USB_Install, USB\VID_8087&PID_07DA
+
+[SourceDisksFiles.x86]
+WinUSBCoInstaller2.dll  = 1
+WdfCoInstaller01009.dll = 1
+
+[SCProductions.NTamd64]
+%DeviceName% = USB_Install, USB\VID_03F0&PID_231D
+%DeviceName% = USB_Install, USB\VID_044E&PID_3010
+%DeviceName% = USB_Install, USB\VID_045E&PID_3500
+%DeviceName% = USB_Install, USB\VID_0461&PID_4D75
+%DeviceName% = USB_Install, USB\VID_046D&PID_C709
+%DeviceName% = USB_Install, USB\VID_047D&PID_105E
+%DeviceName% = USB_Install, USB\VID_0489&PID_E011
+%DeviceName% = USB_Install, USB\VID_0489&PID_E027
+%DeviceName% = USB_Install, USB\VID_0489&PID_E042
+%DeviceName% = USB_Install, USB\VID_0489&PID_E04D
+%DeviceName% = USB_Install, USB\VID_0489&PID_E04E
+%DeviceName% = USB_Install, USB\VID_04CA&PID_3006
+%DeviceName% = USB_Install, USB\VID_050D&PID_016A
+%DeviceName% = USB_Install, USB\VID_050D&PID_065A
+%DeviceName% = USB_Install, USB\VID_05AC&PID_8216
+%DeviceName% = USB_Install, USB\VID_05AC&PID_821A
+%DeviceName% = USB_Install, USB\VID_05AC&PID_821D
+%DeviceName% = USB_Install, USB\VID_05AC&PID_821F
+%DeviceName% = USB_Install, USB\VID_05AC&PID_8286
+%DeviceName% = USB_Install, USB\VID_07D1&PID_F101
+%DeviceName% = USB_Install, USB\VID_0930&PID_0214
+%DeviceName% = USB_Install, USB\VID_0930&PID_0215
+%DeviceName% = USB_Install, USB\VID_0A12&PID_0001
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_200A
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2021
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2100
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2101
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2146
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2148
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2150
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2153
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2154
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_217D
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2190
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_2198
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21B4
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21E1
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21E3
+%DeviceName% = USB_Install, USB\VID_0A5C&PID_21E8
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1715
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1783
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1785
+%DeviceName% = USB_Install, USB\VID_0B05&PID_1788
+%DeviceName% = USB_Install, USB\VID_0B05&PID_179C
+%DeviceName% = USB_Install, USB\VID_0B05&PID_17B5
+%DeviceName% = USB_Install, USB\VID_0B05&PID_B700
+%DeviceName% = USB_Install, USB\VID_0BDA&PID_0724
+%DeviceName% = USB_Install, USB\VID_0BDA&PID_8723
+%DeviceName% = USB_Install, USB\VID_0C10&PID_0000
+%DeviceName% = USB_Install, USB\VID_0CF3&PID_3002
+%DeviceName% = USB_Install, USB\VID_0CF3&PID_3004
+%DeviceName% = USB_Install, USB\VID_0CF3&PID_3005
+%DeviceName% = USB_Install, USB\VID_0DB0&PID_3801
+%DeviceName% = USB_Install, USB\VID_0DF6&PID_2200
+%DeviceName% = USB_Install, USB\VID_0E5E&PID_6622
+%DeviceName% = USB_Install, USB\VID_1131&PID_1001
+%DeviceName% = USB_Install, USB\VID_1131&PID_1004
+%DeviceName% = USB_Install, USB\VID_1286&PID_2044&MI_00
+%DeviceName% = USB_Install, USB\VID_13D3&PID_3304
+%DeviceName% = USB_Install, USB\VID_13D3&PID_3315
+%DeviceName% = USB_Install, USB\VID_413C&PID_8126 
+%DeviceName% = USB_Install, USB\VID_413C&PID_8197
+%DeviceName% = USB_Install, USB\VID_8086&PID_0189
+%DeviceName% = USB_Install, USB\VID_8087&PID_07DA
+
+[SourceDisksFiles.amd64]
+WinUSBCoInstaller2.dll  = 2
+WdfCoInstaller01009.dll = 2
+
+; =============================================================================
+
+[USB_Install]
+Include = WinUsb.inf
+Needs   = WINUSB.NT
+
+[USB_Install.Services]
+Include     = WinUsb.inf
+AddService  = WinUSB,0x00000002,WinUSB_ServiceInstall
+
+[WinUSB_ServiceInstall]
+DisplayName     = %WinUSB_SvcDesc%
+ServiceType     = 1
+StartType       = 3
+ErrorControl    = 1
+ServiceBinary   = %12%\WinUSB.sys
+
+; =============================================================================
+
+[USB_Install.Wdf]
+KmdfService = WINUSB, WinUSB_Install
+
+[WinUSB_Install]
+KmdfLibraryVersion = 1.9
+
+[USB_Install.HW]
+AddReg = Dev_AddReg
+
+[Dev_AddReg]
+HKR,,DeviceInterfaceGUIDs,0x10000,"{2F87C733-60E0-4355-8515-95D6978418B2}"
+
+[USB_Install.CoInstallers]
+AddReg    = CoInstallers_AddReg
+CopyFiles = CoInstallers_CopyFiles
+
+[CoInstallers_AddReg]
+HKR,,CoInstallers32,0x00010000,"WdfCoInstaller01009.dll,WdfCoInstaller","WinUSBCoInstaller2.dll"
+
+[CoInstallers_CopyFiles]
+WinUSBCoInstaller2.dll
+WdfCoInstaller01009.dll
+
+; =============================================================================
+
+[Strings]
+ProviderName    = "Scarlet.Crush Productions"
+DeviceName      = "BTH DS3 Device"
+WinUSB_SvcDesc  = "BTH DS3 Driver"
+DISK_NAME       = "BTH DS3 WinUsb Installation Media"
+ClassName       = "Universal Serial Bus devices"
+
+; =============================================================================
