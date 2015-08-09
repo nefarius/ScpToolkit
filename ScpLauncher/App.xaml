@@ -11,12 +11,13 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
         -->
+        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Dark Theme -->
                 <ResourceDictionary Source="Themes/MetroDark/MetroDark.MSControls.Core.Implicit.xaml" />
                 <ResourceDictionary Source="Themes/MetroDark/MetroDark.MSControls.Toolkit.Implicit.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
+
     </Application.Resources>
 </Application>
