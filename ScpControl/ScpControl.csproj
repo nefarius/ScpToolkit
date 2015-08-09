@@ -158,9 +158,6 @@
     <Compile Include="ScpProxy.Designer.cs">
       <DependentUpon>ScpProxy.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScpProxy.Events.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="ScpTimer.cs">
       <SubType>Component</SubType>
     </Compile>
