@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Forms;
 using ScpControl.Properties;
 
 namespace ScpControl.ScpCore
@@ -79,6 +80,7 @@ namespace ScpControl.ScpCore
         public bool DisableLightBar
         {
             get { return Settings.Default.Ds4LightBarBrightness == 0; }
+            set { Settings.Default.Ds4LightBarBrightness = (byte)(value ? 0 : 128); }
         }
 
         public bool IdleDisconnect
@@ -147,7 +149,7 @@ namespace ScpControl.ScpCore
 
         public object Clone()
         {
-            return (GlobalConfiguration) MemberwiseClone();
+            return (GlobalConfiguration)MemberwiseClone();
         }
 
         public static void Load()
@@ -162,14 +164,14 @@ namespace ScpControl.ScpCore
 
         public static GlobalConfiguration Request()
         {
-            return (GlobalConfiguration) Instance.Clone();
+            return (GlobalConfiguration)Instance.Clone();
         }
 
         public static void Submit(GlobalConfiguration configuration)
         {
             foreach (
                 var propertyInfo in
-                    typeof (GlobalConfiguration).GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
+                    typeof(GlobalConfiguration).GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
             {
                 propertyInfo.SetValue(Instance, propertyInfo.GetValue(configuration));
             }

@@ -125,7 +125,7 @@ namespace ScpMonitor
 
             if (value == 0)
             {
-                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : Disabled", value);
+                lblBrightness.Text = string.Format("DS4 Light Bar Brighness : Disabled");
             }
             else
             {

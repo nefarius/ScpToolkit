@@ -14,7 +14,7 @@ namespace ScpControl.Bluetooth
         private BthHandle[] m_L2CAP_Cmd_Handle = new BthHandle[2];
         private BthHandle[] m_L2CAP_Int_Handle = new BthHandle[2];
         private BthHandle[] m_L2CAP_Svc_Handle = new BthHandle[2];
-        protected byte[] LocalMac = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        protected byte[] LocalMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         private DsModel _model = DsModel.DS3;
         protected string m_Remote_Name = string.Empty, MacDisplayName = string.Empty;
 
@@ -198,40 +198,19 @@ namespace ScpControl.Bluetooth
         /// <returns></returns>
         public virtual byte[] Get_SCID(byte lsb, byte msb)
         {
-            try
+            if (m_L2CAP_Cmd_Handle[1] != null && m_L2CAP_Cmd_Handle[1].Equals(lsb, msb))
             {
-                if (m_L2CAP_Cmd_Handle[1].Equals(lsb, msb))
-                {
-                    return m_L2CAP_Cmd_Handle[0].Bytes;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
+                return m_L2CAP_Cmd_Handle[0].Bytes;
             }
 
-            try
+            if (m_L2CAP_Int_Handle[1] != null && m_L2CAP_Int_Handle[1].Equals(lsb, msb))
             {
-                if (m_L2CAP_Int_Handle[1].Equals(lsb, msb))
-                {
-                    return m_L2CAP_Int_Handle[0].Bytes;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
+                return m_L2CAP_Int_Handle[0].Bytes;
             }
 
-            try
+            if (m_L2CAP_Svc_Handle[1] != null && m_L2CAP_Svc_Handle[1].Equals(lsb, msb))
             {
-                if (m_L2CAP_Svc_Handle[1].Equals(lsb, msb))
-                {
-                    return m_L2CAP_Svc_Handle[0].Bytes;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
+                return m_L2CAP_Svc_Handle[0].Bytes;
             }
 
             throw new Exception("L2CAP SCID Not Found");
