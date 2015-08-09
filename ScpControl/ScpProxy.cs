@@ -193,6 +193,13 @@ namespace ScpControl
             return _rootHub.GetPadDetail(pad);
         }
 
+        /// <summary>
+        ///     Submit a rumble request for a specified pad.
+        /// </summary>
+        /// <param name="pad">The target pad.</param>
+        /// <param name="large">Rumble with the large (typically left) motor.</param>
+        /// <param name="small">Rumble with the small (typically right) motor.</param>
+        /// <returns>Returns request status.</returns>
         public bool Rumble(DsPadId pad, byte large, byte small)
         {
             return _rootHub.Rumble(pad, large, small);
