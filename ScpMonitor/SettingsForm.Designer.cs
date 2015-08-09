@@ -86,6 +86,7 @@
             this.cbRY.Size = new System.Drawing.Size(41, 17);
             this.cbRY.TabIndex = 3;
             this.cbRY.Text = "RY";
+            this.ttSSP.SetToolTip(this.cbRY, "Inverts the Y-Axis on the right Thumbstick");
             this.cbRY.UseVisualStyleBackColor = true;
             // 
             // cbRX
@@ -96,6 +97,7 @@
             this.cbRX.Size = new System.Drawing.Size(41, 17);
             this.cbRX.TabIndex = 2;
             this.cbRX.Text = "RX";
+            this.ttSSP.SetToolTip(this.cbRX, "Inverts the X-Axis on the right Thumbstick");
             this.cbRX.UseVisualStyleBackColor = true;
             // 
             // cbLY
@@ -106,6 +108,7 @@
             this.cbLY.Size = new System.Drawing.Size(39, 17);
             this.cbLY.TabIndex = 1;
             this.cbLY.Text = "LY";
+            this.ttSSP.SetToolTip(this.cbLY, "Inverts the Y-Axis on the left Thumbstick");
             this.cbLY.UseVisualStyleBackColor = true;
             // 
             // cbLX
@@ -116,6 +119,7 @@
             this.cbLX.Size = new System.Drawing.Size(39, 17);
             this.cbLX.TabIndex = 0;
             this.cbLX.Text = "LX";
+            this.ttSSP.SetToolTip(this.cbLX, "Inverts the X-Axis on the left Thumbstick");
             this.cbLX.UseVisualStyleBackColor = true;
             // 
             // tbIdle
@@ -128,6 +132,8 @@
             this.tbIdle.Name = "tbIdle";
             this.tbIdle.Size = new System.Drawing.Size(270, 34);
             this.tbIdle.TabIndex = 2;
+            this.ttSSP.SetToolTip(this.tbIdle, "Timout in minutes after an untouched controller disconnects and goes into energy " +
+        "saving");
             this.tbIdle.Value = 10;
             this.tbIdle.ValueChanged += new System.EventHandler(this.tbIdle_ValueChanged);
             // 
@@ -139,6 +145,7 @@
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 16;
             this.btnOK.Text = "OK";
+            this.ttSSP.SetToolTip(this.btnOK, "Save and activate configuration changes");
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -151,6 +158,7 @@
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 17;
             this.btnCancel.Text = "Cancel";
+            this.ttSSP.SetToolTip(this.btnCancel, "Discard changes");
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
@@ -171,6 +179,7 @@
             this.cbLED.Size = new System.Drawing.Size(109, 17);
             this.cbLED.TabIndex = 8;
             this.cbLED.Text = "Disable DS3 LED";
+            this.ttSSP.SetToolTip(this.cbLED, "Shut off the status LEDs on the DS3 during operation");
             this.cbLED.UseVisualStyleBackColor = true;
             // 
             // cbRumble
@@ -181,6 +190,7 @@
             this.cbRumble.Size = new System.Drawing.Size(100, 17);
             this.cbRumble.TabIndex = 9;
             this.cbRumble.Text = "Disable Rumble";
+            this.ttSSP.SetToolTip(this.cbRumble, "Don\'t process rumble requests");
             this.cbRumble.UseVisualStyleBackColor = true;
             // 
             // cbTriggers
@@ -204,6 +214,7 @@
             this.tbLatency.Name = "tbLatency";
             this.tbLatency.Size = new System.Drawing.Size(270, 34);
             this.tbLatency.TabIndex = 4;
+            this.ttSSP.SetToolTip(this.tbLatency, "Timespan to continue rumbling after request has finished");
             this.tbLatency.Value = 8;
             this.tbLatency.ValueChanged += new System.EventHandler(this.tbLatency_ValueChanged);
             // 
@@ -281,6 +292,7 @@
             this.cbNative.Size = new System.Drawing.Size(122, 17);
             this.cbNative.TabIndex = 11;
             this.cbNative.Text = "Disable Native Feed";
+            this.ttSSP.SetToolTip(this.cbNative, "Disable network broadcast of controller input stream");
             this.cbNative.UseVisualStyleBackColor = true;
             // 
             // cbSSP
@@ -291,6 +303,8 @@
             this.cbSSP.Size = new System.Drawing.Size(85, 17);
             this.cbSSP.TabIndex = 12;
             this.cbSSP.Text = "Disable SSP";
+            this.ttSSP.SetToolTip(this.cbSSP, "Disable Secure Simple Pairing on Bluetooth connections (requires Service Restart)" +
+        "");
             this.cbSSP.UseVisualStyleBackColor = true;
             // 
             // cbForce
@@ -325,6 +339,7 @@
             this.tbBrightness.Size = new System.Drawing.Size(270, 34);
             this.tbBrightness.TabIndex = 6;
             this.tbBrightness.TickFrequency = 16;
+            this.ttSSP.SetToolTip(this.tbBrightness, "Brightness level of the light bar (DS4 only)");
             this.tbBrightness.Value = 128;
             this.tbBrightness.ValueChanged += new System.EventHandler(this.tbBrightness_ValueChanged);
             // 

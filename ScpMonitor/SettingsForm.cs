@@ -20,8 +20,6 @@ namespace ScpMonitor
             _proxy = proxy;
 
             InitializeComponent();
-
-            ttSSP.SetToolTip(cbSSP, @"Requires Service Restart");
         }
 
         public void Reset()
