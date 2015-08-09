@@ -54,6 +54,7 @@
             this.cbForce = new System.Windows.Forms.CheckBox();
             this.lblBrightness = new System.Windows.Forms.Label();
             this.tbBrightness = new System.Windows.Forms.TrackBar();
+            this.cbDisableDs4LightBar = new System.Windows.Forms.CheckBox();
             this.gbFlip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbIdle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbLatency)).BeginInit();
@@ -134,7 +135,7 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(126, 447);
+            this.btnOK.Location = new System.Drawing.Point(126, 469);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 16;
@@ -146,7 +147,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(207, 447);
+            this.btnCancel.Location = new System.Drawing.Point(207, 469);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 17;
@@ -168,9 +169,9 @@
             this.cbLED.AutoSize = true;
             this.cbLED.Location = new System.Drawing.Point(12, 373);
             this.cbLED.Name = "cbLED";
-            this.cbLED.Size = new System.Drawing.Size(85, 17);
+            this.cbLED.Size = new System.Drawing.Size(109, 17);
             this.cbLED.TabIndex = 8;
-            this.cbLED.Text = "Disable LED";
+            this.cbLED.Text = "Disable DS3 LED";
             this.cbLED.UseVisualStyleBackColor = true;
             // 
             // cbRumble
@@ -329,11 +330,23 @@
             this.tbBrightness.Value = 128;
             this.tbBrightness.ValueChanged += new System.EventHandler(this.tbBrightness_ValueChanged);
             // 
+            // cbDisableDs4LightBar
+            // 
+            this.cbDisableDs4LightBar.AutoSize = true;
+            this.cbDisableDs4LightBar.Location = new System.Drawing.Point(12, 443);
+            this.cbDisableDs4LightBar.Name = "cbDisableDs4LightBar";
+            this.cbDisableDs4LightBar.Size = new System.Drawing.Size(125, 17);
+            this.cbDisableDs4LightBar.TabIndex = 19;
+            this.cbDisableDs4LightBar.Text = "Disable DS4 light bar";
+            this.cbDisableDs4LightBar.UseVisualStyleBackColor = true;
+            this.cbDisableDs4LightBar.Visible = false;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(294, 482);
+            this.ClientSize = new System.Drawing.Size(294, 504);
+            this.Controls.Add(this.cbDisableDs4LightBar);
             this.Controls.Add(this.cbForce);
             this.Controls.Add(this.lblBrightness);
             this.Controls.Add(this.tbBrightness);
@@ -400,5 +413,6 @@
         private System.Windows.Forms.Label lblBrightness;
         private System.Windows.Forms.TrackBar tbBrightness;
         private System.Windows.Forms.CheckBox cbForce;
+        private System.Windows.Forms.CheckBox cbDisableDs4LightBar;
     }
 }
