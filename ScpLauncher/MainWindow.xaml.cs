@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ScpLauncher
 {
@@ -20,9 +10,26 @@ namespace ScpLauncher
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void DriverInstallerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Path.Combine(WorkingDirectory, "ScpDriver.exe"));
+        }
+
+        private void ServerMonitorButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Path.Combine(WorkingDirectory, "ScpMonitor.exe"));
+        }
+
+        private void StartServerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Path.Combine(WorkingDirectory, "ScpServer.exe"));
         }
     }
 }

@@ -13,13 +13,38 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
+        <!-- Driver installer -->
         <Button Grid.Row="0" Grid.Column="0"
-                Padding="10" Margin="20">
+                Padding="10" Margin="20" Click="DriverInstallerButton_Click">
+            <Button.Content>
+                <StackPanel>
+                    <Image Source="Icons/window-tools.ico"
+                           Height="64" Width="64"/>
+                    <Label Content="Launch driver installer" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Button.Content>
+        </Button>
+
+        <!-- Server monitor -->
+        <Button Grid.Row="0" Grid.Column="1"
+                Padding="10" Margin="20" Click="ServerMonitorButton_Click">
             <Button.Content>
                 <StackPanel>
                     <Image Source="Icons/gamepad-gear.ico"
                            Height="64" Width="64"/>
-                    <Label Content="Launch driver installer" Margin="0,5,0,0"/>
+                    <Label Content="Launch server monitor" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Button.Content>
+        </Button>
+
+        <!-- Launch server -->
+        <Button Grid.Row="1" Grid.Column="0"
+                Padding="10" Margin="20" Click="StartServerButton_Click">
+            <Button.Content>
+                <StackPanel>
+                    <Image Source="Icons/network-server.ico"
+                           Height="64" Width="64"/>
+                    <Label Content="Launch standalone server" Margin="0,5,0,0"/>
                 </StackPanel>
             </Button.Content>
         </Button>
