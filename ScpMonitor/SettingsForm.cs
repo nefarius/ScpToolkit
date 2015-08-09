@@ -12,7 +12,6 @@ namespace ScpMonitor
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private GlobalConfiguration _config;
-        private readonly byte[] _mBuffer = new byte[17];
         private readonly ScpProxy _proxy;
 
         public SettingsForm(ScpProxy proxy)
