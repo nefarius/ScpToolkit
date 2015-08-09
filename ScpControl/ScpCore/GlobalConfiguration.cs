@@ -2,7 +2,7 @@
 
 namespace ScpControl.ScpCore
 {
-    public static class Global
+    public static class GlobalConfiguration
     {
         private static readonly byte[] m_BD_Link =
         {

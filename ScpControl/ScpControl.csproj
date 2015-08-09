@@ -134,7 +134,7 @@
     <Compile Include="ScpCore\DsDetail.cs" />
     <Compile Include="ScpCore\DsPacket.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
-    <Compile Include="ScpCore\Global.cs" />
+    <Compile Include="ScpCore\GlobalConfiguration.cs" />
     <Compile Include="ScpCore\HCI.cs" />
     <Compile Include="ScpCore\L2CAP.cs" />
     <Compile Include="ScpDevice.Interop.cs">

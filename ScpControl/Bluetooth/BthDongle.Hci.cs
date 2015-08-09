@@ -117,7 +117,7 @@ namespace ScpControl.Bluetooth
             Buffer[7] = BD_Addr[4];
             Buffer[8] = BD_Addr[5];
 
-            for (var Index = 0; Index < Global.BdLink.Length; Index++) Buffer[Index + 9] = Global.BdLink[Index];
+            for (var Index = 0; Index < GlobalConfiguration.BdLink.Length; Index++) Buffer[Index + 9] = GlobalConfiguration.BdLink[Index];
 
             return HCI_Command(HCI.Command.HCI_Link_Key_Request_Reply, Buffer);
         }

@@ -203,9 +203,9 @@ namespace ScpControl.Bluetooth
             {
                 var now = DateTime.Now;
 
-                if (m_IsIdle && Global.IdleDisconnect)
+                if (m_IsIdle && GlobalConfiguration.IdleDisconnect)
                 {
-                    if ((now - m_Idle).TotalMilliseconds >= Global.IdleTimeout)
+                    if ((now - m_Idle).TotalMilliseconds >= GlobalConfiguration.IdleTimeout)
                     {
                         Log.Debug("++ Idle Disconnect Triggered");
 

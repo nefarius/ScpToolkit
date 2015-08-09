@@ -200,11 +200,11 @@ namespace ScpControl
                         Output[(uint) X360Axis.LT] = Input[(uint) Ds3Axis.L2];
                         Output[(uint) X360Axis.RT] = Input[(uint) Ds3Axis.R2];
 
-                        if (!DeadZone(Global.DeadZoneL, Input[(uint) Ds3Axis.LX], Input[(uint) Ds3Axis.LY]))
+                        if (!DeadZone(GlobalConfiguration.DeadZoneL, Input[(uint) Ds3Axis.LX], Input[(uint) Ds3Axis.LY]))
                             // Left Stick DeadZone
                         {
-                            var thumbLx = +Scale(Input[(uint) Ds3Axis.LX], Global.FlipLX);
-                            var thumbLy = -Scale(Input[(uint) Ds3Axis.LY], Global.FlipLY);
+                            var thumbLx = +Scale(Input[(uint) Ds3Axis.LX], GlobalConfiguration.FlipLX);
+                            var thumbLy = -Scale(Input[(uint) Ds3Axis.LY], GlobalConfiguration.FlipLY);
 
                             Output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
                             Output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
@@ -213,11 +213,11 @@ namespace ScpControl
                             Output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (!DeadZone(Global.DeadZoneR, Input[(uint) Ds3Axis.RX], Input[(uint) Ds3Axis.RY]))
+                        if (!DeadZone(GlobalConfiguration.DeadZoneR, Input[(uint) Ds3Axis.RX], Input[(uint) Ds3Axis.RY]))
                             // Right Stick DeadZone
                         {
-                            var thumbRx = +Scale(Input[(uint) Ds3Axis.RX], Global.FlipRX);
-                            var thumbRy = -Scale(Input[(uint) Ds3Axis.RY], Global.FlipRY);
+                            var thumbRx = +Scale(Input[(uint) Ds3Axis.RX], GlobalConfiguration.FlipRX);
+                            var thumbRy = -Scale(Input[(uint) Ds3Axis.RY], GlobalConfiguration.FlipRY);
 
                             Output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
                             Output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
@@ -259,11 +259,11 @@ namespace ScpControl
                         Output[(uint) X360Axis.LT] = Input[(uint) Ds4Axis.L2];
                         Output[(uint) X360Axis.RT] = Input[(uint) Ds4Axis.R2];
 
-                        if (!DeadZone(Global.DeadZoneL, Input[(uint) Ds4Axis.LX], Input[(uint) Ds4Axis.LY]))
+                        if (!DeadZone(GlobalConfiguration.DeadZoneL, Input[(uint) Ds4Axis.LX], Input[(uint) Ds4Axis.LY]))
                             // Left Stick DeadZone
                         {
-                            var thumbLx = +Scale(Input[(uint) Ds4Axis.LX], Global.FlipLX);
-                            var thumbLy = -Scale(Input[(uint) Ds4Axis.LY], Global.FlipLY);
+                            var thumbLx = +Scale(Input[(uint) Ds4Axis.LX], GlobalConfiguration.FlipLX);
+                            var thumbLy = -Scale(Input[(uint) Ds4Axis.LY], GlobalConfiguration.FlipLY);
 
                             Output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
                             Output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
@@ -272,11 +272,11 @@ namespace ScpControl
                             Output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (!DeadZone(Global.DeadZoneR, Input[(uint) Ds4Axis.RX], Input[(uint) Ds4Axis.RY]))
+                        if (!DeadZone(GlobalConfiguration.DeadZoneR, Input[(uint) Ds4Axis.RX], Input[(uint) Ds4Axis.RY]))
                             // Right Stick DeadZone
                         {
-                            var thumbRx = +Scale(Input[(uint) Ds4Axis.RX], Global.FlipRX);
-                            var thumbRy = -Scale(Input[(uint) Ds4Axis.RY], Global.FlipRY);
+                            var thumbRx = +Scale(Input[(uint) Ds4Axis.RX], GlobalConfiguration.FlipRX);
+                            var thumbRy = -Scale(Input[(uint) Ds4Axis.RY], GlobalConfiguration.FlipRY);
 
                             Output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
                             Output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);

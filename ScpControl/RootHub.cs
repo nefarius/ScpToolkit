@@ -54,7 +54,7 @@ namespace ScpControl
 
         public bool IsNativeFeedAvailable()
         {
-            return !Global.DisableNative;
+            return !GlobalConfiguration.DisableNative;
         }
 
         public string GetActiveProfile()
@@ -122,12 +122,12 @@ namespace ScpControl
 
         public IEnumerable<byte> GetConfig()
         {
-            return Global.Packed;
+            return GlobalConfiguration.Packed;
         }
 
         public void SetConfig(byte[] buffer)
         {
-            Global.Packed = buffer;
+            GlobalConfiguration.Packed = buffer;
         }
 
         public IEnumerable<string> GetStatusData()
@@ -318,11 +318,11 @@ namespace ScpControl
 
             scpMap.Open();
 
-            opened |= _scpBus.Open(Global.Bus);
+            opened |= _scpBus.Open(GlobalConfiguration.Bus);
             opened |= _usbHub.Open();
             opened |= _bthHub.Open();
 
-            Global.Load();
+            GlobalConfiguration.Load();
             return opened;
         }
 
@@ -403,7 +403,7 @@ namespace ScpControl
         {
             Stop();
 
-            Global.Save();
+            GlobalConfiguration.Save();
 
             return true;
         }
@@ -544,7 +544,7 @@ namespace ScpControl
                 _mNative[serial][0] = _mNative[serial][1] = 0;
             }
 
-            if (Global.DisableNative)
+            if (GlobalConfiguration.DisableNative)
                 return;
 
             lock (this)

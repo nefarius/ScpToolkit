@@ -9,7 +9,7 @@ namespace ScpControl.Bluetooth
         private const int R = 9; // Led Offsets
         private const int G = 10; // Led Offsets
         private const int B = 11; // Led Offsets
-        private byte _mBrightness = Global.Brightness;
+        private byte _mBrightness = GlobalConfiguration.Brightness;
         private bool _mDisableLightBar;
         private bool _mFlash;
 
@@ -191,7 +191,7 @@ namespace ScpControl.Bluetooth
                         break;
                 }
 
-                if (Global.DisableLightBar)
+                if (GlobalConfiguration.DisableLightBar)
                 {
                     _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
                 }
@@ -319,7 +319,7 @@ namespace ScpControl.Bluetooth
         {
             lock (this)
             {
-                if (Global.DisableRumble)
+                if (GlobalConfiguration.DisableRumble)
                 {
                     _hidReport[7] = 0;
                     _hidReport[8] = 0;
@@ -368,7 +368,7 @@ namespace ScpControl.Bluetooth
             {
                 if (m_State == DsState.Connected)
                 {
-                    if (!Global.DisableLightBar)
+                    if (!GlobalConfiguration.DisableLightBar)
                     {
                         if (Battery < DsBattery.Medium)
                         {
@@ -392,15 +392,15 @@ namespace ScpControl.Bluetooth
                         }
                     }
 
-                    if (Global.Brightness != _mBrightness)
+                    if (GlobalConfiguration.Brightness != _mBrightness)
                     {
-                        _mBrightness = Global.Brightness;
+                        _mBrightness = GlobalConfiguration.Brightness;
                         PadId = PadId;
                     }
 
-                    if (Global.DisableLightBar != _mDisableLightBar)
+                    if (GlobalConfiguration.DisableLightBar != _mDisableLightBar)
                     {
-                        _mDisableLightBar = Global.DisableLightBar;
+                        _mDisableLightBar = GlobalConfiguration.DisableLightBar;
                         PadId = PadId;
                     }
 
