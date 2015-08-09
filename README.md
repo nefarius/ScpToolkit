@@ -24,7 +24,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
   * See **Compatible Bluetooth Dongles**
  * For DS4s to be useable the minimal supported Bluetooth version is **2.1**!
 
-## Installation How-To
+## <a name="install"></a>Installation How-To
 1. Connect your Dongle (only needed if you want to use it wirelessly) and DS3 via USB and let Windows install it's default drivers.
 2. Download the [latest release of ScpServer](https://github.com/nefarius/ScpServer/releases/latest) to an arbitrary location on your PC.
 3. Right click on the archive and select `Properties` (depends on your native OS language).
