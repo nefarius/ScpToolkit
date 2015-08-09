@@ -209,10 +209,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BugTrap\BTAtlWindow.h" />
-    <ClInclude Include="BugTrap\BTMfcWindow.h" />
-    <ClInclude Include="BugTrap\BTTrace.h" />
-    <ClInclude Include="BugTrap\BugTrap.h" />
     <ClInclude Include="SCPExtended.h">
       <FileType>CppForm</FileType>
     </ClInclude>

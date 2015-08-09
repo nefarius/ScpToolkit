@@ -47,18 +47,6 @@
     <ClInclude Include="SCPExtensions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BugTrap\BTAtlWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BugTrap\BTMfcWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BugTrap\BTTrace.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BugTrap\BugTrap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ARPIcon.ico">
