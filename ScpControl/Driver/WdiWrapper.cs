@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using log4net;
 
 namespace ScpControl.Driver
@@ -190,6 +191,19 @@ namespace ScpControl.Driver
         /// <returns></returns>
         public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName, IntPtr hwnd)
         {
+            // regex to extract vendir ID and product ID from hardware ID string
+            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
+            // matched groups
+            var matches = regex.Match(hardwareId).Groups;
+            
+            // very basic check
+            if(matches.Count < 3)
+                throw new ArgumentException("Supplied Hardware-ID is malformed");
+
+            // get values
+            var vid = matches[1].Value.ToUpper();
+            var pid = matches[2].Value.ToUpper();
+
             // default return value is no matching device found
             var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
             // pointer to write device list to
@@ -223,14 +237,26 @@ namespace ScpControl.Driver
                 // translate device info to managed object
                 var info = (wdi_device_info)Marshal.PtrToStructure(pList, typeof(wdi_device_info));
 
+                // extract VID and PID
+                var currentMatches = regex.Match(info.hardware_id).Groups;
+                var currentVid = currentMatches[1].Value.ToUpper();
+                var currentPid = currentMatches[2].Value.ToUpper();
+
                 // does the HID of the current device match the desired HID
-                if (string.CompareOrdinal(info.hardware_id, hardwareId) == 0)
+                if (vid == currentVid && pid == currentPid)
                 {
+                    Log.InfoFormat("Device with specified VID ({0}) and PID ({1}) found, preparing driver installation...",
+                        vid, pid);
+
                     // prepare driver installation (generates the signed driver and installation helpers)
                     if ((result = wdi_prepare_driver(pList, driverPath, infName, ref prepOpts)) == WdiErrorCode.WDI_SUCCESS)
                     {
+                        Log.InfoFormat("Driver \"{0}\" successfully created in directory \"{1}\"", infName, driverPath);
+
                         // install/replace the current devices driver
                         result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
+
+                        Log.InfoFormat("Installation result: {0}", Enum.GetName(typeof(WdiErrorCode), result));
                     }
 
                     break;
