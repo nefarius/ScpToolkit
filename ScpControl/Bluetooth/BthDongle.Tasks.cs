@@ -80,30 +80,7 @@ namespace ScpControl.Bluetooth
                             if (connection.Started)
                             {
                                 OnInitialised(connection);
-                                break;
                             }
-
-                            #region Fake DS3 workaround
-
-                            if (connection.CanStartSvc)
-                            {
-                                UInt16 DCID = BthConnection.DCID++;
-                                L2_DCID = new Byte[2] { (Byte)((DCID >> 0) & 0xFF), (Byte)((DCID >> 8) & 0xFF) };
-
-                                if (!connection.IsFake)
-                                {
-                                    L2CAP_Connection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_DCID, L2CAP.PSM.HID_Service);
-                                    Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]", L2CAP.Code.L2CAP_Connection_Request, (Byte)L2CAP.Code.L2CAP_Connection_Request, (Byte)L2CAP.PSM.HID_Service);
-                                }
-                                else
-                                {
-                                    connection.CanStartSvc = false;
-                                    OnInitialised(connection);
-                                }
-                            }
-
-                            #endregion
-
                             break;
 
                         case L2CAP.Code.L2CAP_Disconnection_Request:
@@ -272,13 +249,22 @@ namespace ScpControl.Bluetooth
 
                                                     L2_DCID = new byte[2] { (byte)((DCID >> 0) & 0xFF), (byte)((DCID >> 8) & 0xFF) };
 
-                                                    L2CAP_Connection_Request(connection.HciHandle.Bytes, _hidReportId++,
-                                                        L2_DCID,
-                                                        L2CAP.PSM.HID_Service);
-                                                    Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
-                                                        L2CAP.Code.L2CAP_Connection_Request,
-                                                        (byte)L2CAP.Code.L2CAP_Connection_Request,
-                                                        (byte)L2CAP.PSM.HID_Service);
+                                                    if (!connection.IsFake)
+                                                    {
+                                                        L2CAP_Connection_Request(connection.HciHandle.Bytes,
+                                                            _hidReportId++,
+                                                            L2_DCID,
+                                                            L2CAP.PSM.HID_Service);
+                                                        Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
+                                                            L2CAP.Code.L2CAP_Connection_Request,
+                                                            (byte) L2CAP.Code.L2CAP_Connection_Request,
+                                                            (byte) L2CAP.PSM.HID_Service);
+                                                    }
+                                                    else
+                                                    {
+                                                        connection.CanStartSvc = false;
+                                                        OnInitialised(connection);
+                                                    }
                                                 }
                                             }
                                             break;
@@ -593,20 +579,17 @@ namespace ScpControl.Bluetooth
 
                                     Connection = Add(Buffer[3], (byte)(Buffer[4] | 0x20), nameList[bd]);
 
-                                    #region Fake DS3 workaround
-
-                                    if (Buffer[10] != 0x00 || Buffer[9] != 0x07 || Buffer[8] != 0x04)
+                                    // TODO: fix workaround, breaks my controller
+                                    /* if (Buffer[10] != 0x00 || Buffer[9] != 0x07 || Buffer[8] != 0x04)
                                     {
                                         Connection.IsFake = true;
-                                        Log.Debug("-- Fake DualShock3 found. Workaround applied");
+                                        Log.Info("-- Fake DualShock3 found, workaround applied");
                                     }
                                     else
                                     {
                                         Connection.IsFake = false;
-                                        Log.Debug("-- Genuine Sony DualShock3 found.");
-                                    }
-
-                                    #endregion
+                                        Log.Info("-- Genuine Sony DualShock3 found");
+                                    } */
 
                                     // fetch configuration from .INI
                                     var bdc = IniConfig.Instance.BthDongle;
