@@ -270,6 +270,20 @@ namespace ScpControl.Bluetooth
 
                     if (GlobalConfiguration.Instance.DisableLED) _hidReport[11] = 0;
 
+                    #region Fake DS3 workaround
+
+                    // TODO: doesn't work, breaks communication with "genuine" 3rd party controller
+                    /*
+                    if (IsFake)
+                    {
+                        _hidReport[0] = 0xA2;
+                        _hidReport[3] = 0x00;
+                        _hidReport[5] = 0x00;
+                    }
+                     * */
+
+                    #endregion
+
                     if (!m_Blocked && m_Queued > 0)
                     {
                         if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Latency)

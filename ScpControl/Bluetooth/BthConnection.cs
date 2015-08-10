@@ -73,6 +73,8 @@ namespace ScpControl.Bluetooth
 
         public virtual bool Started { get; set; }
 
+        public virtual bool IsFake { get; set; }
+
         public virtual DsModel Model
         {
             get { return _model; }

@@ -491,7 +491,7 @@ namespace ScpControl
             {
                 _scpBus.Plugin((int)arrived.PadId + 1);
 
-                Log.DebugFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
+                Log.InfoFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
             }
             e.Handled = bFound;
         }
