@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using log4net;
+using ScpControl.Driver;
 using ScpControl.Utilities;
 using ScpDriver.Driver;
 using ScpDriver.Properties;
@@ -24,6 +25,7 @@ namespace ScpDriver
         private bool _busDeviceConfigured;
         private bool _busDriverConfigured;
         private bool _ds3DriverConfigured;
+        private bool _ds4DriverConfigured;
         private bool _reboot;
         private bool _scpServiceConfigured;
         private OsType _valid = OsType.Invalid;
@@ -193,7 +195,7 @@ namespace ScpDriver
 
             await Task.Run(() =>
             {
-                string devPath = string.Empty, InstanceId = string.Empty;
+                string devPath = string.Empty, instanceId = string.Empty;
 
                 try
                 {
@@ -207,7 +209,7 @@ namespace ScpDriver
 
                     if (cbBus.Checked)
                     {
-                        if (!Devcon.Find(Settings.Default.Ds3BusClassGuid, ref devPath, ref InstanceId))
+                        if (!Devcon.Find(Settings.Default.Ds3BusClassGuid, ref devPath, ref instanceId))
                         {
                             if (Devcon.Create("System", new Guid("{4D36E97D-E325-11CE-BFC1-08002BE10318}"),
                                 "root\\ScpVBus\0\0"))
@@ -225,18 +227,20 @@ namespace ScpDriver
 
                     if (cbBluetooth.Checked)
                     {
-                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"), flags,
-                            out rebootRequired);
-                        _reboot |= rebootRequired;
-                        if (result == 0) _bthDriverConfigured = true;
+                        result = DriverInstaller.InstallBluetoothDongles();
+                        if (result > 0) _bthDriverConfigured = true;
                     }
 
                     if (cbDS3.Checked)
                     {
-                        result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"), flags,
-                            out rebootRequired);
-                        _reboot |= rebootRequired;
-                        if (result == 0) _ds3DriverConfigured = true;
+                        result = DriverInstaller.InstallDualShock3Controllers();
+                        if (result > 0) _ds3DriverConfigured = true;
+                    }
+
+                    if (cbDs4.Checked)
+                    {
+                        result = DriverInstaller.InstallDualShock4Controllers();
+                        if (result > 0) _ds4DriverConfigured = true;
                     }
 
                     if (cbService.Checked)
@@ -308,6 +312,9 @@ namespace ScpDriver
             if (_bthDriverConfigured)
                 Log.Info("Bluetooth Driver installed");
 
+            if (_ds4DriverConfigured)
+                Log.Info("DS4 USB Driver installed");
+
             #endregion
         }
 
@@ -360,8 +367,8 @@ namespace ScpDriver
                         service.Uninstall(state);
                         _scpServiceConfigured = true;
                     }
-
-                    if (cbBluetooth.Checked)
+                    
+                    /* if (cbBluetooth.Checked)
                     {
                         result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"),
                             DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
@@ -377,7 +384,7 @@ namespace ScpDriver
                             out rebootRequired);
                         _reboot |= rebootRequired;
                         if (result == 0) _ds3DriverConfigured = true;
-                    }
+                    } */
 
                     if (cbBus.Checked && Devcon.Find(Settings.Default.Ds3BusClassGuid, ref devPath, ref instanceId))
                     {

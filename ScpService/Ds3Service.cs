@@ -56,51 +56,14 @@ namespace ScpService
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
-            // install compatible bluetooth dongles
             if(Settings.Default.InstallBluetoothDongles)
-            {
-                var bthDrivers = IniConfig.Instance.BthDongleDriver;
+                DriverInstaller.InstallBluetoothDongles();
 
-                foreach (var hardwareId in bthDrivers.HardwareIds)
-                {
-                    Log.DebugFormat("DeviceGUID = {0}", bthDrivers.DeviceGuid);
-                    Log.DebugFormat("HardwareId = {0}", hardwareId);
-                    var result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
-                        "BthDongle.inf",
-                        IntPtr.Zero);
-                    Log.DebugFormat("result = {0}", result);
-                }
-            }
-
-            // install compatible DS3 controllers
             if(Settings.Default.InstallDualShock3Controllers)
-            {
-                var ds3Drivers = IniConfig.Instance.Ds3Driver;
+                DriverInstaller.InstallDualShock3Controllers();
 
-                foreach (var hardwareId in ds3Drivers.HardwareIds)
-                {
-                    Log.DebugFormat("DeviceGUID = {0}", ds3Drivers.DeviceGuid);
-                    Log.DebugFormat("HardwareId = {0}", hardwareId);
-                    var result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
-                        "Ds3Controller.inf", IntPtr.Zero);
-                    Log.DebugFormat("result = {0}", result);
-                }
-            }
-
-            // install compatible DS4 controllers
             if(Settings.Default.InstallDualShock4Controllers)
-            {
-                var ds4Drivers = IniConfig.Instance.Ds4Driver;
-
-                foreach (var hardwareId in ds4Drivers.HardwareIds)
-                {
-                    Log.DebugFormat("DeviceGUID = {0}", ds4Drivers.DeviceGuid);
-                    Log.DebugFormat("HardwareId = {0}", hardwareId);
-                    var result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
-                        "Ds4Controller.inf", IntPtr.Zero);
-                    Log.DebugFormat("result = {0}", result);
-                }
-            }
+                DriverInstaller.InstallDualShock4Controllers();
 
             try
             {
