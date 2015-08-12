@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Threading;
+using System.Threading.Tasks;
 using log4net;
 using ScpControl;
 using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
-using ScpControl.Utilities;
 using ScpService.Properties;
 
 namespace ScpService
@@ -50,20 +49,29 @@ namespace ScpService
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                     Assembly.GetExecutingAssembly().GetName().Version);
 
-            Log.InfoFormat("Settings working directory to {0}", WorkingDirectory);
+            Log.InfoFormat("Setting working directory to {0}", WorkingDirectory);
             Directory.SetCurrentDirectory(WorkingDirectory);
 
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
-            if(Settings.Default.InstallBluetoothDongles)
-                DriverInstaller.InstallBluetoothDongles();
+            var installTask = Task.Factory.StartNew(() =>
+            {
+                if (Settings.Default.InstallBluetoothDongles)
+                    DriverInstaller.InstallBluetoothDongles();
 
-            if(Settings.Default.InstallDualShock3Controllers)
-                DriverInstaller.InstallDualShock3Controllers();
+                if (Settings.Default.InstallDualShock3Controllers)
+                    DriverInstaller.InstallDualShock3Controllers();
 
-            if(Settings.Default.InstallDualShock4Controllers)
-                DriverInstaller.InstallDualShock4Controllers();
+                if (Settings.Default.InstallDualShock4Controllers)
+                    DriverInstaller.InstallDualShock4Controllers();
+            });
+
+            installTask.ContinueWith(task =>
+            {
+                Log.FatalFormat("Error during driver installation: {0}", task.Exception);
+                Stop();
+            }, TaskContinuationOptions.OnlyOnFaulted);
 
             try
             {
@@ -72,7 +80,7 @@ namespace ScpService
             }
             catch (RootHubAlreadyStartedException rhex)
             {
-                Log.FatalFormat("Couldn't start the ScpService: {0}", rhex.Message);
+                Log.FatalFormat("Couldn't start the root hub: {0}", rhex.Message);
                 Stop();
                 return;
             }
@@ -135,7 +143,7 @@ namespace ScpService
 
                             hdr =
                                 (ScpDevice.DEV_BROADCAST_HDR)
-                                    Marshal.PtrToStructure(data, typeof (ScpDevice.DEV_BROADCAST_HDR));
+                                    Marshal.PtrToStructure(data, typeof(ScpDevice.DEV_BROADCAST_HDR));
 
                             if (hdr.dbch_devicetype == ScpDevice.DBT_DEVTYP_DEVICEINTERFACE)
                             {
@@ -143,21 +151,21 @@ namespace ScpService
 
                                 deviceInterface =
                                     (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M)
-                                        Marshal.PtrToStructure(data, typeof (ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
+                                        Marshal.PtrToStructure(data, typeof(ScpDevice.DEV_BROADCAST_DEVICEINTERFACE_M));
 
                                 var Class = "{" + new Guid(deviceInterface.dbcc_classguid).ToString().ToUpper() + "}";
 
                                 var path = new string(deviceInterface.dbcc_name);
                                 path = path.Substring(0, path.IndexOf('\0')).ToUpper();
 
-                                var pad = rootHub.Notify((ScpDevice.Notified) type, Class, path);
+                                var pad = rootHub.Notify((ScpDevice.Notified)type, Class, path);
 
                                 if (pad != DsPadId.None)
                                 {
-                                    if (rootHub.Pairable && (rootHub.Master != rootHub.Pad[(byte) pad].Remote))
+                                    if (rootHub.Pairable && (rootHub.Master != rootHub.Pad[(byte)pad].Remote))
                                     {
                                         var master = new byte[6];
-                                        var parts = rootHub.Master.Split(new[] {":"},
+                                        var parts = rootHub.Master.Split(new[] { ":" },
                                             StringSplitOptions.RemoveEmptyEntries);
 
                                         for (var Part = 0; Part < master.Length; Part++)
@@ -165,10 +173,10 @@ namespace ScpService
                                             master[Part] = byte.Parse(parts[Part], NumberStyles.HexNumber);
                                         }
 
-                                        rootHub.Pad[(byte) pad].Pair(master);
+                                        rootHub.Pad[(byte)pad].Pair(master);
 
                                         Log.InfoFormat("Paired DS3 [{0}] To BTH Dongle [{1}]",
-                                            rootHub.Pad[(byte) pad].Local, rootHub.Master);
+                                            rootHub.Pad[(byte)pad].Local, rootHub.Master);
                                     }
                                 }
                             }

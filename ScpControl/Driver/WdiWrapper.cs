@@ -61,6 +61,7 @@ namespace ScpControl.Driver
             try
             {
                 File.Copy(libSourcePath, libTargetPath, true);
+                Log.DebugFormat("Using libwdi: {0}", libTargetPath);
             }
             catch (Exception ex)
             {
