@@ -69,5 +69,23 @@ namespace ScpDriver.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing dependency.
+        /// </summary>
+        internal static string ScpForm_VcppMissingHead {
+            get {
+                return ResourceManager.GetString("ScpForm_VcppMissingHead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visual C++ Redistributable Packages for Visual Studio 2013 is not installed! Please check installation instructions, setup can&apos;t continue!.
+        /// </summary>
+        internal static string ScpForm_VcppMissingText {
+            get {
+                return ResourceManager.GetString("ScpForm_VcppMissingText", resourceCulture);
+            }
+        }
     }
 }

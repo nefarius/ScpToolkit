@@ -4,6 +4,7 @@ using System.Management;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using log4net;
+using Microsoft.Win32;
 
 namespace ScpControl.Utilities
 {
@@ -22,6 +23,16 @@ namespace ScpControl.Utilities
     public static class OsInfoHelper
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        public static bool IsVc2013Installed
+        {
+            get
+            {
+                return
+                    Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\DevDiv\vc\Servicing\12.0\RuntimeMinimum") !=
+                    null;
+            }
+        }
 
         public static string OsInfo()
         {

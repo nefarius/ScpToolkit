@@ -167,6 +167,12 @@ namespace ScpDriver
             }
 
             Icon = Resources.Scp_All;
+
+            if (!OsInfoHelper.IsVc2013Installed)
+            {
+                MessageBox.Show(Resources.ScpForm_VcppMissingText, Resources.ScpForm_VcppMissingHead, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
         }
 
         private async void btnInstall_Click(object sender, EventArgs e)
