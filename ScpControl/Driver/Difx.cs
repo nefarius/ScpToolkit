@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace ScpDriver.Driver
+namespace ScpControl.Driver
 {
     [Flags]
     public enum DifxFlags 

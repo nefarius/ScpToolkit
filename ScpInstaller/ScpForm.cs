@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using log4net;
 using ScpControl.Driver;
 using ScpControl.Utilities;
-using ScpDriver.Driver;
 using ScpDriver.Properties;
 
 namespace ScpDriver

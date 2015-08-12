@@ -121,6 +121,8 @@
     <Compile Include="Bluetooth\BthHub.Designer.cs">
       <DependentUpon>BthHub.cs</DependentUpon>
     </Compile>
+    <Compile Include="Driver\Devcon.cs" />
+    <Compile Include="Driver\Difx.cs" />
     <Compile Include="Driver\DriverInstaller.cs" />
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
