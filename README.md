@@ -10,6 +10,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
  * To be extended...
 
 ## Installation requirements
+ * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
  * [Microsoft .NET Framework 4.5](https://www.microsoft.com/en-US/download/details.aspx?id=42642)
  * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=40784)
  * [DirectX Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=35)
