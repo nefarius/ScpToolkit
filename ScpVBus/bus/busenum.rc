@@ -1,0 +1,38 @@
+#include <windows.h>
+
+#define VER_USE_OTHER_MAJOR_MINOR_VER
+#define VER_PRODUCTMAJORVERSION     1
+#define VER_PRODUCTMINORVERSION     0
+
+#include <ntverp.h>
+
+#undef  VER_PRODUCTNAME_STR
+#define VER_PRODUCTNAME_STR    "Scp Virtual Bus Driver"
+
+#define VER_FILETYPE                VFT_DRV
+#define VER_FILESUBTYPE             VFT2_DRV_SYSTEM
+#define VER_FILEDESCRIPTION_STR     VER_PRODUCTNAME_STR
+#define VER_INTERNALNAME_STR        "ScpVBus.sys"
+#define VER_ORIGINALFILENAME_STR    "ScpVBus.sys"
+
+#undef  VER_COMPANYNAME_STR
+#define VER_COMPANYNAME_STR    "Scarlet.Crush Productions"
+
+#ifndef VER_LEGALCOPYRIGHT_YEARS
+#define VER_LEGALCOPYRIGHT_YEARS    "2012, 2013"
+#endif
+
+#ifndef VER_LEGALCOPYRIGHT_STR_WITH_YEARS
+#define VER_LEGALCOPYRIGHT_STR_WITH_YEARS    "Copyright © 2012, 2013 Scarlet.Crush Productions. All rights reserved."
+#endif
+
+#undef  VER_PRODUCTBUILD
+#define VER_PRODUCTBUILD            0
+
+#undef  VER_PRODUCTBUILD_QFE
+#define VER_PRODUCTBUILD_QFE        103
+
+#undef  VER_LEGALCOPYRIGHT_STR
+#define VER_LEGALCOPYRIGHT_STR      VER_LEGALCOPYRIGHT_STR_WITH_YEARS
+
+#include "common.ver"
