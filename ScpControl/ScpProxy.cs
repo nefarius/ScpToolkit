@@ -105,7 +105,17 @@ namespace ScpControl
                     _rxFeedClient.ConnectAsync();
 
                     #endregion
-                    
+
+                    if (_rootHub != null)
+                    {
+                        m_Map.LoadXml(_rootHub.GetXml());
+                        m_Mapper.Initialize(m_Map);
+                    }
+                    else
+                    {
+                        Log.Error("Couldn't initialize XML mapper");
+                    }
+
                     m_Active = true;
                 }
             }
