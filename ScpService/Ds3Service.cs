@@ -40,10 +40,6 @@ namespace ScpService
 
         protected override void OnStart(string[] args)
         {
-#if DEBUG
-            Debugger.Launch();
-#endif
-
             Log.Info("Scarlet.Crush Productions DS3 Service Started");
 
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
