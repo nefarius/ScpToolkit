@@ -27,6 +27,9 @@ namespace ScpControl
         Connected = 0x02
     };
 
+    /// <summary>
+    ///     DualShock connection types.
+    /// </summary>
     public enum DsConnection
     {
         None = 0x00,
@@ -34,6 +37,9 @@ namespace ScpControl
         BTH = 0x02
     };
 
+    /// <summary>
+    ///     DualShock rechargeable battery status.
+    /// </summary>
     public enum DsBattery : byte
     {
         None = 0x00,
@@ -56,6 +62,9 @@ namespace ScpControl
         All = 0x04
     };
 
+    /// <summary>
+    ///     DualShock models.
+    /// </summary>
     public enum DsModel : byte
     {
         None = 0,
