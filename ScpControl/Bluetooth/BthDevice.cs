@@ -38,12 +38,12 @@ namespace ScpControl.Bluetooth
             InitializeComponent();
         }
 
-        public BthDevice(IBthDevice Device, byte[] Master, byte Lsb, byte Msb) : base(new BthHandle(Lsb, Msb))
+        public BthDevice(IBthDevice device, byte[] master, byte lsb, byte msb) : base(new BthHandle(lsb, msb))
         {
             InitializeComponent();
 
-            m_Device = Device;
-            m_Master = Master;
+            m_Device = device;
+            m_Master = master;
         }
 
         public DsState State
@@ -106,7 +106,7 @@ namespace ScpControl.Bluetooth
         public virtual bool Disconnect()
         {
             m_Publish = false;
-            return m_Device.HCI_Disconnect(m_HCI_Handle) > 0;
+            return m_Device.HCI_Disconnect(HciHandle) > 0;
         }
 
         public event EventHandler<ReportEventArgs> Report;

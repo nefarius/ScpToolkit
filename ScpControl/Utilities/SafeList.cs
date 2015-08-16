@@ -5,6 +5,10 @@ using System.Threading;
 
 namespace ScpControl.Utilities
 {
+    /// <summary>
+    ///     Thread-safe implementation of <see cref="System.Collections.Generic.List"/>
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class SafeList<T> : IEnumerable<T>
     {
         private readonly List<T> _list = new List<T>();

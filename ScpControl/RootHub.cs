@@ -20,15 +20,24 @@ namespace ScpControl
     [ServiceBehavior(IncludeExceptionDetailInFaults = false, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
+        // creates a system-wide mutex to check if the root hub has been instantiated already
         private readonly LimitInstance _limitInstance = new LimitInstance(@"Global\ScpDsxRootHub");
+        // server to broadcast native byte stream
         private readonly ReactiveListener _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedPort);
+        // subscribed clients who receive the native stream
         private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers = new Dictionary<int, ScpNativeFeedChannel>();
         private volatile bool _mSuspended;
+        // the WCF service host
         private ServiceHost _rootHubServiceHost;
         private bool _serviceStarted;
+        // Bluetooth hub
         private readonly BthHub _bthHub = new BthHub();
+        // virtual bus wrapper
+        private readonly BusDevice _scpBus = new BusDevice();
+        // USB hub
+        private readonly UsbHub _usbHub = new UsbHub();
         private readonly Cache[] _mCache = { new Cache(), new Cache(), new Cache(), new Cache() };
-
+        
         private readonly byte[][] _mNative =
         {
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
@@ -48,10 +57,11 @@ namespace ScpControl
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
             new byte[2] {0, 0}
         };
-
-        private readonly BusDevice _scpBus = new BusDevice();
-        private readonly UsbHub _usbHub = new UsbHub();
-
+        
+        /// <summary>
+        ///     Checks if the native stream is available or disabled in configuration.
+        /// </summary>
+        /// <returns>True if feed is available, false otherwise.</returns>
         public bool IsNativeFeedAvailable()
         {
             return !GlobalConfiguration.Instance.DisableNative;
@@ -91,7 +101,7 @@ namespace ScpControl
             data[3] = (byte)_mPad[serial].Connection;
             data[4] = (byte)_mPad[serial].Battery;
 
-            Array.Copy(_mPad[serial].BD_Address, 0, data, 5, _mPad[serial].BD_Address.Length);
+            Array.Copy(_mPad[serial].BdAddress, 0, data, 5, _mPad[serial].BdAddress.Length);
 
             return new DsDetail((DsPadId)data[0], (DsState)data[1], (DsModel)data[2],
                 _mPad[serial].Local.ToBytes().ToArray(),
@@ -261,7 +271,7 @@ namespace ScpControl
 
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                 Assembly.GetExecutingAssembly().GetName().Version);
-            Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
+            Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo);
 
             #region Native feed server
 
@@ -555,7 +565,7 @@ namespace ScpControl
         }
 
         #endregion
-        
+
         public GlobalConfiguration RequestConfiguration()
         {
             return GlobalConfiguration.Request();

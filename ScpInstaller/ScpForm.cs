@@ -143,10 +143,10 @@ namespace ScpDriver
         {
             Log.InfoFormat("SCP Driver Installer {0} [{1}]", Application.ProductVersion, DateTime.Now);
 
-            _installer = Difx.Factory();
-            _installer.onLogEvent += Logger;
+            _installer = Difx.Instance;
+            _installer.OnLogEvent += Logger;
 
-            var info = OsInfoHelper.OsInfo();
+            var info = OsInfoHelper.OsInfo;
             _valid = OsInfoHelper.OsParse(info);
 
             Log.InfoFormat("{0} detected", info);
@@ -232,19 +232,19 @@ namespace ScpDriver
 
                     if (cbBluetooth.Checked)
                     {
-                        result = DriverInstaller.InstallBluetoothDongles();
+                        result = DriverInstaller.InstallBluetoothDongles(Handle);
                         if (result > 0) _bthDriverConfigured = true;
                     }
 
                     if (cbDS3.Checked)
                     {
-                        result = DriverInstaller.InstallDualShock3Controllers();
+                        result = DriverInstaller.InstallDualShock3Controllers(Handle);
                         if (result > 0) _ds3DriverConfigured = true;
                     }
 
                     if (cbDs4.Checked)
                     {
-                        result = DriverInstaller.InstallDualShock4Controllers();
+                        result = DriverInstaller.InstallDualShock4Controllers(Handle);
                         if (result > 0) _ds4DriverConfigured = true;
                     }
 
@@ -353,7 +353,7 @@ namespace ScpDriver
                 try
                 {
                     uint result = 0;
-                    bool rebootRequired;
+                    bool rebootRequired = false;
 
                     if (cbService.Checked)
                     {
@@ -372,24 +372,24 @@ namespace ScpDriver
                         service.Uninstall(state);
                         _scpServiceConfigured = true;
                     }
-                    
-                    /* if (cbBluetooth.Checked)
+
+                    if (cbBluetooth.Checked)
                     {
-                        result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"BthWinUsb.inf"),
-                            DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
-                            out rebootRequired);
+                        DriverInstaller.UninstallBluetoothDongles(ref rebootRequired);
                         _reboot |= rebootRequired;
-                        if (result == 0) _bthDriverConfigured = true;
                     }
 
                     if (cbDS3.Checked)
                     {
-                        result = _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"Ds3WinUsb.inf"),
-                            DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
-                            out rebootRequired);
+                        DriverInstaller.UninstallDualShock3Controllers(ref rebootRequired);
                         _reboot |= rebootRequired;
-                        if (result == 0) _ds3DriverConfigured = true;
-                    } */
+                    }
+
+                    if (cbDs4.Checked)
+                    {
+                        DriverInstaller.UninstallDualShock4Controllers(ref rebootRequired);
+                        _reboot |= rebootRequired;
+                    }
 
                     if (cbBus.Checked && Devcon.Find(Settings.Default.Ds3BusClassGuid, ref devPath, ref instanceId))
                     {

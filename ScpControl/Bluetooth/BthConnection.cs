@@ -9,14 +9,14 @@ namespace ScpControl.Bluetooth
     public partial class BthConnection : Component, IEquatable<BthConnection>, IComparable<BthConnection>
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static ushort m_DCID = 0x40;
-        protected BthHandle m_HCI_Handle;
-        private BthHandle[] m_L2CAP_Cmd_Handle = new BthHandle[2];
-        private BthHandle[] m_L2CAP_Int_Handle = new BthHandle[2];
-        private BthHandle[] m_L2CAP_Svc_Handle = new BthHandle[2];
-        protected byte[] LocalMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        private static ushort _dcid = 0x40;
+        private readonly BthHandle[] _l2CapCommandHandle = new BthHandle[2];
+        private readonly BthHandle[] _l2CapInterruptHandle = new BthHandle[2];
+        private readonly BthHandle[] _l2CapServiceHandle = new BthHandle[2];
         private DsModel _model = DsModel.DS3;
-        protected string m_Remote_Name = string.Empty, MacDisplayName = string.Empty;
+        private string _remoteName = string.Empty;
+        protected byte[] LocalMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        protected string MacDisplayName = string.Empty;
 
         public BthConnection()
         {
@@ -34,46 +34,40 @@ namespace ScpControl.Bluetooth
         {
             InitializeComponent();
 
-            m_HCI_Handle = hciHandle;
+            HciHandle = hciHandle;
         }
 
-        public virtual BthHandle HciHandle
-        {
-            get { return m_HCI_Handle; }
-        }
+        public BthHandle HciHandle { get; private set; }
 
-        public virtual byte[] BD_Address
+        public virtual byte[] BdAddress
         {
             get { return LocalMac; }
             set
             {
                 LocalMac = value;
-                MacDisplayName = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", LocalMac[0], LocalMac[1], LocalMac[2],
+                MacDisplayName = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", LocalMac[0], LocalMac[1],
+                    LocalMac[2],
                     LocalMac[3], LocalMac[4], LocalMac[5]);
             }
         }
 
         public virtual string RemoteName
         {
-            get { return m_Remote_Name; }
+            get { return _remoteName; }
             set
             {
-                m_Remote_Name = value;
-                if (m_Remote_Name == "Wireless Controller") _model = DsModel.DS4;
+                _remoteName = value;
+                if (!string.IsNullOrEmpty(_remoteName) && _remoteName.Equals("Wireless Controller"))
+                    _model = DsModel.DS4;
             }
         }
 
-        public virtual bool CanStartHid { get; set; }
-
-        public virtual bool CanStartSvc { get; set; }
-
-        public virtual bool SvcStarted { get; set; }
-
-        public virtual bool ServiceByPass { get; set; }
-
-        public virtual bool Started { get; set; }
-
-        public virtual bool IsFake { get; set; }
+        public bool CanStartHid { get; set; }
+        public bool CanStartService { get; set; }
+        public bool IsServiceStarted { get; set; }
+        public bool ServiceByPass { get; set; }
+        public bool IsStarted { get; set; }
+        public bool IsFake { get; set; }
 
         public virtual DsModel Model
         {
@@ -82,11 +76,10 @@ namespace ScpControl.Bluetooth
 
         public static ushort DCID
         {
-            get { return m_DCID; }
+            get { return _dcid; }
             set
             {
-                if (value < 0xFFFF) m_DCID = value;
-                else m_DCID = 0x40;
+                _dcid = (ushort)(value < 0xFFFF ? value : 0x40);
             }
         }
 
@@ -94,40 +87,40 @@ namespace ScpControl.Bluetooth
 
         public virtual int CompareTo(BthConnection other)
         {
-            return m_HCI_Handle.CompareTo(other.m_HCI_Handle);
+            return HciHandle.CompareTo(other.HciHandle);
         }
 
         #endregion
 
-        public virtual byte[] Set(L2CAP.PSM connectionType, byte Lsb, byte Msb, ushort Dcid = 0)
+        public virtual byte[] Set(L2CAP.PSM connectionType, byte lsb, byte msb, ushort dcid = 0)
         {
             switch (connectionType)
             {
                 case L2CAP.PSM.HID_Command:
 
-                    m_L2CAP_Cmd_Handle[0] = new BthHandle(Lsb, Msb);
-                    m_L2CAP_Cmd_Handle[1] = new BthHandle(DCID++);
+                    _l2CapCommandHandle[0] = new BthHandle(lsb, msb);
+                    _l2CapCommandHandle[1] = new BthHandle(DCID++);
 
-                    return m_L2CAP_Cmd_Handle[1].Bytes;
+                    return _l2CapCommandHandle[1].Bytes;
 
                 case L2CAP.PSM.HID_Interrupt:
 
-                    CanStartSvc = true;
+                    CanStartService = true;
 
-                    m_L2CAP_Int_Handle[0] = new BthHandle(Lsb, Msb);
-                    m_L2CAP_Int_Handle[1] = new BthHandle(DCID++);
+                    _l2CapInterruptHandle[0] = new BthHandle(lsb, msb);
+                    _l2CapInterruptHandle[1] = new BthHandle(DCID++);
 
-                    return m_L2CAP_Int_Handle[1].Bytes;
+                    return _l2CapInterruptHandle[1].Bytes;
 
                 case L2CAP.PSM.HID_Service:
 
-                    SvcStarted = true;
-                    CanStartSvc = false;
+                    IsServiceStarted = true;
+                    CanStartService = false;
 
-                    m_L2CAP_Svc_Handle[0] = new BthHandle(Lsb, Msb);
-                    m_L2CAP_Svc_Handle[1] = new BthHandle(Dcid);
+                    _l2CapServiceHandle[0] = new BthHandle(lsb, msb);
+                    _l2CapServiceHandle[1] = new BthHandle(dcid);
 
-                    return m_L2CAP_Svc_Handle[1].Bytes;
+                    return _l2CapServiceHandle[1].Bytes;
             }
 
             throw new Exception("Invalid L2CAP Connection Type");
@@ -141,25 +134,28 @@ namespace ScpControl.Bluetooth
         /// <summary>
         ///     Destination Channel Identifier.
         /// </summary>
-        /// <remarks>Used as the device local end point for an L2CAP transmission. It represents the channel endpoint on the device receiving the message. It is a device local name only. See also SCID.</remarks>
+        /// <remarks>
+        ///     Used as the device local end point for an L2CAP transmission. It represents the channel endpoint on the device
+        ///     receiving the message. It is a device local name only. See also SCID.
+        /// </remarks>
         /// <param name="lsb"></param>
         /// <param name="msb"></param>
         /// <returns></returns>
         public virtual byte[] Get_DCID(byte lsb, byte msb)
         {
-            if (m_L2CAP_Cmd_Handle[0].Equals(lsb, msb))
+            if (_l2CapCommandHandle[0].Equals(lsb, msb))
             {
-                return m_L2CAP_Cmd_Handle[1].Bytes;
+                return _l2CapCommandHandle[1].Bytes;
             }
 
-            if (m_L2CAP_Int_Handle[0].Equals(lsb, msb))
+            if (_l2CapInterruptHandle[0].Equals(lsb, msb))
             {
-                return m_L2CAP_Int_Handle[1].Bytes;
+                return _l2CapInterruptHandle[1].Bytes;
             }
 
-            if (m_L2CAP_Svc_Handle[0].Equals(lsb, msb))
+            if (_l2CapServiceHandle[0].Equals(lsb, msb))
             {
-                return m_L2CAP_Svc_Handle[1].Bytes;
+                return _l2CapServiceHandle[1].Bytes;
             }
 
             throw new Exception("L2CAP DCID Not Found");
@@ -168,7 +164,10 @@ namespace ScpControl.Bluetooth
         /// <summary>
         ///     Destination Channel Identifier.
         /// </summary>
-        /// <remarks>Used as the device local end point for an L2CAP transmission. It represents the channel endpoint on the device receiving the message. It is a device local name only. See also SCID.</remarks>
+        /// <remarks>
+        ///     Used as the device local end point for an L2CAP transmission. It represents the channel endpoint on the device
+        ///     receiving the message. It is a device local name only. See also SCID.
+        /// </remarks>
         /// <param name="connectionType"></param>
         /// <returns></returns>
         public virtual byte[] Get_DCID(L2CAP.PSM connectionType)
@@ -177,15 +176,15 @@ namespace ScpControl.Bluetooth
             {
                 case L2CAP.PSM.HID_Command:
 
-                    return m_L2CAP_Cmd_Handle[1].Bytes;
+                    return _l2CapCommandHandle[1].Bytes;
 
                 case L2CAP.PSM.HID_Interrupt:
 
-                    return m_L2CAP_Int_Handle[1].Bytes;
+                    return _l2CapInterruptHandle[1].Bytes;
 
                 case L2CAP.PSM.HID_Service:
 
-                    return m_L2CAP_Svc_Handle[1].Bytes;
+                    return _l2CapServiceHandle[1].Bytes;
             }
 
             throw new Exception("Invalid L2CAP Connection Type");
@@ -194,25 +193,28 @@ namespace ScpControl.Bluetooth
         /// <summary>
         ///     Source Channel Identifier.
         /// </summary>
-        /// <remarks>Used in the L2CAP layer to indicate the channel endpoint on the device sending the L2CAP message. It is a device local name only.</remarks>
+        /// <remarks>
+        ///     Used in the L2CAP layer to indicate the channel endpoint on the device sending the L2CAP message. It is a
+        ///     device local name only.
+        /// </remarks>
         /// <param name="lsb"></param>
         /// <param name="msb"></param>
         /// <returns></returns>
         public virtual byte[] Get_SCID(byte lsb, byte msb)
         {
-            if (m_L2CAP_Cmd_Handle[1] != null && m_L2CAP_Cmd_Handle[1].Equals(lsb, msb))
+            if (_l2CapCommandHandle[1] != null && _l2CapCommandHandle[1].Equals(lsb, msb))
             {
-                return m_L2CAP_Cmd_Handle[0].Bytes;
+                return _l2CapCommandHandle[0].Bytes;
             }
 
-            if (m_L2CAP_Int_Handle[1] != null && m_L2CAP_Int_Handle[1].Equals(lsb, msb))
+            if (_l2CapInterruptHandle[1] != null && _l2CapInterruptHandle[1].Equals(lsb, msb))
             {
-                return m_L2CAP_Int_Handle[0].Bytes;
+                return _l2CapInterruptHandle[0].Bytes;
             }
 
-            if (m_L2CAP_Svc_Handle[1] != null && m_L2CAP_Svc_Handle[1].Equals(lsb, msb))
+            if (_l2CapServiceHandle[1] != null && _l2CapServiceHandle[1].Equals(lsb, msb))
             {
-                return m_L2CAP_Svc_Handle[0].Bytes;
+                return _l2CapServiceHandle[0].Bytes;
             }
 
             throw new Exception("L2CAP SCID Not Found");
@@ -221,7 +223,10 @@ namespace ScpControl.Bluetooth
         /// <summary>
         ///     Source Channel Identifier.
         /// </summary>
-        /// <remarks>Used in the L2CAP layer to indicate the channel endpoint on the device sending the L2CAP message. It is a device local name only.</remarks>
+        /// <remarks>
+        ///     Used in the L2CAP layer to indicate the channel endpoint on the device sending the L2CAP message. It is a
+        ///     device local name only.
+        /// </remarks>
         /// <param name="connectionType"></param>
         /// <returns>Source Channel Identifier.</returns>
         public virtual byte[] Get_SCID(L2CAP.PSM connectionType)
@@ -230,15 +235,15 @@ namespace ScpControl.Bluetooth
             {
                 case L2CAP.PSM.HID_Command:
 
-                    return m_L2CAP_Cmd_Handle[0].Bytes;
+                    return _l2CapCommandHandle[0].Bytes;
 
                 case L2CAP.PSM.HID_Interrupt:
 
-                    return m_L2CAP_Int_Handle[0].Bytes;
+                    return _l2CapInterruptHandle[0].Bytes;
 
                 case L2CAP.PSM.HID_Service:
 
-                    return m_L2CAP_Svc_Handle[0].Bytes;
+                    return _l2CapServiceHandle[0].Bytes;
             }
 
             throw new Exception("Invalid L2CAP Connection Type");
@@ -253,7 +258,7 @@ namespace ScpControl.Bluetooth
                 LocalMac[2],
                 LocalMac[1],
                 LocalMac[0],
-                m_Remote_Name
+                _remoteName
                 );
         }
 
@@ -261,17 +266,17 @@ namespace ScpControl.Bluetooth
 
         public virtual bool Equals(BthConnection other)
         {
-            return m_HCI_Handle.Equals(other.m_HCI_Handle);
+            return HciHandle.Equals(other.HciHandle);
         }
 
-        public virtual bool Equals(byte Lsb, byte Msb)
+        public virtual bool Equals(byte lsb, byte msb)
         {
-            return m_HCI_Handle.Equals(Lsb, Msb);
+            return HciHandle.Equals(lsb, msb);
         }
 
         public virtual bool Equals(byte[] other)
         {
-            return m_HCI_Handle.Equals(other);
+            return HciHandle.Equals(other);
         }
 
         #endregion

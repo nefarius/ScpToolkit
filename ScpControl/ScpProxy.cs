@@ -21,15 +21,15 @@ namespace ScpControl
         private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedHost, Settings.Default.RootHubNativeFeedPort);
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private bool m_Active;
-        private XmlDocument m_Map = new XmlDocument();
+        private XmlDocument _xmlMap = new XmlDocument();
 
         private IScpCommandService _rootHub;
 
-        private readonly XmlMapper m_Mapper = new XmlMapper();
+        private readonly XmlMapper _xmlMapper = new XmlMapper();
 
         public XmlMapper Mapper
         {
-            get { return m_Mapper; }
+            get { return _xmlMapper; }
         }
 
         /// <summary>
@@ -105,7 +105,17 @@ namespace ScpControl
                     _rxFeedClient.ConnectAsync();
 
                     #endregion
-                    
+
+                    if (_rootHub != null)
+                    {
+                        _xmlMap.LoadXml(_rootHub.GetXml());
+                        _xmlMapper.Initialize(_xmlMap);
+                    }
+                    else
+                    {
+                        Log.Error("Couldn't initialize XML mapper");
+                    }
+
                     m_Active = true;
                 }
             }
@@ -145,9 +155,9 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    if (m_Mapper.Construct(ref m_Map))
+                    if (_xmlMapper.Construct(ref _xmlMap))
                     {
-                        _rootHub.SetXml(m_Map.InnerXml);
+                        _rootHub.SetXml(_xmlMap.InnerXml);
 
                         saved = true;
                     }
@@ -213,7 +223,7 @@ namespace ScpControl
             {
                 if (m_Active)
                 {
-                    if (!m_Mapper.Map.Any())
+                    if (!_xmlMapper.Map.Any())
                         return false;
 
                     var output = new byte[packet.Native.Length];
@@ -221,14 +231,14 @@ namespace ScpControl
                     switch (packet.Detail.Model)
                     {
                         case DsModel.DS3:
-                            if (m_Mapper.RemapDs3(m_Mapper.Map[target], packet.Native, output))
+                            if (_xmlMapper.RemapDs3(_xmlMapper.Map[target], packet.Native, output))
                             {
                                 Array.Copy(output, packet.Native, output.Length);
                                 packet.Remapped();
                             }
                             break;
                         case DsModel.DS4:
-                            if (m_Mapper.RemapDs4(m_Mapper.Map[target], packet.Native, output))
+                            if (_xmlMapper.RemapDs4(_xmlMapper.Map[target], packet.Native, output))
                             {
                                 Array.Copy(output, packet.Native, output.Length);
                                 packet.Remapped();
@@ -253,7 +263,7 @@ namespace ScpControl
 
             try
             {
-                foreach (var item in m_Mapper.Map.Values)
+                foreach (var item in _xmlMapper.Map.Values)
                 {
                     item.Default = false;
                 }

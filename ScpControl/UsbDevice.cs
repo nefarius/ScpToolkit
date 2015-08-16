@@ -75,7 +75,7 @@ namespace ScpControl
             get { return (DsBattery) m_BatteryStatus; }
         }
 
-        public virtual byte[] BD_Address
+        public virtual byte[] BdAddress
         {
             get { return m_Local; }
         }
