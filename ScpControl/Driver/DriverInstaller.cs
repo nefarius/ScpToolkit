@@ -21,7 +21,7 @@ namespace ScpControl.Driver
 
             foreach (var hardwareId in from hardwareId in bthDrivers.HardwareIds
                 let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
-                    "BthDongle.inf",
+                    string.Format("BthDongle_{0}.inf", Guid.NewGuid()),
                     IntPtr.Zero)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
@@ -41,7 +41,7 @@ namespace ScpControl.Driver
 
             foreach (var hardwareId in from hardwareId in ds3Drivers.HardwareIds
                 let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
-                    "Ds3Controller.inf", IntPtr.Zero)
+                    string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), IntPtr.Zero)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {
@@ -60,7 +60,7 @@ namespace ScpControl.Driver
 
             foreach (var hardwareId in from hardwareId in ds4Drivers.HardwareIds
                 let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
-                    "Ds4Controller.inf", IntPtr.Zero)
+                    string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), IntPtr.Zero)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {

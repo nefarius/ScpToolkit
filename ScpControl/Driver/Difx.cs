@@ -43,9 +43,12 @@ namespace ScpControl.Driver
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public LogEventHandler OnLogEvent;
+        private DIFLOGCALLBACK _mLogCallback;
 
         private Difx()
         {
+            _mLogCallback = new DIFLOGCALLBACK(Logger);
+
             Log.Debug("Preparing to load DIFxAPI");
 
             if (Environment.Is64BitProcess)
@@ -71,7 +74,7 @@ namespace ScpControl.Driver
                 Log.DebugFormat("Loaded library: {0}", libwdi32);
             }
 
-            SetDifxLogCallback(Logger, IntPtr.Zero);
+            SetDifxLogCallback(_mLogCallback, IntPtr.Zero);
         }
 
         public static Difx Instance
