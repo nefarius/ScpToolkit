@@ -115,6 +115,7 @@
     <Compile Include="Bluetooth\BthDs4.Designer.cs">
       <DependentUpon>BthDs4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Bluetooth\BthHandle.cs" />
     <Compile Include="Bluetooth\BthHub.cs">
       <SubType>Component</SubType>
     </Compile>

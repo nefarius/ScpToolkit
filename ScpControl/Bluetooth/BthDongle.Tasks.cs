@@ -40,7 +40,7 @@ namespace ScpControl.Bluetooth
 
                             if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM)buffer[12])
                             {
-                                connection.Started = true;
+                                connection.IsStarted = true;
                             }
 
                             L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID, L2_DCID, 0x00);
@@ -67,7 +67,7 @@ namespace ScpControl.Bluetooth
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
                                 (byte)L2CAP.Code.L2CAP_Configuration_Response);
 
-                            if (connection.SvcStarted)
+                            if (connection.IsServiceStarted)
                             {
                                 connection.CanStartHid = true;
                             }
@@ -77,7 +77,7 @@ namespace ScpControl.Bluetooth
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
 
-                            if (connection.Started)
+                            if (connection.IsStarted)
                             {
                                 OnInitialised(connection);
                             }
@@ -221,7 +221,7 @@ namespace ScpControl.Bluetooth
                                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
                                                 (byte)L2CAP.Code.L2CAP_Configuration_Response);
 
-                                            if (connection.SvcStarted)
+                                            if (connection.IsServiceStarted)
                                             {
                                                 connection.CanStartHid = true;
                                                 connection.InitReport(buffer);
@@ -232,14 +232,14 @@ namespace ScpControl.Bluetooth
 
                                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
 
-                                            if (connection.CanStartSvc)
+                                            if (connection.CanStartService)
                                             {
                                                 if (connection.ServiceByPass)
                                                 {
                                                     Log.DebugFormat(">> ServiceByPass [{0} - {1}]", connection.Local,
                                                         connection.RemoteName);
 
-                                                    connection.CanStartSvc = false;
+                                                    connection.CanStartService = false;
                                                     OnInitialised(connection);
                                                 }
                                                 else
@@ -262,7 +262,7 @@ namespace ScpControl.Bluetooth
                                                     }
                                                     else
                                                     {
-                                                        connection.CanStartSvc = false;
+                                                        connection.CanStartService = false;
                                                         OnInitialised(connection);
                                                     }
                                                 }
@@ -288,7 +288,7 @@ namespace ScpControl.Bluetooth
 
                                             if (connection.CanStartHid)
                                             {
-                                                connection.SvcStarted = false;
+                                                connection.IsServiceStarted = false;
                                                 OnInitialised(connection);
                                             }
                                             break;
@@ -603,7 +603,7 @@ namespace ScpControl.Bluetooth
 
                                     Connection.RemoteName = nameList[bd];
                                     nameList.Remove(bd);
-                                    Connection.BD_Address = new[] { Buffer[10], Buffer[9], Buffer[8], Buffer[7], Buffer[6], Buffer[5] };
+                                    Connection.BdAddress = new[] { Buffer[10], Buffer[9], Buffer[8], Buffer[7], Buffer[6], Buffer[5] };
                                     break;
 
                                 case HCI.Event.HCI_Disconnection_Complete_EV:

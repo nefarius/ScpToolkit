@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using ScpControl.Bluetooth;
 
 namespace ScpControl
 {
@@ -377,7 +378,7 @@ namespace ScpControl
 
         DsModel Model { get; }
 
-        byte[] BD_Address { get; }
+        byte[] BdAddress { get; }
 
         string Local { get; }
 
@@ -393,71 +394,6 @@ namespace ScpControl
     {
         int HCI_Disconnect(BthHandle Handle);
         int HID_Command(byte[] Handle, byte[] Channel, byte[] Data);
-    }
-
-    public sealed class BthHandle : IEquatable<BthHandle>, IComparable<BthHandle>
-    {
-        private readonly byte[] _mHandle = new byte[2] {0x00, 0x00};
-        private readonly ushort _mValue;
-
-        public BthHandle(byte Lsb, byte Msb)
-        {
-            _mHandle[0] = Lsb;
-            _mHandle[1] = Msb;
-
-            _mValue = (ushort) (_mHandle[0] | (ushort) (_mHandle[1] << 8));
-        }
-
-        public BthHandle(byte[] Handle) : this(Handle[0], Handle[1])
-        {
-        }
-
-        public BthHandle(ushort Short) : this((byte) ((Short >> 0) & 0xFF), (byte) ((Short >> 8) & 0xFF))
-        {
-        }
-
-        public byte[] Bytes
-        {
-            get { return _mHandle; }
-        }
-
-        public ushort Short
-        {
-            get { return _mValue; }
-        }
-
-        #region IComparable<BthHandle> Members
-
-        public int CompareTo(BthHandle other)
-        {
-            return _mValue.CompareTo(other._mValue);
-        }
-
-        #endregion
-
-        public override string ToString()
-        {
-            return string.Format("{0:X4}", _mValue);
-        }
-
-        #region IEquatable<BthHandle> Members
-
-        public bool Equals(BthHandle other)
-        {
-            return _mValue == other._mValue;
-        }
-
-        public bool Equals(byte Lsb, byte Msb)
-        {
-            return _mHandle[0] == Lsb && _mHandle[1] == Msb;
-        }
-
-        public bool Equals(byte[] other)
-        {
-            return Equals(other[0], other[1]);
-        }
-
-        #endregion
     }
 
     public class DsNull : IDsDevice
@@ -495,7 +431,7 @@ namespace ScpControl
             get { return DsModel.None; }
         }
 
-        public byte[] BD_Address
+        public byte[] BdAddress
         {
             get { return new byte[6]; }
         }

@@ -106,7 +106,7 @@ namespace ScpControl.Bluetooth
         public virtual bool Disconnect()
         {
             m_Publish = false;
-            return m_Device.HCI_Disconnect(m_HCI_Handle) > 0;
+            return m_Device.HCI_Disconnect(HciHandle) > 0;
         }
 
         public event EventHandler<ReportEventArgs> Report;

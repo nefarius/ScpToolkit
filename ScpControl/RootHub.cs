@@ -101,7 +101,7 @@ namespace ScpControl
             data[3] = (byte)_mPad[serial].Connection;
             data[4] = (byte)_mPad[serial].Battery;
 
-            Array.Copy(_mPad[serial].BD_Address, 0, data, 5, _mPad[serial].BD_Address.Length);
+            Array.Copy(_mPad[serial].BdAddress, 0, data, 5, _mPad[serial].BdAddress.Length);
 
             return new DsDetail((DsPadId)data[0], (DsState)data[1], (DsModel)data[2],
                 _mPad[serial].Local.ToBytes().ToArray(),
