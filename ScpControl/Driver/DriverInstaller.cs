@@ -16,7 +16,7 @@ namespace ScpControl.Driver
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly string DriverDirectory = Path.Combine(WorkingDirectory, "Driver");
 
-        public static uint InstallBluetoothDongles()
+        public static uint InstallBluetoothDongles(IntPtr hWnd = default(IntPtr))
         {
             // install compatible bluetooth dongles
             var bthDrivers = IniConfig.Instance.BthDongleDriver;
@@ -25,7 +25,7 @@ namespace ScpControl.Driver
             foreach (var hardwareId in from hardwareId in bthDrivers.HardwareIds
                 let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
                     string.Format("BthDongle_{0}.inf", Guid.NewGuid()),
-                    IntPtr.Zero)
+                    hWnd)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {
@@ -55,7 +55,7 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
-        public static uint InstallDualShock3Controllers()
+        public static uint InstallDualShock3Controllers(IntPtr hWnd = default(IntPtr))
         {
             // install compatible DS3 controllers
             var ds3Drivers = IniConfig.Instance.Ds3Driver;
@@ -63,7 +63,7 @@ namespace ScpControl.Driver
 
             foreach (var hardwareId in from hardwareId in ds3Drivers.HardwareIds
                 let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
-                    string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), IntPtr.Zero)
+                    string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {
@@ -93,7 +93,7 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
-        public static uint InstallDualShock4Controllers()
+        public static uint InstallDualShock4Controllers(IntPtr hWnd = default(IntPtr))
         {
             // install compatible DS4 controllers
             var ds4Drivers = IniConfig.Instance.Ds4Driver;
@@ -101,7 +101,7 @@ namespace ScpControl.Driver
 
             foreach (var hardwareId in from hardwareId in ds4Drivers.HardwareIds
                 let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
-                    string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), IntPtr.Zero)
+                    string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {

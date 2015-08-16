@@ -232,19 +232,19 @@ namespace ScpDriver
 
                     if (cbBluetooth.Checked)
                     {
-                        result = DriverInstaller.InstallBluetoothDongles();
+                        result = DriverInstaller.InstallBluetoothDongles(Handle);
                         if (result > 0) _bthDriverConfigured = true;
                     }
 
                     if (cbDS3.Checked)
                     {
-                        result = DriverInstaller.InstallDualShock3Controllers();
+                        result = DriverInstaller.InstallDualShock3Controllers(Handle);
                         if (result > 0) _ds3DriverConfigured = true;
                     }
 
                     if (cbDs4.Checked)
                     {
-                        result = DriverInstaller.InstallDualShock4Controllers();
+                        result = DriverInstaller.InstallDualShock4Controllers(Handle);
                         if (result > 0) _ds4DriverConfigured = true;
                     }
 
