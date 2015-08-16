@@ -39,7 +39,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
  - Win 7/8/8.1: leave it unchecked.
 10. Click Install.
 
-![Install Screenshot](http://nefarius.at/wp-content/uploads/2015/07/30-07-_2015_14-58-03.png "Install Screenshot")
+![Install Screenshot](http://nefarius.at/wp-content/uploads/2015/08/16-08-_2015_22-11-11.png "Install Screenshot")
 
 ## To-Do list
  * Increase supported controller count from 4 to 8
