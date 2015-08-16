@@ -80,28 +80,30 @@ namespace ScpControl.Driver
         }
 
         public void Logger(
-            DifxLog EventType,
-            int ErrorCode,
-            [MarshalAs(UnmanagedType.LPTStr)] string EventDescription,
-            IntPtr CallbackContext)
+            DifxLog eventType,
+            int errorCode,
+            [MarshalAs(UnmanagedType.LPTStr)] string eventDescription,
+            IntPtr callbackContext)
         {
-            if (OnLogEvent != null) OnLogEvent(EventType, ErrorCode, EventDescription);
+            if (OnLogEvent != null) OnLogEvent(eventType, errorCode, eventDescription);
         }
 
-        public uint Preinstall(string InfPath, DifxFlags Flags)
+        public uint Preinstall(string infPath, DifxFlags flags)
         {
-            return DriverPackagePreinstall(InfPath, (uint) Flags);
+            return DriverPackagePreinstall(infPath, (uint) flags);
         }
 
-        public uint Install(string InfPath, DifxFlags Flags, out bool RebootRequired)
+        public uint Install(string infPath, DifxFlags flags, out bool rebootRequired)
         {
-            return DriverPackageInstall(InfPath, (uint) Flags, (IntPtr) 0, out RebootRequired);
+            return DriverPackageInstall(infPath, (uint) flags, (IntPtr) 0, out rebootRequired);
         }
 
-        public uint Uninstall(string InfPath, DifxFlags Flags, out bool RebootRequired)
+        public uint Uninstall(string infPath, DifxFlags flags, out bool rebootRequired)
         {
-            return DriverPackageUninstall(InfPath, (uint) Flags, (IntPtr) 0, out RebootRequired);
+            return DriverPackageUninstall(infPath, (uint) flags, (IntPtr) 0, out rebootRequired);
         }
+
+        #region P/Invoke
 
         [DllImport("DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto,
             CallingConvention = CallingConvention.Winapi)]
@@ -133,5 +135,7 @@ namespace ScpControl.Driver
 
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern IntPtr LoadLibrary(string librayName);
+
+        #endregion
     }
 }
