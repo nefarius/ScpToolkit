@@ -4,6 +4,9 @@ using System.Windows.Forms;
 
 namespace ScpControl.Utilities
 {
+    /// <summary>
+    ///     Utility class to hide the focus on Winforms controls.
+    /// </summary>
     public static class ThemeUtil
     {
         private const int WM_CHANGEUISTATE = 0x127;

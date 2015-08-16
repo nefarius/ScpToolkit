@@ -146,7 +146,7 @@ namespace ScpDriver
             _installer = Difx.Instance;
             _installer.OnLogEvent += Logger;
 
-            var info = OsInfoHelper.OsInfo();
+            var info = OsInfoHelper.OsInfo;
             _valid = OsInfoHelper.OsParse(info);
 
             Log.InfoFormat("{0} detected", info);

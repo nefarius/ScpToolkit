@@ -26,7 +26,7 @@ namespace ScpControl.Driver
     }
 
     /// <summary>
-    ///     Driver Install Frameworks API (DIFxAPI)
+    ///     Driver Install Frameworks API (<see href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff544834(v=vs.85).aspx">DIFxAPI</see>)
     /// </summary>
     public class Difx
     {

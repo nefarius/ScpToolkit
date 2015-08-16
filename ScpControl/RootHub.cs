@@ -271,7 +271,7 @@ namespace ScpControl
 
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                 Assembly.GetExecutingAssembly().GetName().Version);
-            Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo());
+            Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo);
 
             #region Native feed server
 

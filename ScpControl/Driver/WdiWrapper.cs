@@ -41,6 +41,9 @@ namespace ScpControl.Driver
         WDI_LOG_LEVEL_NONE
     }
 
+    /// <summary>
+    ///     Managed wrapper class for <see href="https://github.com/pbatard/libwdi">libwdi</see>.
+    /// </summary>
     public class WdiWrapper
     {
         public enum WdiDriverType

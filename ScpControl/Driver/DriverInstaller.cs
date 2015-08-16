@@ -8,7 +8,7 @@ using ScpControl.Utilities;
 namespace ScpControl.Driver
 {
     /// <summary>
-    ///     Automated Windows driver installer utility class.
+    ///     Automated Windows driver (un)installer utility class.
     /// </summary>
     public static class DriverInstaller
     {

@@ -3,6 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace ScpControl.Driver
 {
+    /// <summary>
+    ///     Managed wrapper for
+    ///     <see href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff550897(v=vs.85).aspx">Setupapi</see>.
+    /// </summary>
     public static class Devcon
     {
         public static bool Find(Guid target, ref string path, ref string instanceId, int instance = 0)
@@ -36,7 +40,7 @@ namespace ScpControl.Driver
                         {
                             var pDevicePathName = detailDataBuffer + 4;
 
-                            path = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
+                            path = (Marshal.PtrToStringAuto(pDevicePathName) ?? string.Empty).ToUpper();
 
                             if (memberIndex == instance)
                             {
@@ -44,7 +48,7 @@ namespace ScpControl.Driver
                                 var ptrInstanceBuf = Marshal.AllocHGlobal(nBytes);
 
                                 CM_Get_Device_ID(da.Flags, ptrInstanceBuf, nBytes, 0);
-                                instanceId = Marshal.PtrToStringAuto(ptrInstanceBuf).ToUpper();
+                                instanceId = (Marshal.PtrToStringAuto(ptrInstanceBuf) ?? string.Empty).ToUpper();
 
                                 Marshal.FreeHGlobal(ptrInstanceBuf);
                                 return true;
@@ -175,9 +179,9 @@ namespace ScpControl.Driver
         private struct SP_DEVINFO_DATA
         {
             internal int cbSize;
-            internal Guid ClassGuid;
-            internal int Flags;
-            internal IntPtr Reserved;
+            internal readonly Guid ClassGuid;
+            internal readonly int Flags;
+            internal readonly IntPtr Reserved;
         }
 
         [StructLayout(LayoutKind.Sequential)]
