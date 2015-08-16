@@ -106,7 +106,7 @@ namespace ScpControl.Driver
         public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd)
         {
-            // regex to extract vendir ID and product ID from hardware ID string
+            // regex to extract vendor ID and product ID from hardware ID string
             var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
             // matched groups
             var matches = regex.Match(hardwareId).Groups;
@@ -173,7 +173,16 @@ namespace ScpControl.Driver
                         // install/replace the current devices driver
                         result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
 
-                        Log.InfoFormat("Installation result: {0}", Enum.GetName(typeof (WdiErrorCode), result));
+                        var resultLog = string.Format("Installation result: {0}", Enum.GetName(typeof (WdiErrorCode), result));
+
+                        if (result == WdiErrorCode.WDI_SUCCESS)
+                        {
+                            Log.Info(resultLog);
+                        }
+                        else
+                        {
+                            Log.Warn(resultLog);
+                        }
                     }
 
                     break;
