@@ -38,12 +38,12 @@ namespace ScpControl.Bluetooth
             InitializeComponent();
         }
 
-        public BthDevice(IBthDevice Device, byte[] Master, byte Lsb, byte Msb) : base(new BthHandle(Lsb, Msb))
+        public BthDevice(IBthDevice device, byte[] master, byte lsb, byte msb) : base(new BthHandle(lsb, msb))
         {
             InitializeComponent();
 
-            m_Device = Device;
-            m_Master = Master;
+            m_Device = device;
+            m_Master = master;
         }
 
         public DsState State
