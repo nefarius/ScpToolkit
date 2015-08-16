@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using log4net;
@@ -12,6 +13,8 @@ namespace ScpControl.Driver
     public static class DriverInstaller
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string DriverDirectory = Path.Combine(WorkingDirectory, "Driver");
 
         public static uint InstallBluetoothDongles()
         {
@@ -33,6 +36,25 @@ namespace ScpControl.Driver
             return installed;
         }
 
+        public static uint UninstallBluetoothDongles(ref bool rebootRequired)
+        {
+            uint uninstalled = 0;
+
+            foreach (
+                var file in
+                    Directory.GetFiles(DriverDirectory)
+                        .Where(
+                            f =>
+                                Path.GetFileName(f).StartsWith("BthDongle_") &&
+                                Path.GetExtension(f).ToLower().Equals(".inf")))
+            {
+                Difx.Instance.Uninstall(file, DifxFlags.DRIVER_PACKAGE_DELETE_FILES, out rebootRequired);
+                uninstalled++;
+            }
+
+            return uninstalled;
+        }
+
         public static uint InstallDualShock3Controllers()
         {
             // install compatible DS3 controllers
@@ -52,6 +74,25 @@ namespace ScpControl.Driver
             return installed;
         }
 
+        public static uint UninstallDualShock3Controllers(ref bool rebootRequired)
+        {
+            uint uninstalled = 0;
+
+            foreach (
+                var file in
+                    Directory.GetFiles(DriverDirectory)
+                        .Where(
+                            f =>
+                                Path.GetFileName(f).StartsWith("Ds3Controller_") &&
+                                Path.GetExtension(f).ToLower().Equals(".inf")))
+            {
+                Difx.Instance.Uninstall(file, DifxFlags.DRIVER_PACKAGE_DELETE_FILES, out rebootRequired);
+                uninstalled++;
+            }
+
+            return uninstalled;
+        }
+
         public static uint InstallDualShock4Controllers()
         {
             // install compatible DS4 controllers
@@ -69,6 +110,25 @@ namespace ScpControl.Driver
             }
 
             return installed;
+        }
+
+        public static uint UninstallDualShock4Controllers(ref bool rebootRequired)
+        {
+            uint uninstalled = 0;
+
+            foreach (
+                var file in
+                    Directory.GetFiles(DriverDirectory)
+                        .Where(
+                            f =>
+                                Path.GetFileName(f).StartsWith("Ds4Controller_") &&
+                                Path.GetExtension(f).ToLower().Equals(".inf")))
+            {
+                Difx.Instance.Uninstall(file, DifxFlags.DRIVER_PACKAGE_DELETE_FILES, out rebootRequired);
+                uninstalled++;
+            }
+
+            return uninstalled;
         }
     }
 }
