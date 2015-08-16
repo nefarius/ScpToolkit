@@ -143,8 +143,8 @@ namespace ScpDriver
         {
             Log.InfoFormat("SCP Driver Installer {0} [{1}]", Application.ProductVersion, DateTime.Now);
 
-            _installer = Difx.Factory();
-            _installer.onLogEvent += Logger;
+            _installer = Difx.Instance;
+            _installer.OnLogEvent += Logger;
 
             var info = OsInfoHelper.OsInfo();
             _valid = OsInfoHelper.OsParse(info);
