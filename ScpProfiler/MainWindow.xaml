@@ -54,7 +54,7 @@
             <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png" ImageToolTip="Right thumb"/>
         </StackPanel>
 
-        <tb:TaskbarIcon Grid.Row="1"
+        <tb:TaskbarIcon Grid.Row="2"
 			Visibility="Visible"
 			IconSource="Scp.ico"
 			ToolTipText="Scp Custom Mouse &amp; Keyboard Profiler"

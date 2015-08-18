@@ -35,6 +35,7 @@
 
         <!-- Button/Axis signal strength -->
         <ProgressBar Grid.Column="1"
+                     ToolTip="Signal strength"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Stretch"
                      Height="15" Margin="5"
@@ -42,6 +43,7 @@
         
         <!-- Type of target command -->
         <ComboBox Grid.Column="2"
+                  ToolTip="Target command type"
                   VerticalAlignment="Center" 
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch"
@@ -58,6 +60,7 @@
 
         <!-- Target command -->
         <ComboBox Grid.Column="3" 
+                  ToolTip="Action target"
                   x:Name="TargetCommandComboBox" 
                   VerticalAlignment="Center"
                   VerticalContentAlignment="Center"
@@ -67,6 +70,7 @@
 
         <!-- Mapping enabled? -->
         <CheckBox Grid.Column="4" 
+                  ToolTip="Enable/Disable mapping"
                   Content="Enabled"
                   IsChecked="True"
                   VerticalAlignment="Center" 
