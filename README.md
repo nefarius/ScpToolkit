@@ -8,7 +8,9 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
  * [reactivesockets library by Daniel Cazzulino](https://github.com/clariuslabs/reactivesockets)
  * [Windows Driver Installer library for USB devices](https://github.com/pbatard/libwdi)
  * [PortableSettingsProvider](https://github.com/crdx/PortableSettingsProvider)
- * To be extended...
+ * [log4net logging library](https://logging.apache.org/log4net/)
+ * [Libarius .NET library](https://github.com/nefarius/Libarius)
+ * [Rx networking library](https://github.com/clariuslabs/reactivesockets)
 
 ## Installation requirements
  * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
