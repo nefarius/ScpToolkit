@@ -77,10 +77,9 @@ namespace ScpControl.ScpCore
             set { Settings.Default.SwapTriggers = value; }
         }
 
-        public bool DisableLightBar
+        public bool IsLightBarDisabled
         {
             get { return Settings.Default.Ds4LightBarBrightness == 0; }
-            set { Settings.Default.Ds4LightBarBrightness = (byte)(value ? 0 : 128); }
         }
 
         public bool IdleDisconnect

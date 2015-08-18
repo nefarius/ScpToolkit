@@ -137,6 +137,7 @@
     <Compile Include="Rx\ScpNativeFeedChannel.cs" />
     <Compile Include="ScpCore\DsDetail.cs" />
     <Compile Include="ScpCore\DsPacket.cs" />
+    <Compile Include="Utilities\PortableSettingsProvider.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\GlobalConfiguration.cs" />
     <Compile Include="ScpCore\HCI.cs" />

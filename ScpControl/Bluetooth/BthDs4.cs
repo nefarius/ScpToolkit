@@ -191,7 +191,7 @@ namespace ScpControl.Bluetooth
                         break;
                 }
 
-                if (GlobalConfiguration.Instance.DisableLightBar)
+                if (GlobalConfiguration.Instance.IsLightBarDisabled)
                 {
                     _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
                 }
@@ -368,7 +368,7 @@ namespace ScpControl.Bluetooth
             {
                 if (m_State == DsState.Connected)
                 {
-                    if (!GlobalConfiguration.Instance.DisableLightBar)
+                    if (!GlobalConfiguration.Instance.IsLightBarDisabled)
                     {
                         if (Battery < DsBattery.Medium)
                         {
@@ -398,9 +398,9 @@ namespace ScpControl.Bluetooth
                         PadId = PadId;
                     }
 
-                    if (GlobalConfiguration.Instance.DisableLightBar != _mDisableLightBar)
+                    if (GlobalConfiguration.Instance.IsLightBarDisabled != _mDisableLightBar)
                     {
-                        _mDisableLightBar = GlobalConfiguration.Instance.DisableLightBar;
+                        _mDisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
                         PadId = PadId;
                     }
 

@@ -8,52 +8,52 @@
     <Setting Name="RootHubNativeFeedPort" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">26761</Value>
     </Setting>
-    <Setting Name="FlipAxisLx" Type="System.Boolean" Scope="User">
+    <Setting Name="FlipAxisLx" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="FlipAxisLy" Type="System.Boolean" Scope="User">
+    <Setting Name="FlipAxisLy" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="FlipAxisRx" Type="System.Boolean" Scope="User">
+    <Setting Name="FlipAxisRx" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="FlipAxisRy" Type="System.Boolean" Scope="User">
+    <Setting Name="FlipAxisRy" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="DisableLed" Type="System.Boolean" Scope="User">
+    <Setting Name="DisableLed" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="DisableRumble" Type="System.Boolean" Scope="User">
+    <Setting Name="DisableRumble" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="DisableNativeFeed" Type="System.Boolean" Scope="User">
+    <Setting Name="DisableNativeFeed" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="DisableSecureSimplePairing" Type="System.Boolean" Scope="User">
+    <Setting Name="DisableSecureSimplePairing" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="IdleTimout" Type="System.Int32" Scope="User">
+    <Setting Name="IdleTimout" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">600000</Value>
     </Setting>
-    <Setting Name="Ds3RumbleLatency" Type="System.Int32" Scope="User">
+    <Setting Name="Ds3RumbleLatency" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">128</Value>
     </Setting>
-    <Setting Name="Ds4LightBarBrightness" Type="System.Byte" Scope="User">
+    <Setting Name="Ds4LightBarBrightness" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">128</Value>
     </Setting>
-    <Setting Name="Ds4Repair" Type="System.Boolean" Scope="User">
+    <Setting Name="Ds4Repair" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="BusId" Type="System.Int32" Scope="User">
+    <Setting Name="BusId" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="SwapTriggers" Type="System.Boolean" Scope="User">
+    <Setting Name="SwapTriggers" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="DeadZoneL" Type="System.Byte" Scope="User">
+    <Setting Name="DeadZoneL" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="DeadZoneR" Type="System.Byte" Scope="User">
+    <Setting Name="DeadZoneR" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>

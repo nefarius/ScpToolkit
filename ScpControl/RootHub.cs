@@ -574,6 +574,7 @@ namespace ScpControl
         public void SubmitConfiguration(GlobalConfiguration configuration)
         {
             GlobalConfiguration.Submit(configuration);
+            GlobalConfiguration.Save();
         }
     }
 }

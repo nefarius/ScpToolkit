@@ -74,7 +74,7 @@ namespace ScpControl
                         break;
                 }
 
-                if (GlobalConfiguration.Instance.DisableLightBar)
+                if (GlobalConfiguration.Instance.IsLightBarDisabled)
                 {
                     m_Report[R] = m_Report[G] = m_Report[B] = m_Report[12] = m_Report[13] = 0x00;
                 }
@@ -263,7 +263,7 @@ namespace ScpControl
 
                     m_Last = now;
 
-                    if (!GlobalConfiguration.Instance.DisableLightBar)
+                    if (!GlobalConfiguration.Instance.IsLightBarDisabled)
                     {
                         if (Battery != DsBattery.Charged)
                         {
@@ -281,9 +281,9 @@ namespace ScpControl
                         PadId = PadId;
                     }
 
-                    if (GlobalConfiguration.Instance.DisableLightBar != m_DisableLightBar)
+                    if (GlobalConfiguration.Instance.IsLightBarDisabled != m_DisableLightBar)
                     {
-                        m_DisableLightBar = GlobalConfiguration.Instance.DisableLightBar;
+                        m_DisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
                         PadId = PadId;
                     }
 
