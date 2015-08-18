@@ -16,7 +16,7 @@ namespace ScpControl
         private readonly Profile m_Empty = new Profile(true, DsMatch.None.ToString(), DsMatch.Global.ToString(),
             string.Empty);
 
-        private readonly ProfileMap m_Mapper = new ProfileMap();
+        private readonly ProfileCollection m_Mapper = new ProfileCollection();
         protected volatile string m_Active = string.Empty, m_Version = string.Empty, m_Description = string.Empty;
         private volatile bool m_Remapping;
 
@@ -89,7 +89,7 @@ namespace ScpControl
             get { return m_Active; }
         }
 
-        public virtual ProfileMap Map
+        public virtual ProfileCollection Map
         {
             get { return m_Mapper; }
         }
