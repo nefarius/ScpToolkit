@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using System.Xml;
 using log4net;
+using ScpControl.ScpCore;
 
 namespace ScpControl
 {

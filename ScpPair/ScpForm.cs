@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ScpControl;
+using ScpControl.ScpCore;
 using ScpControl.Utilities;
 using ScpPair.Properties;
 

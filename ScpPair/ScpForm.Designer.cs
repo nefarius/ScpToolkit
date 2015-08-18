@@ -42,7 +42,7 @@
             // usbDevice
             // 
             this.usbDevice.IsShutdown = false;
-            this.usbDevice.PadId = ScpControl.DsPadId.One;
+            this.usbDevice.PadId = ScpControl.ScpCore.DsPadId.One;
             // 
             // tmEnable
             // 

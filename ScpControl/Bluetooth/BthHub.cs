@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {

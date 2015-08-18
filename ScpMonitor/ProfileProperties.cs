@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using ScpControl;
+using ScpControl.ScpCore;
 
 namespace ScpMonitor 
 {

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {

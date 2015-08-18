@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using ScpControl.ScpCore;
 
 namespace ScpControl
 {
