@@ -328,21 +328,21 @@ namespace ScpControl
             return Constructed;
         }
 
-        public virtual bool Remap(DsModel Type, int Pad, string Mac, byte[] Input, byte[] Output)
+        public virtual bool Remap(DsModel type, int pad, string mac, byte[] input, byte[] output)
         {
-            var Mapped = false;
+            var mapped = false;
 
             try
             {
                 if (m_Remapping)
                 {
-                    switch (Type)
+                    switch (type)
                     {
                         case DsModel.DS3:
-                            Mapped = RemapDs3(Find(Mac, Pad), Input, Output);
+                            mapped = RemapDs3(Find(mac, pad), input, output);
                             break;
                         case DsModel.DS4:
-                            Mapped = RemapDs4(Find(Mac, Pad), Input, Output);
+                            mapped = RemapDs4(Find(mac, pad), input, output);
                             break;
                     }
                 }
@@ -352,137 +352,137 @@ namespace ScpControl
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Mapped;
+            return mapped;
         }
 
-        public virtual bool RemapDs3(Profile Map, byte[] Input, byte[] Output)
+        public virtual bool RemapDs3(Profile profile, byte[] input, byte[] output)
         {
-            var Mapped = false;
+            var mapped = false;
 
             try
             {
-                Array.Copy(Input, Output, Input.Length);
+                Array.Copy(input, output, input.Length);
 
                 // Map Buttons
                 var In =
-                    (Ds3Button) (uint) ((Input[10] << 0) | (Input[11] << 8) | (Input[12] << 16) | (Input[13] << 24));
+                    (Ds3Button) (uint) ((input[10] << 0) | (input[11] << 8) | (input[12] << 16) | (input[13] << 24));
                 var Out = In;
 
-                foreach (var Item in Map.Ds3Button.Keys) if ((Out & Item) != Ds3Button.None) Out ^= Item;
-                foreach (var Item in Map.Ds3Button.Keys) if ((In & Item) != Ds3Button.None) Out |= Map.Ds3Button[Item];
+                foreach (var item in profile.Ds3Button.Keys) if ((Out & item) != Ds3Button.None) Out ^= item;
+                foreach (var item in profile.Ds3Button.Keys) if ((In & item) != Ds3Button.None) Out |= profile.Ds3Button[item];
 
-                Output[10] = (byte) ((uint) Out >> 0 & 0xFF);
-                Output[11] = (byte) ((uint) Out >> 8 & 0xFF);
-                Output[12] = (byte) ((uint) Out >> 16 & 0xFF);
-                Output[13] = (byte) ((uint) Out >> 24 & 0xFF);
+                output[10] = (byte) ((uint) Out >> 0 & 0xFF);
+                output[11] = (byte) ((uint) Out >> 8 & 0xFF);
+                output[12] = (byte) ((uint) Out >> 16 & 0xFF);
+                output[13] = (byte) ((uint) Out >> 24 & 0xFF);
 
                 // Map Axis
-                foreach (var Item in Map.Ds3Axis.Keys)
+                foreach (var item in profile.Ds3Axis.Keys)
                 {
-                    switch (Item)
+                    switch (item)
                     {
                         case Ds3Axis.LX:
                         case Ds3Axis.LY:
                         case Ds3Axis.RX:
                         case Ds3Axis.RY:
-                            Output[(uint) Item] = 127; // Centred
+                            output[(uint) item] = 127; // Centred
                             break;
 
                         default:
-                            Output[(uint) Item] = 0;
+                            output[(uint) item] = 0;
                             break;
                     }
                 }
 
-                foreach (var Item in Map.Ds3Axis.Keys)
+                foreach (var item in profile.Ds3Axis.Keys)
                 {
-                    if (Map.Ds3Axis[Item] != Ds3Axis.None)
+                    if (profile.Ds3Axis[item] != Ds3Axis.None)
                     {
-                        Output[(uint) Map.Ds3Axis[Item]] = Input[(uint) Item];
+                        output[(uint) profile.Ds3Axis[item]] = input[(uint) item];
                     }
                 }
 
                 // Fix up Button-Axis Relations
-                foreach (var Key in Ds3ButtonAxis.Keys)
+                foreach (var key in Ds3ButtonAxis.Keys)
                 {
-                    if ((Out & Key) != Ds3Button.None && Output[(uint) Ds3ButtonAxis[Key]] == 0)
+                    if ((Out & key) != Ds3Button.None && output[(uint) Ds3ButtonAxis[key]] == 0)
                     {
-                        Output[(uint) Ds3ButtonAxis[Key]] = 0xFF;
+                        output[(uint) Ds3ButtonAxis[key]] = 0xFF;
                     }
                 }
 
-                Mapped = true;
+                mapped = true;
             }
             catch (Exception ex)
             {
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Mapped;
+            return mapped;
         }
 
-        public virtual bool RemapDs4(Profile Map, byte[] Input, byte[] Output)
+        public virtual bool RemapDs4(Profile map, byte[] input, byte[] output)
         {
-            var Mapped = false;
+            var mapped = false;
 
             try
             {
-                Array.Copy(Input, Output, Input.Length);
+                Array.Copy(input, output, input.Length);
 
                 // Map Buttons
-                var In = (Ds4Button) (uint) ((Input[13] << 0) | (Input[14] << 8) | (Input[15] << 16));
+                var In = (Ds4Button) (uint) ((input[13] << 0) | (input[14] << 8) | (input[15] << 16));
                 var Out = In;
 
-                foreach (var Item in Map.Ds4Button.Keys) if ((Out & Item) != Ds4Button.None) Out ^= Item;
-                foreach (var Item in Map.Ds4Button.Keys) if ((In & Item) != Ds4Button.None) Out |= Map.Ds4Button[Item];
+                foreach (var item in map.Ds4Button.Keys) if ((Out & item) != Ds4Button.None) Out ^= item;
+                foreach (var item in map.Ds4Button.Keys) if ((In & item) != Ds4Button.None) Out |= map.Ds4Button[item];
 
-                Output[13] = (byte) ((uint) Out >> 0 & 0xFF);
-                Output[14] = (byte) ((uint) Out >> 8 & 0xFF);
-                Output[15] = (byte) ((uint) Out >> 16 & 0xFF);
+                output[13] = (byte) ((uint) Out >> 0 & 0xFF);
+                output[14] = (byte) ((uint) Out >> 8 & 0xFF);
+                output[15] = (byte) ((uint) Out >> 16 & 0xFF);
 
                 // Map Axis
-                foreach (var Item in Map.Ds4Axis.Keys)
+                foreach (var item in map.Ds4Axis.Keys)
                 {
-                    switch (Item)
+                    switch (item)
                     {
                         case Ds4Axis.LX:
                         case Ds4Axis.LY:
                         case Ds4Axis.RX:
                         case Ds4Axis.RY:
-                            Output[(uint) Item] = 127; // Centred
+                            output[(uint) item] = 127; // Centred
                             break;
                         default:
-                            Output[(uint) Item] = 0;
+                            output[(uint) item] = 0;
                             break;
                     }
                 }
 
-                foreach (var Item in Map.Ds4Axis.Keys)
+                foreach (var item in map.Ds4Axis.Keys)
                 {
-                    if (Map.Ds4Axis[Item] != Ds4Axis.None)
+                    if (map.Ds4Axis[item] != Ds4Axis.None)
                     {
-                        Output[(uint) Map.Ds4Axis[Item]] = Input[(uint) Item];
+                        output[(uint) map.Ds4Axis[item]] = input[(uint) item];
                     }
                 }
 
                 // Fix up Button-Axis Relations
-                foreach (var Key in Ds4ButtonAxis.Keys)
+                foreach (var key in Ds4ButtonAxis.Keys)
                 {
-                    if ((Out & Key) != Ds4Button.None && Output[(uint) Ds4ButtonAxis[Key]] == 0)
+                    if ((Out & key) != Ds4Button.None && output[(uint) Ds4ButtonAxis[key]] == 0)
                     {
-                        Output[(uint) Ds4ButtonAxis[Key]] = 0xFF;
+                        output[(uint) Ds4ButtonAxis[key]] = 0xFF;
                     }
                 }
 
 
-                Mapped = true;
+                mapped = true;
             }
             catch (Exception ex)
             {
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return Mapped;
+            return mapped;
         }
     }
 }
