@@ -29,12 +29,27 @@ namespace ScpProfiler
             set { SetValue(ImageSourceProperty, value); }
         }
 
+        public string ImageToolTip
+        {
+            get { return (string) GetValue(ImageToolTipProperty); }
+            set { SetValue(ImageToolTipProperty, value);}
+        }
+
         private static void OnImageSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var myUserControl = sender as ButtonMappingEntryControl;
             if (myUserControl != null)
             {
                 myUserControl.ButtonImage.Source = new BitmapImage((Uri) e.NewValue);
+            }
+        }
+
+        private static void OnImageToolTipChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var myUserControl = sender as ButtonMappingEntryControl;
+            if (myUserControl != null)
+            {
+                myUserControl.ButtonImage.ToolTip = e.NewValue;
             }
         }
 
@@ -83,6 +98,15 @@ namespace ScpProfiler
                     typeof (Uri),
                     typeof (ButtonMappingEntryControl),
                     new FrameworkPropertyMetadata(OnImageSourceChanged)
+                );
+
+        public static readonly DependencyProperty ImageToolTipProperty =
+            DependencyProperty.Register
+                (
+                    "ImageToolTip",
+                    typeof(string),
+                    typeof(ButtonMappingEntryControl),
+                    new FrameworkPropertyMetadata(OnImageToolTipChanged)
                 );
     }
 }

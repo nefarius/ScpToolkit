@@ -37,21 +37,21 @@
         </DockPanel>
 
         <StackPanel Grid.Row="1" Margin="10">
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_PSHome.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Circle.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Cross.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Sqaure.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Triangle.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Select.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Start.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L1.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R1.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L2.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R2.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Left_Stick.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Right_Stick.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L3.png"/>
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_PSHome.png" ImageToolTip="PS Home button"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Circle.png" ImageToolTip="Circle"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Cross.png" ImageToolTip="Cross"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Sqaure.png" ImageToolTip="Square"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Triangle.png" ImageToolTip="Triangle"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Select.png" ImageToolTip="Select"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Start.png" ImageToolTip="Start"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L1.png" ImageToolTip="Left shoulder"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R1.png" ImageToolTip="Right shoulder"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L2.png" ImageToolTip="Left trigger"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R2.png" ImageToolTip="Right trigger"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Left_Stick.png" ImageToolTip="Left analog axis"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Right_Stick.png" ImageToolTip="Right analog axis"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L3.png" ImageToolTip="Left thumb"/>
+            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png" ImageToolTip="Right thumb"/>
         </StackPanel>
 
         <tb:TaskbarIcon Grid.Row="1"
