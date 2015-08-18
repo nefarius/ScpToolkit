@@ -252,117 +252,106 @@ namespace ScpControl
     [DataContract]
     public class Profile
     {
-        private bool m_Default;
-        private Ds3AxisMap m_Ds3AxisMap = new Ds3AxisMap();
-        private Ds3ButtonMap m_Ds3ButtonMap = new Ds3ButtonMap();
-        private Ds4AxisMap m_Ds4AxisMap = new Ds4AxisMap();
-        private Ds4ButtonMap m_Ds4ButtonMap = new Ds4ButtonMap();
-        private DsMatch m_Match = DsMatch.Global;
-        protected string m_Name, m_Type, m_Pad = string.Empty, m_Mac = string.Empty;
+        private readonly Ds3AxisMap _ds3AxisMap = new Ds3AxisMap();
+        private readonly Ds3ButtonMap _ds3ButtonMap = new Ds3ButtonMap();
+        private readonly Ds4AxisMap _ds4AxisMap = new Ds4AxisMap();
+        private readonly Ds4ButtonMap _ds4ButtonMap = new Ds4ButtonMap();
+        private readonly DsMatch _match = DsMatch.Global;
+        private readonly string _pad = string.Empty;
+        private readonly string _mac = string.Empty;
 
-        public Profile(string Name)
+        public Profile(string name)
         {
-            m_Name = Name;
+            Name = name;
         }
 
-        public Profile(bool Default, string Name, string Type, string Qualifier)
+        public Profile(bool setDefault, string name, string type, string qualifier) : this(name)
         {
-            m_Name = Name;
-            m_Type = Type;
+            Type = type;
 
-            m_Default = Default;
-            m_Match = (DsMatch) Enum.Parse(typeof (DsMatch), Type, true);
+            IsDefault = setDefault;
+            _match = (DsMatch) Enum.Parse(typeof (DsMatch), type, true);
 
-            switch (m_Match)
+            switch (_match)
             {
                 case DsMatch.Pad:
-                    m_Pad = Qualifier;
+                    _pad = qualifier;
                     break;
                 case DsMatch.Mac:
-                    m_Mac = Qualifier;
+                    _mac = qualifier;
                     break;
             }
         }
 
-        public string Name
-        {
-            get { return m_Name; }
-        }
+        public string Name { get; private set; }
 
-        public string Type
-        {
-            get { return m_Type; }
-        }
+        public string Type { get; private set; }
 
         public DsMatch Match
         {
-            get { return m_Match; }
+            get { return _match; }
         }
 
         public string Qualifier
         {
             get
             {
-                var Qualifier = string.Empty;
+                var qualifier = string.Empty;
 
-                switch (m_Match)
+                switch (_match)
                 {
                     case DsMatch.Pad:
-                        Qualifier = m_Pad;
+                        qualifier = _pad;
                         break;
                     case DsMatch.Mac:
-                        Qualifier = m_Mac;
+                        qualifier = _mac;
                         break;
                 }
 
-                return Qualifier;
+                return qualifier;
             }
         }
 
-        public bool Default
-        {
-            get { return m_Default; }
-            set { m_Default = value; }
-        }
+        public bool IsDefault { get; set; }
 
         public Ds3ButtonMap Ds3Button
         {
-            get { return m_Ds3ButtonMap; }
+            get { return _ds3ButtonMap; }
         }
 
         public Ds3AxisMap Ds3Axis
         {
-            get { return m_Ds3AxisMap; }
+            get { return _ds3AxisMap; }
         }
 
         public Ds4ButtonMap Ds4Button
         {
-            get { return m_Ds4ButtonMap; }
+            get { return _ds4ButtonMap; }
         }
 
         public Ds4AxisMap Ds4Axis
         {
-            get { return m_Ds4AxisMap; }
+            get { return _ds4AxisMap; }
         }
 
         public DsMatch Usage(string Pad, string Mac)
         {
-            var Matched = DsMatch.None;
+            var matched = DsMatch.None;
 
-            switch (m_Match)
+            switch (_match)
             {
                 case DsMatch.Mac:
-                    if (Mac == m_Mac) Matched = DsMatch.Mac;
+                    if (Mac == _mac) matched = DsMatch.Mac;
                     break;
                 case DsMatch.Pad:
-                    if (Pad == m_Pad) Matched = DsMatch.Pad;
+                    if (Pad == _pad) matched = DsMatch.Pad;
                     break;
                 case DsMatch.Global:
-                    if (m_Default) Matched = DsMatch.Global;
+                    if (IsDefault) matched = DsMatch.Global;
                     break;
             }
 
-            return Matched;
+            return matched;
         }
     }
 

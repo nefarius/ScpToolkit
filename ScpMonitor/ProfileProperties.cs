@@ -67,7 +67,7 @@ namespace ScpMonitor
 
         private void btnSave_Click(object sender, EventArgs e) 
         {
-            m_Profile = new Profile(m_Profile.Default, m_Editor.Name, m_Editor.Type.ToString(), m_Editor.Target);
+            m_Profile = new Profile(m_Profile.IsDefault, m_Editor.Name, m_Editor.Type.ToString(), m_Editor.Target);
 
             foreach (Ds3AxisMap Map in m_Editor.Ds3Axis)
             {

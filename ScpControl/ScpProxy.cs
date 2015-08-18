@@ -265,10 +265,10 @@ namespace ScpControl
             {
                 foreach (var item in _xmlMapper.Map.Values)
                 {
-                    item.Default = false;
+                    item.IsDefault = false;
                 }
 
-                profile.Default = true;
+                profile.IsDefault = true;
             }
             catch (Exception ex)
             {

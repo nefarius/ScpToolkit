@@ -253,7 +253,7 @@ namespace ScpControl
                     {
                         foreach (var Item in m_Mapper.Values)
                         {
-                            if (Item.Default) CreateTextNode(Doc, Node, "Active", Item.Name);
+                            if (Item.IsDefault) CreateTextNode(Doc, Node, "Active", Item.Name);
 
                             var Profile = Doc.CreateNode(XmlNodeType.Element, "Profile", null);
                             {
