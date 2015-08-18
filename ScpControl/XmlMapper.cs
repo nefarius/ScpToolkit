@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using log4net;
@@ -366,15 +367,16 @@ namespace ScpControl
                 // Map Buttons
                 var In =
                     (Ds3Button) (uint) ((input[10] << 0) | (input[11] << 8) | (input[12] << 16) | (input[13] << 24));
-                var Out = In;
+                Ds3Button[] Out = {In};
 
-                foreach (var item in profile.Ds3Button.Keys) if ((Out & item) != Ds3Button.None) Out ^= item;
-                foreach (var item in profile.Ds3Button.Keys) if ((In & item) != Ds3Button.None) Out |= profile.Ds3Button[item];
+                foreach (var item in profile.Ds3Button.Keys.Where(item => (Out[0] & item) != Ds3Button.None))
+                    Out[0] ^= item;
+                Out[0] = profile.Ds3Button.Keys.Where(item => (In & item) != Ds3Button.None).Aggregate(Out[0], (current, item) => current | profile.Ds3Button[item]);
 
-                output[10] = (byte) ((uint) Out >> 0 & 0xFF);
-                output[11] = (byte) ((uint) Out >> 8 & 0xFF);
-                output[12] = (byte) ((uint) Out >> 16 & 0xFF);
-                output[13] = (byte) ((uint) Out >> 24 & 0xFF);
+                output[10] = (byte) ((uint) Out[0] >> 0 & 0xFF);
+                output[11] = (byte) ((uint) Out[0] >> 8 & 0xFF);
+                output[12] = (byte) ((uint) Out[0] >> 16 & 0xFF);
+                output[13] = (byte) ((uint) Out[0] >> 24 & 0xFF);
 
                 // Map Axis
                 foreach (var item in profile.Ds3Axis.Keys)
@@ -394,21 +396,15 @@ namespace ScpControl
                     }
                 }
 
-                foreach (var item in profile.Ds3Axis.Keys)
+                foreach (var item in profile.Ds3Axis.Keys.Where(item => profile.Ds3Axis[item] != Ds3Axis.None))
                 {
-                    if (profile.Ds3Axis[item] != Ds3Axis.None)
-                    {
-                        output[(uint) profile.Ds3Axis[item]] = input[(uint) item];
-                    }
+                    output[(uint) profile.Ds3Axis[item]] = input[(uint) item];
                 }
 
                 // Fix up Button-Axis Relations
-                foreach (var key in Ds3ButtonAxis.Keys)
+                foreach (var key in Ds3ButtonAxis.Keys.Where(key => (Out[0] & key) != Ds3Button.None && output[(uint) Ds3ButtonAxis[key]] == 0))
                 {
-                    if ((Out & key) != Ds3Button.None && output[(uint) Ds3ButtonAxis[key]] == 0)
-                    {
-                        output[(uint) Ds3ButtonAxis[key]] = 0xFF;
-                    }
+                    output[(uint) Ds3ButtonAxis[key]] = 0xFF;
                 }
 
                 mapped = true;
@@ -431,14 +427,16 @@ namespace ScpControl
 
                 // Map Buttons
                 var In = (Ds4Button) (uint) ((input[13] << 0) | (input[14] << 8) | (input[15] << 16));
-                var Out = In;
+                Ds4Button[] Out = {In};
 
-                foreach (var item in map.Ds4Button.Keys) if ((Out & item) != Ds4Button.None) Out ^= item;
-                foreach (var item in map.Ds4Button.Keys) if ((In & item) != Ds4Button.None) Out |= map.Ds4Button[item];
+                foreach (var item in map.Ds4Button.Keys.Where(item => (Out[0] & item) != Ds4Button.None))
+                    Out[0] ^= item;
+                foreach (var item in map.Ds4Button.Keys.Where(item => (In & item) != Ds4Button.None))
+                    Out[0] |= map.Ds4Button[item];
 
-                output[13] = (byte) ((uint) Out >> 0 & 0xFF);
-                output[14] = (byte) ((uint) Out >> 8 & 0xFF);
-                output[15] = (byte) ((uint) Out >> 16 & 0xFF);
+                output[13] = (byte) ((uint) Out[0] >> 0 & 0xFF);
+                output[14] = (byte) ((uint) Out[0] >> 8 & 0xFF);
+                output[15] = (byte) ((uint) Out[0] >> 16 & 0xFF);
 
                 // Map Axis
                 foreach (var item in map.Ds4Axis.Keys)
@@ -457,24 +455,17 @@ namespace ScpControl
                     }
                 }
 
-                foreach (var item in map.Ds4Axis.Keys)
+                foreach (var item in map.Ds4Axis.Keys.Where(item => map.Ds4Axis[item] != Ds4Axis.None))
                 {
-                    if (map.Ds4Axis[item] != Ds4Axis.None)
-                    {
-                        output[(uint) map.Ds4Axis[item]] = input[(uint) item];
-                    }
+                    output[(uint) map.Ds4Axis[item]] = input[(uint) item];
                 }
 
                 // Fix up Button-Axis Relations
-                foreach (var key in Ds4ButtonAxis.Keys)
+                foreach (var key in Ds4ButtonAxis.Keys.Where(key => (Out[0] & key) != Ds4Button.None && output[(uint) Ds4ButtonAxis[key]] == 0))
                 {
-                    if ((Out & key) != Ds4Button.None && output[(uint) Ds4ButtonAxis[key]] == 0)
-                    {
-                        output[(uint) Ds4ButtonAxis[key]] = 0xFF;
-                    }
+                    output[(uint) Ds4ButtonAxis[key]] = 0xFF;
                 }
-
-
+                
                 mapped = true;
             }
             catch (Exception ex)
