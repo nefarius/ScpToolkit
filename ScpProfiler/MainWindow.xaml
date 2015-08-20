@@ -111,6 +111,12 @@
                     </GroupBox>
                 </DockPanel>
             </controls:AccordionItem>
+            
+            <!-- LED settings -->
+            <controls:AccordionItem Header="LED behaviour"></controls:AccordionItem>
+            
+            <!-- Rumble settings -->
+            <controls:AccordionItem Header="Rumble settings"></controls:AccordionItem>
         </controls:Accordion>
 
         <tb:TaskbarIcon Grid.Row="2"
