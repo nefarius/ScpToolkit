@@ -6,8 +6,10 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:myself="clr-namespace:ScpProfiler"
              xmlns:valueConverters="clr-namespace:ScpProfiler.Value_Converters"
+             xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
-             d:DesignHeight="48" MinHeight="48" MinWidth="600" Width="650">
+             MinHeight="48" MinWidth="600" Width="886">
     <UserControl.Resources>
         <valueConverters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
 
@@ -26,18 +28,21 @@
             <ColumnDefinition Width="60" />
             <ColumnDefinition Width="180" />
             <ColumnDefinition />
-            <ColumnDefinition Width="60" />
             <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
 
         <!-- Button Icon -->
         <Image Grid.Column="0" 
-               x:Name="ButtonImage" Width="48" HorizontalAlignment="Left" />
+               x:Name="ButtonImage" 
+               Width="48" 
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top"/>
 
         <!-- Button/Axis signal strength -->
         <ProgressBar Grid.Column="1"
                      ToolTip="Signal strength"
-                     VerticalAlignment="Center"
+                     VerticalAlignment="Top"
                      HorizontalAlignment="Stretch"
                      Height="16" Margin="5,16"
                      Value="50"/>
@@ -45,7 +50,7 @@
         <!-- Type of target command -->
         <ComboBox Grid.Column="2"
                   ToolTip="Target command type"
-                  VerticalAlignment="Center" 
+                  VerticalAlignment="Top" 
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch"
                   Margin="10,9" 
@@ -63,25 +68,84 @@
         <ComboBox Grid.Column="3" 
                   ToolTip="Action target"
                   x:Name="TargetCommandComboBox" 
-                  VerticalAlignment="Center"
+                  VerticalAlignment="Top"
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch" 
                   Margin="10,9" 
                   SelectedIndex="0" Height="30"/>
 
-        <Button Grid.Column="4"
-                Margin="10,9"
-                ToolTip="Advanced settings">
-            <Image Source="Icons/32px-Settings.png"/>
-        </Button>
-
         <!-- Mapping enabled? -->
-        <CheckBox Grid.Column="5" 
+        <CheckBox Grid.Column="4" 
                   ToolTip="Enable/Disable mapping"
                   Content="Enabled"
                   IsChecked="True"
-                  VerticalAlignment="Center" 
+                  VerticalAlignment="Top" 
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Left" Height="30" Margin="0,9" Width="88"/>
+        
+        <!-- Advanced settings -->
+        <Expander Grid.Column="5" 
+                  Header="Advanced" 
+                  IsExpanded="False" 
+                  Margin="5"
+                  VerticalAlignment="Top">
+            <StackPanel Margin="0,5,0,0">
+                <!-- Turbo -->
+                <GroupBox>
+                    <!-- Turbo checkbox -->
+                    <GroupBox.Header>
+                        <CheckBox Content="Turbo"/>
+                    </GroupBox.Header>
+                    
+                    <!-- Turbo settings -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Label Grid.Row="0" Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center">Delay:</Label>
+                        <Label Grid.Row="1" Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center">Interval:</Label>
+                        <Label Grid.Row="2" Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center">Release:</Label>
+                        
+                        <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1"
+                                            Margin="5"
+                                            FormatString="N"
+                                            Value="0"/>
+                        <xctk:DecimalUpDown Grid.Row="1" Grid.Column="1"
+                                            Margin="5"
+                                            FormatString="N"
+                                            Value="50"/>
+                        <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1"
+                                            Margin="5"
+                                            FormatString="N"
+                                            Value="100"/>
+                        
+                        <Label Grid.Row="0" Grid.Column="2"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center">ms</Label>
+                        <Label Grid.Row="1" Grid.Column="2"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center">ms</Label>
+                        <Label Grid.Row="2" Grid.Column="2"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center">ms</Label>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </Expander>
     </Grid>
 </UserControl>

@@ -4,18 +4,18 @@
     xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:scpProfiler="clr-namespace:ScpProfiler"
     xmlns:ScpCore="clr-namespace:ScpControl.ScpCore;assembly=ScpControl"
-    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
     x:Class="ScpProfiler.MainWindow"
-    Title="Scp Gamepad Button Profile Manager" Height="924.2" Width="682" WindowStartupLocation="CenterScreen"
+    Title="Scp Gamepad Button Profile Manager" Height="924.2" Width="958" WindowStartupLocation="CenterScreen"
     Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="5" />
         </Grid.RowDefinitions>
 
+        <!-- Top navigation -->
         <DockPanel Grid.Row="0">
             <Label Content="Pad:"
                    FontSize="18"
@@ -41,71 +41,79 @@
                       Width="200" />
         </DockPanel>
 
-        <StackPanel Grid.Row="1" Margin="10">
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_PSHome.png"
-                                                   ImageToolTip="PS Home button" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Circle.png" ImageToolTip="Circle" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Cross.png" ImageToolTip="Cross" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Sqaure.png" ImageToolTip="Square" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Triangle.png" ImageToolTip="Triangle" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Select.png" ImageToolTip="Select" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Start.png" ImageToolTip="Start" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L1.png" ImageToolTip="Left shoulder" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R1.png" ImageToolTip="Right shoulder" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L2.png" ImageToolTip="Left trigger" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R2.png" ImageToolTip="Right trigger" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L3.png" ImageToolTip="Left thumb" />
-            <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png" ImageToolTip="Right thumb" />
-        </StackPanel>
+        <!-- Main area -->
+        <controls:Accordion Grid.Row="1"
+                            Margin="10"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+            <!-- Button mappings -->
+            <controls:AccordionItem Header="Button mappings">
+                <StackPanel>
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_PSHome.png"
+                                                           ImageToolTip="PS Home button" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Circle.png"
+                                                           ImageToolTip="Circle" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Cross.png" ImageToolTip="Cross" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Sqaure.png"
+                                                           ImageToolTip="Square" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Triangle.png"
+                                                           ImageToolTip="Triangle" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Select.png"
+                                                           ImageToolTip="Select" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Start.png" ImageToolTip="Start" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L1.png"
+                                                           ImageToolTip="Left shoulder" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R1.png"
+                                                           ImageToolTip="Right shoulder" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L2.png"
+                                                           ImageToolTip="Left trigger" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R2.png"
+                                                           ImageToolTip="Right trigger" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L3.png"
+                                                           ImageToolTip="Left thumb" />
+                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png"
+                                                           ImageToolTip="Right thumb" />
+                </StackPanel>
+            </controls:AccordionItem>
 
-        <xctk:ChildWindow Grid.Row="1"
-                          Caption="Axis"
-                          Height="200"
-                          Width="400"
-                          WindowState="Closed"
-                          WindowBackground="AliceBlue">
-            <Grid Background="#FF1B1B1B">
-                <Label Content="Test" />
-            </Grid>
-        </xctk:ChildWindow>
+            <!-- Axis mappings -->
+            <controls:AccordionItem Header="Axis mappings">
+                <DockPanel LastChildFill="False">
 
-        <GroupBox Header="Axis mappings"
-                  Grid.Row="2" HorizontalAlignment="Center">
-            <DockPanel LastChildFill="False">
+                    <!-- Left stick -->
+                    <GroupBox Header="Left stick"
+                              Margin="10">
+                        <Button Width="75" Height="75" Margin="10">
+                            <Button.Content>
+                                <Image Source="Icons/48px-PS3_Left_Stick.png" Stretch="None" />
+                            </Button.Content>
+                        </Button>
+                    </GroupBox>
 
-                <!-- Left stick -->
-                <GroupBox Header="Left stick"
-                      Margin="10">
-                    <Button Width="75" Height="75" Margin="10">
-                        <Button.Content>
-                            <Image Source="Icons/48px-PS3_Left_Stick.png" Stretch="None" />
-                        </Button.Content>
-                    </Button>
-                </GroupBox>
+                    <!-- D-Pad -->
+                    <GroupBox Header="D-Pad axis"
+                              Margin="10">
+                        <Button Width="75" Height="75" Margin="10">
+                            <Button.Content>
+                                <Image Source="Icons/48px-PS3_Dpad.png" Stretch="None" />
+                            </Button.Content>
+                        </Button>
+                    </GroupBox>
 
-                <!-- D-Pad -->
-                <GroupBox Header="D-Pad axis"
-                      Margin="10">
-                    <Button Width="75" Height="75" Margin="10">
-                        <Button.Content>
-                            <Image Source="Icons/48px-PS3_Dpad.png" Stretch="None"/>
-                        </Button.Content>
-                    </Button>
-                </GroupBox>
+                    <!-- Right stick -->
+                    <GroupBox Header="Right stick"
+                              Margin="10">
+                        <Button Width="75" Height="75" Margin="10">
+                            <Button.Content>
+                                <Image Source="Icons/48px-PS3_Right_Stick.png" Stretch="None" />
+                            </Button.Content>
+                        </Button>
+                    </GroupBox>
+                </DockPanel>
+            </controls:AccordionItem>
+        </controls:Accordion>
 
-                <!-- Right stick -->
-                <GroupBox Header="Right stick"
-                      Margin="10">
-                    <Button Width="75" Height="75" Margin="10">
-                        <Button.Content>
-                            <Image Source="Icons/48px-PS3_Right_Stick.png" Stretch="None" />
-                        </Button.Content>
-                    </Button>
-                </GroupBox>
-            </DockPanel>
-        </GroupBox>
-
-        <tb:TaskbarIcon Grid.Row="3"
+        <tb:TaskbarIcon Grid.Row="2"
                         Visibility="Visible"
                         IconSource="Scp.ico"
                         ToolTipText="Scp Custom Mouse &amp; Keyboard Profiler"
