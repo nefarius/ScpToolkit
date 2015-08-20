@@ -7,7 +7,7 @@
              xmlns:myself="clr-namespace:ScpProfiler"
              xmlns:valueConverters="clr-namespace:ScpProfiler.Value_Converters"
              mc:Ignorable="d"
-             d:DesignHeight="48" d:DesignWidth="400" MinHeight="48" MinWidth="400">
+             d:DesignHeight="48" MinHeight="48" MinWidth="600" Width="650">
     <UserControl.Resources>
         <valueConverters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
 
@@ -24,8 +24,9 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60" />
             <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="180" />
             <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="60" />
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
 
@@ -38,9 +39,9 @@
                      ToolTip="Signal strength"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Stretch"
-                     Height="15" Margin="5"
+                     Height="16" Margin="5,16"
                      Value="50"/>
-        
+
         <!-- Type of target command -->
         <ComboBox Grid.Column="2"
                   ToolTip="Target command type"
@@ -68,8 +69,14 @@
                   Margin="10,9" 
                   SelectedIndex="0" Height="30"/>
 
+        <Button Grid.Column="4"
+                Margin="10,9"
+                ToolTip="Advanced settings">
+            <Image Source="Icons/32px-Settings.png"/>
+        </Button>
+
         <!-- Mapping enabled? -->
-        <CheckBox Grid.Column="4" 
+        <CheckBox Grid.Column="5" 
                   ToolTip="Enable/Disable mapping"
                   Content="Enabled"
                   IsChecked="True"

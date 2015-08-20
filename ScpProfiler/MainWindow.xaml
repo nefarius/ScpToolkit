@@ -6,7 +6,7 @@
     xmlns:ScpCore="clr-namespace:ScpControl.ScpCore;assembly=ScpControl"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Class="ScpProfiler.MainWindow"
-    Title="Scp Gamepad Button Profile Manager" Height="924.2" Width="657" WindowStartupLocation="CenterScreen"
+    Title="Scp Gamepad Button Profile Manager" Height="924.2" Width="682" WindowStartupLocation="CenterScreen"
     Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
         <Grid.RowDefinitions>
@@ -62,7 +62,7 @@
                           Caption="Axis"
                           Height="200"
                           Width="400"
-                          WindowState="Open"
+                          WindowState="Closed"
                           WindowBackground="AliceBlue">
             <Grid Background="#FF1B1B1B">
                 <Label Content="Test" />

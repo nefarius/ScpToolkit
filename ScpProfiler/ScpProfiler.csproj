@@ -222,6 +222,15 @@
   <ItemGroup>
     <Resource Include="Icons\48px-PS3_PSHome.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\48px-Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\32px-Settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\32px-Settings2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
