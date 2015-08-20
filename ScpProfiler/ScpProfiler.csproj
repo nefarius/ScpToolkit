@@ -92,10 +92,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DpadAxisControl.xaml.cs">
+      <DependentUpon>DpadAxisControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
     <Page Include="ButtonMappingEntryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DpadAxisControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -77,44 +77,18 @@
             </controls:AccordionItem>
 
             <!-- Axis mappings -->
-            <controls:AccordionItem Header="Axis mappings">
-                <DockPanel LastChildFill="False">
-
-                    <!-- Left stick -->
-                    <GroupBox Header="Left stick"
-                              Margin="10">
-                        <Button Width="75" Height="75" Margin="10">
-                            <Button.Content>
-                                <Image Source="Icons/48px-PS3_Left_Stick.png" Stretch="None" />
-                            </Button.Content>
-                        </Button>
-                    </GroupBox>
-
-                    <!-- D-Pad -->
-                    <GroupBox Header="D-Pad axis"
-                              Margin="10">
-                        <Button Width="75" Height="75" Margin="10">
-                            <Button.Content>
-                                <Image Source="Icons/48px-PS3_Dpad.png" Stretch="None" />
-                            </Button.Content>
-                        </Button>
-                    </GroupBox>
-
-                    <!-- Right stick -->
-                    <GroupBox Header="Right stick"
-                              Margin="10">
-                        <Button Width="75" Height="75" Margin="10">
-                            <Button.Content>
-                                <Image Source="Icons/48px-PS3_Right_Stick.png" Stretch="None" />
-                            </Button.Content>
-                        </Button>
-                    </GroupBox>
-                </DockPanel>
+            <controls:AccordionItem Header="Axis mappings &amp; settings">
+                <Grid>
+                    <scpProfiler:DpadAxisControl/>
+                </Grid>
             </controls:AccordionItem>
-            
+
             <!-- LED settings -->
-            <controls:AccordionItem Header="LED behaviour"></controls:AccordionItem>
-            
+            <controls:AccordionItem Header="DualShock 3 LED behaviour"></controls:AccordionItem>
+
+            <!-- Lightbar settings -->
+            <controls:AccordionItem Header="DualShock 4 Lightbar behaviour"></controls:AccordionItem>
+
             <!-- Rumble settings -->
             <controls:AccordionItem Header="Rumble settings"></controls:AccordionItem>
         </controls:Accordion>
