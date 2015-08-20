@@ -3,10 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:scpProfiler="clr-namespace:ScpProfiler"
-    xmlns:ScpCore="clr-namespace:ScpControl.ScpCore;assembly=ScpControl"
+    xmlns:scpCore="clr-namespace:ScpControl.ScpCore;assembly=ScpControl"
     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
     x:Class="ScpProfiler.MainWindow"
-    Title="Scp Gamepad Button Profile Manager" Height="924.2" Width="958" WindowStartupLocation="CenterScreen"
+    Title="Scp Gamepad Button Profile Manager" Height="930.2" Width="984" WindowStartupLocation="CenterScreen"
     Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
         <Grid.RowDefinitions>
@@ -25,11 +25,11 @@
                       HorizontalAlignment="Left"
                       Margin="5"
                       Width="100">
-                <ScpCore:DsPadId>One</ScpCore:DsPadId>
-                <ScpCore:DsPadId>Two</ScpCore:DsPadId>
-                <ScpCore:DsPadId>Three</ScpCore:DsPadId>
-                <ScpCore:DsPadId>Four</ScpCore:DsPadId>
-                <ScpCore:DsPadId>All</ScpCore:DsPadId>
+                <scpCore:DsPadId>One</scpCore:DsPadId>
+                <scpCore:DsPadId>Two</scpCore:DsPadId>
+                <scpCore:DsPadId>Three</scpCore:DsPadId>
+                <scpCore:DsPadId>Four</scpCore:DsPadId>
+                <scpCore:DsPadId>All</scpCore:DsPadId>
             </ComboBox>
             <Label Content="Profile:"
                    FontSize="18"
@@ -48,32 +48,34 @@
                             VerticalAlignment="Stretch">
             <!-- Button mappings -->
             <controls:AccordionItem Header="Button mappings">
-                <StackPanel>
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_PSHome.png"
+                <ScrollViewer>
+                    <StackPanel>
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_PSHome.png"
                                                            ImageToolTip="PS Home button" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Circle.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Circle.png"
                                                            ImageToolTip="Circle" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Cross.png" ImageToolTip="Cross" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Sqaure.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Cross.png" ImageToolTip="Cross" />
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Sqaure.png"
                                                            ImageToolTip="Square" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Triangle.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Triangle.png"
                                                            ImageToolTip="Triangle" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Select.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Select.png"
                                                            ImageToolTip="Select" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Start.png" ImageToolTip="Start" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L1.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Start.png" ImageToolTip="Start" />
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L1.png"
                                                            ImageToolTip="Left shoulder" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R1.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R1.png"
                                                            ImageToolTip="Right shoulder" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L2.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L2.png"
                                                            ImageToolTip="Left trigger" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R2.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R2.png"
                                                            ImageToolTip="Right trigger" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L3.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L3.png"
                                                            ImageToolTip="Left thumb" />
-                    <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png"
+                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png"
                                                            ImageToolTip="Right thumb" />
-                </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </controls:AccordionItem>
 
             <!-- Axis mappings -->
@@ -89,6 +91,9 @@
             <!-- Lightbar settings -->
             <controls:AccordionItem Header="DualShock 4 Lightbar behaviour"></controls:AccordionItem>
 
+            <!-- Touchpad settings -->
+            <controls:AccordionItem Header="DualShock 4 Touchpad settings"></controls:AccordionItem>
+            
             <!-- Rumble settings -->
             <controls:AccordionItem Header="Rumble settings"></controls:AccordionItem>
         </controls:Accordion>

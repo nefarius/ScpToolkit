@@ -94,11 +94,11 @@
                 <GroupBox>
                     <!-- Turbo checkbox -->
                     <GroupBox.Header>
-                        <CheckBox Content="Turbo"/>
+                        <CheckBox x:Name="TurboCheckBox" Content="Turbo"/>
                     </GroupBox.Header>
                     
                     <!-- Turbo settings -->
-                    <Grid>
+                    <Grid IsEnabled="{Binding ElementName=TurboCheckBox, Path=IsChecked}">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition/>
@@ -143,6 +143,29 @@
                         <Label Grid.Row="2" Grid.Column="2"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center">ms</Label>
+                    </Grid>
+                </GroupBox>
+                
+                <!-- Analog to digital -->
+                <GroupBox Margin="0,10,0,0">
+                    <GroupBox.Header>
+                        <CheckBox x:Name="AnalogToDigitalCheckBox" Content="Force analog to digital"/>
+                    </GroupBox.Header>
+                    
+                    <Grid IsEnabled="{Binding ElementName=AnalogToDigitalCheckBox, Path=IsChecked}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" 
+                               HorizontalAlignment="Right" 
+                               VerticalAlignment="Center">Threshold:</Label>
+                        
+                        <xctk:DecimalUpDown Grid.Column="1"
+                                            Margin="5"
+                                            FormatString="N"
+                                            Value="128"/>
                     </Grid>
                 </GroupBox>
             </StackPanel>
