@@ -6,7 +6,6 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:myself="clr-namespace:ScpProfiler"
              xmlns:valueConverters="clr-namespace:ScpProfiler.Value_Converters"
-             xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              MinHeight="48" MinWidth="600" Width="886">
