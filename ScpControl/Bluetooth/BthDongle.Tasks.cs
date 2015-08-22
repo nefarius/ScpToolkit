@@ -19,7 +19,7 @@ namespace ScpControl.Bluetooth
 
             var transfered = 0;
 
-            Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", m_BulkIn, m_BulkOut);
+            Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", BulkIn, BulkOut);
 
             // poll device buffer until cancellation requested
             while (!token.IsCancellationRequested)
@@ -365,7 +365,7 @@ namespace ScpControl.Bluetooth
             var Command = HCI.Command.HCI_Null;
             var Connection = new BthConnection();
 
-            Log.InfoFormat("-- Bluetooth  : HCI_Worker_Thread Starting (IN: {0:X2})", m_IntIn);
+            Log.InfoFormat("-- Bluetooth  : HCI_Worker_Thread Starting (IN: {0:X2})", IntIn);
 
             HCI_Reset();
 

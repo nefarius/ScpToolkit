@@ -84,7 +84,7 @@ namespace ScpControl
 
                 if (GetDeviceHandle(Path))
                 {
-                    m_IsActive = true;
+                    IsActive = true;
                     m_State = DsState.Reserved;
                 }
             }
@@ -319,7 +319,7 @@ namespace ScpControl
                         buffer[6] = (byte) ((serial >> 16) & 0xFF);
                         buffer[7] = (byte) ((serial >> 24) & 0xFF);
 
-                        if (DeviceIoControl(m_FileHandle, 0x2A4000, buffer, buffer.Length, null, 0, ref transfered,
+                        if (DeviceIoControl(FileHandle, 0x2A4000, buffer, buffer.Length, null, 0, ref transfered,
                             IntPtr.Zero))
                         {
                             m_Plugged.Add(serial);
@@ -359,7 +359,7 @@ namespace ScpControl
                         buffer[6] = (byte) ((serial >> 16) & 0xFF);
                         buffer[7] = (byte) ((serial >> 24) & 0xFF);
 
-                        if (DeviceIoControl(m_FileHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered,
+                        if (DeviceIoControl(FileHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered,
                             IntPtr.Zero))
                         {
                             m_Plugged.Remove(serial);
@@ -382,7 +382,7 @@ namespace ScpControl
                 var transfered = 0;
 
                 return
-                    DeviceIoControl(m_FileHandle, 0x2A400C, input, input.Length, output, output.Length, ref transfered,
+                    DeviceIoControl(FileHandle, 0x2A400C, input, input.Length, output, output.Length, ref transfered,
                         IntPtr.Zero) && transfered > 0;
             }
 

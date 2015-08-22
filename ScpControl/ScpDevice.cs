@@ -32,10 +32,7 @@ namespace ScpControl
             this._class = new Guid(Class);
         }
 
-        public virtual bool IsActive
-        {
-            get { return m_IsActive; }
-        }
+        public virtual bool IsActive { get; protected set; }
 
         public virtual string Path { get; protected set; }
 
@@ -48,7 +45,7 @@ namespace ScpControl
                 Open(devicePath);
             }
 
-            return m_IsActive;
+            return IsActive;
         }
 
         public virtual bool Open(string devicePath)
@@ -57,51 +54,51 @@ namespace ScpControl
 
             if (GetDeviceHandle(Path))
             {
-                if (WinUsb_Initialize(m_FileHandle, ref m_WinUsbHandle))
+                if (WinUsb_Initialize(FileHandle, ref _winUsbHandle))
                 {
                     if (InitializeDevice())
                     {
-                        m_IsActive = true;
+                        IsActive = true;
                     }
                     else
                     {
-                        WinUsb_Free(m_WinUsbHandle);
-                        m_WinUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+                        WinUsb_Free(_winUsbHandle);
+                        _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
                     }
                 }
                 else
                 {
-                    CloseHandle(m_FileHandle);
+                    CloseHandle(FileHandle);
                 }
             }
 
-            return m_IsActive;
+            return IsActive;
         }
 
         public virtual bool Start()
         {
-            return m_IsActive;
+            return IsActive;
         }
 
         public virtual bool Stop()
         {
-            m_IsActive = false;
+            IsActive = false;
 
-            if (!(m_WinUsbHandle == (IntPtr) INVALID_HANDLE_VALUE))
+            if (!(_winUsbHandle == (IntPtr) INVALID_HANDLE_VALUE))
             {
-                WinUsb_AbortPipe(m_WinUsbHandle, m_IntIn);
-                WinUsb_AbortPipe(m_WinUsbHandle, m_BulkIn);
-                WinUsb_AbortPipe(m_WinUsbHandle, m_BulkOut);
+                WinUsb_AbortPipe(_winUsbHandle, IntIn);
+                WinUsb_AbortPipe(_winUsbHandle, BulkIn);
+                WinUsb_AbortPipe(_winUsbHandle, BulkOut);
 
-                WinUsb_Free(m_WinUsbHandle);
-                m_WinUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+                WinUsb_Free(_winUsbHandle);
+                _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
             }
 
-            if (m_FileHandle != IntPtr.Zero)
+            if (FileHandle != IntPtr.Zero)
             {
-                CloseHandle(m_FileHandle);
+                CloseHandle(FileHandle);
 
-                m_FileHandle = IntPtr.Zero;
+                FileHandle = IntPtr.Zero;
             }
 
             return true;
@@ -116,35 +113,27 @@ namespace ScpControl
 
         public virtual bool ReadIntPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            if (!m_IsActive) return false;
-
-            return WinUsb_ReadPipe(m_WinUsbHandle, m_IntIn, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && WinUsb_ReadPipe(_winUsbHandle, IntIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool ReadBulkPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            if (!m_IsActive) return false;
-
-            return WinUsb_ReadPipe(m_WinUsbHandle, m_BulkIn, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && WinUsb_ReadPipe(_winUsbHandle, BulkIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool WriteIntPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            if (!m_IsActive) return false;
-
-            return WinUsb_WritePipe(m_WinUsbHandle, m_IntOut, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && WinUsb_WritePipe(_winUsbHandle, IntOut, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool WriteBulkPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            if (!m_IsActive) return false;
-
-            return WinUsb_WritePipe(m_WinUsbHandle, m_BulkOut, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && WinUsb_WritePipe(_winUsbHandle, BulkOut, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool SendTransfer(byte RequestType, byte Request, ushort Value, byte[] Buffer, ref int Transfered)
         {
-            if (!m_IsActive) return false;
+            if (!IsActive) return false;
 
             var setup = new WINUSB_SETUP_PACKET
             {
@@ -155,7 +144,7 @@ namespace ScpControl
                 Length = (ushort) Buffer.Length
             };
 
-            return WinUsb_ControlTransfer(m_WinUsbHandle, setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
+            return WinUsb_ControlTransfer(_winUsbHandle, setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
         }
 
         #endregion
@@ -338,15 +327,13 @@ namespace ScpControl
 
         private Guid _class = Guid.Empty;
 
-        protected IntPtr m_FileHandle = IntPtr.Zero;
-        private IntPtr m_WinUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+        protected IntPtr FileHandle = IntPtr.Zero;
+        private IntPtr _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
 
-        protected byte m_IntIn = 0xFF;
-        protected byte m_IntOut = 0xFF;
-        protected byte m_BulkIn = 0xFF;
-        protected byte m_BulkOut = 0xFF;
-
-        protected bool m_IsActive;
+        protected byte IntIn = 0xFF;
+        protected byte IntOut = 0xFF;
+        protected byte BulkIn = 0xFF;
+        protected byte BulkOut = 0xFF;
 
         #endregion
 
@@ -360,29 +347,29 @@ namespace ScpControl
             Removal = 0x8004
         };
 
-        public static bool RegisterNotify(IntPtr Form, Guid Class, ref IntPtr Handle, bool Window = true)
+        public static bool RegisterNotify(IntPtr form, Guid Class, ref IntPtr handle, bool window = true)
         {
             var devBroadcastDeviceInterfaceBuffer = IntPtr.Zero;
 
             try
             {
                 var devBroadcastDeviceInterface = new DEV_BROADCAST_DEVICEINTERFACE();
-                var Size = Marshal.SizeOf(devBroadcastDeviceInterface);
+                var size = Marshal.SizeOf(devBroadcastDeviceInterface);
 
-                devBroadcastDeviceInterface.dbcc_size = Size;
+                devBroadcastDeviceInterface.dbcc_size = size;
                 devBroadcastDeviceInterface.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
                 devBroadcastDeviceInterface.dbcc_reserved = 0;
                 devBroadcastDeviceInterface.dbcc_classguid = Class;
 
-                devBroadcastDeviceInterfaceBuffer = Marshal.AllocHGlobal(Size);
+                devBroadcastDeviceInterfaceBuffer = Marshal.AllocHGlobal(size);
                 Marshal.StructureToPtr(devBroadcastDeviceInterface, devBroadcastDeviceInterfaceBuffer, true);
 
-                Handle = RegisterDeviceNotification(Form, devBroadcastDeviceInterfaceBuffer,
-                    Window ? DEVICE_NOTIFY_WINDOW_HANDLE : DEVICE_NOTIFY_SERVICE_HANDLE);
+                handle = RegisterDeviceNotification(form, devBroadcastDeviceInterfaceBuffer,
+                    window ? DEVICE_NOTIFY_WINDOW_HANDLE : DEVICE_NOTIFY_SERVICE_HANDLE);
 
                 Marshal.PtrToStructure(devBroadcastDeviceInterfaceBuffer, devBroadcastDeviceInterface);
 
-                return Handle != IntPtr.Zero;
+                return handle != IntPtr.Zero;
             }
             catch (Exception ex)
             {
@@ -398,11 +385,11 @@ namespace ScpControl
             }
         }
 
-        public static bool UnregisterNotify(IntPtr Handle)
+        public static bool UnregisterNotify(IntPtr handle)
         {
             try
             {
-                return UnregisterDeviceNotification(Handle);
+                return UnregisterDeviceNotification(handle);
             }
             catch (Exception ex)
             {
@@ -545,17 +532,17 @@ namespace ScpControl
 
         protected virtual bool GetDeviceHandle(string Path)
         {
-            m_FileHandle = CreateFile(Path, (GENERIC_WRITE | GENERIC_READ), FILE_SHARE_READ | FILE_SHARE_WRITE,
+            FileHandle = CreateFile(Path, (GENERIC_WRITE | GENERIC_READ), FILE_SHARE_READ | FILE_SHARE_WRITE,
                 IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
 
-            if (m_FileHandle == IntPtr.Zero || m_FileHandle == (IntPtr) INVALID_HANDLE_VALUE)
+            if (FileHandle == IntPtr.Zero || FileHandle == (IntPtr) INVALID_HANDLE_VALUE)
             {
-                m_FileHandle = IntPtr.Zero;
+                FileHandle = IntPtr.Zero;
                 var lastError = GetLastError();
                 Log.DebugFormat("LastError = {0}", lastError);
             }
 
-            return !(m_FileHandle == IntPtr.Zero);
+            return !(FileHandle == IntPtr.Zero);
         }
 
         protected virtual bool UsbEndpointDirectionIn(int addr)
@@ -575,35 +562,35 @@ namespace ScpControl
                 var ifaceDescriptor = new USB_INTERFACE_DESCRIPTOR();
                 var pipeInfo = new WINUSB_PIPE_INFORMATION();
 
-                if (WinUsb_QueryInterfaceSettings(m_WinUsbHandle, 0, ref ifaceDescriptor))
+                if (WinUsb_QueryInterfaceSettings(_winUsbHandle, 0, ref ifaceDescriptor))
                 {
                     for (var i = 0; i < ifaceDescriptor.bNumEndpoints; i++)
                     {
-                        WinUsb_QueryPipe(m_WinUsbHandle, 0, Convert.ToByte(i), ref pipeInfo);
+                        WinUsb_QueryPipe(_winUsbHandle, 0, Convert.ToByte(i), ref pipeInfo);
 
                         if (((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) &
                              UsbEndpointDirectionIn(pipeInfo.PipeId)))
                         {
-                            m_BulkIn = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(m_WinUsbHandle, m_BulkIn);
+                            BulkIn = pipeInfo.PipeId;
+                            WinUsb_FlushPipe(_winUsbHandle, BulkIn);
                         }
                         else if (((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) &
                                   UsbEndpointDirectionOut(pipeInfo.PipeId)))
                         {
-                            m_BulkOut = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(m_WinUsbHandle, m_BulkOut);
+                            BulkOut = pipeInfo.PipeId;
+                            WinUsb_FlushPipe(_winUsbHandle, BulkOut);
                         }
                         else if ((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeInterrupt) &
                                  UsbEndpointDirectionIn(pipeInfo.PipeId))
                         {
-                            m_IntIn = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(m_WinUsbHandle, m_IntIn);
+                            IntIn = pipeInfo.PipeId;
+                            WinUsb_FlushPipe(_winUsbHandle, IntIn);
                         }
                         else if ((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeInterrupt) &
                                  UsbEndpointDirectionOut(pipeInfo.PipeId))
                         {
-                            m_IntOut = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(m_WinUsbHandle, m_IntOut);
+                            IntOut = pipeInfo.PipeId;
+                            WinUsb_FlushPipe(_winUsbHandle, IntOut);
                         }
                     }
 
