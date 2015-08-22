@@ -21,6 +21,9 @@
             L2CAP_Information_Response = 0x0B
         }
 
+        /// <summary>
+        ///     Protocol Service Multiplexer
+        /// </summary>
         public enum PSM
         {
             HID_Service = 0x01,
