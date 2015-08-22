@@ -122,7 +122,11 @@ namespace ScpControl.Bluetooth
             return base.Start();
         }
 
-        public override void Parse(byte[] report)
+        /// <summary>
+        ///     Interprets a HID report sent by a DualShock 3 device.
+        /// </summary>
+        /// <param name="report">The HID report as byte array.</param>
+        public override void ParseHidReport(byte[] report)
         {
             if (report[10] == 0xFF) return;
 
@@ -196,7 +200,7 @@ namespace ScpControl.Bluetooth
                 m_IsDisconnect = false;
             }
 
-            Publish();
+            OnHidReportReceived();
         }
 
         public override bool Rumble(byte large, byte small)
@@ -229,7 +233,7 @@ namespace ScpControl.Bluetooth
             return true;
         }
 
-        public override bool InitReport(byte[] report)
+        public override bool InitHidReport(byte[] report)
         {
             var retVal = false;
 

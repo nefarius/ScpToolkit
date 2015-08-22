@@ -16,13 +16,11 @@ namespace ScpControl.Bluetooth
         {
             byte[] L2_DCID, L2_SCID;
 
-            var Event = L2CAP.Code.L2CAP_Reserved;
-
             if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
             {
                 if (Enum.IsDefined(typeof(L2CAP.Code), buffer[8]))
                 {
-                    Event = (L2CAP.Code)buffer[8];
+                    var Event = (L2CAP.Code)buffer[8];
 
                     switch (Event)
                     {
@@ -119,14 +117,15 @@ namespace ScpControl.Bluetooth
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
-
-                        default:
-                            break;
                     }
                 }
             }
-            else if (buffer[8] == 0xA1 && buffer[9] == 0x11) connection.Parse(buffer);
-            else if (connection.InitReport(buffer))
+            else if (buffer[8] == 0xA1 && buffer[9] == 0x11)
+            {
+                // HID report received, parse content and extract gamepad data
+                connection.ParseHidReport(buffer);
+            }
+            else if (connection.InitHidReport(buffer))
             {
                 connection.CanStartHid = true;
             }
@@ -141,6 +140,7 @@ namespace ScpControl.Bluetooth
 
             Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", m_BulkIn, m_BulkOut);
 
+            // poll device buffer until cancellation requested
             while (!token.IsCancellationRequested)
             {
                 try
@@ -224,7 +224,7 @@ namespace ScpControl.Bluetooth
                                             if (connection.IsServiceStarted)
                                             {
                                                 connection.CanStartHid = true;
-                                                connection.InitReport(buffer);
+                                                connection.InitHidReport(buffer);
                                             }
                                             break;
 
@@ -312,15 +312,15 @@ namespace ScpControl.Bluetooth
 
                                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                                             break;
-
-                                        default:
-                                            break;
                                     }
                                 }
                             }
                             else if (buffer[8] == 0xA1 && buffer[9] == 0x01 && transfered == 58)
-                                connection.Parse(buffer);
-                            else if (connection.InitReport(buffer))
+                            {
+                                // HID report received, parse content and extract gamepad data
+                                connection.ParseHidReport(buffer);
+                            }
+                            else if (connection.InitHidReport(buffer))
                             {
                                 connection.CanStartHid = true;
 

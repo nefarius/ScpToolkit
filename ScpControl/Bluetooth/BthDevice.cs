@@ -109,14 +109,14 @@ namespace ScpControl.Bluetooth
             return m_Device.HCI_Disconnect(HciHandle) > 0;
         }
 
-        public event EventHandler<ReportEventArgs> Report;
+        public event EventHandler<ReportEventArgs> HidReportReceived;
 
-        protected virtual void Publish()
+        protected virtual void OnHidReportReceived()
         {
             m_ReportArgs.Report[0] = m_ControllerId;
             m_ReportArgs.Report[1] = (byte) m_State;
 
-            if (Report != null) Report(this, m_ReportArgs);
+            if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
         }
 
         public virtual bool Stop()
@@ -129,7 +129,7 @@ namespace ScpControl.Bluetooth
                 m_Packet = 0;
 
                 m_Publish = false;
-                Publish();
+                OnHidReportReceived();
             }
 
             return m_State == DsState.Reserved;
@@ -145,17 +145,17 @@ namespace ScpControl.Bluetooth
                 m_Packet = 0;
 
                 m_Publish = false;
-                Publish();
+                OnHidReportReceived();
             }
 
             return m_State == DsState.Disconnected;
         }
 
-        public virtual void Parse(byte[] report)
+        public virtual void ParseHidReport(byte[] report)
         {
         }
 
-        public virtual bool InitReport(byte[] report)
+        public virtual bool InitHidReport(byte[] report)
         {
             return true;
         }

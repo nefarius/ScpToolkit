@@ -248,7 +248,7 @@ namespace ScpControl.Bluetooth
         {
             if (LogArrival(Connection))
             {
-                Connection.Report += On_Report;
+                Connection.HidReportReceived += On_Report;
                 Connection.Start();
             }
         }
