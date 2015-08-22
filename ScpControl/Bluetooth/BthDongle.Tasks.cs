@@ -12,7 +12,47 @@ namespace ScpControl.Bluetooth
     {
         #region Worker Threads
 
-        private void L2CAP_DS4(BthDevice connection, byte[] buffer, int transfered)
+        private void L2CapWorker(object o)
+        {
+            var token = (CancellationToken)o;
+            var buffer = new byte[512];
+
+            var transfered = 0;
+
+            Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", m_BulkIn, m_BulkOut);
+
+            // poll device buffer until cancellation requested
+            while (!token.IsCancellationRequested)
+            {
+                try
+                {
+                    if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
+                    {
+                        var connection = GetConnection(buffer[0], buffer[1]);
+
+                        if (connection == null)
+                            continue;
+
+                        if (connection.Model == DsModel.DS4)
+                        {
+                            ParseBufferDs4(connection, buffer, transfered);
+                        }
+                        else
+                        {
+                            ParseBufferDs3(connection, buffer, transfered);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Unexpected error in L2CAP_Worker_Thread: {0}", ex);
+                }
+            }
+
+            Log.Info("-- Bluetooth  : L2CAP_Worker_Thread Exiting");
+        }
+
+        private void ParseBufferDs4(BthDevice connection, byte[] buffer, int transfered)
         {
             byte[] L2_DCID, L2_SCID;
 
@@ -120,7 +160,7 @@ namespace ScpControl.Bluetooth
                     }
                 }
             }
-            else if (buffer[8] == 0xA1 && buffer[9] == 0x11)
+            else if (buffer[8] == 0xA1 && buffer[9] == 0x11 && transfered == 87)
             {
                 // HID report received, parse content and extract gamepad data
                 connection.ParseHidReport(buffer);
@@ -131,216 +171,181 @@ namespace ScpControl.Bluetooth
             }
         }
 
-        private void L2CapWorker(object o)
+        private void ParseBufferDs3(BthDevice connection, byte[] buffer, int transfered)
         {
-            var token = (CancellationToken)o;
-            var buffer = new byte[512];
+            byte[] L2_DCID;
+            byte[] L2_SCID;
 
-            var transfered = 0;
-
-            Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", m_BulkIn, m_BulkOut);
-
-            // poll device buffer until cancellation requested
-            while (!token.IsCancellationRequested)
+            if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
             {
-                try
+                if (Enum.IsDefined(typeof (L2CAP.Code), buffer[8]))
                 {
-                    if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
+                    var Event = (L2CAP.Code) buffer[8];
+
+                    switch (Event)
                     {
-                        var connection = GetConnection(buffer[0], buffer[1]);
+                        case L2CAP.Code.L2CAP_Command_Reject:
 
-                        if (connection == null)
-                            continue;
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+                            break;
 
-                        if (connection.Model == DsModel.DS4)
-                        {
-                            L2CAP_DS4(connection, buffer, transfered);
-                        }
-                        else
-                        {
-                            byte[] L2_DCID;
-                            byte[] L2_SCID;
+                        case L2CAP.Code.L2CAP_Connection_Request:
 
-                            if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
+                            Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
+
+                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
+                            L2_DCID = connection.Set((L2CAP.PSM) buffer[12], L2_SCID);
+
+                            L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
+                                L2_DCID, 0x00);
+                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
+                                (byte) L2CAP.Code.L2CAP_Connection_Response);
+
+                            L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
+                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
+                                (byte) L2CAP.Code.L2CAP_Configuration_Request);
+                            break;
+
+                        case L2CAP.Code.L2CAP_Connection_Response:
+
+                            Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}]", Event, buffer[8], buffer[16]);
+
+                            if (buffer[16] == 0) // Success
                             {
-                                if (Enum.IsDefined(typeof(L2CAP.Code), buffer[8]))
+                                L2_SCID = new byte[2] {buffer[12], buffer[13]};
+                                L2_DCID = new byte[2] {buffer[14], buffer[15]};
+
+                                var DCID = (ushort) (buffer[15] << 8 | buffer[14]);
+
+                                connection.Set(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
+
+                                L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
+                                Log.DebugFormat("<< {0} [{1:X2}]",
+                                    L2CAP.Code.L2CAP_Configuration_Request,
+                                    (byte) L2CAP.Code.L2CAP_Configuration_Request);
+                            }
+                            break;
+
+                        case L2CAP.Code.L2CAP_Configuration_Request:
+
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+
+                            L2_SCID = connection.Get_SCID(buffer[12], buffer[13]);
+
+                            L2CAP_Configuration_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID);
+                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
+                                (byte) L2CAP.Code.L2CAP_Configuration_Response);
+
+                            if (connection.IsServiceStarted)
+                            {
+                                connection.CanStartHid = true;
+                                connection.InitHidReport(buffer);
+                            }
+                            break;
+
+                        case L2CAP.Code.L2CAP_Configuration_Response:
+
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+
+                            if (connection.CanStartService)
+                            {
+                                if (connection.ServiceByPass)
                                 {
-                                    var Event = (L2CAP.Code)buffer[8];
+                                    Log.DebugFormat(">> ServiceByPass [{0} - {1}]", connection.Local,
+                                        connection.RemoteName);
 
-                                    switch (Event)
+                                    connection.CanStartService = false;
+                                    OnInitialised(connection);
+                                }
+                                else
+                                {
+                                    var DCID = BthConnection.DCID++;
+                                    Log.DebugFormat("DCID = {0}", DCID);
+
+                                    L2_DCID = new byte[2] {(byte) ((DCID >> 0) & 0xFF), (byte) ((DCID >> 8) & 0xFF)};
+
+                                    if (!connection.IsFake)
                                     {
-                                        case L2CAP.Code.L2CAP_Command_Reject:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Connection_Request:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
-
-                                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
-                                            L2_DCID = connection.Set((L2CAP.PSM)buffer[12], L2_SCID);
-
-                                            L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
-                                                L2_DCID, 0x00);
-                                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
-                                                (byte)L2CAP.Code.L2CAP_Connection_Response);
-
-                                            L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
-                                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                                (byte)L2CAP.Code.L2CAP_Configuration_Request);
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Connection_Response:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}]", Event, buffer[8], buffer[16]);
-
-                                            if (buffer[16] == 0) // Success
-                                            {
-                                                L2_SCID = new byte[2] { buffer[12], buffer[13] };
-                                                L2_DCID = new byte[2] { buffer[14], buffer[15] };
-
-                                                var DCID = (ushort)(buffer[15] << 8 | buffer[14]);
-
-                                                connection.Set(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
-
-                                                L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
-                                                Log.DebugFormat("<< {0} [{1:X2}]",
-                                                    L2CAP.Code.L2CAP_Configuration_Request,
-                                                    (byte)L2CAP.Code.L2CAP_Configuration_Request);
-                                            }
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Configuration_Request:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-
-                                            L2_SCID = connection.Get_SCID(buffer[12], buffer[13]);
-
-                                            L2CAP_Configuration_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID);
-                                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
-                                                (byte)L2CAP.Code.L2CAP_Configuration_Response);
-
-                                            if (connection.IsServiceStarted)
-                                            {
-                                                connection.CanStartHid = true;
-                                                connection.InitHidReport(buffer);
-                                            }
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Configuration_Response:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-
-                                            if (connection.CanStartService)
-                                            {
-                                                if (connection.ServiceByPass)
-                                                {
-                                                    Log.DebugFormat(">> ServiceByPass [{0} - {1}]", connection.Local,
-                                                        connection.RemoteName);
-
-                                                    connection.CanStartService = false;
-                                                    OnInitialised(connection);
-                                                }
-                                                else
-                                                {
-                                                    var DCID = BthConnection.DCID++;
-                                                    Log.DebugFormat("DCID = {0}", DCID);
-
-                                                    L2_DCID = new byte[2] { (byte)((DCID >> 0) & 0xFF), (byte)((DCID >> 8) & 0xFF) };
-
-                                                    if (!connection.IsFake)
-                                                    {
-                                                        L2CAP_Connection_Request(connection.HciHandle.Bytes,
-                                                            _hidReportId++,
-                                                            L2_DCID,
-                                                            L2CAP.PSM.HID_Service);
-                                                        Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
-                                                            L2CAP.Code.L2CAP_Connection_Request,
-                                                            (byte) L2CAP.Code.L2CAP_Connection_Request,
-                                                            (byte) L2CAP.PSM.HID_Service);
-                                                    }
-                                                    else
-                                                    {
-                                                        connection.CanStartService = false;
-                                                        OnInitialised(connection);
-                                                    }
-                                                }
-                                            }
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Disconnection_Request:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}] Handle [{2:X2}{3:X2}]", Event, buffer[8],
-                                                buffer[15], buffer[14]);
-
-                                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
-
-                                            L2CAP_Disconnection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
-                                                L2_SCID);
-                                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Response,
-                                                (byte)L2CAP.Code.L2CAP_Disconnection_Response);
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Disconnection_Response:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-
-                                            if (connection.CanStartHid)
-                                            {
-                                                connection.IsServiceStarted = false;
-                                                OnInitialised(connection);
-                                            }
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Echo_Request:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Echo_Response:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Information_Request:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-                                            break;
-
-                                        case L2CAP.Code.L2CAP_Information_Response:
-
-                                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
-                                            break;
+                                        L2CAP_Connection_Request(connection.HciHandle.Bytes,
+                                            _hidReportId++,
+                                            L2_DCID,
+                                            L2CAP.PSM.HID_Service);
+                                        Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
+                                            L2CAP.Code.L2CAP_Connection_Request,
+                                            (byte) L2CAP.Code.L2CAP_Connection_Request,
+                                            (byte) L2CAP.PSM.HID_Service);
+                                    }
+                                    else
+                                    {
+                                        connection.CanStartService = false;
+                                        OnInitialised(connection);
                                     }
                                 }
                             }
-                            else if (buffer[8] == 0xA1 && buffer[9] == 0x01 && transfered == 58)
-                            {
-                                // HID report received, parse content and extract gamepad data
-                                connection.ParseHidReport(buffer);
-                            }
-                            else if (connection.InitHidReport(buffer))
-                            {
-                                connection.CanStartHid = true;
+                            break;
 
-                                L2_DCID = connection.Get_DCID(L2CAP.PSM.HID_Service);
-                                L2_SCID = connection.Get_SCID(L2CAP.PSM.HID_Service);
+                        case L2CAP.Code.L2CAP_Disconnection_Request:
 
-                                L2CAP_Disconnection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID, L2_DCID);
-                                Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Request,
-                                    (byte)L2CAP.Code.L2CAP_Disconnection_Request);
+                            Log.DebugFormat(">> {0} [{1:X2}] Handle [{2:X2}{3:X2}]", Event, buffer[8],
+                                buffer[15], buffer[14]);
+
+                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
+
+                            L2CAP_Disconnection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
+                                L2_SCID);
+                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Response,
+                                (byte) L2CAP.Code.L2CAP_Disconnection_Response);
+                            break;
+
+                        case L2CAP.Code.L2CAP_Disconnection_Response:
+
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+
+                            if (connection.CanStartHid)
+                            {
+                                connection.IsServiceStarted = false;
+                                OnInitialised(connection);
                             }
-                        }
+                            break;
+
+                        case L2CAP.Code.L2CAP_Echo_Request:
+
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+                            break;
+
+                        case L2CAP.Code.L2CAP_Echo_Response:
+
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+                            break;
+
+                        case L2CAP.Code.L2CAP_Information_Request:
+
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+                            break;
+
+                        case L2CAP.Code.L2CAP_Information_Response:
+
+                            Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
+                            break;
                     }
                 }
-                catch (Exception ex)
-                {
-                    Log.ErrorFormat("Unexpected error in L2CAP_Worker_Thread: {0}", ex);
-                }
             }
+            else if (buffer[8] == 0xA1 && buffer[9] == 0x01 && transfered == 58)
+            {
+                // HID report received, parse content and extract gamepad data
+                connection.ParseHidReport(buffer);
+            }
+            else if (connection.InitHidReport(buffer))
+            {
+                connection.CanStartHid = true;
 
-            Log.Info("-- Bluetooth  : L2CAP_Worker_Thread Exiting");
+                L2_DCID = connection.Get_DCID(L2CAP.PSM.HID_Service);
+                L2_SCID = connection.Get_SCID(L2CAP.PSM.HID_Service);
+
+                L2CAP_Disconnection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID, L2_DCID);
+                Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Request,
+                    (byte) L2CAP.Code.L2CAP_Disconnection_Request);
+            }
         }
 
         private void HicWorker(object o)
