@@ -6,6 +6,9 @@ using log4net;
 
 namespace ScpControl
 {
+    /// <summary>
+    ///     Low-level representation of an Scp-compatible USB device.
+    /// </summary>
     public partial class ScpDevice : Component
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -26,7 +29,7 @@ namespace ScpControl
         {
             InitializeComponent();
 
-            m_Class = new Guid(Class);
+            this._class = new Guid(Class);
         }
 
         public virtual bool IsActive
@@ -34,16 +37,13 @@ namespace ScpControl
             get { return m_IsActive; }
         }
 
-        public virtual string Path
-        {
-            get { return m_Path; }
-        }
+        public virtual string Path { get; protected set; }
 
         public virtual bool Open(int instance = 0)
         {
             var devicePath = string.Empty;
 
-            if (Find(m_Class, ref devicePath, instance))
+            if (Find(_class, ref devicePath, instance))
             {
                 Open(devicePath);
             }
@@ -53,9 +53,9 @@ namespace ScpControl
 
         public virtual bool Open(string devicePath)
         {
-            m_Path = devicePath.ToUpper();
+            Path = devicePath.ToUpper();
 
-            if (GetDeviceHandle(m_Path))
+            if (GetDeviceHandle(Path))
             {
                 if (WinUsb_Initialize(m_FileHandle, ref m_WinUsbHandle))
                 {
@@ -336,8 +336,7 @@ namespace ScpControl
 
         #region Protected Data Members
 
-        protected Guid m_Class = Guid.Empty;
-        protected string m_Path = string.Empty;
+        private Guid _class = Guid.Empty;
 
         protected IntPtr m_FileHandle = IntPtr.Zero;
         private IntPtr m_WinUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
@@ -486,12 +485,12 @@ namespace ScpControl
                     da = new SP_DEVICE_INTERFACE_DATA();
                 int bufferSize = 0, memberIndex = 0;
 
-                deviceInfoSet = SetupDiGetClassDevs(ref m_Class, IntPtr.Zero, IntPtr.Zero,
+                deviceInfoSet = SetupDiGetClassDevs(ref _class, IntPtr.Zero, IntPtr.Zero,
                     DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
                 DeviceInterfaceData.cbSize = da.cbSize = Marshal.SizeOf(DeviceInterfaceData);
 
-                while (SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref m_Class, memberIndex,
+                while (SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref _class, memberIndex,
                     ref DeviceInterfaceData))
                 {
                     SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, IntPtr.Zero, 0,
@@ -629,7 +628,7 @@ namespace ScpControl
                 var deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA();
 
                 deviceInterfaceData.cbSize = Marshal.SizeOf(deviceInterfaceData);
-                deviceInfoSet = SetupDiGetClassDevs(ref m_Class, IntPtr.Zero, IntPtr.Zero,
+                deviceInfoSet = SetupDiGetClassDevs(ref _class, IntPtr.Zero, IntPtr.Zero,
                     DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
                 if (SetupDiOpenDeviceInfo(deviceInfoSet, InstanceId, IntPtr.Zero, 0, ref deviceInterfaceData))

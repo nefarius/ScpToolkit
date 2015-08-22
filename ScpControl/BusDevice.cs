@@ -78,11 +78,11 @@ namespace ScpControl
         {
             if (State == DsState.Disconnected)
             {
-                m_Path = devicePath;
+                Path = devicePath;
 
-                Log.DebugFormat("-- Bus Open   : Path {0}", m_Path);
+                Log.DebugFormat("-- Bus Open   : Path {0}", Path);
 
-                if (GetDeviceHandle(m_Path))
+                if (GetDeviceHandle(Path))
                 {
                     m_IsActive = true;
                     m_State = DsState.Reserved;
