@@ -6,134 +6,144 @@ namespace ScpControl.Bluetooth
     {
         #region L2CAP Commands
 
-        private int L2CAP_Command(byte[] Handle, byte[] Data)
+        /// <summary>
+        ///     Writes a Logical Link Control and Adaption Layer Protocol command packet to a Bluetooth host device.
+        /// </summary>
+        /// <param name="handle">The USB device handle.</param>
+        /// <param name="data">The payload (command) to send.</param>
+        /// <returns></returns>
+        private int L2CAP_Command(byte[] handle, byte[] data)
         {
-            var Transfered = 0;
-            var Buffer = new byte[64];
+            var transfered = 0;
+            var buffer = new byte[64];
 
-            Buffer[0] = Handle[0];
-            Buffer[1] = (byte)(Handle[1] | 0x20);
-            Buffer[2] = (byte)(Data.Length + 4);
-            Buffer[3] = 0x00;
-            Buffer[4] = (byte)(Data.Length);
-            Buffer[5] = 0x00;
-            Buffer[6] = 0x01;
-            Buffer[7] = 0x00;
+            buffer[0] = handle[0];
+            buffer[1] = (byte)(handle[1] | 0x20);
+            buffer[2] = (byte)(data.Length + 4);
+            buffer[3] = 0x00;
+            buffer[4] = (byte)(data.Length);
+            buffer[5] = 0x00;
+            buffer[6] = 0x01;
+            buffer[7] = 0x00;
 
-            for (var i = 0; i < Data.Length; i++) Buffer[i + 8] = Data[i];
+            // add payload to buffer
+            for (var i = 0; i < data.Length; i++) buffer[i + 8] = data[i];
 
-            WriteBulkPipe(Buffer, Data.Length + 8, ref Transfered);
-            return Transfered;
+            // send data to device
+            WriteBulkPipe(buffer, data.Length + 8, ref transfered);
+
+            // return transfered byte count
+            return transfered;
         }
 
-        private int L2CAP_Connection_Request(byte[] Handle, byte Id, byte[] DCID, L2CAP.PSM Psm)
+        private int L2CAP_Connection_Request(byte[] handle, byte id, byte[] dcid, L2CAP.PSM psm)
         {
-            var Buffer = new byte[8];
+            var buffer = new byte[8];
 
-            Buffer[0] = 0x02;
-            Buffer[1] = Id;
-            Buffer[2] = 0x04;
-            Buffer[3] = 0x00;
-            Buffer[4] = (byte)Psm;
-            Buffer[5] = 0x00;
-            Buffer[6] = DCID[0];
-            Buffer[7] = DCID[1];
+            buffer[0] = 0x02;
+            buffer[1] = id;
+            buffer[2] = 0x04;
+            buffer[3] = 0x00;
+            buffer[4] = (byte)psm;
+            buffer[5] = 0x00;
+            buffer[6] = dcid[0];
+            buffer[7] = dcid[1];
 
-            return L2CAP_Command(Handle, Buffer);
+            return L2CAP_Command(handle, buffer);
         }
 
-        private int L2CAP_Connection_Response(byte[] Handle, byte Id, byte[] DCID, byte[] SCID, byte Result)
+        private int L2CAP_Connection_Response(byte[] handle, byte id, byte[] dcid, byte[] scid, byte result)
         {
-            var Buffer = new byte[12];
+            var buffer = new byte[12];
 
-            Buffer[0] = 0x03;
-            Buffer[1] = Id;
-            Buffer[2] = 0x08;
-            Buffer[3] = 0x00;
-            Buffer[4] = SCID[0];
-            Buffer[5] = SCID[1];
-            Buffer[6] = DCID[0];
-            Buffer[7] = DCID[1];
-            Buffer[8] = Result;
-            Buffer[9] = 0x00;
-            Buffer[10] = 0x00;
-            Buffer[11] = 0x00;
+            buffer[0] = 0x03;
+            buffer[1] = id;
+            buffer[2] = 0x08;
+            buffer[3] = 0x00;
+            buffer[4] = scid[0];
+            buffer[5] = scid[1];
+            buffer[6] = dcid[0];
+            buffer[7] = dcid[1];
+            buffer[8] = result;
+            buffer[9] = 0x00;
+            buffer[10] = 0x00;
+            buffer[11] = 0x00;
 
-            return L2CAP_Command(Handle, Buffer);
+            return L2CAP_Command(handle, buffer);
         }
 
-        private int L2CAP_Configuration_Request(byte[] Handle, byte Id, byte[] DCID, bool MTU = true)
+        private int L2CAP_Configuration_Request(byte[] handle, byte id, byte[] dcid, bool mtu = true)
         {
-            var Buffer = new byte[MTU ? 12 : 8];
+            var buffer = new byte[mtu ? 12 : 8];
 
-            Buffer[0] = 0x04;
-            Buffer[1] = Id;
-            Buffer[2] = (byte)(MTU ? 0x08 : 0x04);
-            Buffer[3] = 0x00;
-            Buffer[4] = DCID[0];
-            Buffer[5] = DCID[1];
-            Buffer[6] = 0x00;
-            Buffer[7] = 0x00;
+            buffer[0] = 0x04;
+            buffer[1] = id;
+            buffer[2] = (byte)(mtu ? 0x08 : 0x04);
+            buffer[3] = 0x00;
+            buffer[4] = dcid[0];
+            buffer[5] = dcid[1];
+            buffer[6] = 0x00;
+            buffer[7] = 0x00;
 
-            if (MTU)
+            if (mtu)
             {
-                Buffer[8] = 0x01;
-                Buffer[9] = 0x02;
-                Buffer[10] = 0x96;
-                Buffer[11] = 0x00;
+                buffer[8] = 0x01;
+                buffer[9] = 0x02;
+                buffer[10] = 0x96;
+                buffer[11] = 0x00;
             }
 
-            return L2CAP_Command(Handle, Buffer);
+            return L2CAP_Command(handle, buffer);
         }
 
-        private int L2CAP_Configuration_Response(byte[] Handle, byte Id, byte[] SCID)
+        private int L2CAP_Configuration_Response(byte[] handle, byte id, byte[] scid)
         {
-            var Buffer = new byte[10];
+            var buffer = new byte[10];
 
-            Buffer[0] = 0x05;
-            Buffer[1] = Id;
-            Buffer[2] = 0x06;
-            Buffer[3] = 0x00;
-            Buffer[4] = SCID[0];
-            Buffer[5] = SCID[1];
-            Buffer[6] = 0x00;
-            Buffer[7] = 0x00;
-            Buffer[8] = 0x00;
-            Buffer[9] = 0x00;
+            buffer[0] = 0x05;
+            buffer[1] = id;
+            buffer[2] = 0x06;
+            buffer[3] = 0x00;
+            buffer[4] = scid[0];
+            buffer[5] = scid[1];
+            buffer[6] = 0x00;
+            buffer[7] = 0x00;
+            buffer[8] = 0x00;
+            buffer[9] = 0x00;
 
-            return L2CAP_Command(Handle, Buffer);
+            return L2CAP_Command(handle, buffer);
         }
 
-        private int L2CAP_Disconnection_Request(byte[] Handle, byte Id, byte[] DCID, byte[] SCID)
+        private int L2CAP_Disconnection_Request(byte[] handle, byte id, byte[] dcid, byte[] scid)
         {
-            var Buffer = new byte[8];
+            var buffer = new byte[8];
 
-            Buffer[0] = 0x06;
-            Buffer[1] = Id;
-            Buffer[2] = 0x04;
-            Buffer[3] = 0x00;
-            Buffer[4] = DCID[0];
-            Buffer[5] = DCID[1];
-            Buffer[6] = SCID[0];
-            Buffer[7] = SCID[1];
+            buffer[0] = 0x06;
+            buffer[1] = id;
+            buffer[2] = 0x04;
+            buffer[3] = 0x00;
+            buffer[4] = dcid[0];
+            buffer[5] = dcid[1];
+            buffer[6] = scid[0];
+            buffer[7] = scid[1];
 
-            return L2CAP_Command(Handle, Buffer);
+            return L2CAP_Command(handle, buffer);
         }
 
-        private int L2CAP_Disconnection_Response(byte[] Handle, byte Id, byte[] DCID, byte[] SCID)
+        private int L2CAP_Disconnection_Response(byte[] handle, byte id, byte[] dcid, byte[] scid)
         {
-            var Buffer = new byte[8];
+            var buffer = new byte[8];
 
-            Buffer[0] = 0x07;
-            Buffer[1] = Id;
-            Buffer[2] = 0x04;
-            Buffer[3] = 0x00;
-            Buffer[4] = DCID[0];
-            Buffer[5] = DCID[1];
-            Buffer[6] = SCID[0];
-            Buffer[7] = SCID[1];
+            buffer[0] = 0x07;
+            buffer[1] = id;
+            buffer[2] = 0x04;
+            buffer[3] = 0x00;
+            buffer[4] = dcid[0];
+            buffer[5] = dcid[1];
+            buffer[6] = scid[0];
+            buffer[7] = scid[1];
 
-            return L2CAP_Command(Handle, Buffer);
+            return L2CAP_Command(handle, buffer);
         }
 
         #endregion
