@@ -149,29 +149,29 @@ namespace ScpControl
             return Start();
         }
 
-        public int Parse(byte[] Input, byte[] Output, DsModel Type = DsModel.DS3)
+        public int Parse(byte[] input, byte[] output, DsModel type = DsModel.DS3)
         {
-            var serial = IndexToSerial(Input[0]);
+            var serial = IndexToSerial(input[0]);
 
-            for (var index = 0; index < ReportSize; index++) Output[index] = 0x00;
+            for (var index = 0; index < ReportSize; index++) output[index] = 0x00;
 
-            Output[0] = 0x1C;
-            Output[4] = (byte) ((serial >> 0) & 0xFF);
-            Output[5] = (byte) ((serial >> 8) & 0xFF);
-            Output[6] = (byte) ((serial >> 16) & 0xFF);
-            Output[7] = (byte) ((serial >> 24) & 0xFF);
-            Output[9] = 0x14;
+            output[0] = 0x1C;
+            output[4] = (byte) ((serial >> 0) & 0xFF);
+            output[5] = (byte) ((serial >> 8) & 0xFF);
+            output[6] = (byte) ((serial >> 16) & 0xFF);
+            output[7] = (byte) ((serial >> 24) & 0xFF);
+            output[9] = 0x14;
 
             var xButton = X360Button.None;
 
-            if (Input[1] == 0x02) // Pad is active
+            if (input[1] == 0x02) // Pad is active
             {
-                switch (Type)
+                switch (type)
                 {
                     case DsModel.DS3:
                     {
                         var buttons =
-                            (Ds3Button) ((Input[10] << 0) | (Input[11] << 8) | (Input[12] << 16) | (Input[13] << 24));
+                            (Ds3Button) ((input[10] << 0) | (input[11] << 8) | (input[12] << 16) | (input[13] << 24));
 
                         if (buttons.HasFlag(Ds3Button.Select)) xButton |= X360Button.Back;
                         if (buttons.HasFlag(Ds3Button.Start)) xButton |= X360Button.Start;
@@ -194,43 +194,43 @@ namespace ScpControl
                         if (buttons.HasFlag(Ds3Button.L3)) xButton |= X360Button.LS;
                         if (buttons.HasFlag(Ds3Button.R3)) xButton |= X360Button.RS;
 
-                        Output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
-                        Output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
+                        output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
+                        output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
 
-                        Output[(uint) X360Axis.LT] = Input[(uint) Ds3Axis.L2];
-                        Output[(uint) X360Axis.RT] = Input[(uint) Ds3Axis.R2];
+                        output[(uint) X360Axis.LT] = input[(uint) Ds3Axis.L2];
+                        output[(uint) X360Axis.RT] = input[(uint) Ds3Axis.R2];
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, Input[(uint)Ds3Axis.LX], Input[(uint)Ds3Axis.LY]))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, input[(uint)Ds3Axis.LX], input[(uint)Ds3Axis.LY]))
                             // Left Stick DeadZone
                         {
-                            var thumbLx = +Scale(Input[(uint)Ds3Axis.LX], GlobalConfiguration.Instance.FlipLX);
-                            var thumbLy = -Scale(Input[(uint)Ds3Axis.LY], GlobalConfiguration.Instance.FlipLY);
+                            var thumbLx = +Scale(input[(uint)Ds3Axis.LX], GlobalConfiguration.Instance.FlipLX);
+                            var thumbLy = -Scale(input[(uint)Ds3Axis.LY], GlobalConfiguration.Instance.FlipLY);
 
-                            Output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
-                            Output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
+                            output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
+                            output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
 
-                            Output[(uint) X360Axis.LY_Lo] = (byte) ((thumbLy >> 0) & 0xFF); // LY
-                            Output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
+                            output[(uint) X360Axis.LY_Lo] = (byte) ((thumbLy >> 0) & 0xFF); // LY
+                            output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR, Input[(uint)Ds3Axis.RX], Input[(uint)Ds3Axis.RY]))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR, input[(uint)Ds3Axis.RX], input[(uint)Ds3Axis.RY]))
                             // Right Stick DeadZone
                         {
-                            var thumbRx = +Scale(Input[(uint)Ds3Axis.RX], GlobalConfiguration.Instance.FlipRX);
-                            var thumbRy = -Scale(Input[(uint)Ds3Axis.RY], GlobalConfiguration.Instance.FlipRY);
+                            var thumbRx = +Scale(input[(uint)Ds3Axis.RX], GlobalConfiguration.Instance.FlipRX);
+                            var thumbRy = -Scale(input[(uint)Ds3Axis.RY], GlobalConfiguration.Instance.FlipRY);
 
-                            Output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
-                            Output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
+                            output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
+                            output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
 
-                            Output[(uint) X360Axis.RY_Lo] = (byte) ((thumbRy >> 0) & 0xFF); // RY
-                            Output[(uint) X360Axis.RY_Hi] = (byte) ((thumbRy >> 8) & 0xFF);
+                            output[(uint) X360Axis.RY_Lo] = (byte) ((thumbRy >> 0) & 0xFF); // RY
+                            output[(uint) X360Axis.RY_Hi] = (byte) ((thumbRy >> 8) & 0xFF);
                         }
                     }
                         break;
 
                     case DsModel.DS4:
                     {
-                        var buttons = (Ds4Button) ((Input[13] << 0) | (Input[14] << 8) | (Input[15] << 16));
+                        var buttons = (Ds4Button) ((input[13] << 0) | (input[14] << 8) | (input[15] << 16));
 
                         if (buttons.HasFlag(Ds4Button.Share)) xButton |= X360Button.Back;
                         if (buttons.HasFlag(Ds4Button.Options)) xButton |= X360Button.Start;
@@ -253,43 +253,43 @@ namespace ScpControl
                         if (buttons.HasFlag(Ds4Button.L3)) xButton |= X360Button.LS;
                         if (buttons.HasFlag(Ds4Button.R3)) xButton |= X360Button.RS;
 
-                        Output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
-                        Output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
+                        output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
+                        output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
 
-                        Output[(uint) X360Axis.LT] = Input[(uint) Ds4Axis.L2];
-                        Output[(uint) X360Axis.RT] = Input[(uint) Ds4Axis.R2];
+                        output[(uint) X360Axis.LT] = input[(uint) Ds4Axis.L2];
+                        output[(uint) X360Axis.RT] = input[(uint) Ds4Axis.R2];
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, Input[(uint)Ds4Axis.LX], Input[(uint)Ds4Axis.LY]))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, input[(uint)Ds4Axis.LX], input[(uint)Ds4Axis.LY]))
                             // Left Stick DeadZone
                         {
-                            var thumbLx = +Scale(Input[(uint)Ds4Axis.LX], GlobalConfiguration.Instance.FlipLX);
-                            var thumbLy = -Scale(Input[(uint)Ds4Axis.LY], GlobalConfiguration.Instance.FlipLY);
+                            var thumbLx = +Scale(input[(uint)Ds4Axis.LX], GlobalConfiguration.Instance.FlipLX);
+                            var thumbLy = -Scale(input[(uint)Ds4Axis.LY], GlobalConfiguration.Instance.FlipLY);
 
-                            Output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
-                            Output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
+                            output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
+                            output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
 
-                            Output[(uint) X360Axis.LY_Lo] = (byte) ((thumbLy >> 0) & 0xFF); // LY
-                            Output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
+                            output[(uint) X360Axis.LY_Lo] = (byte) ((thumbLy >> 0) & 0xFF); // LY
+                            output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR, Input[(uint)Ds4Axis.RX], Input[(uint)Ds4Axis.RY]))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR, input[(uint)Ds4Axis.RX], input[(uint)Ds4Axis.RY]))
                             // Right Stick DeadZone
                         {
-                            var thumbRx = +Scale(Input[(uint)Ds4Axis.RX], GlobalConfiguration.Instance.FlipRX);
-                            var thumbRy = -Scale(Input[(uint)Ds4Axis.RY], GlobalConfiguration.Instance.FlipRY);
+                            var thumbRx = +Scale(input[(uint)Ds4Axis.RX], GlobalConfiguration.Instance.FlipRX);
+                            var thumbRy = -Scale(input[(uint)Ds4Axis.RY], GlobalConfiguration.Instance.FlipRY);
 
-                            Output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
-                            Output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
+                            output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
+                            output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
 
-                            Output[(uint) X360Axis.RY_Lo] = (byte) ((thumbRy >> 0) & 0xFF); // RY
-                            Output[(uint) X360Axis.RY_Hi] = (byte) ((thumbRy >> 8) & 0xFF);
+                            output[(uint) X360Axis.RY_Lo] = (byte) ((thumbRy >> 0) & 0xFF); // RY
+                            output[(uint) X360Axis.RY_Hi] = (byte) ((thumbRy >> 8) & 0xFF);
                         }
                     }
                         break;
                 }
             }
 
-            return Input[0];
+            return input[0];
         }
 
         public bool Plugin(int serial)
