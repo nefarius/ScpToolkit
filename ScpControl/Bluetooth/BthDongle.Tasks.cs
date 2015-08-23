@@ -52,6 +52,12 @@ namespace ScpControl.Bluetooth
             Log.Info("-- Bluetooth  : L2CAP_Worker_Thread Exiting");
         }
 
+        /// <summary>
+        ///     Parses an incoming DualShock 4 HID report .
+        /// </summary>
+        /// <param name="connection">The device handle the input buffer was received for.</param>
+        /// <param name="buffer">The HID report in bytes.</param>
+        /// <param name="transfered">The transfered bytes count.</param>
         private void ParseBufferDs4(BthDevice connection, byte[] buffer, int transfered)
         {
             byte[] L2_DCID, L2_SCID;
@@ -74,7 +80,7 @@ namespace ScpControl.Bluetooth
                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
 
                             L2_SCID = new byte[2] { buffer[14], buffer[15] };
-                            L2_DCID = connection.Set((L2CAP.PSM)buffer[12], L2_SCID);
+                            L2_DCID = connection.SetConnectionType((L2CAP.PSM)buffer[12], L2_SCID);
 
                             if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM)buffer[12])
                             {
@@ -171,6 +177,12 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        /// <summary>
+        ///     Parses an incoming DualShock 3 HID report .
+        /// </summary>
+        /// <param name="connection">The device handle the input buffer was received for.</param>
+        /// <param name="buffer">The HID report in bytes.</param>
+        /// <param name="transfered">The transfered bytes count.</param>
         private void ParseBufferDs3(BthDevice connection, byte[] buffer, int transfered)
         {
             byte[] L2_DCID;
@@ -194,7 +206,7 @@ namespace ScpControl.Bluetooth
                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
 
                             L2_SCID = new byte[2] {buffer[14], buffer[15]};
-                            L2_DCID = connection.Set((L2CAP.PSM) buffer[12], L2_SCID);
+                            L2_DCID = connection.SetConnectionType((L2CAP.PSM) buffer[12], L2_SCID);
 
                             L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
                                 L2_DCID, 0x00);
@@ -217,7 +229,7 @@ namespace ScpControl.Bluetooth
 
                                 var DCID = (ushort) (buffer[15] << 8 | buffer[14]);
 
-                                connection.Set(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
+                                connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
 
                                 L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                                 Log.DebugFormat("<< {0} [{1:X2}]",

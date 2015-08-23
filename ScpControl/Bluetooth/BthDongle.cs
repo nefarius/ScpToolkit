@@ -220,6 +220,12 @@ namespace ScpControl.Bluetooth
             return connection;
         }
 
+        /// <summary>
+        ///     Returns an existing Bluetooth connection based on an incoming buffer.
+        /// </summary>
+        /// <param name="lsb">Least significant bit in byte stream.</param>
+        /// <param name="msb">Most significant bit in byte stream.</param>
+        /// <returns>The Bluetooth connection, null if not found.</returns>
         private BthDevice GetConnection(byte lsb, byte msb)
         {
             var hande = new BthHandle(lsb, msb);
@@ -244,18 +250,18 @@ namespace ScpControl.Bluetooth
 
         #region Events
 
-        private void OnInitialised(BthDevice Connection)
+        private void OnInitialised(BthDevice connection)
         {
-            if (LogArrival(Connection))
+            if (LogArrival(connection))
             {
-                Connection.HidReportReceived += On_Report;
-                Connection.Start();
+                connection.HidReportReceived += On_Report;
+                connection.Start();
             }
         }
 
-        private void OnCompletedCount(byte Lsb, byte Msb, ushort Count)
+        private void OnCompletedCount(byte lsb, byte msb, ushort count)
         {
-            if (Count > 0) _connected[new BthHandle(Lsb, Msb)].Completed();
+            if (count > 0) _connected[new BthHandle(lsb, msb)].Completed();
         }
 
         private void On_Report(object sender, ReportEventArgs e)

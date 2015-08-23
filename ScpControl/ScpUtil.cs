@@ -144,9 +144,9 @@ namespace ScpControl
 
     public class ArrivalEventArgs : EventArgs
     {
-        public ArrivalEventArgs(IDsDevice Device)
+        public ArrivalEventArgs(IDsDevice device)
         {
-            this.Device = Device;
+            this.Device = device;
         }
 
         public IDsDevice Device { get; set; }
@@ -157,27 +157,23 @@ namespace ScpControl
     public class ReportEventArgs : EventArgs
     {
         public const int Length = 96;
-        private DsPadId m_Pad = DsPadId.None;
-        private volatile byte[] m_Report = new byte[Length];
+        private volatile byte[] _report = new byte[Length];
 
         public ReportEventArgs()
         {
+            Pad = DsPadId.None;
         }
 
-        public ReportEventArgs(DsPadId Pad)
+        public ReportEventArgs(DsPadId pad)
         {
-            m_Pad = Pad;
+            this.Pad = pad;
         }
 
-        public DsPadId Pad
-        {
-            get { return m_Pad; }
-            set { m_Pad = value; }
-        }
+        public DsPadId Pad { get; set; }
 
         public byte[] Report
         {
-            get { return m_Report; }
+            get { return _report; }
         }
     }
     

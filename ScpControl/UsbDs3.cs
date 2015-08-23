@@ -181,7 +181,7 @@ namespace ScpControl
                 m_IsDisconnect = false;
             }
 
-            Publish();
+            OnHidReportReceived();
         }
 
         protected override void Process(DateTime now)

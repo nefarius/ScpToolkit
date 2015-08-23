@@ -250,7 +250,7 @@ namespace ScpControl
                 m_ReportArgs.Report[index] = Report[index - 8];
             }
 
-            Publish();
+            OnHidReportReceived();
         }
 
         protected override void Process(DateTime now)

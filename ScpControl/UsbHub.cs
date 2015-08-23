@@ -50,7 +50,7 @@ namespace ScpControl
                     {
                         if (LogArrival(current))
                         {
-                            current.Report += new EventHandler<ReportEventArgs>(On_Report);
+                            current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
 
                             _device[Index++] = current;
                         }
@@ -77,7 +77,7 @@ namespace ScpControl
                     {
                         if (LogArrival(current))
                         {
-                            current.Report += new EventHandler<ReportEventArgs>(On_Report);
+                            current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
 
                             _device[Index++] = current;
                         }
@@ -211,7 +211,7 @@ namespace ScpControl
                                 }
                                 else
                                 {
-                                    arrived.Report += new EventHandler<ReportEventArgs>(On_Report);
+                                    arrived.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
 
                                     _device[(Byte)arrived.PadId].Close();
                                     _device[(Byte)arrived.PadId] = arrived;

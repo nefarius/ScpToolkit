@@ -132,14 +132,14 @@ namespace ScpControl
             return true;
         }
 
-        public event EventHandler<ReportEventArgs> Report;
+        public event EventHandler<ReportEventArgs> HidReportReceived;
 
-        protected virtual void Publish()
+        protected virtual void OnHidReportReceived()
         {
             m_ReportArgs.Report[0] = m_ControllerId;
             m_ReportArgs.Report[1] = (byte) m_State;
 
-            if (Report != null) Report(this, m_ReportArgs);
+            if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
         }
 
         protected virtual void Process(DateTime now)
@@ -164,7 +164,7 @@ namespace ScpControl
                 tmUpdate.Enabled = false;
                 m_State = DsState.Reserved;
 
-                Publish();
+                OnHidReportReceived();
             }
 
             return base.Stop();
@@ -179,7 +179,7 @@ namespace ScpControl
                 tmUpdate.Enabled = false;
                 m_State = DsState.Disconnected;
 
-                Publish();
+                OnHidReportReceived();
             }
 
             return !IsActive;

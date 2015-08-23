@@ -95,7 +95,7 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
-        public virtual byte[] Set(L2CAP.PSM connectionType, byte lsb, byte msb, ushort dcid = 0)
+        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte lsb, byte msb, ushort dcid = 0)
         {
             switch (connectionType)
             {
@@ -129,9 +129,9 @@ namespace ScpControl.Bluetooth
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
-        public virtual byte[] Set(L2CAP.PSM connectionType, byte[] handle)
+        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte[] handle)
         {
-            return Set(connectionType, handle[0], handle[1]);
+            return SetConnectionType(connectionType, handle[0], handle[1]);
         }
 
         /// <summary>
