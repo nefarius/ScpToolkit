@@ -1,4 +1,5 @@
-﻿using ScpControl.ScpCore;
+﻿using System;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {
@@ -27,7 +28,7 @@ namespace ScpControl.Bluetooth
             buffer[7] = 0x00;
 
             // add payload to buffer
-            for (var i = 0; i < data.Length; i++) buffer[i + 8] = data[i];
+            Buffer.BlockCopy(data, 0, buffer, 8, data.Length);
 
             // send data to device
             WriteBulkPipe(buffer, data.Length + 8, ref transfered);
