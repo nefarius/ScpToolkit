@@ -74,7 +74,10 @@ namespace ScpControl.Bluetooth
             get { return _model; }
         }
 
-        public static ushort DCID
+        /// <summary>
+        ///     Gets or sets the current connections Destination Channel Identifier.
+        /// </summary>
+        public static ushort Dcid
         {
             get { return _dcid; }
             set
@@ -99,7 +102,7 @@ namespace ScpControl.Bluetooth
                 case L2CAP.PSM.HID_Command:
 
                     _l2CapCommandHandle[0] = new BthHandle(lsb, msb);
-                    _l2CapCommandHandle[1] = new BthHandle(DCID++);
+                    _l2CapCommandHandle[1] = new BthHandle(Dcid++);
 
                     return _l2CapCommandHandle[1].Bytes;
 
@@ -108,7 +111,7 @@ namespace ScpControl.Bluetooth
                     CanStartService = true;
 
                     _l2CapInterruptHandle[0] = new BthHandle(lsb, msb);
-                    _l2CapInterruptHandle[1] = new BthHandle(DCID++);
+                    _l2CapInterruptHandle[1] = new BthHandle(Dcid++);
 
                     return _l2CapInterruptHandle[1].Bytes;
 

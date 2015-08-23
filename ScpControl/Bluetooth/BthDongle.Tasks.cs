@@ -259,7 +259,7 @@ namespace ScpControl.Bluetooth
                                 }
                                 else
                                 {
-                                    var DCID = BthConnection.DCID++;
+                                    var DCID = BthConnection.Dcid++;
                                     Log.DebugFormat("DCID = {0}", DCID);
 
                                     L2_DCID = new byte[2] {(byte) ((DCID >> 0) & 0xFF), (byte) ((DCID >> 8) & 0xFF)};
