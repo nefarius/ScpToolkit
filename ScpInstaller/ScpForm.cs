@@ -18,14 +18,14 @@ namespace ScpDriver
     public partial class ScpForm : Form
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private Difx _installer;
-        private Cursor _saved;
         private bool _bthDriverConfigured;
         private bool _busDeviceConfigured;
         private bool _busDriverConfigured;
         private bool _ds3DriverConfigured;
         private bool _ds4DriverConfigured;
+        private Difx _installer;
         private bool _reboot;
+        private Cursor _saved;
         private bool _scpServiceConfigured;
         private OsType _valid = OsType.Invalid;
 
@@ -33,16 +33,15 @@ namespace ScpDriver
         {
             InitializeComponent();
 
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-            {
-                Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject);
-            };
+            AppDomain.CurrentDomain.UnhandledException +=
+                (sender, args) => { Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject); };
 
             try
             {
                 // get absolute path to XML file
-                var cfgFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
-                    Assembly.GetExecutingAssembly().GetName().Name + ".xml");
+                var cfgFile =
+                    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty,
+                        Assembly.GetExecutingAssembly().GetName().Name + ".xml");
                 // deserialize file content
                 var cfg = ScpDriver.Deserialize(cfgFile);
 
@@ -121,13 +120,13 @@ namespace ScpDriver
                     return false;
                 }
 
-                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
                         break;
                 }
             }
@@ -170,7 +169,8 @@ namespace ScpDriver
 
             if (!OsInfoHelper.IsVc2013Installed)
             {
-                MessageBox.Show(Resources.ScpForm_VcppMissingText, Resources.ScpForm_VcppMissingHead, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Resources.ScpForm_VcppMissingText, Resources.ScpForm_VcppMissingHead,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
             }
         }
@@ -194,6 +194,13 @@ namespace ScpDriver
 
             pbRunning.Style = ProgressBarStyle.Marquee;
 
+            var forceInstall = cbForce.Checked;
+            var installBus = cbBus.Checked;
+            var installBth = cbBluetooth.Checked;
+            var installDs3 = cbDS3.Checked;
+            var installDs4 = cbDs4.Checked;
+            var installService = cbService.Checked;
+
             #endregion
 
             #region Installation
@@ -205,14 +212,13 @@ namespace ScpDriver
                 try
                 {
                     uint result = 0;
-                    bool rebootRequired;
 
                     var flags = DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT;
 
-                    if (cbForce.Checked)
+                    if (forceInstall)
                         flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
 
-                    if (cbBus.Checked)
+                    if (installBus)
                     {
                         if (!Devcon.Find(Settings.Default.Ds3BusClassGuid, ref devPath, ref instanceId))
                         {
@@ -224,31 +230,37 @@ namespace ScpDriver
                             }
                         }
 
+                        bool rebootRequired;
                         result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"), flags,
                             out rebootRequired);
                         _reboot |= rebootRequired;
                         if (result == 0) _busDriverConfigured = true;
                     }
 
-                    if (cbBluetooth.Checked)
+                    if (installBth)
                     {
-                        result = DriverInstaller.InstallBluetoothDongles(Handle);
+                        Invoke(
+                            (MethodInvoker) delegate { result = DriverInstaller.InstallBluetoothDongles(Handle, forceInstall); });
                         if (result > 0) _bthDriverConfigured = true;
                     }
 
-                    if (cbDS3.Checked)
+                    if (installDs3)
                     {
-                        result = DriverInstaller.InstallDualShock3Controllers(Handle);
+                        Invoke(
+                            (MethodInvoker)
+                                delegate { result = DriverInstaller.InstallDualShock3Controllers(Handle, forceInstall); });
                         if (result > 0) _ds3DriverConfigured = true;
                     }
 
-                    if (cbDs4.Checked)
+                    if (installDs4)
                     {
-                        result = DriverInstaller.InstallDualShock4Controllers(Handle);
+                        Invoke(
+                            (MethodInvoker)
+                                delegate { result = DriverInstaller.InstallDualShock4Controllers(Handle, forceInstall); });
                         if (result > 0) _ds4DriverConfigured = true;
                     }
 
-                    if (cbService.Checked)
+                    if (installService)
                     {
                         IDictionary state = new Hashtable();
                         var service =
@@ -353,7 +365,7 @@ namespace ScpDriver
                 try
                 {
                     uint result = 0;
-                    bool rebootRequired = false;
+                    var rebootRequired = false;
 
                     if (cbService.Checked)
                     {
@@ -417,13 +429,14 @@ namespace ScpDriver
                         return;
                     }
 
-                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
-                            Log.ErrorFormat("Win32-Error during uninstallation: {0}", (Win32Exception)instex.InnerException);
+                            Log.ErrorFormat("Win32-Error during uninstallation: {0}",
+                                (Win32Exception) instex.InnerException);
                             break;
                     }
                 }

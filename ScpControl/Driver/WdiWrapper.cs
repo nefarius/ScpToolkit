@@ -105,9 +105,10 @@ namespace ScpControl.Driver
         /// <param name="driverPath">Temporary path for driver auto-creation.</param>
         /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
         /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
+        /// <param name="force">Force driver installation even if the device is already using WinUSB.</param>
         /// <returns></returns>
         public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
-            IntPtr hwnd)
+            IntPtr hwnd, bool force = false)
         {
             // regex to extract vendor ID and product ID from hardware ID string
             var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
@@ -154,6 +155,8 @@ namespace ScpControl.Driver
             {
                 // translate device info to managed object
                 var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
+                // get current driver name
+                var currentDriver = Marshal.PtrToStringAnsi(info.driver);
 
                 // extract VID and PID
                 var currentMatches = regex.Match(info.hardware_id).Groups;
@@ -163,6 +166,13 @@ namespace ScpControl.Driver
                 // does the HID of the current device match the desired HID
                 if (vid == currentVid && pid == currentPid)
                 {
+                    if (string.CompareOrdinal(currentDriver, "WinUSB") == 0 && !force)
+                    {
+                        result = WdiErrorCode.WDI_ERROR_EXISTS;
+                        Log.WarnFormat("Device \"{0}\" ({1}) is already using WinUSB, installation aborted", info.desc, hardwareId);
+                        break;
+                    }
+
                     Log.InfoFormat(
                         "Device with specified VID ({0}) and PID ({1}) found, preparing driver installation...",
                         vid, pid);
