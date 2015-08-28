@@ -28,7 +28,7 @@ namespace ScpControl.Profiler
         DsModel TargetModel { get; }
     }
 
-    public class DsButtonMaps<T> : SortedDictionary<T, ButtonMappingTarget>
+    public class DsButtonMaps : SortedDictionary<IDsButton, ButtonMappingTarget>
     {
     }
 
@@ -900,9 +900,9 @@ namespace ScpControl.Profiler
     {
         public DualShockProfile()
         {
-            ButtonMaps = new DsButtonMaps<IDsButton>();
+            ButtonMaps = new DsButtonMaps();
         }
 
-        public DsButtonMaps<IDsButton> ButtonMaps { get; set; }
+        public DsButtonMaps ButtonMaps { get; set; }
     }
 }
