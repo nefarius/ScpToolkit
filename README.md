@@ -11,6 +11,7 @@ XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
  * [log4net logging library](https://logging.apache.org/log4net/)
  * [Libarius .NET library](https://github.com/nefarius/Libarius)
  * [Rx networking library](https://github.com/clariuslabs/reactivesockets)
+ * [libusbK driver package](https://code.google.com/p/usb-travis/)
 
 ## Installation requirements
  * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
