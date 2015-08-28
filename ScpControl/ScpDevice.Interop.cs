@@ -42,38 +42,6 @@ namespace ScpControl
         protected static extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, uint dwShareMode,
             IntPtr lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, uint hTemplateFile);
 
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_Initialize(IntPtr DeviceHandle, ref IntPtr InterfaceHandle);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_QueryInterfaceSettings(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
-            ref USB_INTERFACE_DESCRIPTOR UsbAltInterfaceDescriptor);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_QueryPipe(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
-            byte PipeIndex, ref WINUSB_PIPE_INFORMATION PipeInformation);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_AbortPipe(IntPtr InterfaceHandle, byte PipeID);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_FlushPipe(IntPtr InterfaceHandle, byte PipeID);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_ControlTransfer(IntPtr InterfaceHandle, WINUSB_SETUP_PACKET SetupPacket,
-            byte[] Buffer, int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_ReadPipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
-            int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_WritePipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
-            int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
-
-        [DllImport("winusb.dll", SetLastError = true)]
-        protected static extern bool WinUsb_Free(IntPtr InterfaceHandle);
-
         [DllImport("advapi32.dll", SetLastError = true)]
         public static extern IntPtr RegisterServiceCtrlHandlerEx(string ServiceName, ServiceControlHandlerEx Callback,
             IntPtr Context);

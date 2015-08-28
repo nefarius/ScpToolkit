@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
+using ScpControl.Driver;
 
 namespace ScpControl
 {
@@ -12,6 +13,7 @@ namespace ScpControl
     public partial class ScpDevice : Component
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static WinUsbWrapper _usb = WinUsbWrapper.Instance;
 
         public ScpDevice()
         {
@@ -54,7 +56,7 @@ namespace ScpControl
 
             if (GetDeviceHandle(Path))
             {
-                if (WinUsb_Initialize(FileHandle, ref _winUsbHandle))
+                if (_usb.Initialize(FileHandle, ref _winUsbHandle))
                 {
                     if (InitializeDevice())
                     {
@@ -62,7 +64,7 @@ namespace ScpControl
                     }
                     else
                     {
-                        WinUsb_Free(_winUsbHandle);
+                        _usb.Free(_winUsbHandle);
                         _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
                     }
                 }
@@ -86,11 +88,11 @@ namespace ScpControl
 
             if (!(_winUsbHandle == (IntPtr) INVALID_HANDLE_VALUE))
             {
-                WinUsb_AbortPipe(_winUsbHandle, IntIn);
-                WinUsb_AbortPipe(_winUsbHandle, BulkIn);
-                WinUsb_AbortPipe(_winUsbHandle, BulkOut);
+                _usb.AbortPipe(_winUsbHandle, IntIn);
+                _usb.AbortPipe(_winUsbHandle, BulkIn);
+                _usb.AbortPipe(_winUsbHandle, BulkOut);
 
-                WinUsb_Free(_winUsbHandle);
+                _usb.Free(_winUsbHandle);
                 _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
             }
 
@@ -113,22 +115,22 @@ namespace ScpControl
 
         public virtual bool ReadIntPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            return IsActive && WinUsb_ReadPipe(_winUsbHandle, IntIn, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && _usb.ReadPipe(_winUsbHandle, IntIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool ReadBulkPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            return IsActive && WinUsb_ReadPipe(_winUsbHandle, BulkIn, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && _usb.ReadPipe(_winUsbHandle, BulkIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool WriteIntPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            return IsActive && WinUsb_WritePipe(_winUsbHandle, IntOut, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && _usb.WritePipe(_winUsbHandle, IntOut, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool WriteBulkPipe(byte[] Buffer, int Length, ref int Transfered)
         {
-            return IsActive && WinUsb_WritePipe(_winUsbHandle, BulkOut, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && _usb.WritePipe(_winUsbHandle, BulkOut, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
         public virtual bool SendTransfer(byte RequestType, byte Request, ushort Value, byte[] Buffer, ref int Transfered)
@@ -144,7 +146,7 @@ namespace ScpControl
                 Length = (ushort) Buffer.Length
             };
 
-            return WinUsb_ControlTransfer(_winUsbHandle, setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
+            return _usb.ControlTransfer(_winUsbHandle, setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
         }
 
         #endregion
@@ -238,13 +240,7 @@ namespace ScpControl
             RAW_IO = 7
         }
 
-        protected enum USBD_PIPE_TYPE
-        {
-            UsbdPipeTypeControl = 0,
-            UsbdPipeTypeIsochronous = 1,
-            UsbdPipeTypeBulk = 2,
-            UsbdPipeTypeInterrupt = 3
-        }
+        
 
         protected enum USB_DEVICE_SPEED
         {
@@ -266,38 +262,7 @@ namespace ScpControl
             internal byte MaxPower;
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        protected struct USB_INTERFACE_DESCRIPTOR
-        {
-            internal byte bLength;
-            internal byte bDescriptorType;
-            internal byte bInterfaceNumber;
-            internal byte bAlternateSetting;
-            internal byte bNumEndpoints;
-            internal byte bInterfaceClass;
-            internal byte bInterfaceSubClass;
-            internal byte bInterfaceProtocol;
-            internal byte iInterface;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        protected struct WINUSB_PIPE_INFORMATION
-        {
-            internal USBD_PIPE_TYPE PipeType;
-            internal byte PipeId;
-            internal ushort MaximumPacketSize;
-            internal byte Interval;
-        }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        protected struct WINUSB_SETUP_PACKET
-        {
-            internal byte RequestType;
-            internal byte Request;
-            internal ushort Value;
-            internal ushort Index;
-            internal ushort Length;
-        }
+        
 
         protected const int DIF_PROPERTYCHANGE = 0x12;
         protected const int DICS_ENABLE = 1;
@@ -562,35 +527,35 @@ namespace ScpControl
                 var ifaceDescriptor = new USB_INTERFACE_DESCRIPTOR();
                 var pipeInfo = new WINUSB_PIPE_INFORMATION();
 
-                if (WinUsb_QueryInterfaceSettings(_winUsbHandle, 0, ref ifaceDescriptor))
+                if (_usb.QueryInterfaceSettings(_winUsbHandle, 0, ref ifaceDescriptor))
                 {
                     for (var i = 0; i < ifaceDescriptor.bNumEndpoints; i++)
                     {
-                        WinUsb_QueryPipe(_winUsbHandle, 0, Convert.ToByte(i), ref pipeInfo);
+                        _usb.QueryPipe(_winUsbHandle, 0, Convert.ToByte(i), ref pipeInfo);
 
                         if (((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) &
                              UsbEndpointDirectionIn(pipeInfo.PipeId)))
                         {
                             BulkIn = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(_winUsbHandle, BulkIn);
+                            _usb.FlushPipe(_winUsbHandle, BulkIn);
                         }
                         else if (((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeBulk) &
                                   UsbEndpointDirectionOut(pipeInfo.PipeId)))
                         {
                             BulkOut = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(_winUsbHandle, BulkOut);
+                            _usb.FlushPipe(_winUsbHandle, BulkOut);
                         }
                         else if ((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeInterrupt) &
                                  UsbEndpointDirectionIn(pipeInfo.PipeId))
                         {
                             IntIn = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(_winUsbHandle, IntIn);
+                            _usb.FlushPipe(_winUsbHandle, IntIn);
                         }
                         else if ((pipeInfo.PipeType == USBD_PIPE_TYPE.UsbdPipeTypeInterrupt) &
                                  UsbEndpointDirectionOut(pipeInfo.PipeId))
                         {
                             IntOut = pipeInfo.PipeId;
-                            WinUsb_FlushPipe(_winUsbHandle, IntOut);
+                            _usb.FlushPipe(_winUsbHandle, IntOut);
                         }
                     }
 
