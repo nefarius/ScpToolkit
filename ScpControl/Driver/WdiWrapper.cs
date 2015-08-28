@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
+using ScpControl.Utilities;
 
 namespace ScpControl.Driver
 {
@@ -46,10 +48,15 @@ namespace ScpControl.Driver
     /// </summary>
     public class WdiWrapper
     {
-        public enum WdiDriverType
+        /// <summary>
+        ///     The USB driver solution to install.
+        /// </summary>
+        private enum WdiDriverType
         {
+            [Description("WinUSB")]
             WDI_WINUSB,
             WDI_LIBUSB0,
+            [Description("libusbK")]
             WDI_LIBUSBK,
             WDI_USER,
             WDI_NB_DRIVERS
@@ -63,6 +70,7 @@ namespace ScpControl.Driver
         {
             Log.Debug("Preparing to load libwdi");
 
+            // preloading the library matching the current architecture
             if (Environment.Is64BitProcess)
             {
                 Log.InfoFormat("Running as 64-Bit process");
@@ -87,6 +95,9 @@ namespace ScpControl.Driver
             }
         }
 
+        /// <summary>
+        ///     Singleton instance.
+        /// </summary>
         public static WdiWrapper Instance
         {
             get { return LazyInstance.Value; }
@@ -106,13 +117,23 @@ namespace ScpControl.Driver
         /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
         /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
         /// <param name="force">Force driver installation even if the device is already using WinUSB.</param>
-        /// <returns></returns>
+        /// <returns>The error code returned by libwdi.</returns>
         public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
             return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force, WdiDriverType.WDI_WINUSB);
         }
 
+        /// <summary>
+        ///     Replaces the device driver of given device with libusbK.
+        /// </summary>
+        /// <param name="hardwareId">Hardware-ID of the device to change the driver for.</param>
+        /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
+        /// <param name="driverPath">Temporary path for driver auto-creation.</param>
+        /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
+        /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
+        /// <param name="force">Force driver installation even if the device is already using libusbK.</param>
+        /// <returns>The error code returned by libwdi.</returns>
         public WdiErrorCode InstallLibusbKDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
@@ -178,11 +199,14 @@ namespace ScpControl.Driver
                 // does the HID of the current device match the desired HID
                 if (vid == currentVid && pid == currentPid)
                 {
-                    if (string.CompareOrdinal(currentDriver, "WinUSB") == 0 && !force)
+                    var driverName = driverType.ToDescription();
+
+                    // skip installation if device is currently using the desired driver
+                    if (string.CompareOrdinal(currentDriver, driverName) == 0 && !force)
                     {
                         result = WdiErrorCode.WDI_ERROR_EXISTS;
-                        Log.WarnFormat("Device \"{0}\" ({1}) is already using WinUSB, installation aborted", info.desc,
-                            hardwareId);
+                        Log.WarnFormat("Device \"{0}\" ({1}) is already using {2}, installation aborted", info.desc,
+                            hardwareId, driverName);
                         break;
                     }
 

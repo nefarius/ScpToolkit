@@ -141,6 +141,7 @@
     <Compile Include="ScpCore\DsPacket.cs" />
     <Compile Include="ScpCore\GamePadEnums.cs" />
     <Compile Include="ScpCore\Profile.cs" />
+    <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\GlobalConfiguration.cs" />
@@ -277,7 +278,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Libarius.XML" />
+    <Content Include="libusbK\amd64\libusb0.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="libusbK\amd64\libusbK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libusbK\x86\libusb0.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="libusbK\x86\libusbK.dll">

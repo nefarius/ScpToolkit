@@ -13,8 +13,6 @@ namespace ScpControl.Driver
     public static class DriverInstaller
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string DriverDirectory = Path.Combine(WorkingDirectory, "Driver");
 
         public static uint InstallBluetoothDongles(IntPtr hWnd = default(IntPtr), bool force = false)
         {
@@ -23,7 +21,7 @@ namespace ScpControl.Driver
             uint installed = 0;
 
             foreach (var hardwareId in from hardwareId in bthDrivers.HardwareIds
-                let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
+                let result = WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
                     string.Format("BthDongle_{0}.inf", Guid.NewGuid()),
                     hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
@@ -62,7 +60,7 @@ namespace ScpControl.Driver
             uint installed = 0;
 
             foreach (var hardwareId in from hardwareId in ds3Drivers.HardwareIds
-                let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
+                let result = WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
                     string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
@@ -100,7 +98,7 @@ namespace ScpControl.Driver
             uint installed = 0;
 
             foreach (var hardwareId in from hardwareId in ds4Drivers.HardwareIds
-                let result = WdiWrapper.Instance.InstallWinUsbDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
+                let result = WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
                     string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
@@ -130,5 +128,8 @@ namespace ScpControl.Driver
 
             return uninstalled;
         }
+
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string DriverDirectory = Path.Combine(WorkingDirectory, "Driver");
     }
 }
