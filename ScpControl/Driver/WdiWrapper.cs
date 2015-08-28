@@ -110,6 +110,18 @@ namespace ScpControl.Driver
         public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
+            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force, WdiDriverType.WDI_WINUSB);
+        }
+
+        public WdiErrorCode InstallLibusbKDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
+            IntPtr hwnd, bool force = false)
+        {
+            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force, WdiDriverType.WDI_LIBUSBK);
+        }
+
+        private static WdiErrorCode InstallDeviceDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
+            IntPtr hwnd, bool force, WdiDriverType driverType)
+        {
             // regex to extract vendor ID and product ID from hardware ID string
             var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
             // matched groups
@@ -138,7 +150,7 @@ namespace ScpControl.Driver
             // use WinUSB and overrride device GUID
             var prepOpts = new wdi_options_prepare_driver
             {
-                driver_type = WdiDriverType.WDI_WINUSB,
+                driver_type = driverType,
                 device_guid = deviceGuid
             };
 
@@ -169,7 +181,8 @@ namespace ScpControl.Driver
                     if (string.CompareOrdinal(currentDriver, "WinUSB") == 0 && !force)
                     {
                         result = WdiErrorCode.WDI_ERROR_EXISTS;
-                        Log.WarnFormat("Device \"{0}\" ({1}) is already using WinUSB, installation aborted", info.desc, hardwareId);
+                        Log.WarnFormat("Device \"{0}\" ({1}) is already using WinUSB, installation aborted", info.desc,
+                            hardwareId);
                         break;
                     }
 
