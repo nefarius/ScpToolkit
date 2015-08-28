@@ -276,6 +276,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Libarius.XML" />
+    <Content Include="libusbK\amd64\libusbK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libusbK\x86\libusbK.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="libwdi\amd64\libwdi.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
