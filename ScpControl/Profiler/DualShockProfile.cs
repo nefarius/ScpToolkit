@@ -546,6 +546,356 @@ namespace ScpControl.Profiler
         #endregion
     }
 
+    public interface IDsAxis
+    {
+        uint RawValue { get; }
+        string Name { get; }
+        string DisplayName { get; }
+    }
+
+    public class DsAxis : IDsAxis
+    {
+        public DsAxis()
+        {
+        }
+
+        public DsAxis(string name)
+        {
+            Name = name;
+        }
+
+        public uint RawValue { get; protected set; }
+        public string Name { get; private set; }
+        public string DisplayName { get; protected set; }
+    }
+
+    /// <summary>
+    ///     Definition of a DualShock 3 axis.
+    /// </summary>
+    public class Ds3Axis : DsAxis
+    {
+        #region Ctors
+
+        public Ds3Axis(string name) : base(name)
+        {
+        }
+
+        #endregion
+
+        #region Axes
+
+        public static IDsAxis None
+        {
+            get
+            {
+                return new Ds3Axis("None")
+                {
+                    RawValue = 0,
+                    DisplayName = "None"
+                };
+            }
+        }
+
+        public static IDsAxis Lx
+        {
+            get
+            {
+                return new Ds3Axis("Lx")
+                {
+                    RawValue = 14,
+                    DisplayName = "Lx"
+                };
+            }
+        }
+
+        public static IDsAxis Ly
+        {
+            get
+            {
+                return new Ds3Axis("Ly")
+                {
+                    RawValue = 15,
+                    DisplayName = "Ly"
+                };
+            }
+        }
+
+        public static IDsAxis Rx
+        {
+            get
+            {
+                return new Ds3Axis("Rx")
+                {
+                    RawValue = 16,
+                    DisplayName = "Rx"
+                };
+            }
+        }
+
+        public static IDsAxis Ry
+        {
+            get
+            {
+                return new Ds3Axis("Ry")
+                {
+                    RawValue = 17,
+                    DisplayName = "Ry"
+                };
+            }
+        }
+
+        public static IDsAxis Up
+        {
+            get
+            {
+                return new Ds3Axis("Up")
+                {
+                    RawValue = 22,
+                    DisplayName = "D-Pad up"
+                };
+            }
+        }
+
+        public static IDsAxis Right
+        {
+            get
+            {
+                return new Ds3Axis("Right")
+                {
+                    RawValue = 23,
+                    DisplayName = "D-Pad right"
+                };
+            }
+        }
+
+        public static IDsAxis Down
+        {
+            get
+            {
+                return new Ds3Axis("Down")
+                {
+                    RawValue = 24,
+                    DisplayName = "D-Pad down"
+                };
+            }
+        }
+
+        public static IDsAxis Left
+        {
+            get
+            {
+                return new Ds3Axis("Left")
+                {
+                    RawValue = 25,
+                    DisplayName = "D-Pad left"
+                };
+            }
+        }
+
+        public static IDsAxis L2
+        {
+            get
+            {
+                return new Ds3Axis("L2")
+                {
+                    RawValue = 26,
+                    DisplayName = "L2"
+                };
+            }
+        }
+
+        public static IDsAxis R2
+        {
+            get
+            {
+                return new Ds3Axis("R2")
+                {
+                    RawValue = 27,
+                    DisplayName = "R2"
+                };
+            }
+        }
+
+        public static IDsAxis L1
+        {
+            get
+            {
+                return new Ds3Axis("L1")
+                {
+                    RawValue = 28,
+                    DisplayName = "L1"
+                };
+            }
+        }
+
+        public static IDsAxis R1
+        {
+            get
+            {
+                return new Ds3Axis("R1")
+                {
+                    RawValue = 29,
+                    DisplayName = "R1"
+                };
+            }
+        }
+
+        public static IDsAxis Triangle
+        {
+            get
+            {
+                return new Ds3Axis("Triangle")
+                {
+                    RawValue = 30,
+                    DisplayName = "Triangle"
+                };
+            }
+        }
+
+        public static IDsAxis Circle
+        {
+            get
+            {
+                return new Ds3Axis("Circle")
+                {
+                    RawValue = 31,
+                    DisplayName = "Circle"
+                };
+            }
+        }
+
+        public static IDsAxis Cross
+        {
+            get
+            {
+                return new Ds3Axis("Cross")
+                {
+                    RawValue = 32,
+                    DisplayName = "Cross"
+                };
+            }
+        }
+
+        public static IDsAxis Square
+        {
+            get
+            {
+                return new Ds3Axis("Square")
+                {
+                    RawValue = 33,
+                    DisplayName = "Square"
+                };
+            }
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    ///     Definition of a DualShock 4 axis.
+    /// </summary>
+    public class Ds4Axis : DsAxis
+    {
+        #region Ctors
+
+        public Ds4Axis(string name) : base(name)
+        {
+        }
+
+        #endregion
+
+        #region Axes
+
+        public static IDsAxis None
+        {
+            get
+            {
+                return new Ds4Axis("None")
+                {
+                    RawValue = 0,
+                    DisplayName = "None"
+                };
+            }
+        }
+
+        public static IDsAxis Lx
+        {
+            get
+            {
+                return new Ds4Axis("Lx")
+                {
+                    RawValue = 9,
+                    DisplayName = "Lx"
+                };
+            }
+        }
+
+        public static IDsAxis Ly
+        {
+            get
+            {
+                return new Ds4Axis("Ly")
+                {
+                    RawValue = 10,
+                    DisplayName = "Ly"
+                };
+            }
+        }
+
+        public static IDsAxis Rx
+        {
+            get
+            {
+                return new Ds4Axis("Rx")
+                {
+                    RawValue = 11,
+                    DisplayName = "Rx"
+                };
+            }
+        }
+
+        public static IDsAxis Ry
+        {
+            get
+            {
+                return new Ds4Axis("Ry")
+                {
+                    RawValue = 12,
+                    DisplayName = "Ry"
+                };
+            }
+        }
+
+        public static IDsAxis L2
+        {
+            get
+            {
+                return new Ds4Axis("L2")
+                {
+                    RawValue = 16,
+                    DisplayName = "L2"
+                };
+            }
+        }
+
+        public static IDsAxis R2
+        {
+            get
+            {
+                return new Ds4Axis("R2")
+                {
+                    RawValue = 17,
+                    DisplayName = "R2"
+                };
+            }
+        }
+
+        #endregion
+    }
+
+
+
+
     public class DualShockProfile
     {
         public DualShockProfile()
