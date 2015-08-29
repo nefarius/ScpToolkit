@@ -125,6 +125,7 @@
     <Compile Include="Driver\Devcon.cs" />
     <Compile Include="Driver\Difx.cs" />
     <Compile Include="Driver\DriverInstaller.cs" />
+    <Compile Include="Driver\LibusbKWrapper.cs" />
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />

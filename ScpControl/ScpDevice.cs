@@ -60,6 +60,11 @@ namespace ScpControl
                 {
                     if (InitializeDevice())
                     {
+                        if (!LibusbKWrapper.Instance.SetPowerPolicyAutoSuspend(_winUsbHandle))
+                        {
+                            Log.Warn("Couldn't alter power policy");
+                        }
+
                         IsActive = true;
                     }
                     else
