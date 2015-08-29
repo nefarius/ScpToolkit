@@ -15,7 +15,7 @@ namespace ScpControl
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly WinUsbWrapper Usb = WinUsbWrapper.Instance;
 
-        public ScpDevice()
+        protected ScpDevice()
         {
             InitializeComponent();
         }
@@ -27,16 +27,16 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        public ScpDevice(string Class)
+        protected ScpDevice(string Class)
         {
             InitializeComponent();
 
             this._class = new Guid(Class);
         }
 
-        public virtual bool IsActive { get; protected set; }
+        protected bool IsActive { get; set; }
 
-        public virtual string Path { get; protected set; }
+        public string Path { get; protected set; }
 
         public virtual bool Open(int instance = 0)
         {
@@ -113,27 +113,27 @@ namespace ScpControl
 
         #region WinUSB wrapper methods
 
-        public virtual bool ReadIntPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool ReadIntPipe(byte[] Buffer, int Length, ref int Transfered)
         {
             return IsActive && Usb.ReadPipe(_winUsbHandle, IntIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
-        public virtual bool ReadBulkPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool ReadBulkPipe(byte[] Buffer, int Length, ref int Transfered)
         {
             return IsActive && Usb.ReadPipe(_winUsbHandle, BulkIn, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
-        public virtual bool WriteIntPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool WriteIntPipe(byte[] Buffer, int Length, ref int Transfered)
         {
             return IsActive && Usb.WritePipe(_winUsbHandle, IntOut, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
-        public virtual bool WriteBulkPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool WriteBulkPipe(byte[] Buffer, int Length, ref int Transfered)
         {
             return IsActive && Usb.WritePipe(_winUsbHandle, BulkOut, Buffer, Length, ref Transfered, IntPtr.Zero);
         }
 
-        public virtual bool SendTransfer(byte RequestType, byte Request, ushort Value, byte[] Buffer, ref int Transfered)
+        protected bool SendTransfer(byte RequestType, byte Request, ushort Value, byte[] Buffer, ref int Transfered)
         {
             if (!IsActive) return false;
 
