@@ -45,6 +45,9 @@ namespace ScpControl.Driver
         public LogEventHandler OnLogEvent;
         private DIFLOGCALLBACK _mLogCallback;
 
+        /// <summary>
+        ///     Automatically loads the correct native library.
+        /// </summary>
         private Difx()
         {
             _mLogCallback = new DIFLOGCALLBACK(Logger);

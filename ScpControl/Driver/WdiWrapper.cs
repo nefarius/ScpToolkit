@@ -66,6 +66,9 @@ namespace ScpControl.Driver
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        /// <summary>
+        ///     Automatically loads the correct native library.
+        /// </summary>
         private WdiWrapper()
         {
             Log.Debug("Preparing to load libwdi");

@@ -62,6 +62,9 @@ namespace ScpControl.Driver
 
         #region Ctor
 
+        /// <summary>
+        ///     Automatically loads the correct native library.
+        /// </summary>
         private WinUsbWrapper()
         {
             Log.Debug("Preparing to load libusbK");
