@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using log4net;
 using ScpControl.Utilities;
 
 namespace ScpControl.Driver
@@ -46,7 +43,7 @@ namespace ScpControl.Driver
     /// <summary>
     ///     Managed wrapper class for <see href="https://github.com/pbatard/libwdi">libwdi</see>.
     /// </summary>
-    public class WdiWrapper
+    public class WdiWrapper : NativeLibraryWrapper<WdiWrapper>
     {
         /// <summary>
         ///     The USB driver solution to install.
@@ -62,50 +59,14 @@ namespace ScpControl.Driver
             WDI_NB_DRIVERS
         }
 
-        private static readonly Lazy<WdiWrapper> LazyInstance = new Lazy<WdiWrapper>(() => new WdiWrapper());
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         /// <summary>
         ///     Automatically loads the correct native library.
         /// </summary>
         private WdiWrapper()
         {
-            Log.Debug("Preparing to load libwdi");
-
-            // preloading the library matching the current architecture
-            if (Environment.Is64BitProcess)
-            {
-                Log.InfoFormat("Running as 64-Bit process");
-
-                var libwdi64 = Path.Combine(WorkingDirectory, @"libwdi\amd64\libwdi.dll");
-                Log.DebugFormat("libwdi path: {0}", libwdi64);
-
-                LoadLibrary(libwdi64);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi64);
-            }
-            else
-            {
-                Log.InfoFormat("Running as 32-Bit process");
-
-                var libwdi32 = Path.Combine(WorkingDirectory, @"libwdi\x86\libwdi.dll");
-                Log.DebugFormat("libwdi path: {0}", libwdi32);
-
-                LoadLibrary(libwdi32);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi32);
-            }
+            LoadNativeLibrary("libwdi", @"libwdi\x86\libwdi.dll", @"libwdi\amd64\libwdi.dll");
         }
-
-        /// <summary>
-        ///     Singleton instance.
-        /// </summary>
-        public static WdiWrapper Instance
-        {
-            get { return LazyInstance.Value; }
-        }
-
+        
         public int WdfVersion
         {
             get { return wdi_get_wdf_version(); }
@@ -313,9 +274,6 @@ namespace ScpControl.Driver
         #endregion
 
         #region P/Invoke
-
-        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        private extern static IntPtr LoadLibrary(string librayName);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_strerror", ExactSpelling = false)]
         private static extern IntPtr wdi_strerror(int errcode);

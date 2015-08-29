@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using log4net;
 
 namespace ScpControl.Driver
 {
@@ -28,7 +25,7 @@ namespace ScpControl.Driver
     /// <summary>
     ///     Driver Install Frameworks API (<see href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff544834(v=vs.85).aspx">DIFxAPI</see>)
     /// </summary>
-    public class Difx
+    public class Difx : NativeLibraryWrapper<Difx>
     {
         public delegate void DIFLOGCALLBACK(
             DifxLog eventType,
@@ -39,9 +36,6 @@ namespace ScpControl.Driver
 
         public delegate void LogEventHandler(DifxLog Event, int Error, string Description);
 
-        private static readonly Lazy<Difx> LazyInstance = new Lazy<Difx>(() => new Difx());
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public LogEventHandler OnLogEvent;
         private DIFLOGCALLBACK _mLogCallback;
 
@@ -50,39 +44,11 @@ namespace ScpControl.Driver
         /// </summary>
         private Difx()
         {
+            LoadNativeLibrary("DIFxAPI", @"DIFxApi\x86\DIFxAPI.dll", @"DIFxApi\amd64\DIFxAPI.dll");
+
             _mLogCallback = new DIFLOGCALLBACK(Logger);
-
-            Log.Debug("Preparing to load DIFxAPI");
-
-            if (Environment.Is64BitProcess)
-            {
-                Log.InfoFormat("Running as 64-Bit process");
-
-                var libwdi64 = Path.Combine(WorkingDirectory, @"DIFxApi\amd64\DIFxAPI.dll");
-                Log.DebugFormat("DIFxAPI path: {0}", libwdi64);
-
-                LoadLibrary(libwdi64);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi64);
-            }
-            else
-            {
-                Log.InfoFormat("Running as 32-Bit process");
-
-                var libwdi32 = Path.Combine(WorkingDirectory, @"DIFxApi\x86\DIFxAPI.dll");
-                Log.DebugFormat("DIFxAPI path: {0}", libwdi32);
-
-                LoadLibrary(libwdi32);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi32);
-            }
-
+            
             SetDifxLogCallback(_mLogCallback, IntPtr.Zero);
-        }
-
-        public static Difx Instance
-        {
-            get { return LazyInstance.Value; }
         }
 
         public void Logger(
@@ -138,9 +104,6 @@ namespace ScpControl.Driver
 
         [DllImport("DIFxAPI.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern void SetDifxLogCallback(DIFLOGCALLBACK logCallback, IntPtr callbackContext);
-
-        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern IntPtr LoadLibrary(string librayName);
 
         #endregion
     }

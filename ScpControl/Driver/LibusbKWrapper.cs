@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using log4net;
 
 namespace ScpControl.Driver
 {
@@ -12,46 +9,14 @@ namespace ScpControl.Driver
         SuspendDelay = 0x83
     }
 
-    public class LibusbKWrapper
+    public class LibusbKWrapper : NativeLibraryWrapper<LibusbKWrapper>
     {
-        private static readonly Lazy<LibusbKWrapper> LazyInstance = new Lazy<LibusbKWrapper>(() => new LibusbKWrapper());
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
         /// <summary>
         ///     Automatically loads the correct native library.
         /// </summary>
         private LibusbKWrapper()
         {
-            Log.Debug("Preparing to load libusbK");
-
-            if (Environment.Is64BitProcess)
-            {
-                Log.InfoFormat("Running as 64-Bit process");
-
-                var libwdi64 = Path.Combine(WorkingDirectory, @"libusbK\amd64\libusbK.dll");
-                Log.DebugFormat("libusbK path: {0}", libwdi64);
-
-                LoadLibrary(libwdi64);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi64);
-            }
-            else
-            {
-                Log.InfoFormat("Running as 32-Bit process");
-
-                var libwdi32 = Path.Combine(WorkingDirectory, @"libusbK\x86\libusbK.dll");
-                Log.DebugFormat("libusbK path: {0}", libwdi32);
-
-                LoadLibrary(libwdi32);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi32);
-            }
-        }
-
-        public static LibusbKWrapper Instance
-        {
-            get { return LazyInstance.Value; }
+            LoadNativeLibrary("libusbK", @"libusbK\x86\libusbK.dll", @"libusbK\amd64\libusbK.dll");
         }
 
         public bool SetPowerPolicyAutoSuspend(IntPtr handle, bool on = true)
@@ -79,9 +44,6 @@ namespace ScpControl.Driver
         {
             return UsbK_SetPowerPolicy(InterfaceHandle, PolicyType, ValueLength, Value);
         }
-
-        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern IntPtr LoadLibrary(string librayName);
 
         [DllImport("libusbK.dll", SetLastError = true)]
         private static extern bool UsbK_GetPowerPolicy(IntPtr InterfaceHandle,

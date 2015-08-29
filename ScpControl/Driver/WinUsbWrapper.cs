@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using log4net;
 
 namespace ScpControl.Driver
 {
@@ -54,12 +51,8 @@ namespace ScpControl.Driver
     /// <summary>
     ///     Abstracts calls to the underlying USB library functions.
     /// </summary>
-    public class WinUsbWrapper
+    public class WinUsbWrapper : NativeLibraryWrapper<WinUsbWrapper>
     {
-        private static readonly Lazy<WinUsbWrapper> LazyInstance = new Lazy<WinUsbWrapper>(() => new WinUsbWrapper());
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
         #region Ctor
 
         /// <summary>
@@ -67,39 +60,7 @@ namespace ScpControl.Driver
         /// </summary>
         private WinUsbWrapper()
         {
-            Log.Debug("Preparing to load libusbK");
-
-            if (Environment.Is64BitProcess)
-            {
-                Log.InfoFormat("Running as 64-Bit process");
-
-                var libwdi64 = Path.Combine(WorkingDirectory, @"libusbK\amd64\libusbK.dll");
-                Log.DebugFormat("libusbK path: {0}", libwdi64);
-
-                LoadLibrary(libwdi64);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi64);
-            }
-            else
-            {
-                Log.InfoFormat("Running as 32-Bit process");
-
-                var libwdi32 = Path.Combine(WorkingDirectory, @"libusbK\x86\libusbK.dll");
-                Log.DebugFormat("libusbK path: {0}", libwdi32);
-
-                LoadLibrary(libwdi32);
-
-                Log.DebugFormat("Loaded library: {0}", libwdi32);
-            }
-        }
-
-        #endregion
-
-        #region Singleton
-
-        public static WinUsbWrapper Instance
-        {
-            get { return LazyInstance.Value; }
+            LoadNativeLibrary("libusbK", @"libusbK\x86\libusbK.dll", @"libusbK\amd64\libusbK.dll");
         }
 
         #endregion
@@ -193,9 +154,6 @@ namespace ScpControl.Driver
 
         [DllImport("libusbK.dll", SetLastError = true)]
         private static extern bool WinUsb_Free(IntPtr InterfaceHandle);
-
-        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        private extern static IntPtr LoadLibrary(string librayName);
 
         #endregion
     }
