@@ -9,6 +9,30 @@ namespace ScpControl.Driver
         SuspendDelay = 0x83
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KISO_PACKET
+    {
+        public uint Offset;
+        public ushort Length;
+        public ushort Status;
+    }
+
+    public enum KISO_FLAG
+    {
+        KISO_FLAG_SET_START_FRAME
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KISO_CONTEXT
+    {
+        public KISO_FLAG Flags;
+        public uint StartFrame;
+        public short ErrorCount;
+        public short NumberOfPackets;
+        public uint UrbHdrStatus;
+        public KISO_PACKET IsoPackets;
+    }
+
     public class LibusbKWrapper : NativeLibraryWrapper<LibusbKWrapper>
     {
         /// <summary>
@@ -23,23 +47,26 @@ namespace ScpControl.Driver
         {
             var value = Marshal.AllocHGlobal(1);
 
-            Marshal.WriteByte(value, (byte) ((on) ? 0x01 : 0x00));
+            try
+            {
+                Marshal.WriteByte(value, (byte) ((on) ? 0x01 : 0x00));
 
-            var retval = SetPowerPolicy(handle, UsbKPowerPolicy.AutoSuspend,
-                1, value);
-
-            Marshal.FreeHGlobal(value);
-
-            return retval;
+                return SetPowerPolicy(handle, UsbKPowerPolicy.AutoSuspend,
+                    (uint) Marshal.SizeOf(typeof (byte)), value);
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(value);
+            }
         }
 
-        public bool GetPowerPolicy(IntPtr InterfaceHandle, UsbKPowerPolicy PolicyType, ref uint ValueLength,
+        private bool GetPowerPolicy(IntPtr InterfaceHandle, UsbKPowerPolicy PolicyType, ref uint ValueLength,
             IntPtr Value)
         {
             return UsbK_GetPowerPolicy(InterfaceHandle, PolicyType, ref ValueLength, Value);
         }
 
-        public bool SetPowerPolicy(IntPtr InterfaceHandle, UsbKPowerPolicy PolicyType, uint ValueLength,
+        private bool SetPowerPolicy(IntPtr InterfaceHandle, UsbKPowerPolicy PolicyType, uint ValueLength,
             IntPtr Value)
         {
             return UsbK_SetPowerPolicy(InterfaceHandle, PolicyType, ValueLength, Value);
@@ -54,5 +81,8 @@ namespace ScpControl.Driver
         private static extern bool UsbK_SetPowerPolicy(IntPtr InterfaceHandle,
             [MarshalAs(UnmanagedType.U4)] UsbKPowerPolicy PolicyType, uint ValueLength,
             IntPtr Value);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool IsoK_Init(IntPtr IsoContext, int NumberOfPackets, int StartFrame);
     }
 }
