@@ -223,14 +223,14 @@ namespace ScpControl
             internal IntPtr Reserved;
         }
 
-        protected const uint FILE_ATTRIBUTE_NORMAL = 0x80;
-        protected const uint FILE_FLAG_OVERLAPPED = 0x40000000;
-        protected const uint FILE_SHARE_READ = 1;
-        protected const uint FILE_SHARE_WRITE = 2;
-        protected const uint GENERIC_READ = 0x80000000;
-        protected const uint GENERIC_WRITE = 0x40000000;
-        protected const int INVALID_HANDLE_VALUE = -1;
-        protected const uint OPEN_EXISTING = 3;
+        private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
+        private const uint FILE_FLAG_OVERLAPPED = 0x40000000;
+        private const uint FILE_SHARE_READ = 1;
+        private const uint FILE_SHARE_WRITE = 2;
+        private const uint GENERIC_READ = 0x80000000;
+        private const uint GENERIC_WRITE = 0x40000000;
+        private const int INVALID_HANDLE_VALUE = -1;
+        private const uint OPEN_EXISTING = 3;
         protected const uint DEVICE_SPEED = 1;
         protected const byte USB_ENDPOINT_DIRECTION_MASK = 0x80;
 
