@@ -39,7 +39,7 @@ namespace ScpControl.Driver
         public KISO_PACKET IsoPackets;
     }
 
-    internal enum KOVL_WAIT_FLAG
+    public enum KOVL_WAIT_FLAG
     {
         KOVL_WAIT_FLAG_NONE = 0x0000,
         KOVL_WAIT_FLAG_RELEASE_ON_SUCCESS = 0x0001,
@@ -51,7 +51,7 @@ namespace ScpControl.Driver
         KOVL_WAIT_FLAG_ALERTABLE = 0x0010
     }
 
-    internal enum KOVL_POOL_FLAG
+    public enum KOVL_POOL_FLAG
     {
     }
 
@@ -67,20 +67,74 @@ namespace ScpControl.Driver
 
         public bool SetPowerPolicyAutoSuspend(IntPtr handle, bool on = true)
         {
-            var value = Marshal.AllocHGlobal(Marshal.SizeOf(typeof (byte)));
+            var value = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(byte)));
 
             try
             {
-                Marshal.WriteByte(value, (byte) ((on) ? 0x01 : 0x00));
+                Marshal.WriteByte(value, (byte)((on) ? 0x01 : 0x00));
 
                 return SetPowerPolicy(handle, UsbKPowerPolicy.AutoSuspend,
-                    (uint) Marshal.SizeOf(typeof (byte)), value);
+                    (uint)Marshal.SizeOf(typeof(byte)), value);
             }
             finally
             {
                 Marshal.FreeHGlobal(value);
             }
         }
+
+        public bool OverlappedAcquire(ref KOVL_HANDLE OverlappedK, KOVL_POOL_HANDLE PoolHandle)
+        {
+            return OvlK_Acquire(ref OverlappedK, PoolHandle);
+        }
+
+        public bool OverlappedRelease(KOVL_HANDLE OverlappedK)
+        {
+            return OvlK_Release(OverlappedK);
+        }
+
+        public bool OverlappedInit(ref KOVL_POOL_HANDLE PoolHandle, KUSB_HANDLE UsbHandle,
+            Int32 MaxOverlappedCount,
+            KOVL_POOL_FLAG Flags)
+        {
+            return OvlK_Init(ref PoolHandle, UsbHandle, MaxOverlappedCount, Flags);
+        }
+
+        public bool OverlappedFree(KOVL_POOL_HANDLE PoolHandle)
+        {
+            return OvlK_Free(PoolHandle);
+        }
+
+        public HANDLE OverlappedGetEventHandle(KOVL_HANDLE OverlappedK)
+        {
+            return OvlK_GetEventHandle(OverlappedK);
+        }
+
+        public bool OverlappedWait(KOVL_HANDLE OverlappedK, Int32 TimeoutMS, KOVL_WAIT_FLAG WaitFlags,
+            ref UInt32 TransferredLength)
+        {
+            return OvlK_Wait(OverlappedK, TimeoutMS, WaitFlags, ref TransferredLength);
+        }
+
+        public bool OverlappedWaitOldest(KOVL_POOL_HANDLE PoolHandle, ref KOVL_HANDLE OverlappedK,
+            Int32 TimeoutMS, KOVL_WAIT_FLAG WaitFlags, ref UInt32 TransferredLength)
+        {
+            return OvlK_WaitOldest(PoolHandle, ref OverlappedK, TimeoutMS, WaitFlags, ref TransferredLength);
+        }
+
+        public bool OverlappedWaitOrCancel(KOVL_HANDLE OverlappedK, Int32 TimeoutMS,
+            ref UInt32 TransferredLength)
+        {
+            return OvlK_WaitOrCancel(OverlappedK, TimeoutMS, ref TransferredLength);
+        }
+
+
+
+
+        public bool OverlappedReUse(KOVL_HANDLE OverlappedK)
+        {
+            return OvlK_ReUse(OverlappedK);
+        }
+
 
         #region Private wrapper methods
 
