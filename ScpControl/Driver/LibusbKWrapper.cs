@@ -3,6 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace ScpControl.Driver
 {
+    using KOVL_HANDLE = IntPtr;
+    using KLIB_HANDLE = IntPtr;
+    using KOVL_POOL_HANDLE = IntPtr;
+    using KUSB_HANDLE = IntPtr;
+    using HANDLE = IntPtr;
+
     public enum UsbKPowerPolicy : uint
     {
         AutoSuspend = 0x81,
@@ -33,6 +39,22 @@ namespace ScpControl.Driver
         public KISO_PACKET IsoPackets;
     }
 
+    internal enum KOVL_WAIT_FLAG
+    {
+        KOVL_WAIT_FLAG_NONE = 0x0000,
+        KOVL_WAIT_FLAG_RELEASE_ON_SUCCESS = 0x0001,
+        KOVL_WAIT_FLAG_RELEASE_ON_FAIL = 0x0002,
+        KOVL_WAIT_FLAG_RELEASE_ON_SUCCESS_FAIL = 0x0003,
+        KOVL_WAIT_FLAG_CANCEL_ON_TIMEOUT = 0x0004,
+        KOVL_WAIT_FLAG_RELEASE_ON_TIMEOUT = 0x000C,
+        KOVL_WAIT_FLAG_RELEASE_ALWAYS = 0x000F,
+        KOVL_WAIT_FLAG_ALERTABLE = 0x0010
+    }
+
+    internal enum KOVL_POOL_FLAG
+    {
+    }
+
     public class LibusbKWrapper : NativeLibraryWrapper<LibusbKWrapper>
     {
         /// <summary>
@@ -45,7 +67,7 @@ namespace ScpControl.Driver
 
         public bool SetPowerPolicyAutoSuspend(IntPtr handle, bool on = true)
         {
-            var value = Marshal.AllocHGlobal(1);
+            var value = Marshal.AllocHGlobal(Marshal.SizeOf(typeof (byte)));
 
             try
             {
@@ -60,29 +82,77 @@ namespace ScpControl.Driver
             }
         }
 
-        private bool GetPowerPolicy(IntPtr InterfaceHandle, UsbKPowerPolicy PolicyType, ref uint ValueLength,
+        #region Private wrapper methods
+
+        private bool GetPowerPolicy(KUSB_HANDLE InterfaceHandle, UsbKPowerPolicy PolicyType, ref uint ValueLength,
             IntPtr Value)
         {
             return UsbK_GetPowerPolicy(InterfaceHandle, PolicyType, ref ValueLength, Value);
         }
 
-        private bool SetPowerPolicy(IntPtr InterfaceHandle, UsbKPowerPolicy PolicyType, uint ValueLength,
+        private bool SetPowerPolicy(KUSB_HANDLE InterfaceHandle, UsbKPowerPolicy PolicyType, uint ValueLength,
             IntPtr Value)
         {
             return UsbK_SetPowerPolicy(InterfaceHandle, PolicyType, ValueLength, Value);
         }
 
+        #endregion
+
+        #region USB Core
+
         [DllImport("libusbK.dll", SetLastError = true)]
-        private static extern bool UsbK_GetPowerPolicy(IntPtr InterfaceHandle,
+        private static extern bool UsbK_GetPowerPolicy(KUSB_HANDLE InterfaceHandle,
             [MarshalAs(UnmanagedType.U4)] UsbKPowerPolicy PolicyType, ref uint ValueLength,
             IntPtr Value);
 
         [DllImport("libusbK.dll", SetLastError = true)]
-        private static extern bool UsbK_SetPowerPolicy(IntPtr InterfaceHandle,
+        private static extern bool UsbK_SetPowerPolicy(KUSB_HANDLE InterfaceHandle,
             [MarshalAs(UnmanagedType.U4)] UsbKPowerPolicy PolicyType, uint ValueLength,
             IntPtr Value);
 
+        #endregion
+
+        #region Overlapped I/O
+
         [DllImport("libusbK.dll", SetLastError = true)]
-        private static extern bool IsoK_Init(IntPtr IsoContext, int NumberOfPackets, int StartFrame);
+        private static extern bool OvlK_Acquire(ref KOVL_HANDLE OverlappedK, KOVL_POOL_HANDLE PoolHandle);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_Release(KOVL_HANDLE OverlappedK);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_Init(ref KOVL_POOL_HANDLE PoolHandle, KUSB_HANDLE UsbHandle,
+            Int32 MaxOverlappedCount,
+            KOVL_POOL_FLAG Flags);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_Free(KOVL_POOL_HANDLE PoolHandle);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern HANDLE OvlK_GetEventHandle(KOVL_HANDLE OverlappedK);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_Wait(KOVL_HANDLE OverlappedK, Int32 TimeoutMS, KOVL_WAIT_FLAG WaitFlags,
+            ref UInt32 TransferredLength);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_WaitOldest(KOVL_POOL_HANDLE PoolHandle, ref KOVL_HANDLE OverlappedK,
+            Int32 TimeoutMS, KOVL_WAIT_FLAG WaitFlags, ref UInt32 TransferredLength);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_WaitOrCancel(KOVL_HANDLE OverlappedK, Int32 TimeoutMS,
+            ref UInt32 TransferredLength);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_WaitAndRelease(KOVL_HANDLE OverlappedK, Int32 TimeoutMS,
+            ref UInt32 TransferredLength);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_IsComplete(KOVL_HANDLE OverlappedK);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool OvlK_ReUse(KOVL_HANDLE OverlappedK);
+
+        #endregion
     }
 }
