@@ -1,4 +1,5 @@
-﻿using ScpControl.ScpCore;
+﻿using System;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {
@@ -17,6 +18,7 @@ namespace ScpControl.Bluetooth
             SendTransfer(0x20, 0x00, 0x0000, buffer, ref transfered);
 
             Log.DebugFormat("<< {0} [{1:X4}]", command, (ushort)command);
+
             return transfered;
         }
 
@@ -116,7 +118,8 @@ namespace ScpControl.Bluetooth
             buffer[7] = bdAddr[4];
             buffer[8] = bdAddr[5];
 
-            for (var index = 0; index < GlobalConfiguration.Instance.BdLink.Length; index++) buffer[index + 9] = GlobalConfiguration.Instance.BdLink[index];
+            Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 9,
+                GlobalConfiguration.Instance.BdLink.Length);
 
             return HCI_Command(HCI.Command.HCI_Link_Key_Request_Reply, buffer);
         }
@@ -395,7 +398,8 @@ namespace ScpControl.Bluetooth
         {
             var buffer = new byte[10];
 
-            for (var index = 0; index < 6; index++) buffer[index + 3] = bdAddr[index];
+            Buffer.BlockCopy(bdAddr, 0, buffer, 3, 6);
+
             buffer[9] = 0x00;
 
             return HCI_Command(HCI.Command.HCI_Delete_Stored_Link_Key, buffer);
@@ -406,8 +410,9 @@ namespace ScpControl.Bluetooth
             var buffer = new byte[26];
 
             buffer[3] = 0x01;
-            for (var index = 0; index < 6; index++) buffer[index + 4] = bdAddr[index];
-            for (var index = 0; index < 16; index++) buffer[index + 10] = bdLink[index];
+            
+            Buffer.BlockCopy(bdAddr, 0, buffer, 4, 6);
+            Buffer.BlockCopy(bdLink, 0, buffer, 10, 16);
 
             return HCI_Command(HCI.Command.HCI_Write_Stored_Link_Key, buffer);
         }
@@ -416,7 +421,8 @@ namespace ScpControl.Bluetooth
         {
             var buffer = new byte[10];
 
-            for (var index = 0; index < 6; index++) buffer[index + 3] = bdAddr[index];
+            Buffer.BlockCopy(bdAddr, 0, buffer, 3, 6);
+
             buffer[9] = 0x00;
 
             return HCI_Command(HCI.Command.HCI_Read_Stored_Link_Key, buffer);
