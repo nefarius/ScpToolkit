@@ -1,7 +1,7 @@
 ﻿namespace ScpControl.ScpCore
 {
     /// <summary>
-    ///     Human–computer interaction (HCI)
+    ///     (Bluetooth) Host Controller Interface (HCI)
     /// </summary>
     public static class HCI
     {
