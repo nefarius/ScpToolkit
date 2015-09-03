@@ -15,6 +15,19 @@ namespace ScpControl.Driver
         SuspendDelay = 0x83
     }
 
+    public enum UsbKPipePolicy : uint
+    {
+        SHORT_PACKET_TERMINATE = 0x01,
+        AUTO_CLEAR_STALL = 0x02,
+        PIPE_TRANSFER_TIMEOUT = 0x03,
+        IGNORE_SHORT_PACKETS = 0x04,
+        ALLOW_PARTIAL_READS = 0x05,
+        AUTO_FLUSH = 0x06,
+        RAW_IO = 0x07,
+        MAXIMUM_TRANSFER_SIZE = 0x08,
+        RESET_PIPE_ON_RESUME = 0x09
+    }
+
     [StructLayout(LayoutKind.Sequential)]
     public struct KISO_PACKET
     {
@@ -67,14 +80,14 @@ namespace ScpControl.Driver
 
         public bool SetPowerPolicyAutoSuspend(IntPtr handle, bool on = true)
         {
-            var value = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(byte)));
+            var value = Marshal.AllocHGlobal(Marshal.SizeOf(typeof (byte)));
 
             try
             {
-                Marshal.WriteByte(value, (byte)((on) ? 0x01 : 0x00));
+                Marshal.WriteByte(value, (byte) ((on) ? 0x01 : 0x00));
 
                 return SetPowerPolicy(handle, UsbKPowerPolicy.AutoSuspend,
-                    (uint)Marshal.SizeOf(typeof(byte)), value);
+                    (uint) Marshal.SizeOf(typeof (byte)), value);
             }
             finally
             {
@@ -127,14 +140,10 @@ namespace ScpControl.Driver
             return OvlK_WaitOrCancel(OverlappedK, TimeoutMS, ref TransferredLength);
         }
 
-
-
-
         public bool OverlappedReUse(KOVL_HANDLE OverlappedK)
         {
             return OvlK_ReUse(OverlappedK);
         }
-
 
         #region Private wrapper methods
 
@@ -163,6 +172,16 @@ namespace ScpControl.Driver
         private static extern bool UsbK_SetPowerPolicy(KUSB_HANDLE InterfaceHandle,
             [MarshalAs(UnmanagedType.U4)] UsbKPowerPolicy PolicyType, uint ValueLength,
             IntPtr Value);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool UsbK_GetPipePolicy(KUSB_HANDLE InterfaceHandle, byte PipeID,
+            [MarshalAs(UnmanagedType.U4)] UsbKPipePolicy PolicyType,
+            ref UInt32 ValueLength, IntPtr Value);
+
+        [DllImport("libusbK.dll", SetLastError = true)]
+        private static extern bool UsbK_SetPipePolicy(KUSB_HANDLE InterfaceHandle, byte PipeID,
+            [MarshalAs(UnmanagedType.U4)] UsbKPipePolicy PolicyType,
+            UInt32 ValueLength, IntPtr Value);
 
         #endregion
 
