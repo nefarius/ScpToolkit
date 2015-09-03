@@ -80,14 +80,14 @@ namespace ScpControl.Driver
 
         public bool SetPowerPolicyAutoSuspend(IntPtr handle, bool on = true)
         {
-            var value = Marshal.AllocHGlobal(Marshal.SizeOf(typeof (byte)));
+            var value = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(byte)));
 
             try
             {
-                Marshal.WriteByte(value, (byte) ((on) ? 0x01 : 0x00));
+                Marshal.WriteByte(value, (byte)((on) ? 0x01 : 0x00));
 
                 return SetPowerPolicy(handle, UsbKPowerPolicy.AutoSuspend,
-                    (uint) Marshal.SizeOf(typeof (byte)), value);
+                    (uint)Marshal.SizeOf(typeof(byte)), value);
             }
             finally
             {
@@ -143,6 +143,20 @@ namespace ScpControl.Driver
         public bool OverlappedReUse(KOVL_HANDLE OverlappedK)
         {
             return OvlK_ReUse(OverlappedK);
+        }
+
+        public bool GetPipePolicy(KUSB_HANDLE InterfaceHandle, byte PipeID,
+            [MarshalAs(UnmanagedType.U4)] UsbKPipePolicy PolicyType,
+            ref UInt32 ValueLength, IntPtr Value)
+        {
+            return UsbK_GetPipePolicy(InterfaceHandle, PipeID, PolicyType, ref ValueLength, Value);
+        }
+        
+        public bool SetPipePolicy(KUSB_HANDLE InterfaceHandle, byte PipeID,
+            [MarshalAs(UnmanagedType.U4)] UsbKPipePolicy PolicyType,
+            UInt32 ValueLength, IntPtr Value)
+        {
+            return UsbK_SetPipePolicy(InterfaceHandle, PipeID, PolicyType, ValueLength, Value);
         }
 
         #region Private wrapper methods
