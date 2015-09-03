@@ -1,5 +1,5 @@
 # ScpServer
-XInput Wrapper for DS3 and Play.com USB Dual DS2 Controller
+Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
 ## Credits
  * Major props to [original author Scarlet.Crush](http://forums.pcsx2.net/User-Scarlet-Crush) for developing this awesome toolkit!
