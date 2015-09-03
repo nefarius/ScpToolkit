@@ -62,7 +62,7 @@ namespace ScpControl
 
     public interface IBthDevice
     {
-        int HCI_Disconnect(BthHandle Handle);
+        int HCI_Disconnect(BthHandle handle);
         int HID_Command(byte[] Handle, byte[] Channel, byte[] Data);
     }
 

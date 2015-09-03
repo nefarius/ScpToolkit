@@ -6,435 +6,433 @@ namespace ScpControl.Bluetooth
     {
         #region HCI Commands
 
-        private int HCI_Command(HCI.Command Command, byte[] Buffer)
+        private int HCI_Command(HCI.Command command, byte[] buffer)
         {
-            var Transfered = 0;
+            var transfered = 0;
 
-            Buffer[0] = (byte)(((uint)Command >> 0) & 0xFF);
-            Buffer[1] = (byte)(((uint)Command >> 8) & 0xFF);
-            Buffer[2] = (byte)(Buffer.Length - 3);
+            buffer[0] = (byte)(((uint)command >> 0) & 0xFF);
+            buffer[1] = (byte)(((uint)command >> 8) & 0xFF);
+            buffer[2] = (byte)(buffer.Length - 3);
 
-            SendTransfer(0x20, 0x00, 0x0000, Buffer, ref Transfered);
+            SendTransfer(0x20, 0x00, 0x0000, buffer, ref transfered);
 
-            Log.DebugFormat("<< {0} [{1:X4}]", Command, (ushort)Command);
-            return Transfered;
+            Log.DebugFormat("<< {0} [{1:X4}]", command, (ushort)command);
+            return transfered;
         }
 
-        private int HCI_Accept_Connection_Request(byte[] BD_Addr, byte Role)
+        private int HCI_Accept_Connection_Request(byte[] bdAddr, byte role)
         {
-            var Buffer = new byte[10];
+            var buffer = new byte[10];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
-            Buffer[9] = Role;
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
+            buffer[9] = role;
 
-            return HCI_Command(HCI.Command.HCI_Accept_Connection_Request, Buffer);
+            return HCI_Command(HCI.Command.HCI_Accept_Connection_Request, buffer);
         }
 
-        private int HCI_Reject_Connection_Request(byte[] BD_Addr, byte Reason)
+        private int HCI_Reject_Connection_Request(byte[] bdAddr, byte reason)
         {
-            var Buffer = new byte[10];
+            var buffer = new byte[10];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
-            Buffer[9] = Reason;
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
+            buffer[9] = reason;
 
-            return HCI_Command(HCI.Command.HCI_Reject_Connection_Request, Buffer);
+            return HCI_Command(HCI.Command.HCI_Reject_Connection_Request, buffer);
         }
 
-        private int HCI_Remote_Name_Request(byte[] BD_Addr)
+        private int HCI_Remote_Name_Request(byte[] bdAddr)
         {
-            var Buffer = new byte[13];
+            var buffer = new byte[13];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
-            Buffer[9] = 0x01;
-            Buffer[10] = 0x00;
-            Buffer[11] = 0x00;
-            Buffer[12] = 0x00;
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
+            buffer[9] = 0x01;
+            buffer[10] = 0x00;
+            buffer[11] = 0x00;
+            buffer[12] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Remote_Name_Request, Buffer);
+            return HCI_Command(HCI.Command.HCI_Remote_Name_Request, buffer);
         }
 
         private int HCI_Reset()
         {
-            var Buffer = new byte[3];
+            var buffer = new byte[3];
 
-            return HCI_Command(HCI.Command.HCI_Reset, Buffer);
+            return HCI_Command(HCI.Command.HCI_Reset, buffer);
         }
 
         private int HCI_Write_Scan_Enable()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x02;
+            buffer[3] = 0x02;
 
-            return HCI_Command(HCI.Command.HCI_Write_Scan_Enable, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Scan_Enable, buffer);
         }
 
         private int HCI_Read_Local_Version_Info()
         {
-            var Buffer = new byte[3];
+            var buffer = new byte[3];
 
-            return HCI_Command(HCI.Command.HCI_Read_Local_Version_Info, Buffer);
+            return HCI_Command(HCI.Command.HCI_Read_Local_Version_Info, buffer);
         }
 
         private int HCI_Read_BD_Addr()
         {
-            var Buffer = new byte[3];
+            var buffer = new byte[3];
 
-            return HCI_Command(HCI.Command.HCI_Read_BD_ADDR, Buffer);
+            return HCI_Command(HCI.Command.HCI_Read_BD_ADDR, buffer);
         }
 
         private int HCI_Read_Buffer_Size()
         {
-            var Buffer = new byte[3];
+            var buffer = new byte[3];
 
-            return HCI_Command(HCI.Command.HCI_Read_Buffer_Size, Buffer);
+            return HCI_Command(HCI.Command.HCI_Read_Buffer_Size, buffer);
+        }
+        
+        private int HCI_Link_Key_Request_Reply(byte[] bdAddr)
+        {
+            var buffer = new byte[25];
+
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
+
+            for (var index = 0; index < GlobalConfiguration.Instance.BdLink.Length; index++) buffer[index + 9] = GlobalConfiguration.Instance.BdLink[index];
+
+            return HCI_Command(HCI.Command.HCI_Link_Key_Request_Reply, buffer);
         }
 
-
-        private int HCI_Link_Key_Request_Reply(byte[] BD_Addr)
+        private int HCI_Link_Key_Request_Negative_Reply(byte[] bdAddr)
         {
-            var Buffer = new byte[25];
+            var buffer = new byte[9];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
 
-            for (var Index = 0; Index < GlobalConfiguration.Instance.BdLink.Length; Index++) Buffer[Index + 9] = GlobalConfiguration.Instance.BdLink[Index];
-
-            return HCI_Command(HCI.Command.HCI_Link_Key_Request_Reply, Buffer);
+            return HCI_Command(HCI.Command.HCI_Link_Key_Request_Negative_Reply, buffer);
         }
 
-        private int HCI_Link_Key_Request_Negative_Reply(byte[] BD_Addr)
+        private int HCI_PIN_Code_Request_Negative_Reply(byte[] bdAddr)
         {
-            var Buffer = new byte[9];
+            var buffer = new byte[16];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
 
-            return HCI_Command(HCI.Command.HCI_Link_Key_Request_Negative_Reply, Buffer);
-        }
-
-        private int HCI_PIN_Code_Request_Negative_Reply(byte[] BD_Addr)
-        {
-            var Buffer = new byte[16];
-
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
-
-            return HCI_Command(HCI.Command.HCI_Link_Key_Request_Negative_Reply, Buffer);
+            return HCI_Command(HCI.Command.HCI_Link_Key_Request_Negative_Reply, buffer);
         }
 
         private int HCI_Set_Connection_Encryption(BthHandle Handle)
         {
-            var Buffer = new byte[6];
+            var buffer = new byte[6];
 
-            Buffer[3] = Handle.Bytes[0];
-            Buffer[4] = (byte)(Handle.Bytes[1] ^ 0x20);
-            Buffer[5] = 0x01;
+            buffer[3] = Handle.Bytes[0];
+            buffer[4] = (byte)(Handle.Bytes[1] ^ 0x20);
+            buffer[5] = 0x01;
 
-            return HCI_Command(HCI.Command.HCI_Set_Connection_Encryption, Buffer);
+            return HCI_Command(HCI.Command.HCI_Set_Connection_Encryption, buffer);
         }
 
-        private int HCI_User_Confirmation_Request_Reply(byte[] BD_Addr)
+        private int HCI_User_Confirmation_Request_Reply(byte[] bdAddr)
         {
-            var Buffer = new byte[9];
+            var buffer = new byte[9];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
 
-            return HCI_Command(HCI.Command.HCI_User_Confirmation_Request_Reply, Buffer);
+            return HCI_Command(HCI.Command.HCI_User_Confirmation_Request_Reply, buffer);
         }
 
-        private int HCI_IO_Capability_Request_Reply(byte[] BD_Addr)
+        private int HCI_IO_Capability_Request_Reply(byte[] bdAddr)
         {
-            var Buffer = new byte[12];
+            var buffer = new byte[12];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
-            Buffer[9] = 0x01;
-            Buffer[10] = 0x00;
-            Buffer[11] = 0x05;
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
+            buffer[9] = 0x01;
+            buffer[10] = 0x00;
+            buffer[11] = 0x05;
 
-            return HCI_Command(HCI.Command.HCI_IO_Capability_Request_Reply, Buffer);
+            return HCI_Command(HCI.Command.HCI_IO_Capability_Request_Reply, buffer);
         }
 
-        private int HCI_Create_Connection(byte[] BD_Addr, byte[] Offset)
+        private int HCI_Create_Connection(byte[] bdAddr, byte[] offset)
         {
-            var Buffer = new byte[16];
+            var buffer = new byte[16];
 
-            Buffer[3] = BD_Addr[0];
-            Buffer[4] = BD_Addr[1];
-            Buffer[5] = BD_Addr[2];
-            Buffer[6] = BD_Addr[3];
-            Buffer[7] = BD_Addr[4];
-            Buffer[8] = BD_Addr[5];
-            Buffer[9] = 0x18;
-            Buffer[10] = 0xCC;
-            Buffer[11] = 0x01;
-            Buffer[12] = 0x00;
-            Buffer[13] = Offset[0];
-            Buffer[14] = (byte)(Offset[1] | 0x80);
-            Buffer[15] = 0x01;
+            buffer[3] = bdAddr[0];
+            buffer[4] = bdAddr[1];
+            buffer[5] = bdAddr[2];
+            buffer[6] = bdAddr[3];
+            buffer[7] = bdAddr[4];
+            buffer[8] = bdAddr[5];
+            buffer[9] = 0x18;
+            buffer[10] = 0xCC;
+            buffer[11] = 0x01;
+            buffer[12] = 0x00;
+            buffer[13] = offset[0];
+            buffer[14] = (byte)(offset[1] | 0x80);
+            buffer[15] = 0x01;
 
-            return HCI_Command(HCI.Command.HCI_Create_Connection, Buffer);
+            return HCI_Command(HCI.Command.HCI_Create_Connection, buffer);
         }
 
         private int HCI_Set_Event_Mask()
         {
-            var Buffer = new byte[11];
+            var buffer = new byte[11];
             // 00 25 5F FF FF FF FF FF
-            Buffer[3] = 0xFF;
-            Buffer[4] = 0xFF;
-            Buffer[5] = 0xFF;
-            Buffer[6] = 0xFF;
-            Buffer[7] = 0xFF;
-            Buffer[8] = 0x5F; // 0xFF;
-            Buffer[9] = 0x25; // 0xBF;
-            Buffer[10] = 0x00; // 0x3D;
+            buffer[3] = 0xFF;
+            buffer[4] = 0xFF;
+            buffer[5] = 0xFF;
+            buffer[6] = 0xFF;
+            buffer[7] = 0xFF;
+            buffer[8] = 0x5F; // 0xFF;
+            buffer[9] = 0x25; // 0xBF;
+            buffer[10] = 0x00; // 0x3D;
 
-            return HCI_Command(HCI.Command.HCI_Set_Event_Mask, Buffer);
+            return HCI_Command(HCI.Command.HCI_Set_Event_Mask, buffer);
         }
 
         private int HCI_Write_Local_Name()
         {
-            var Buffer = new byte[251];
+            var buffer = new byte[251];
 
-            Buffer[3] = 0x45;
-            Buffer[4] = 0x4E;
-            Buffer[5] = 0x54;
-            Buffer[6] = 0x52;
-            Buffer[7] = 0x4F;
-            Buffer[8] = 0x50;
-            Buffer[9] = 0x59;
+            buffer[3] = 0x45;
+            buffer[4] = 0x4E;
+            buffer[5] = 0x54;
+            buffer[6] = 0x52;
+            buffer[7] = 0x4F;
+            buffer[8] = 0x50;
+            buffer[9] = 0x59;
 
-            return HCI_Command(HCI.Command.HCI_Write_Local_Name, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Local_Name, buffer);
         }
 
         private int HCI_Write_Extended_Inquiry_Response()
         {
-            var Buffer = new byte[244];
+            var buffer = new byte[244];
 
-            Buffer[3] = 0x00;
-            Buffer[4] = 0x08;
-            Buffer[5] = 0x09;
-            Buffer[6] = 0x45;
-            Buffer[7] = 0x4E;
-            Buffer[8] = 0x54;
-            Buffer[9] = 0x52;
-            Buffer[10] = 0x4F;
-            Buffer[11] = 0x50;
-            Buffer[12] = 0x59;
-            Buffer[13] = 0x02;
-            Buffer[14] = 0x0A;
+            buffer[3] = 0x00;
+            buffer[4] = 0x08;
+            buffer[5] = 0x09;
+            buffer[6] = 0x45;
+            buffer[7] = 0x4E;
+            buffer[8] = 0x54;
+            buffer[9] = 0x52;
+            buffer[10] = 0x4F;
+            buffer[11] = 0x50;
+            buffer[12] = 0x59;
+            buffer[13] = 0x02;
+            buffer[14] = 0x0A;
 
-            return HCI_Command(HCI.Command.HCI_Write_Extended_Inquiry_Response, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Extended_Inquiry_Response, buffer);
         }
 
         private int HCI_Write_Class_of_Device()
         {
-            var Buffer = new byte[6];
+            var buffer = new byte[6];
 
-            Buffer[3] = 0x04;
-            Buffer[4] = 0x02;
-            Buffer[5] = 0x3E;
+            buffer[3] = 0x04;
+            buffer[4] = 0x02;
+            buffer[5] = 0x3E;
 
-            return HCI_Command(HCI.Command.HCI_Write_Class_of_Device, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Class_of_Device, buffer);
         }
 
         private int HCI_Write_Inquiry_Scan_Type()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x01;
+            buffer[3] = 0x01;
 
-            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Scan_Type, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Scan_Type, buffer);
         }
 
         private int HCI_Write_Inquiry_Scan_Activity()
         {
-            var Buffer = new byte[7];
+            var buffer = new byte[7];
 
-            Buffer[3] = 0x00;
-            Buffer[4] = 0x08;
-            Buffer[5] = 0x12;
-            Buffer[6] = 0x00;
+            buffer[3] = 0x00;
+            buffer[4] = 0x08;
+            buffer[5] = 0x12;
+            buffer[6] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Scan_Activity, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Scan_Activity, buffer);
         }
 
         private int HCI_Write_Page_Scan_Type()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x01;
+            buffer[3] = 0x01;
 
-            return HCI_Command(HCI.Command.HCI_Write_Page_Scan_Type, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Page_Scan_Type, buffer);
         }
 
         private int HCI_Write_Page_Scan_Activity()
         {
-            var Buffer = new byte[7];
+            var buffer = new byte[7];
 
-            Buffer[3] = 0x00;
-            Buffer[4] = 0x04;
-            Buffer[5] = 0x12;
-            Buffer[6] = 0x00;
+            buffer[3] = 0x00;
+            buffer[4] = 0x04;
+            buffer[5] = 0x12;
+            buffer[6] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Write_Page_Scan_Activity, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Page_Scan_Activity, buffer);
         }
 
         private int HCI_Write_Page_Timeout()
         {
-            var Buffer = new byte[5];
+            var buffer = new byte[5];
 
-            Buffer[3] = 0x00;
-            Buffer[4] = 0x20;
+            buffer[3] = 0x00;
+            buffer[4] = 0x20;
 
-            return HCI_Command(HCI.Command.HCI_Write_Page_Timeout, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Page_Timeout, buffer);
         }
 
         private int HCI_Write_Authentication_Enable()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x00;
+            buffer[3] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Write_Authentication_Enable, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Authentication_Enable, buffer);
         }
 
         private int HCI_Write_Simple_Pairing_Mode()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x01;
+            buffer[3] = 0x01;
 
-            return HCI_Command(HCI.Command.HCI_Write_Simple_Pairing_Mode, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Simple_Pairing_Mode, buffer);
         }
 
         private int HCI_Write_Simple_Pairing_Debug_Mode()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x00;
+            buffer[3] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Write_Simple_Pairing_Debug_Mode, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Simple_Pairing_Debug_Mode, buffer);
         }
 
         private int HCI_Write_Inquiry_Mode()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x02;
+            buffer[3] = 0x02;
 
-            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Mode, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Mode, buffer);
         }
 
         private int HCI_Write_Inquiry_Transmit_Power_Level()
         {
-            var Buffer = new byte[4];
+            var buffer = new byte[4];
 
-            Buffer[3] = 0x00;
+            buffer[3] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Transmit_Power_Level, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Inquiry_Transmit_Power_Level, buffer);
         }
 
         private int HCI_Inquiry()
         {
-            var Buffer = new byte[8];
+            var buffer = new byte[8];
 
-            Buffer[3] = 0x33;
-            Buffer[4] = 0x8B;
-            Buffer[5] = 0x9E;
-            Buffer[6] = 0x18;
-            Buffer[7] = 0x00;
+            buffer[3] = 0x33;
+            buffer[4] = 0x8B;
+            buffer[5] = 0x9E;
+            buffer[6] = 0x18;
+            buffer[7] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Inquiry, Buffer);
+            return HCI_Command(HCI.Command.HCI_Inquiry, buffer);
         }
 
         private int HCI_Inquiry_Cancel()
         {
-            var Buffer = new byte[3];
+            var buffer = new byte[3];
 
-            return HCI_Command(HCI.Command.HCI_Inquiry_Cancel, Buffer);
+            return HCI_Command(HCI.Command.HCI_Inquiry_Cancel, buffer);
         }
 
-        private int HCI_Delete_Stored_Link_Key(byte[] BD_Addr)
+        private int HCI_Delete_Stored_Link_Key(byte[] bdAddr)
         {
-            var Buffer = new byte[10];
+            var buffer = new byte[10];
 
-            for (var Index = 0; Index < 6; Index++) Buffer[Index + 3] = BD_Addr[Index];
-            Buffer[9] = 0x00;
+            for (var index = 0; index < 6; index++) buffer[index + 3] = bdAddr[index];
+            buffer[9] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Delete_Stored_Link_Key, Buffer);
+            return HCI_Command(HCI.Command.HCI_Delete_Stored_Link_Key, buffer);
         }
 
-        private int HCI_Write_Stored_Link_Key(byte[] BD_Addr, byte[] BD_Link)
+        private int HCI_Write_Stored_Link_Key(byte[] bdAddr, byte[] bdLink)
         {
-            var Buffer = new byte[26];
+            var buffer = new byte[26];
 
-            Buffer[3] = 0x01;
-            for (var Index = 0; Index < 6; Index++) Buffer[Index + 4] = BD_Addr[Index];
-            for (var Index = 0; Index < 16; Index++) Buffer[Index + 10] = BD_Link[Index];
+            buffer[3] = 0x01;
+            for (var index = 0; index < 6; index++) buffer[index + 4] = bdAddr[index];
+            for (var index = 0; index < 16; index++) buffer[index + 10] = bdLink[index];
 
-            return HCI_Command(HCI.Command.HCI_Write_Stored_Link_Key, Buffer);
+            return HCI_Command(HCI.Command.HCI_Write_Stored_Link_Key, buffer);
         }
 
-        private int HCI_Read_Stored_Link_Key(byte[] BD_Addr)
+        private int HCI_Read_Stored_Link_Key(byte[] bdAddr)
         {
-            var Buffer = new byte[10];
+            var buffer = new byte[10];
 
-            for (var Index = 0; Index < 6; Index++) Buffer[Index + 3] = BD_Addr[Index];
-            Buffer[9] = 0x00;
+            for (var index = 0; index < 6; index++) buffer[index + 3] = bdAddr[index];
+            buffer[9] = 0x00;
 
-            return HCI_Command(HCI.Command.HCI_Read_Stored_Link_Key, Buffer);
+            return HCI_Command(HCI.Command.HCI_Read_Stored_Link_Key, buffer);
         }
 
-        public int HCI_Disconnect(BthHandle Handle)
+        public int HCI_Disconnect(BthHandle handle)
         {
-            var Buffer = new byte[6];
+            var buffer = new byte[6];
 
-            Buffer[3] = Handle.Bytes[0];
-            Buffer[4] = (byte)(Handle.Bytes[1] ^ 0x20);
-            Buffer[5] = 0x13;
+            buffer[3] = handle.Bytes[0];
+            buffer[4] = (byte)(handle.Bytes[1] ^ 0x20);
+            buffer[5] = 0x13;
 
-            return HCI_Command(HCI.Command.HCI_Disconnect, Buffer);
+            return HCI_Command(HCI.Command.HCI_Disconnect, buffer);
         }
 
         #endregion
-
     }
 }
