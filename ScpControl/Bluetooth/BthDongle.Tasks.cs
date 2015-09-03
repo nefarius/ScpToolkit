@@ -597,16 +597,17 @@ namespace ScpControl.Bluetooth
                                     Connection = Add(Buffer[3], (byte)(Buffer[4] | 0x20), nameList[bd]);
 
                                     // TODO: fix workaround, breaks my controller
-                                    /* if (Buffer[10] != 0x00 || Buffer[9] != 0x07 || Buffer[8] != 0x04)
+                                    if (Buffer[10] != 0x00 || Buffer[9] != 0x07 || Buffer[8] != 0x04)
                                     {
-                                        Connection.IsFake = true;
-                                        Log.Info("-- Fake DualShock3 found, workaround applied");
+                                        //Connection.IsFake = true;
+                                        //Log.Info("-- Fake DualShock3 found, workaround applied");
+                                        Log.Info("-- Fake DualShock3 found");
                                     }
                                     else
                                     {
-                                        Connection.IsFake = false;
+                                        //Connection.IsFake = false;
                                         Log.Info("-- Genuine Sony DualShock3 found");
-                                    } */
+                                    }
 
                                     // fetch configuration from .INI
                                     var bdc = IniConfig.Instance.BthDongle;
