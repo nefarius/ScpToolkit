@@ -238,7 +238,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="XInput_SCP.def" />
-    <None Include="Xinput_SCP_logger.conf" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BTConnection.h" />
