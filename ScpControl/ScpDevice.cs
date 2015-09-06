@@ -13,6 +13,7 @@ namespace ScpControl
     public partial class ScpDevice : Component
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly WinUsbWrapper Usb = WinUsbWrapper.Instance;
 
         protected ScpDevice()

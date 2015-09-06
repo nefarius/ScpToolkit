@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using ScpControl.Properties;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
 
@@ -21,6 +22,8 @@ namespace ScpControl.Bluetooth
 
             Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", BulkIn, BulkOut);
 
+            var dumper = new DumpHelper(System.IO.Path.Combine(WorkingDirectory, string.Format("hid_{0}.dump", Guid.NewGuid())));
+
             // poll device buffer until cancellation requested
             while (!token.IsCancellationRequested)
             {
@@ -28,6 +31,10 @@ namespace ScpControl.Bluetooth
                 {
                     if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
+                        // for diagnostics only; dumps every received report to a file
+                        if (Settings.Default.DumpHidReports)
+                            dumper.DumpArray(buffer, transfered);
+
                         var connection = GetConnection(buffer[0], buffer[1]);
 
                         if (connection == null)
@@ -190,9 +197,9 @@ namespace ScpControl.Bluetooth
 
             if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
             {
-                if (Enum.IsDefined(typeof (L2CAP.Code), buffer[8]))
+                if (Enum.IsDefined(typeof(L2CAP.Code), buffer[8]))
                 {
-                    var Event = (L2CAP.Code) buffer[8];
+                    var Event = (L2CAP.Code)buffer[8];
 
                     switch (Event)
                     {
@@ -205,17 +212,17 @@ namespace ScpControl.Bluetooth
 
                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
 
-                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
-                            L2_DCID = connection.SetConnectionType((L2CAP.PSM) buffer[12], L2_SCID);
+                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
+                            L2_DCID = connection.SetConnectionType((L2CAP.PSM)buffer[12], L2_SCID);
 
                             L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
                                 L2_DCID, 0x00);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
-                                (byte) L2CAP.Code.L2CAP_Connection_Response);
+                                (byte)L2CAP.Code.L2CAP_Connection_Response);
 
                             L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                (byte) L2CAP.Code.L2CAP_Configuration_Request);
+                                (byte)L2CAP.Code.L2CAP_Configuration_Request);
                             break;
 
                         case L2CAP.Code.L2CAP_Connection_Response:
@@ -224,17 +231,17 @@ namespace ScpControl.Bluetooth
 
                             if (buffer[16] == 0) // Success
                             {
-                                L2_SCID = new byte[2] {buffer[12], buffer[13]};
-                                L2_DCID = new byte[2] {buffer[14], buffer[15]};
+                                L2_SCID = new byte[2] { buffer[12], buffer[13] };
+                                L2_DCID = new byte[2] { buffer[14], buffer[15] };
 
-                                var DCID = (ushort) (buffer[15] << 8 | buffer[14]);
+                                var DCID = (ushort)(buffer[15] << 8 | buffer[14]);
 
                                 connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
 
                                 L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                                 Log.DebugFormat("<< {0} [{1:X2}]",
                                     L2CAP.Code.L2CAP_Configuration_Request,
-                                    (byte) L2CAP.Code.L2CAP_Configuration_Request);
+                                    (byte)L2CAP.Code.L2CAP_Configuration_Request);
                             }
                             break;
 
@@ -246,7 +253,7 @@ namespace ScpControl.Bluetooth
 
                             L2CAP_Configuration_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
-                                (byte) L2CAP.Code.L2CAP_Configuration_Response);
+                                (byte)L2CAP.Code.L2CAP_Configuration_Response);
 
                             if (connection.IsServiceStarted)
                             {
@@ -274,7 +281,7 @@ namespace ScpControl.Bluetooth
                                     var DCID = BthConnection.Dcid++;
                                     Log.DebugFormat("DCID = {0}", DCID);
 
-                                    L2_DCID = new byte[2] {(byte) ((DCID >> 0) & 0xFF), (byte) ((DCID >> 8) & 0xFF)};
+                                    L2_DCID = new byte[2] { (byte)((DCID >> 0) & 0xFF), (byte)((DCID >> 8) & 0xFF) };
 
                                     if (!connection.IsFake)
                                     {
@@ -284,8 +291,8 @@ namespace ScpControl.Bluetooth
                                             L2CAP.PSM.HID_Service);
                                         Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
                                             L2CAP.Code.L2CAP_Connection_Request,
-                                            (byte) L2CAP.Code.L2CAP_Connection_Request,
-                                            (byte) L2CAP.PSM.HID_Service);
+                                            (byte)L2CAP.Code.L2CAP_Connection_Request,
+                                            (byte)L2CAP.PSM.HID_Service);
                                     }
                                     else
                                     {
@@ -301,12 +308,12 @@ namespace ScpControl.Bluetooth
                             Log.DebugFormat(">> {0} [{1:X2}] Handle [{2:X2}{3:X2}]", Event, buffer[8],
                                 buffer[15], buffer[14]);
 
-                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
+                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
 
                             L2CAP_Disconnection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
                                 L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Response,
-                                (byte) L2CAP.Code.L2CAP_Disconnection_Response);
+                                (byte)L2CAP.Code.L2CAP_Disconnection_Response);
                             break;
 
                         case L2CAP.Code.L2CAP_Disconnection_Response:
@@ -356,7 +363,7 @@ namespace ScpControl.Bluetooth
 
                 L2CAP_Disconnection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID, L2_DCID);
                 Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Request,
-                    (byte) L2CAP.Code.L2CAP_Disconnection_Request);
+                    (byte)L2CAP.Code.L2CAP_Disconnection_Request);
             }
         }
 
