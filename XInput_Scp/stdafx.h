@@ -41,7 +41,3 @@ extern "C" {
 #include "DS3Controller.h"
 #include "SL3Controller.h"
 #include "X360Controller.h"
-
-#define ELPP_AS_DLL
-#define ELPP_THREAD_SAFE
-#include "../Common/Include/easylogging++.h"
