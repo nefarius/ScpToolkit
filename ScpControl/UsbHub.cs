@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using ScpControl.ScpCore;
+using ScpControl.Sound;
 
 namespace ScpControl
 {
@@ -233,6 +234,9 @@ namespace ScpControl
                             if (_device[index].State == DsState.Connected && Path == _device[index].Path)
                             {
                                 Log.InfoFormat("-- Device Removal [{0}]", _device[index].Local);
+
+                                // TODO: just a test, remove in production =)
+                                AudioPlayer.Instance.PlayMediaFile("disconnect.wav");
 
                                 _device[index].Stop();
                             }

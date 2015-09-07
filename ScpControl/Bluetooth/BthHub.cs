@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using ScpControl.ScpCore;
+using ScpControl.Sound;
 
 namespace ScpControl.Bluetooth
 {
@@ -133,6 +134,9 @@ namespace ScpControl.Bluetooth
                     if (_device.Path == Path)
                     {
                         Log.DebugFormat("-- Device Removal [{0}]", _device.Local);
+
+                        // TODO: just a test, remove in production =)
+                        AudioPlayer.Instance.PlayMediaFile("disconnect.wav");
 
                         _device.Stop();
                     }

@@ -9,6 +9,7 @@ using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.ScpCore;
+using ScpControl.Sound;
 using ScpControl.Utilities;
 using ScpServer.Properties;
 
@@ -52,6 +53,9 @@ namespace ScpServer
 
             tmrUpdate.Enabled = true;
             btnStart_Click(sender, e);
+
+            // TODO: just a test, remove in production =)
+            AudioPlayer.Instance.PlayMediaFile("startup.ogg");
         }
 
         private void Form_Close(object sender, FormClosingEventArgs e)

@@ -22,7 +22,11 @@ namespace ScpControl.Bluetooth
 
             Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", BulkIn, BulkOut);
 
+#if DEBUG
+
             var dumper = new DumpHelper(System.IO.Path.Combine(WorkingDirectory, string.Format("hid_{0}.dump", Guid.NewGuid())));
+
+#endif
 
             // poll device buffer until cancellation requested
             while (!token.IsCancellationRequested)
@@ -31,9 +35,13 @@ namespace ScpControl.Bluetooth
                 {
                     if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
+#if DEBUG
+
                         // for diagnostics only; dumps every received report to a file
                         if (Settings.Default.DumpHidReports)
                             dumper.DumpArray(buffer, transfered);
+
+#endif
 
                         var connection = GetConnection(buffer[0], buffer[1]);
 

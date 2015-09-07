@@ -45,6 +45,7 @@
     <Reference Include="MadMilkman.Ini">
       <HintPath>..\packages\MadMilkman.Ini.1.0.4.0\lib\net20\MadMilkman.Ini.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="ReactiveSockets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ReactiveSockets.0.2.6\lib\net40\ReactiveSockets.dll</HintPath>
@@ -140,6 +141,7 @@
     <Compile Include="ScpCore\DsPacket.cs" />
     <Compile Include="ScpCore\GamePadEnums.cs" />
     <Compile Include="ScpCore\Profile.cs" />
+    <Compile Include="Sound\AudioPlayer.cs" />
     <Compile Include="Utilities\DumpHelper.cs" />
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
@@ -277,6 +279,24 @@
     <Content Include="DIFxAPI\x86\DIFxAPI.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="irrKlang\amd64\ikpFlac.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="irrKlang\amd64\ikpMP3.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="irrKlang\amd64\irrKlang.NET4.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="irrKlang\x86\ikpFlac.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="irrKlang\x86\ikpMP3.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="irrKlang\x86\irrKlang.NET4.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libarius.XML" />
     <Content Include="libusbK\amd64\libusb0.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -295,6 +315,15 @@
     </Content>
     <Content Include="libwdi\x86\libwdi.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Media\connect.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Media\disconnect.flac">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Media\startup.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ScpMapper.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

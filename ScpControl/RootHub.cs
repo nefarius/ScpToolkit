@@ -12,6 +12,7 @@ using ScpControl.Exceptions;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
+using ScpControl.Sound;
 using ScpControl.Utilities;
 using ScpControl.Wcf;
 
@@ -502,6 +503,9 @@ namespace ScpControl
                 _scpBus.Plugin((int)arrived.PadId + 1);
 
                 Log.InfoFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
+
+                // TODO: just a test, remove in production =)
+                AudioPlayer.Instance.PlayMediaFile("connect.wav");
             }
             e.Handled = bFound;
         }
