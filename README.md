@@ -12,6 +12,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [Libarius .NET library](https://github.com/nefarius/Libarius)
  * [Rx networking library](https://github.com/clariuslabs/reactivesockets)
  * [libusbK driver package](https://code.google.com/p/usb-travis/)
+ * [irrKlang cross platform sound library](http://www.ambiera.com/irrklang/index.html)
 
 ## Installation requirements
  * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
