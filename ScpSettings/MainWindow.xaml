@@ -1,0 +1,140 @@
+﻿<Window x:Class="ScpSettings.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
+        Title="ScpToolkit Global Configuration" Height="607.2" Width="456" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="#FF1B1B1B">
+        <controls:Accordion Margin="10"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch">
+
+            <!-- Global settings -->
+            <controls:AccordionItem Header="Global settings">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <!-- Flip axis -->
+                    <GroupBox Header="Flip Axis">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Grid.Row="0"
+                                      Grid.Column="0">
+                                Left thumb X-Axis
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="1" Grid.Column="0">
+                                Left thumb Y-Axis
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="0"
+                                      Grid.Column="1">
+                                Right thumb X-Axis
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="1" Grid.Column="1">
+                                Right thumb Y-Axis
+                            </CheckBox>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Dead-zone threshold -->
+                    <GroupBox Header="Dead-zone threshold"
+                              Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   HorizontalAlignment="Right">
+                                Left Stick
+                            </Label>
+
+                            <Label Grid.Row="1" Grid.Column="0"
+                                   HorizontalAlignment="Right">
+                                Right Stick
+                            </Label>
+
+                            <Slider Grid.Row="0" Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Margin="5" Maximum="127" LargeChange="8" />
+
+                            <Slider Grid.Row="1" Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Margin="5" Maximum="127" LargeChange="8" />
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Idle Timeout -->
+                    <GroupBox Header="Idle Timeout: 10 minutes"
+                              Grid.Row="2">
+                        <Slider Maximum="16" />
+                    </GroupBox>
+                </Grid>
+            </controls:AccordionItem>
+
+            <!-- DualShock 3 specific -->
+            <controls:AccordionItem Header="DualShock 3 specific">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <!-- Rumble Latency -->
+                    <GroupBox Header="Rumble Latency: 128 ms"
+                              Grid.Row="0">
+                        <Slider LargeChange="16" Maximum="255" Value="128" />
+                    </GroupBox>
+
+                    <!-- Disable LED -->
+                    <CheckBox Grid.Row="1">Disable LEDs</CheckBox>
+                </Grid>
+            </controls:AccordionItem>
+
+            <!-- DualShock 4 specific -->
+            <controls:AccordionItem Header="DualShock 4 specific" />
+
+            <controls:AccordionItem Header="Service settings">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Header="Driver settings"
+                              Grid.Row="0">
+                        <StackPanel>
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify">By checking one or more of the checkboxes below the service will check you device drivers on every start-up and re-applies the correct driver on your Bluetooth dongle or USB-wired DualShock controllers to ensure proper communication with the software.</TextBlock>
+                            <CheckBox>Force Bluetooth driver installation</CheckBox>
+                            <CheckBox>Force DualShock 3 driver installation</CheckBox>
+                            <CheckBox>Force DualShock 4 driver installation</CheckBox>
+                        </StackPanel>
+                    </GroupBox>
+
+                </Grid>
+            </controls:AccordionItem>
+
+            <controls:AccordionItem Header="Sound settings" />
+        </controls:Accordion>
+    </Grid>
+</Window>
