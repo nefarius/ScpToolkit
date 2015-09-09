@@ -4,6 +4,18 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {
+    public enum Ds4UpdateRate : byte
+    {
+        [Description("1000 Hz")]
+        Fastest = 0x80,
+        [Description("66 Hz")]
+        Fast = 0xD0,
+        [Description("31 Hz")]
+        Slow = 0xA0,
+        [Description("20 Hz")]
+        Slowest = 0xB0
+    }
+
     public partial class BthDs4 : BthDevice
     {
         private const int R = 9; // Led Offsets
@@ -12,6 +24,8 @@ namespace ScpControl.Bluetooth
         private byte _mBrightness = GlobalConfiguration.Instance.Brightness;
         private bool _mDisableLightBar;
         private bool _mFlash;
+
+        #region HID Reports
 
         private readonly byte[][] _hidInitReport =
         {
@@ -144,6 +158,8 @@ namespace ScpControl.Bluetooth
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         };
 
+        #endregion
+
         public BthDs4()
         {
             InitializeComponent();
@@ -156,16 +172,17 @@ namespace ScpControl.Bluetooth
             InitializeComponent();
         }
 
-        public BthDs4(IBthDevice device, byte[] master, byte lsb, byte msb) : base(device, master, lsb, msb)
+        public BthDs4(IBthDevice device, byte[] master, byte lsb, byte msb)
+            : base(device, master, lsb, msb)
         {
         }
 
         public override DsPadId PadId
         {
-            get { return (DsPadId) m_ControllerId; }
+            get { return (DsPadId)m_ControllerId; }
             set
             {
-                m_ControllerId = (byte) value;
+                m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
                 switch (value)
@@ -225,44 +242,44 @@ namespace ScpControl.Bluetooth
         {
             m_Packet++;
 
-            m_ReportArgs.Report[2] = m_BatteryStatus = (byte) ((report[41] + 2)/2);
+            m_ReportArgs.Report[2] = m_BatteryStatus = (byte)((report[41] + 2) / 2);
 
-            m_ReportArgs.Report[4] = (byte) (m_Packet >> 0 & 0xFF);
-            m_ReportArgs.Report[5] = (byte) (m_Packet >> 8 & 0xFF);
-            m_ReportArgs.Report[6] = (byte) (m_Packet >> 16 & 0xFF);
-            m_ReportArgs.Report[7] = (byte) (m_Packet >> 24 & 0xFF);
+            m_ReportArgs.Report[4] = (byte)(m_Packet >> 0 & 0xFF);
+            m_ReportArgs.Report[5] = (byte)(m_Packet >> 8 & 0xFF);
+            m_ReportArgs.Report[6] = (byte)(m_Packet >> 16 & 0xFF);
+            m_ReportArgs.Report[7] = (byte)(m_Packet >> 24 & 0xFF);
 
-            var buttons = (Ds4Button) ((report[16] << 0) | (report[17] << 8) | (report[18] << 16));
+            var buttons = (Ds4Button)((report[16] << 0) | (report[17] << 8) | (report[18] << 16));
             bool trigger = false, active = false;
 
             //++ Convert HAT to DPAD
             report[16] &= 0xF0;
 
-            switch ((uint) buttons & 0xF)
+            switch ((uint)buttons & 0xF)
             {
                 case 0:
-                    report[16] |= (byte) (Ds4Button.Up);
+                    report[16] |= (byte)(Ds4Button.Up);
                     break;
                 case 1:
-                    report[16] |= (byte) (Ds4Button.Up | Ds4Button.Right);
+                    report[16] |= (byte)(Ds4Button.Up | Ds4Button.Right);
                     break;
                 case 2:
-                    report[16] |= (byte) (Ds4Button.Right);
+                    report[16] |= (byte)(Ds4Button.Right);
                     break;
                 case 3:
-                    report[16] |= (byte) (Ds4Button.Right | Ds4Button.Down);
+                    report[16] |= (byte)(Ds4Button.Right | Ds4Button.Down);
                     break;
                 case 4:
-                    report[16] |= (byte) (Ds4Button.Down);
+                    report[16] |= (byte)(Ds4Button.Down);
                     break;
                 case 5:
-                    report[16] |= (byte) (Ds4Button.Down | Ds4Button.Left);
+                    report[16] |= (byte)(Ds4Button.Down | Ds4Button.Left);
                     break;
                 case 6:
-                    report[16] |= (byte) (Ds4Button.Left);
+                    report[16] |= (byte)(Ds4Button.Left);
                     break;
                 case 7:
-                    report[16] |= (byte) (Ds4Button.Left | Ds4Button.Up);
+                    report[16] |= (byte)(Ds4Button.Left | Ds4Button.Up);
                     break;
             }
             //--
@@ -325,6 +342,12 @@ namespace ScpControl.Bluetooth
             OnHidReportReceived();
         }
 
+        /// <summary>
+        ///     Send Rumble request to controller.
+        /// </summary>
+        /// <param name="large">Larg motor.</param>
+        /// <param name="small">Small motor.</param>
+        /// <returns>Always true.</returns>
         public override bool Rumble(byte large, byte small)
         {
             lock (this)
@@ -432,6 +455,15 @@ namespace ScpControl.Bluetooth
                     }
                 }
             }
+        }
+
+        /// <summary>
+        ///     Gets or sets the incoming HID report update rate.
+        /// </summary>
+        public Ds4UpdateRate HidReportUpdateRate
+        {
+            get { return (Ds4UpdateRate)_hidReport[2]; }
+            set { _hidReport[2] = (byte)value; }
         }
     }
 }

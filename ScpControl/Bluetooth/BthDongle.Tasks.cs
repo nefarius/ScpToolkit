@@ -50,6 +50,8 @@ namespace ScpControl.Bluetooth
 
                         if (connection.Model == DsModel.DS4)
                         {
+                            (connection as BthDs4).HidReportUpdateRate = Ds4UpdateRate.Fast;
+
                             ParseBufferDs4(connection, buffer, transfered);
                         }
                         else
