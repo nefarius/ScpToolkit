@@ -473,8 +473,12 @@ namespace ScpControl.Bluetooth
                                         Transfered = HCI_Read_Local_Version_Info();
                                     }
 
+                                    // incoming HCI firmware version information
                                     if (Command == HCI.Command.HCI_Read_Local_Version_Info && Buffer[5] == 0)
                                     {
+                                        var hciMajor = Buffer[6];
+                                        var lmpMajor = Buffer[9];
+
                                         HciVersion = string.Format("{0}.{1:X4}", Buffer[6], Buffer[8] << 8 | Buffer[7]);
                                         LmpVersion = string.Format("{0}.{1:X4}", Buffer[9],
                                             Buffer[13] << 8 | Buffer[12]);
@@ -482,6 +486,103 @@ namespace ScpControl.Bluetooth
                                         Log.InfoFormat("-- Master {0}, HCI_Version {1}, LMP_Version {2}", Local,
                                             HciVersion, LmpVersion);
 
+                                        /* analyzes Host Controller Interface (HCI) major version
+                                         * see https://www.bluetooth.org/en-us/specification/assigned-numbers/host-controller-interface
+                                         * */
+                                        switch (hciMajor)
+                                        {
+                                            case 0:
+                                                Log.DebugFormat("HCI_Version: Bluetooth® Core Specification 1.0b");
+                                                break;
+                                            case 1:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 1.1");
+                                                break;
+                                            case 2:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 1.2");
+                                                break;
+                                            case 3:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 2.0 + EDR");
+                                                break;
+                                            case 4:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 2.1 + EDR");
+                                                break;
+                                            case 5:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 3.0 + HS");
+                                                break;
+                                            case 6:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 4.0");
+                                                break;
+                                            case 7:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 4.1");
+                                                break;
+                                            case 8:
+                                                Log.DebugFormat("HCI_Version: Bluetooth Core Specification 4.2");
+                                                break;
+                                            default:
+                                                // this should not happen
+                                                Log.ErrorFormat("HCI_Version: Specification unknown");
+                                                break;
+                                        }
+
+                                        /* analyzes Link Manager Protocol (LMP) major version
+                                         * see https://www.bluetooth.org/en-us/specification/assigned-numbers/link-manager
+                                         * */
+                                        switch (lmpMajor)
+                                        {
+                                            case 0:
+                                                Log.DebugFormat("LMP_Version: Bluetooth® Core Specification 1.0b");
+                                                break;
+                                            case 1:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 1.1");
+                                                break;
+                                            case 2:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 1.2");
+                                                break;
+                                            case 3:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 2.0 + EDR");
+                                                break;
+                                            case 4:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 2.1 + EDR");
+                                                break;
+                                            case 5:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 3.0 + HS");
+                                                break;
+                                            case 6:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 4.0");
+                                                break;
+                                            case 7:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 4.1");
+                                                break;
+                                            case 8:
+                                                Log.DebugFormat("LMP_Version: Bluetooth Core Specification 4.2");
+                                                break;
+                                            default:
+                                                // this should not happen
+                                                Log.ErrorFormat("LMP_Version: Specification unknown");
+                                                break;
+                                        }
+
+                                        // Bluetooth v2.0 + EDR
+                                        if (hciMajor >= 3 && lmpMajor >= 3)
+                                        {
+                                            Log.InfoFormat("Bluetooth host supports communication with DualShock 3 controllers");
+                                        }
+
+                                        // Bluetooth v2.1 + EDR
+                                        if (hciMajor >= 4 && lmpMajor >= 4)
+                                        {
+                                            Log.InfoFormat("Bluetooth host supports communication with DualShock 4 controllers");
+                                        }
+
+                                        // dongle effectively too old/unsupported 
+                                        if (hciMajor < 3 || lmpMajor < 3)
+                                        {
+                                            Log.FatalFormat("Unsupported Bluetooth Specification, aborting communication");
+                                            Transfered = HCI_Reset();
+                                            break;
+                                        }
+
+                                        // use simple pairing?
                                         if (GlobalConfiguration.Instance.DisableSSP)
                                         {
                                             Transfered = HCI_Write_Scan_Enable();
