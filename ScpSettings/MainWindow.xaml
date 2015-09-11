@@ -236,14 +236,32 @@
 
             <!-- Sound settings -->
             <controls:AccordionItem Header="Sound settings">
-                <Grid>
-                    <GroupBox>
-                        <GroupBox.Header>
-                            <CheckBox IsChecked="{Binding Path=SoundsEnabled}">Enable notification sounds</CheckBox>
-                        </GroupBox.Header>
-                        
-                    </GroupBox>
-                </Grid>
+                <GroupBox Width="380">
+                    <GroupBox.Header>
+                        <CheckBox IsChecked="{Binding Path=SoundsEnabled}">Enable notification sounds</CheckBox>
+                    </GroupBox.Header>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label HorizontalAlignment="Right"
+                                   Grid.Row="0" Grid.Column="0">Startup:</Label>
+                        <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"
+                                 x:Name="StartupFileTextBox"
+                                 Text="{Binding Path=StartupSoundFile}"/>
+                        <Button Grid.Row="0" Grid.Column="2" Click="Button_Click">Browse...</Button>
+
+                    </Grid>
+                </GroupBox>
             </controls:AccordionItem>
         </controls:Accordion>
     </Grid>
