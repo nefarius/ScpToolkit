@@ -99,9 +99,12 @@
 
                     <!-- Idle Timeout -->
                     <GroupBox Header="Idle Timeout: 10 minutes"
+                              x:Name="IdleTimoutGroupBox"
                               Grid.Row="2">
-                        <Slider Maximum="16"
-                                Value="{Binding Path=IdleTimeout}"/>
+                        <Slider Maximum="30"
+                                Value="{Binding Path=IdleTimeout}" 
+                                ValueChanged="IdleTimoutSlider_ValueChanged" 
+                                LargeChange="5" SmallChange="1"/>
                     </GroupBox>
                     
                     <!-- Checkboxes -->
@@ -123,9 +126,10 @@
 
                     <!-- Rumble Latency -->
                     <GroupBox Header="Rumble Latency: 128 ms"
+                              x:Name="RumbleLatencyGroupBox"
                               Grid.Row="0">
-                        <Slider LargeChange="16" Maximum="255"
-                                Value="{Binding Path=Latency}"/>
+                        <Slider LargeChange="1" Maximum="16"
+                                Value="{Binding Path=Latency}" ValueChanged="Slider_ValueChanged"/>
                     </GroupBox>
 
                     <!-- Disable LED -->
@@ -195,9 +199,10 @@
 
                     <!-- Light Bar Brightness -->
                     <GroupBox Header="Light Bar Brightness: 50%"
+                              x:Name="BrightnessGroupBox"
                               Grid.Row="1">
                         <Slider Maximum="255"
-                                Value="{Binding Path=Brightness}" LargeChange="16"/>
+                                Value="{Binding Path=Brightness}" LargeChange="16" ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1"/>
                     </GroupBox>
                     
                     <!-- Checkboxes -->

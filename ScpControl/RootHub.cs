@@ -375,6 +375,9 @@ namespace ScpControl
 
             Log.Info("Root hub started");
 
+            // make some noise =)
+            AudioPlayer.Instance.PlayMediaFile(GlobalConfiguration.Instance.StartupSoundFile);
+
             return m_Started;
         }
 

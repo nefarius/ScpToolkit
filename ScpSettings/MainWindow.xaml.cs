@@ -43,5 +43,39 @@ namespace ScpSettings
 
             MainAccordion.DataContext = _config;
         }
+
+        private void IdleTimoutSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var value = e.NewValue;
+
+            if (value == 0)
+            {
+                IdleTimoutGroupBox.Header = "Idle Timeout: Disabled";
+            }
+            else if (value == 1)
+            {
+                IdleTimoutGroupBox.Header = "Idle Timeout: 1 minute";
+            }
+            else
+            {
+                IdleTimoutGroupBox.Header = string.Format("Idle Timeout: {0} minutes", value);
+            }
+        }
+
+        private void BrightnessSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var value = e.NewValue;
+
+            BrightnessGroupBox.Header = value == 0
+                ? string.Format("Light Bar Brightness: Disabled")
+                : string.Format("Light Bar Brightness: {0}%", (int)((value * 100) / 255));
+        }
+
+        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var value = ((int)e.NewValue) << 4;
+
+            RumbleLatencyGroupBox.Header = string.Format("Rumble Latency: {0} ms", value);
+        }
     }
 }

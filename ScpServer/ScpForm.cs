@@ -53,9 +53,6 @@ namespace ScpServer
 
             tmrUpdate.Enabled = true;
             btnStart_Click(sender, e);
-
-            // TODO: just a test, remove in production =)
-            AudioPlayer.Instance.PlayMediaFile("startup.ogg");
         }
 
         private void Form_Close(object sender, FormClosingEventArgs e)

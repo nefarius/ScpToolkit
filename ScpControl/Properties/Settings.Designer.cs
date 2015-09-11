@@ -322,5 +322,18 @@ namespace ScpControl.Properties {
                 this["SoundsEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StartupSoundFile {
+            get {
+                return ((string)(this["StartupSoundFile"]));
+            }
+            set {
+                this["StartupSoundFile"] = value;
+            }
+        }
     }
 }

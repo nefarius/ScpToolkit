@@ -1,12 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using ScpControl.Properties;
 
 namespace ScpControl.ScpCore
 {
     public class GlobalConfiguration : ICloneable
     {
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
         private static readonly Lazy<GlobalConfiguration> LazyInstance =
             new Lazy<GlobalConfiguration>(() => new GlobalConfiguration());
 
@@ -15,10 +17,6 @@ namespace ScpControl.ScpCore
             0x56, 0xE8, 0x81, 0x38, 0x08, 0x06, 0x51, 0x41, 0xC0, 0x7F, 0x12, 0xAA,
             0xD9, 0x66, 0x3C, 0xCE
         };
-
-        public GlobalConfiguration()
-        {
-        }
 
         public static GlobalConfiguration Instance
         {
@@ -33,6 +31,36 @@ namespace ScpControl.ScpCore
         public static int LatencyMultiplier
         {
             get { return 16; }
+        }
+
+        public object Clone()
+        {
+            return (GlobalConfiguration) MemberwiseClone();
+        }
+
+        public static void Load()
+        {
+            Settings.Default.Reload();
+        }
+
+        public static void Save()
+        {
+            Settings.Default.Save();
+        }
+
+        public static GlobalConfiguration Request()
+        {
+            return (GlobalConfiguration) Instance.Clone();
+        }
+
+        public static void Submit(GlobalConfiguration configuration)
+        {
+            foreach (
+                var propertyInfo in
+                    typeof (GlobalConfiguration).GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
+            {
+                propertyInfo.SetValue(Instance, propertyInfo.GetValue(configuration));
+            }
         }
 
         #region Public properties
@@ -182,36 +210,17 @@ namespace ScpControl.ScpCore
             set { Settings.Default.SoundsEnabled = value; }
         }
 
-        #endregion
-
-        public object Clone()
+        public string StartupSoundFile
         {
-            return (GlobalConfiguration)MemberwiseClone();
-        }
-
-        public static void Load()
-        {
-            Settings.Default.Reload();
-        }
-
-        public static void Save()
-        {
-            Settings.Default.Save();
-        }
-
-        public static GlobalConfiguration Request()
-        {
-            return (GlobalConfiguration)Instance.Clone();
-        }
-
-        public static void Submit(GlobalConfiguration configuration)
-        {
-            foreach (
-                var propertyInfo in
-                    typeof(GlobalConfiguration).GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
+            get
             {
-                propertyInfo.SetValue(Instance, propertyInfo.GetValue(configuration));
+                return string.IsNullOrEmpty(Settings.Default.StartupSoundFile)
+                    ? Path.Combine(WorkingDirectory, @"Media", "startup.ogg")
+                    : Settings.Default.StartupSoundFile;
             }
+            set { Settings.Default.StartupSoundFile = value; }
         }
+
+        #endregion
     }
 }
