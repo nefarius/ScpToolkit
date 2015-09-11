@@ -1,11 +1,16 @@
-﻿using System;
+﻿// #define HID_REPORT_BENCH
+// #define HID_REPORT_DUMP
+
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using ScpControl.Properties;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
+
 
 namespace ScpControl.Bluetooth
 {
@@ -22,7 +27,15 @@ namespace ScpControl.Bluetooth
 
             Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", BulkIn, BulkOut);
 
-#if DEBUG
+#if HID_REPORT_BENCH
+            var sw = new Stopwatch();
+            var counter = 0;
+            const int samples = 250;
+            var values = new List<long>(samples);
+            byte rate = 0x01;
+#endif
+
+#if HID_REPORT_DUMP
 
             var dumper = new DumpHelper(System.IO.Path.Combine(WorkingDirectory, string.Format("hid_{0}.dump", Guid.NewGuid())));
 
@@ -33,9 +46,30 @@ namespace ScpControl.Bluetooth
             {
                 try
                 {
+#if HID_REPORT_BENCH
+                    sw.Restart();
+#endif
+
                     if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
-#if DEBUG
+#if HID_REPORT_BENCH
+                        sw.Stop();
+
+                        if (counter++ >= samples)
+                        {
+                            Log.DebugFormat("[{0:X2}] Average input delay: {1}", rate - 1, values.Average());
+
+                            values.Clear();
+                            counter = 0;
+                            rate++;
+                        }
+                        else
+                        {
+                            values.Add(sw.ElapsedMilliseconds);
+                        }
+#endif
+
+#if HID_REPORT_DUMP
 
                         // for diagnostics only; dumps every received report to a file
                         if (Settings.Default.DumpHidReports)
@@ -50,9 +84,12 @@ namespace ScpControl.Bluetooth
 
                         if (connection.Model == DsModel.DS4)
                         {
-                            (connection as BthDs4).HidReportUpdateRate = Ds4UpdateRate.Fast;
-
                             ParseBufferDs4(connection, buffer, transfered);
+
+#if HID_REPORT_BENCH
+                            if (counter == samples - 1)
+                                (connection as BthDs4).HidReportUpdateRate = rate;
+#endif
                         }
                         else
                         {
