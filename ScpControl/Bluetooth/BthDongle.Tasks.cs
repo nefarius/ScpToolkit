@@ -1,4 +1,5 @@
 ﻿// #define HID_REPORT_BENCH
+// #define HID_REPORT_BENCH_INC
 // #define HID_REPORT_DUMP
 
 using System;
@@ -86,7 +87,7 @@ namespace ScpControl.Bluetooth
                         {
                             ParseBufferDs4(connection, buffer, transfered);
 
-#if HID_REPORT_BENCH
+#if HID_REPORT_BENCH_INC
                             if (counter == samples - 1)
                                 (connection as BthDs4).HidReportUpdateRate = rate;
 #endif

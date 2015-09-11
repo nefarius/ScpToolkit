@@ -257,5 +257,17 @@ namespace ScpControl.Properties {
                 return ((bool)(this["DumpHidReports"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("16")]
+        public byte Ds4InputUpdateDelay {
+            get {
+                return ((byte)(this["Ds4InputUpdateDelay"]));
+            }
+            set {
+                this["Ds4InputUpdateDelay"] = value;
+            }
+        }
     }
 }

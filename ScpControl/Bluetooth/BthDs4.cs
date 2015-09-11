@@ -160,6 +160,8 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
+        #region Ctors
+
         public BthDs4()
         {
             InitializeComponent();
@@ -176,6 +178,8 @@ namespace ScpControl.Bluetooth
             : base(device, master, lsb, msb)
         {
         }
+
+        #endregion
 
         public override DsPadId PadId
         {
@@ -227,6 +231,8 @@ namespace ScpControl.Bluetooth
         {
             CanStartHid = false;
             m_State = DsState.Connected;
+
+            _hidReport[2] = GlobalConfiguration.Instance.Ds4InputUpdateDelay;
 
             m_Last = DateTime.Now;
             Rumble(0, 0);
@@ -466,6 +472,7 @@ namespace ScpControl.Bluetooth
             set
             {
                 _hidReport[2] = value;
+                // TODO: for testing only!
                 m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
             }
         }

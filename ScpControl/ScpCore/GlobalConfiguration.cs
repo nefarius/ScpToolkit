@@ -35,6 +35,8 @@ namespace ScpControl.ScpCore
             get { return 16; }
         }
 
+        #region Public properties
+
         public bool FlipLX
         {
             get { return Settings.Default.FlipAxisLx; }
@@ -145,6 +147,18 @@ namespace ScpControl.ScpCore
         {
             get { return MBdLink; }
         }
+
+        public byte Ds4InputUpdateDelay
+        {
+            get { return Settings.Default.Ds4InputUpdateDelay; }
+            set
+            {
+                if (value > 0x00 && value < 0x3D)
+                    Settings.Default.Ds4InputUpdateDelay = value;
+            }
+        }
+
+        #endregion
 
         public object Clone()
         {
