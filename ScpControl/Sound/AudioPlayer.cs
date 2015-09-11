@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using log4net;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Sound
 {
@@ -20,8 +21,8 @@ namespace ScpControl.Sound
             // build path depending on process architecture
             var irrKlangPath = Path.Combine(WorkingDirectory,
                 (Environment.Is64BitProcess)
-                ? @"irrKlang\amd64\irrKlang.NET4.dll"
-                : @"irrKlang\x86\irrKlang.NET4.dll");
+                    ? @"irrKlang\amd64\irrKlang.NET4.dll"
+                    : @"irrKlang\x86\irrKlang.NET4.dll");
             Log.DebugFormat("Loading irrKlang engine from {0}", irrKlangPath);
 
             // load assembly
@@ -46,7 +47,7 @@ namespace ScpControl.Sound
 
         public void PlayCustomFile(string path)
         {
-            if (!File.Exists(path))
+            if (!GlobalConfiguration.Instance.SoundsEnabled || !File.Exists(path))
                 return;
 
             _soundEngine.Play2D(path);

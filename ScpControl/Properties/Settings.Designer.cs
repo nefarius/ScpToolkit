@@ -259,6 +259,7 @@ namespace ScpControl.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("16")]
         public byte Ds4InputUpdateDelay {
@@ -267,6 +268,58 @@ namespace ScpControl.Properties {
             }
             set {
                 this["Ds4InputUpdateDelay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ForceBluetoothDriverReinstallation {
+            get {
+                return ((bool)(this["ForceBluetoothDriverReinstallation"]));
+            }
+            set {
+                this["ForceBluetoothDriverReinstallation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ForceDs3DriverReinstallation {
+            get {
+                return ((bool)(this["ForceDs3DriverReinstallation"]));
+            }
+            set {
+                this["ForceDs3DriverReinstallation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ForceDs4DriverReinstallation {
+            get {
+                return ((bool)(this["ForceDs4DriverReinstallation"]));
+            }
+            set {
+                this["ForceDs4DriverReinstallation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SoundsEnabled {
+            get {
+                return ((bool)(this["SoundsEnabled"]));
+            }
+            set {
+                this["SoundsEnabled"] = value;
             }
         }
     }

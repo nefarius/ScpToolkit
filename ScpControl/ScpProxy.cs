@@ -20,7 +20,7 @@ namespace ScpControl
     {
         private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedHost, Settings.Default.RootHubNativeFeedPort);
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private bool m_Active;
+        public bool IsActive { get; private set; }
         private XmlDocument _xmlMap = new XmlDocument();
 
         private IScpCommandService _rootHub;
@@ -77,7 +77,7 @@ namespace ScpControl
         {
             try
             {
-                if (!m_Active)
+                if (!IsActive)
                 {
                     #region WCF client
 
@@ -116,7 +116,7 @@ namespace ScpControl
                         Log.Error("Couldn't initialize XML mapper");
                     }
 
-                    m_Active = true;
+                    IsActive = true;
                 }
             }
             catch (Exception ex)
@@ -124,7 +124,7 @@ namespace ScpControl
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return m_Active;
+            return IsActive;
         }
 
         public bool Stop()
@@ -132,9 +132,9 @@ namespace ScpControl
             // TODO: refactor useless bits
             try
             {
-                if (m_Active)
+                if (IsActive)
                 {
-                    m_Active = false;
+                    IsActive = false;
                 }
             }
             catch (Exception ex)
@@ -142,7 +142,7 @@ namespace ScpControl
                 Log.ErrorFormat("Unexpected error: {0}", ex);
             }
 
-            return !m_Active;
+            return !IsActive;
         }
 
         #endregion
@@ -153,7 +153,7 @@ namespace ScpControl
 
             try
             {
-                if (m_Active)
+                if (IsActive)
                 {
                     if (_xmlMapper.Construct(ref _xmlMap))
                     {
@@ -177,7 +177,7 @@ namespace ScpControl
 
             try
             {
-                if (m_Active)
+                if (IsActive)
                 {
                     _rootHub.SetActiveProfile(target);
 
@@ -221,7 +221,7 @@ namespace ScpControl
 
             try
             {
-                if (m_Active)
+                if (IsActive)
                 {
                     if (!_xmlMapper.Map.Any())
                         return false;

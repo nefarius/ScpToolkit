@@ -16,7 +16,7 @@ namespace ScpControl.ScpCore
             0xD9, 0x66, 0x3C, 0xCE
         };
 
-        private GlobalConfiguration()
+        public GlobalConfiguration()
         {
         }
 
@@ -156,6 +156,30 @@ namespace ScpControl.ScpCore
                 if (value > 0x00 && value < 0x3D)
                     Settings.Default.Ds4InputUpdateDelay = value;
             }
+        }
+
+        public bool ForceBluetoothDriverReinstallation
+        {
+            get { return Settings.Default.ForceBluetoothDriverReinstallation; }
+            set { Settings.Default.ForceBluetoothDriverReinstallation = value; }
+        }
+
+        public bool ForceDs3DriverReinstallation
+        {
+            get { return Settings.Default.ForceDs3DriverReinstallation; }
+            set { Settings.Default.ForceDs3DriverReinstallation = value; }
+        }
+
+        public bool ForceDs4DriverReinstallation
+        {
+            get { return Settings.Default.ForceDs4DriverReinstallation; }
+            set { Settings.Default.ForceDs4DriverReinstallation = value; }
+        }
+
+        public bool SoundsEnabled
+        {
+            get { return Settings.Default.SoundsEnabled; }
+            set { Settings.Default.SoundsEnabled = value; }
         }
 
         #endregion
