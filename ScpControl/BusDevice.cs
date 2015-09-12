@@ -32,29 +32,42 @@ namespace ScpControl
             get { return m_State; }
         }
 
-        private int IndexToSerial(byte Index)
+        private int IndexToSerial(byte index)
         {
-            return Index + m_Offset + 1;
+            return index + m_Offset + 1;
         }
 
-        private int Scale(int Value, bool Flip)
+        /// <summary>
+        ///     Translates DualShock axis value to Xbox 360 compatible value.
+        /// </summary>
+        /// <param name="value">The DualShock value.</param>
+        /// <param name="flip">True to invert the axis, false for 1:1 scaling.</param>
+        /// <returns>The Xbox 360 value.</returns>
+        private static int Scale(int value, bool flip)
         {
-            Value -= 0x80;
-            if (Value == -128) Value = -127;
+            value -= 0x80;
+            if (value == -128) value = -127;
 
-            if (Flip) Value *= -1;
+            if (flip) value *= -1;
 
-            return (int) (Value*258.00787401574803149606299212599f);
+            return (int) (value*258.00787401574803149606299212599f);
         }
 
-        private bool DeadZone(int R, int X, int Y)
+        /// <summary>
+        ///     Checks if X and Y positions are within the provided dead zone.
+        /// </summary>
+        /// <param name="r">The threshold value.</param>
+        /// <param name="x">The value for the X-axis.</param>
+        /// <param name="y">The value for the Y-axis.</param>
+        /// <returns>True if positions are within the dead zone, false otherwise.</returns>
+        private static bool DeadZone(int r, int x, int y)
         {
-            X -= 0x80;
-            if (X == -128) X = -127;
-            Y -= 0x80;
-            if (Y == -128) Y = -127;
+            x -= 0x80;
+            if (x == -128) x = -127;
+            y -= 0x80;
+            if (y == -128) y = -127;
 
-            return R*R >= X*X + Y*Y;
+            return r*r >= x*x + y*y;
         }
 
         public override bool Open(int instance = 0)
