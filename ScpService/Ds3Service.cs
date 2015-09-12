@@ -12,7 +12,6 @@ using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.ScpCore;
-using ScpService.Properties;
 
 namespace ScpService
 {
@@ -41,7 +40,7 @@ namespace ScpService
 
         protected override void OnStart(string[] args)
         {
-            Log.Info("Scarlet.Crush Productions DS3 Service Started");
+            Log.Info("Scarlet.Crush Productions DSx Service Started");
 
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                     Assembly.GetExecutingAssembly().GetName().Version);
@@ -54,13 +53,13 @@ namespace ScpService
 
             var installTask = Task.Factory.StartNew(() =>
             {
-                if (Settings.Default.InstallBluetoothDongles)
+                if (GlobalConfiguration.Instance.ForceBluetoothDriverReinstallation)
                     DriverInstaller.InstallBluetoothDongles();
 
-                if (Settings.Default.InstallDualShock3Controllers)
+                if (GlobalConfiguration.Instance.ForceDs3DriverReinstallation)
                     DriverInstaller.InstallDualShock3Controllers();
 
-                if (Settings.Default.InstallDualShock4Controllers)
+                if (GlobalConfiguration.Instance.ForceDs4DriverReinstallation)
                     DriverInstaller.InstallDualShock4Controllers();
             });
 
@@ -96,7 +95,7 @@ namespace ScpService
             rootHub.Stop();
             rootHub.Close();
 
-            Log.Info("Scarlet.Crush Productions DS3 Service Stopped");
+            Log.Info("Scarlet.Crush Productions DSx Service Stopped");
         }
 
         private int ServiceControlHandler(int control, int type, IntPtr data, IntPtr context)
