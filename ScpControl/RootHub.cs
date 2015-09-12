@@ -22,9 +22,9 @@ namespace ScpControl
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
         // creates a system-wide mutex to check if the root hub has been instantiated already
-        private readonly LimitInstance _limitInstance = new LimitInstance(@"Global\ScpDsxRootHub");
+        private LimitInstance _limitInstance;
         // server to broadcast native byte stream
-        private readonly ReactiveListener _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedPort);
+        private ReactiveListener _rxFeedServer;
         // subscribed clients who receive the native stream
         private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers = new Dictionary<int, ScpNativeFeedChannel>();
         private volatile bool _mSuspended;
@@ -270,11 +270,25 @@ namespace ScpControl
 
             Log.Info("Initializing root hub");
 
+            _limitInstance = new LimitInstance(@"Global\ScpDsxRootHub");
+
+            try
+            {
+                if (!_limitInstance.IsOnlyInstance) // existing root hub running as desktop app
+                    throw new RootHubAlreadyStartedException("The root hub is already running, please close the ScpServer first!");
+            }
+            catch (UnauthorizedAccessException) // existing root hub running as service
+            {
+                throw new RootHubAlreadyStartedException("The root hub is already running, please stop the ScpService first!");
+            }
+
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                 Assembly.GetExecutingAssembly().GetName().Version);
             Log.DebugFormat("++ {0}", OsInfoHelper.OsInfo);
 
             #region Native feed server
+
+            _rxFeedServer = new ReactiveListener(Settings.Default.RootHubNativeFeedPort);
 
             _rxFeedServer.Connections.Subscribe(socket =>
             {
@@ -329,16 +343,6 @@ namespace ScpControl
 
         public override bool Start()
         {
-            try
-            {
-                if (!_limitInstance.IsOnlyInstance) // existing root hub running as desktop app
-                    throw new RootHubAlreadyStartedException("The root hub is already running, please close the ScpServer first!");
-            }
-            catch (UnauthorizedAccessException) // existing root hub running as service
-            {
-                throw new RootHubAlreadyStartedException("The root hub is already running, please stop the ScpService first!");
-            }
-
             if (m_Started) return m_Started;
 
             Log.Info("Starting root hub");
@@ -398,7 +402,11 @@ namespace ScpControl
             _usbHub.Stop();
             _bthHub.Stop();
 
+            m_Started = !m_Started;
+
             Log.Info("Root hub stopped");
+
+            _limitInstance.Dispose();
 
             return true;
         }
