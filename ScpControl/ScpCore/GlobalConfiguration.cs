@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using PropertyChanged;
 using ScpControl.Properties;
 
 namespace ScpControl.ScpCore
 {
+    [ImplementPropertyChanged]
     public class GlobalConfiguration : ICloneable
     {
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;

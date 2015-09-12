@@ -307,7 +307,7 @@
                         </Label>
                         <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"
                                  x:Name="StartupFileTextBox"
-                                 Text="{Binding Path=StartupSoundFile}" />
+                                 Text="{Binding Path=StartupSoundFile, Mode=TwoWay}" />
                         <Button Grid.Row="0" Grid.Column="2" Click="Button_Click">Browse...</Button>
 
                     </Grid>

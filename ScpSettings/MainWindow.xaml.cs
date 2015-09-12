@@ -91,7 +91,7 @@ namespace ScpSettings
 
             fileBrowser.ShowDialog();
 
-            StartupFileTextBox.Text = fileBrowser.FileName;
+            _config.StartupSoundFile = fileBrowser.FileName;
         }
     }
 }

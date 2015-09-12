@@ -25,6 +25,14 @@ namespace ScpControl.Sound
                     : @"irrKlang\x86\irrKlang.NET4.dll");
             Log.DebugFormat("Loading irrKlang engine from {0}", irrKlangPath);
 
+            var currentDir = Directory.GetCurrentDirectory();
+            var ikPluginPath = Path.GetDirectoryName(irrKlangPath);
+
+            /* irrKlang looks for plugins in the host EXE´s directory by default,
+             * so we need to change it temporarly while instantiating the sound engine.
+             * */
+            Directory.SetCurrentDirectory(ikPluginPath ?? currentDir);
+
             // load assembly
             var irrKlangAssembly = Assembly.LoadFile(irrKlangPath);
 
@@ -33,6 +41,9 @@ namespace ScpControl.Sound
 
             // instantiate  ISoundEngine
             _soundEngine = Activator.CreateInstance(soundEngineType);
+
+            // restore original working directory
+            Directory.SetCurrentDirectory(currentDir);
         }
 
         public static AudioPlayer Instance
