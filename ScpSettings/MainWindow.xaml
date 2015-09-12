@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
-        Title="ScpToolkit Global Configuration" Height="650" Width="456" ResizeMode="NoResize"
+        Title="ScpToolkit Global Configuration" Height="650" Width="480" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing" Initialized="Window_Initialized" Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
         <controls:Accordion x:Name="MainAccordion"
@@ -11,117 +11,130 @@
                             VerticalAlignment="Stretch">
             <!-- Global settings -->
             <controls:AccordionItem Header="Global settings">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- Flip axis -->
-                    <GroupBox Header="Flip Axis">
-                        <StackPanel>
-                            <TextBlock TextWrapping="Wrap" 
+                        <!-- Flip axis -->
+                        <GroupBox Header="Flip Axis">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap" 
                                        TextAlignment="Justify" 
                                        Margin="0,0,0,10">
                                 Ticking one of the checkboxes below inverts the axis direction to its opposite.
-                            </TextBlock>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition />
-                                </Grid.RowDefinitions>
+                                </TextBlock>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
 
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
 
-                                <CheckBox Grid.Row="0"
+                                    <CheckBox Grid.Row="0"
                                       Grid.Column="0"
                                       IsChecked="{Binding Path=FlipLX}">
-                                    Left thumb X-Axis
-                                </CheckBox>
+                                        Left thumb X-Axis
+                                    </CheckBox>
 
-                                <CheckBox Grid.Row="1" Grid.Column="0"
+                                    <CheckBox Grid.Row="1" Grid.Column="0"
                                       IsChecked="{Binding Path=FlipLY}">
-                                    Left thumb Y-Axis
-                                </CheckBox>
+                                        Left thumb Y-Axis
+                                    </CheckBox>
 
-                                <CheckBox Grid.Row="0"
+                                    <CheckBox Grid.Row="0"
                                       Grid.Column="1"
                                       IsChecked="{Binding Path=FlipRX}">
-                                    Right thumb X-Axis
-                                </CheckBox>
+                                        Right thumb X-Axis
+                                    </CheckBox>
 
-                                <CheckBox Grid.Row="1" Grid.Column="1"
+                                    <CheckBox Grid.Row="1" Grid.Column="1"
                                       IsChecked="{Binding Path=FlipRY}">
-                                    Right thumb Y-Axis
-                                </CheckBox>
-                            </Grid>
-                        </StackPanel>
-                    </GroupBox>
+                                        Right thumb Y-Axis
+                                    </CheckBox>
+                                </Grid>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <!-- Dead-zone threshold -->
-                    <GroupBox Header="Dead-zone threshold"
+                        <!-- Dead-zone threshold -->
+                        <GroupBox Header="Dead-zone threshold"
                               Grid.Row="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap"
+                                           TextAlignment="Justify" 
+                                           Margin="0,0,0,10">
+                                    The so called "Dead Zone" is a virtual area on the controller where the Thumb Sticks are in their absolute zero/default position. Some controllers might be more sensitive to movement of the entire controller, falsely interpreting it as movement on the sticks. If your thumb sticks tend to jitter around even without touching anything, try to increase the values below.
+                                </TextBlock>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="80" />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
 
-                            <Label Grid.Row="0" Grid.Column="0"
+                                    <Label Grid.Row="0" Grid.Column="0"
                                    HorizontalAlignment="Right">
-                                Left Stick
-                            </Label>
+                                        Left Stick
+                                    </Label>
 
-                            <Label Grid.Row="1" Grid.Column="0"
+                                    <Label Grid.Row="1" Grid.Column="0"
                                    HorizontalAlignment="Right">
-                                Right Stick
-                            </Label>
+                                        Right Stick
+                                    </Label>
 
-                            <Slider Grid.Row="0" Grid.Column="1"
+                                    <Slider Grid.Row="0" Grid.Column="1"
                                     VerticalAlignment="Center"
                                     Margin="5" Maximum="127" LargeChange="8"
                                     Value="{Binding Path=DeadZoneL}" />
 
-                            <Slider Grid.Row="1" Grid.Column="1"
+                                    <Slider Grid.Row="1" Grid.Column="1"
                                     VerticalAlignment="Center"
                                     Margin="5" Maximum="127" LargeChange="8"
                                     Value="{Binding Path=DeadZoneR}" />
-                        </Grid>
-                    </GroupBox>
+                                </Grid>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <!-- Idle Timeout -->
-                    <GroupBox Header="Idle Timeout: 10 minutes"
+                        <!-- Idle Timeout -->
+                        <GroupBox Header="Idle Timeout: 10 minutes"
                               x:Name="IdleTimoutGroupBox"
                               Grid.Row="2">
-                        <StackPanel>
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap"
+                                       TextAlignment="Justify" Margin="0,0,0,10">
                                 Defines the timespan after the controller gets shut off automatically if no input changes are received.
-                            </TextBlock>
-                            <Slider Maximum="30"
+                                </TextBlock>
+                                <Slider Maximum="30"
                                 Value="{Binding Path=IdleTimeout}"
                                 ValueChanged="IdleTimoutSlider_ValueChanged"
                                 LargeChange="5" SmallChange="1" />
-                        </StackPanel>
-                    </GroupBox>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <!-- Checkboxes -->
-                    <StackPanel Grid.Row="3" Margin="0,10,0,0">
-                        <CheckBox IsChecked="{Binding Path=DisableRumble}">Disable Rumble</CheckBox>
-                        <CheckBox IsChecked="{Binding Path=DisableNative}">Disable Native Feed</CheckBox>
-                        <CheckBox IsChecked="{Binding Path=DisableSSP}">Disable Secure Simple Pairing</CheckBox>
-                    </StackPanel>
-                </Grid>
+                        <!-- Checkboxes -->
+                        <StackPanel Grid.Row="3" Margin="0,10,0,0">
+                            <TextBlock TextWrapping="Wrap"
+                                       TextAlignment="Justify">
+                                Description
+                            </TextBlock>
+                            <CheckBox IsChecked="{Binding Path=DisableRumble}">Disable Rumble</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=DisableNative}">Disable Native Feed</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=DisableSSP}">Disable Secure Simple Pairing</CheckBox>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
             </controls:AccordionItem>
 
             <!-- DualShock 3 specific -->
@@ -138,7 +151,7 @@
                               Grid.Row="0" Margin="0,0,0,10">
                         <StackPanel>
                             <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify">
+                                       TextAlignment="Justify" Margin="0,0,0,10">
                                 Defines the minimal duration the rumble request will be sent to the controller until it stops.
                             </TextBlock>
                             <Slider LargeChange="1" Maximum="16"
