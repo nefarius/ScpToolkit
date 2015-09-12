@@ -1,43 +1,37 @@
 ﻿using System;
 using System.ComponentModel;
-
 using System.Runtime.InteropServices;
 
 namespace ScpControl
 {
-    public partial class ScpTimer : Component 
+    public partial class ScpTimer : Component
     {
-        [Flags]
-        protected enum EventFlags : uint 
-        {
-            TIME_ONESHOT  = 0,
-            TIME_PERIODIC = 1,
-        }
-
-        protected delegate void TimerCallback(UInt32 uTimerId, UInt32 uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2);
-
-        [DllImport("Winmm", CharSet = CharSet.Auto)]
-        private static extern UInt32 timeSetEvent(UInt32 uDelay, UInt32 uResolution, TimerCallback lpTimeProc, UIntPtr dwUser, EventFlags Flags);
-
-        [DllImport("Winmm", CharSet = CharSet.Auto)]
-        private static extern UInt32 timeKillEvent(UInt32 uTimerId);
-
-        protected UInt32        m_Id = 0, m_Interval = 100;
-        protected EventArgs     m_Args = new EventArgs();
+        protected EventArgs m_Args = new EventArgs();
         protected TimerCallback m_Callback;
+        protected UInt32 m_Id, m_Interval = 100;
 
-        public event EventHandler Tick;
-
-        public object Tag 
+        public ScpTimer()
         {
-            get;
-            set;
+            InitializeComponent();
+
+            m_Callback = OnTick;
         }
 
-        public Boolean Enabled   
+        public ScpTimer(IContainer container)
+        {
+            container.Add(this);
+
+            InitializeComponent();
+
+            m_Callback = OnTick;
+        }
+
+        public object Tag { get; set; }
+
+        public Boolean Enabled
         {
             get { return m_Id != 0; }
-            set 
+            set
             {
                 lock (this)
                 {
@@ -56,31 +50,26 @@ namespace ScpControl
             }
         }
 
-        public UInt32  Interval  
+        public UInt32 Interval
         {
             get { return m_Interval; }
             set { m_Interval = value; }
         }
 
+        #region P/Invoke
 
-        public ScpTimer() 
-        {
-            InitializeComponent();
+        [DllImport("Winmm", CharSet = CharSet.Auto)]
+        private static extern UInt32 timeSetEvent(UInt32 uDelay, UInt32 uResolution, TimerCallback lpTimeProc,
+            UIntPtr dwUser, EventFlags Flags);
 
-            m_Callback = new TimerCallback(OnTick);
-        }
+        [DllImport("Winmm", CharSet = CharSet.Auto)]
+        private static extern UInt32 timeKillEvent(UInt32 uTimerId);
 
-        public ScpTimer(IContainer container) 
-        {
-            container.Add(this);
+        #endregion
 
-            InitializeComponent();
+        public event EventHandler Tick;
 
-            m_Callback = new TimerCallback(OnTick);
-        }
-
-
-        public void Start() 
+        public void Start()
         {
             lock (this)
             {
@@ -91,7 +80,7 @@ namespace ScpControl
             }
         }
 
-        public void Stop()  
+        public void Stop()
         {
             lock (this)
             {
@@ -103,13 +92,21 @@ namespace ScpControl
             }
         }
 
-
-        protected void OnTick(UInt32 uTimerID, UInt32 uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2) 
+        protected void OnTick(UInt32 uTimerID, UInt32 uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2)
         {
             if (Tick != null)
             {
                 Tick(this, m_Args);
             }
         }
+
+        [Flags]
+        protected enum EventFlags : uint
+        {
+            TIME_ONESHOT = 0,
+            TIME_PERIODIC = 1
+        }
+
+        protected delegate void TimerCallback(UInt32 uTimerId, UInt32 uMsg, UIntPtr dwUser, UIntPtr dw1, UIntPtr dw2);
     }
 }
