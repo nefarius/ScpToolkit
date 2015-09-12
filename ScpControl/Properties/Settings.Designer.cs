@@ -335,5 +335,57 @@ namespace ScpControl.Properties {
                 this["StartupSoundFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Media\\connect.wav")]
+        public string UsbConnectSoundFile {
+            get {
+                return ((string)(this["UsbConnectSoundFile"]));
+            }
+            set {
+                this["UsbConnectSoundFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Media\\disconnect.flac")]
+        public string UsbDisconnectSoundFile {
+            get {
+                return ((string)(this["UsbDisconnectSoundFile"]));
+            }
+            set {
+                this["UsbDisconnectSoundFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Media\\connect.wav")]
+        public string BluetoothConnectSoundFile {
+            get {
+                return ((string)(this["BluetoothConnectSoundFile"]));
+            }
+            set {
+                this["BluetoothConnectSoundFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\disconnect.flac")]
+        public string BluetoothDisconnectSoundFile {
+            get {
+                return ((string)(this["BluetoothDisconnectSoundFile"]));
+            }
+            set {
+                this["BluetoothDisconnectSoundFile"] = value;
+            }
+        }
     }
 }

@@ -380,7 +380,7 @@ namespace ScpControl
             Log.Info("Root hub started");
 
             // make some noise =)
-            AudioPlayer.Instance.PlayMediaFile(GlobalConfiguration.Instance.StartupSoundFile);
+            AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.StartupSoundFile);
 
             return m_Started;
         }
@@ -515,8 +515,8 @@ namespace ScpControl
 
                 Log.InfoFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
 
-                // TODO: just a test, remove in production =)
-                AudioPlayer.Instance.PlayMediaFile("connect.wav");
+                // TODO: this isn't the correct execution path, fix
+                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbConnectSoundFile);
             }
             e.Handled = bFound;
         }

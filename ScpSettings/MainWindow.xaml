@@ -5,6 +5,14 @@
         Title="ScpToolkit Global Configuration" Height="650" Width="480" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing" Initialized="Window_Initialized" Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="TextAlignment" Value="Justify"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+            </Style>
+        </Grid.Resources>
+
         <controls:Accordion x:Name="MainAccordion"
                             Margin="10"
                             HorizontalAlignment="Stretch"
@@ -23,9 +31,7 @@
                         <!-- Flip axis -->
                         <GroupBox Header="Flip Axis">
                             <StackPanel>
-                                <TextBlock TextWrapping="Wrap" 
-                                       TextAlignment="Justify" 
-                                       Margin="0,0,0,10">
+                                <TextBlock Margin="0,0,0,10">
                                 Ticking one of the checkboxes below inverts the axis direction to its opposite.
                                 </TextBlock>
                                 <Grid>
@@ -68,9 +74,7 @@
                         <GroupBox Header="Dead-zone threshold"
                               Grid.Row="1">
                             <StackPanel>
-                                <TextBlock TextWrapping="Wrap"
-                                           TextAlignment="Justify" 
-                                           Margin="0,0,0,10">
+                                <TextBlock>
                                     The so called "Dead Zone" is a virtual area on the controller where the Thumb Sticks are in their absolute zero/default position. Some controllers might be more sensitive to movement of the entire controller, falsely interpreting it as movement on the sticks. If your thumb sticks tend to jitter around even without touching anything, try to increase the values below.
                                 </TextBlock>
                                 <Grid>
@@ -112,8 +116,7 @@
                               x:Name="IdleTimoutGroupBox"
                               Grid.Row="2">
                             <StackPanel>
-                                <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify" Margin="0,0,0,10">
+                                <TextBlock>
                                 Defines the timespan after the controller gets shut off automatically if no input changes are received.
                                 </TextBlock>
                                 <Slider Maximum="30"
@@ -125,20 +128,17 @@
 
                         <!-- Checkboxes -->
                         <StackPanel Grid.Row="3" Margin="0,10,0,0">
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify">
+                            <TextBlock>
                                 Disabling Rumble will ignore any rumble requests sent to any connected controller.
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=DisableRumble}">Disable Rumble</CheckBox>
 
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify">
+                            <TextBlock>
                                 Disabling the so called Native Feed will stop the service from broadcasting the "raw" controller inputs on the network. This might decrease latency a small bit but will also disable communication with any Add-Ons.
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=DisableNative}">Disable Native Feed</CheckBox>
 
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify">
+                            <TextBlock>
                                 Secure Simple Pairing was introduced in the Bluetooth 2.1 + EDR specification. It's used for pairing DualShock 4 controllers. On problems with 3rd party controllers this feature can be disabled.
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=DisableSSP}">Disable Secure Simple Pairing</CheckBox>
@@ -160,8 +160,7 @@
                               x:Name="RumbleLatencyGroupBox"
                               Grid.Row="0" Margin="0,0,0,10">
                         <StackPanel>
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify" Margin="0,0,0,10">
+                            <TextBlock>
                                 Defines the minimal duration the rumble request will be sent to the controller until it stops.
                             </TextBlock>
                             <Slider LargeChange="1" Maximum="16"
@@ -194,8 +193,7 @@
                                 <RowDefinition />
                             </Grid.RowDefinitions>
 
-                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify"
-                                       Grid.Row="0">
+                            <TextBlock Grid.Row="0">
                                 The DualShock 4 has the capability to alter the frequency it's sending input to the Bluetooth host. The default value is a good tradeoff between accuracy and performance consumption. Move the slider to the left if you're experiencing high CPU consumption, move it to the right for maximum accuracy and lowest latency. If you change this value, you have to re-connect your controller for it to take affect.
                             </TextBlock>
 
@@ -244,8 +242,7 @@
                             <Slider Maximum="255"
                                 Value="{Binding Path=Brightness}" LargeChange="16"
                                 ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1" />
-                            <TextBlock TextWrapping="Wrap" 
-                                       TextAlignment="Justify">
+                            <TextBlock>
                                 Hint: move the slider all the way to the left to disable the Light Bar entirely.
                             </TextBlock>
                         </StackPanel>
@@ -268,9 +265,7 @@
                     <GroupBox Header="Driver settings"
                               Grid.Row="0">
                         <StackPanel>
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Justify"
-                                       Margin="0,5,0,10">
+                            <TextBlock>
                                 By checking one or more of the checkboxes below the service will check you device drivers on every start-up and re-applies the correct driver on your Bluetooth dongle or USB-wired DualShock controllers to ensure proper communication with the software.
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=ForceBluetoothDriverReinstallation}">Force Bluetooth driver installation</CheckBox>
@@ -289,28 +284,16 @@
                         <CheckBox IsChecked="{Binding Path=SoundsEnabled}">Enable notification sounds</CheckBox>
                     </GroupBox.Header>
 
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <Label HorizontalAlignment="Right"
-                               Grid.Row="0" Grid.Column="0">
+                    <StackPanel>
+                        <TextBlock>
                             Startup:
-                        </Label>
-                        <TextBox Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch"
-                                 x:Name="StartupFileTextBox"
-                                 Text="{Binding Path=StartupSoundFile, Mode=TwoWay}" />
-                        <Button Grid.Row="0" Grid.Column="2" Click="Button_Click">Browse...</Button>
+                        </TextBlock>
+                        <DockPanel>
+                            <Button>Browse...</Button>
+                            <TextBox/>
+                        </DockPanel>
 
-                    </Grid>
+                    </StackPanel>
                 </GroupBox>
             </controls:AccordionItem>
         </controls:Accordion>

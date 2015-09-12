@@ -135,8 +135,7 @@ namespace ScpControl.Bluetooth
                     {
                         Log.DebugFormat("-- Device Removal [{0}]", _device.Local);
 
-                        // TODO: just a test, remove in production =)
-                        AudioPlayer.Instance.PlayMediaFile("disconnect.wav");
+                        AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothDisconnectSoundFile);
 
                         _device.Stop();
                     }

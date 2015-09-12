@@ -220,11 +220,55 @@ namespace ScpControl.ScpCore
         {
             get
             {
-                return string.IsNullOrEmpty(Settings.Default.StartupSoundFile)
-                    ? Path.Combine(WorkingDirectory, @"Media", "startup.ogg")
-                    : Settings.Default.StartupSoundFile;
+                return Path.IsPathRooted(Settings.Default.StartupSoundFile)
+                    ? Settings.Default.StartupSoundFile
+                    : Path.Combine(WorkingDirectory, Settings.Default.StartupSoundFile);
             }
             set { Settings.Default.StartupSoundFile = value; }
+        }
+
+        public string UsbConnectSoundFile
+        {
+            get
+            {
+                return Path.IsPathRooted(Settings.Default.UsbConnectSoundFile)
+                    ? Settings.Default.UsbConnectSoundFile
+                    : Path.Combine(WorkingDirectory, Settings.Default.UsbConnectSoundFile);
+            }
+            set { Settings.Default.UsbConnectSoundFile = value; }
+        }
+
+        public string UsbDisconnectSoundFile
+        {
+            get
+            {
+                return Path.IsPathRooted(Settings.Default.UsbDisconnectSoundFile)
+                    ? Settings.Default.UsbDisconnectSoundFile
+                    : Path.Combine(WorkingDirectory, Settings.Default.UsbDisconnectSoundFile);
+            }
+            set { Settings.Default.UsbDisconnectSoundFile = value; }
+        }
+
+        public string BluetoothConnectSoundFile
+        {
+            get
+            {
+                return Path.IsPathRooted(Settings.Default.BluetoothConnectSoundFile)
+                    ? Settings.Default.BluetoothConnectSoundFile
+                    : Path.Combine(WorkingDirectory, Settings.Default.BluetoothConnectSoundFile);
+            }
+            set { Settings.Default.BluetoothConnectSoundFile = value; }
+        }
+
+        public string BluetoothDisconnectSoundFile
+        {
+            get
+            {
+                return Path.IsPathRooted(Settings.Default.BluetoothDisconnectSoundFile)
+                    ? Settings.Default.BluetoothDisconnectSoundFile
+                    : Path.Combine(WorkingDirectory, Settings.Default.BluetoothDisconnectSoundFile);
+            }
+            set { Settings.Default.BluetoothDisconnectSoundFile = value; }
         }
 
         #endregion

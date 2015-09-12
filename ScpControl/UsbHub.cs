@@ -235,8 +235,7 @@ namespace ScpControl
                             {
                                 Log.InfoFormat("-- Device Removal [{0}]", _device[index].Local);
 
-                                // TODO: just a test, remove in production =)
-                                AudioPlayer.Instance.PlayMediaFile("disconnect.wav");
+                                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
 
                                 _device[index].Stop();
                             }

@@ -51,12 +51,6 @@ namespace ScpControl.Sound
             get { return LazyInstance.Value; }
         }
 
-        // TODO: remove
-        public void PlayMediaFile(string filename)
-        {
-            PlayCustomFile(Path.Combine(WorkingDirectory, @"Media", filename));
-        }
-
         public void PlayCustomFile(string path)
         {
             if (!GlobalConfiguration.Instance.SoundsEnabled || !File.Exists(path))
