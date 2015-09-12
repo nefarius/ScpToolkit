@@ -127,10 +127,20 @@
                         <StackPanel Grid.Row="3" Margin="0,10,0,0">
                             <TextBlock TextWrapping="Wrap"
                                        TextAlignment="Justify">
-                                Description
+                                Disabling Rumble will ignore any rumble requests sent to any connected controller.
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=DisableRumble}">Disable Rumble</CheckBox>
+
+                            <TextBlock TextWrapping="Wrap"
+                                       TextAlignment="Justify">
+                                Disabling the so called Native Feed will stop the service from broadcasting the "raw" controller inputs on the network. This might decrease latency a small bit but will also disable communication with any Add-Ons.
+                            </TextBlock>
                             <CheckBox IsChecked="{Binding Path=DisableNative}">Disable Native Feed</CheckBox>
+
+                            <TextBlock TextWrapping="Wrap"
+                                       TextAlignment="Justify">
+                                Secure Simple Pairing was introduced in the Bluetooth 2.1 + EDR specification. It's used for pairing DualShock 4 controllers. On problems with 3rd party controllers this feature can be disabled.
+                            </TextBlock>
                             <CheckBox IsChecked="{Binding Path=DisableSSP}">Disable Secure Simple Pairing</CheckBox>
                         </StackPanel>
                     </Grid>
