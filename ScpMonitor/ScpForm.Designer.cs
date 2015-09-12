@@ -36,7 +36,6 @@
             this.lblPad_4 = new System.Windows.Forms.Label();
             this.niTray = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmTray = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tmConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.tmProfile = new System.Windows.Forms.ToolStripMenuItem();
             this.tmReset = new System.Windows.Forms.ToolStripMenuItem();
             this.tmExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -110,20 +109,11 @@
             // cmTray
             // 
             this.cmTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tmConfig,
             this.tmProfile,
             this.tmReset,
             this.tmExit});
             this.cmTray.Name = "cmTray";
             this.cmTray.Size = new System.Drawing.Size(159, 92);
-            // 
-            // tmConfig
-            // 
-            this.tmConfig.Enabled = false;
-            this.tmConfig.Name = "tmConfig";
-            this.tmConfig.Size = new System.Drawing.Size(158, 22);
-            this.tmConfig.Text = "&Configuration";
-            this.tmConfig.Click += new System.EventHandler(this.tmConfig_Click);
             // 
             // tmProfile
             // 
@@ -235,7 +225,6 @@
         private System.Windows.Forms.NotifyIcon niTray;
         private System.Windows.Forms.ContextMenuStrip cmTray;
         private System.Windows.Forms.ToolStripMenuItem tmExit;
-        private System.Windows.Forms.ToolStripMenuItem tmConfig;
         private System.Windows.Forms.Button btnUp_1;
         private System.Windows.Forms.Button btnUp_2;
         private System.Windows.Forms.Button btnUp_3;

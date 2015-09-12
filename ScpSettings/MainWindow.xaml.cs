@@ -25,6 +25,9 @@ namespace ScpSettings
             if (!_proxy.IsActive)
                 return;
 
+            _config.IdleTimeout *= GlobalConfiguration.IdleTimeoutMultiplier;
+            _config.Latency *= GlobalConfiguration.LatencyMultiplier;
+
             _proxy.WriteConfig(_config);
             _proxy.Stop();
         }
@@ -41,6 +44,9 @@ namespace ScpSettings
             }
 
             _config = _proxy.ReadConfig();
+
+            _config.IdleTimeout /= GlobalConfiguration.IdleTimeoutMultiplier;
+            _config.Latency /= GlobalConfiguration.LatencyMultiplier;
 
             MainAccordion.DataContext = _config;
         }

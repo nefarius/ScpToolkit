@@ -19,7 +19,6 @@ namespace ScpMonitor
         protected int FormX, FormY, ConfX, ConfY, ProfX, ProfY;
         private bool m_Connected;
         private readonly ProfilesForm _profiles = new ProfilesForm();
-        private readonly SettingsForm _settings;
         private readonly RegistrySettings m_Config = new RegistrySettings();
 
         public ScpForm()
@@ -30,8 +29,6 @@ namespace ScpMonitor
             };
 
             InitializeComponent();
-
-            _settings = new SettingsForm(scpProxy);
 
             btnUp_1.Tag = (byte)1;
             btnUp_2.Tag = (byte)2;
@@ -61,12 +58,6 @@ namespace ScpMonitor
             {
                 WindowState = FormWindowState.Minimized;
                 Visible = false;
-            }
-
-            if (ConfSaved)
-            {
-                _settings.StartPosition = FormStartPosition.Manual;
-                _settings.Location = new Point(ConfX, ConfY);
             }
 
             if (ProfSaved)
@@ -106,14 +97,12 @@ namespace ScpMonitor
             if (m_Connected)
             {
                 m_Connected = false;
-                tmConfig.Enabled = false;
                 tmProfile.Enabled = false;
 
                 niTray.BalloonTipText = "Server Disconnected";
                 niTray.ShowBalloonTip(3000);
             }
 
-            if (_settings.Visible) _settings.Hide();
             if (_profiles.Visible) _profiles.Hide();
 
             lblHost.Text = "Host Address : Disconnected";
@@ -141,7 +130,6 @@ namespace ScpMonitor
             {
                 e.Cancel = true;
 
-                if (_settings.Visible) _settings.Hide();
                 if (_profiles.Visible) _profiles.Hide();
 
                 Visible = false;
@@ -187,23 +175,12 @@ namespace ScpMonitor
             }
             else
             {
-                if (_settings.Visible) _settings.Hide();
+
                 if (_profiles.Visible) _profiles.Hide();
 
                 Visible = false;
                 WindowState = FormWindowState.Minimized;
             }
-        }
-
-        private void tmConfig_Click(object sender, EventArgs e)
-        {
-            if (!_settings.Visible)
-            {
-                _settings.Request();
-                _settings.Show(this);
-            }
-
-            _settings.Activate();
         }
 
         private void tmProfile_Click(object sender, EventArgs e)
@@ -220,7 +197,6 @@ namespace ScpMonitor
         private void tmReset_Click(object sender, EventArgs e)
         {
             Reset();
-            _settings.Reset();
             _profiles.Reset();
         }
 
@@ -252,13 +228,6 @@ namespace ScpMonitor
                 FormVisible = false;
             }
 
-            if (_settings.Visible && _settings.Location.X != -32000 && _settings.Location.Y != -32000)
-            {
-                ConfX = _settings.Location.X;
-                ConfY = _settings.Location.Y;
-                ConfSaved = true;
-            }
-
             if (_profiles.Visible && _profiles.Location.X != -32000 && _profiles.Location.Y != -32000)
             {
                 ProfX = _profiles.Location.X;
@@ -279,7 +248,6 @@ namespace ScpMonitor
             if (!m_Connected)
             {
                 m_Connected = true;
-                tmConfig.Enabled = true;
                 tmProfile.Enabled = true;
 
                 niTray.BalloonTipText = "Server Connected";

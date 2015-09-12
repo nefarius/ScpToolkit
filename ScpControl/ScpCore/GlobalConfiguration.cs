@@ -18,6 +18,10 @@ namespace ScpControl.ScpCore
             0xD9, 0x66, 0x3C, 0xCE
         };
 
+        private GlobalConfiguration()
+        {
+        }
+
         public static GlobalConfiguration Instance
         {
             get { return LazyInstance.Value; }
