@@ -169,11 +169,56 @@
                         </StackPanel>
                     </GroupBox>
 
-                    <!-- Disable LED -->
-                    <CheckBox Grid.Row="1"
-                              IsChecked="{Binding Path=DisableLED}">
-                        Disable LEDs
-                    </CheckBox>
+                    <!-- led status -->
+                    <GroupBox Header="Leds status" Grid.Row="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton Grid.Row="0" Grid.Column="0" GroupName="led">
+                                Disable
+                            </RadioButton>
+
+                            <RadioButton Grid.Row="1" Grid.Column="0" GroupName="led" >
+                                Pad num
+                            </RadioButton>
+
+                            <RadioButton Grid.Row="2" Grid.Column="0" GroupName="led" >
+                                Charge
+                            </RadioButton>
+
+                            <RadioButton Grid.Row="3" Grid.Column="0" GroupName="led" >
+                                Custom
+                            </RadioButton>
+
+                            <CheckBox Grid.Row="3" Grid.Column="1" >
+                                1
+                            </CheckBox>
+                            <CheckBox Grid.Row="3" Grid.Column="2" >
+                                2
+                            </CheckBox>
+                            <CheckBox Grid.Row="3" Grid.Column="3" >
+                                3
+                            </CheckBox>
+                            <CheckBox Grid.Row="3" Grid.Column="4" >
+                                4
+                            </CheckBox>
+                        </Grid>
+                    </GroupBox>
+                    <!-- led status -->
+
                 </Grid>
             </controls:AccordionItem>
 
