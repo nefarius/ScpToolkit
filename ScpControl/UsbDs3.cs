@@ -9,6 +9,8 @@ namespace ScpControl
         public static string USB_CLASS_GUID = "{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}";
         private byte[] m_Enable = { 0x42, 0x0C, 0x00, 0x00 };
         private byte[] m_Leds = { 0x02, 0x04, 0x08, 0x10 };
+        private byte counterForLeds = 0;
+        private byte ledStatus = 0;
 
         private byte[] m_Report =
         {
@@ -111,7 +113,7 @@ namespace ScpControl
                     m_Report[4] = large;
                 }
 
-                m_Report[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : m_Leds[m_ControllerId]);
+                //m_Report[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : m_Leds[m_ControllerId]);
 
                 return SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
             }
@@ -207,11 +209,16 @@ namespace ScpControl
 
                     if (Battery == DsBattery.Charging)
                     {
-                        m_Report[9] ^= m_Leds[m_ControllerId];
+                        counterForLeds++;
+                        counterForLeds %= (byte)m_Leds.Length;
+                        ledStatus = 0;
+                        for (byte i = 0; i <= counterForLeds; i++)
+                            ledStatus |= m_Leds[i];
+                        m_Report[9] = ledStatus;
                     }
                     else
                     {
-                        m_Report[9] |= m_Leds[m_ControllerId];
+                        m_Report[9] = m_Leds[m_ControllerId];
                     }
 
                     if (GlobalConfiguration.Instance.DisableLED) m_Report[9] = 0;
