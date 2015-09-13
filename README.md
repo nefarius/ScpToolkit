@@ -13,6 +13,8 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [Rx networking library](https://github.com/clariuslabs/reactivesockets)
  * [libusbK driver package](https://code.google.com/p/usb-travis/)
  * [irrKlang cross platform sound library](http://www.ambiera.com/irrklang/index.html)
+ * [Metro Light and Dark Themes for WPF](http://brianlagunas.com/free-metro-light-and-dark-themes-for-wpf-and-silverlight-microsoft-controls/)
+ * [Fody/PropertyChanged](https://github.com/Fody/PropertyChanged)
 
 ## Installation requirements
  * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
