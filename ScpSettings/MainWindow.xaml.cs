@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using Ookii.Dialogs.Wpf;
 using ScpControl;
 using ScpControl.ScpCore;
 
@@ -83,15 +82,6 @@ namespace ScpSettings
             var value = ((int)e.NewValue) << 4;
 
             RumbleLatencyGroupBox.Header = string.Format("Rumble Latency: {0} ms", value);
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var fileBrowser = new VistaOpenFileDialog();
-
-            fileBrowser.ShowDialog();
-
-            _config.StartupSoundFile = fileBrowser.FileName;
         }
     }
 }

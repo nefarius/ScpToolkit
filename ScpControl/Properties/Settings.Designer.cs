@@ -326,7 +326,7 @@ namespace ScpControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Media\\startup.ogg")]
         public string StartupSoundFile {
             get {
                 return ((string)(this["StartupSoundFile"]));
@@ -378,7 +378,7 @@ namespace ScpControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\\disconnect.flac")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Media\\disconnect.flac")]
         public string BluetoothDisconnectSoundFile {
             get {
                 return ((string)(this["BluetoothDisconnectSoundFile"]));

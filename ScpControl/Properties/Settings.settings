@@ -75,7 +75,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="StartupSoundFile" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Media\startup.ogg</Value>
     </Setting>
     <Setting Name="UsbConnectSoundFile" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">Media\connect.wav</Value>
@@ -87,7 +87,7 @@
       <Value Profile="(Default)">Media\connect.wav</Value>
     </Setting>
     <Setting Name="BluetoothDisconnectSoundFile" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\disconnect.flac</Value>
+      <Value Profile="(Default)">Media\disconnect.flac</Value>
     </Setting>
   </Settings>
 </SettingsFile>
