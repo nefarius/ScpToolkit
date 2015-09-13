@@ -48,7 +48,7 @@ namespace ScpControl
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                m_Report[9] = m_Leds[m_ControllerId];
+                m_Report[9] = ledStatus;
             }
         }
 
@@ -113,7 +113,7 @@ namespace ScpControl
                     m_Report[4] = large;
                 }
 
-                //m_Report[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : m_Leds[m_ControllerId]);
+                m_Report[9] = ledStatus;
 
                 return SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
             }
@@ -207,21 +207,35 @@ namespace ScpControl
 
                     m_Last = now;
 
-                    if (Battery == DsBattery.Charging)
+                    switch (Battery)
                     {
-                        counterForLeds++;
-                        counterForLeds %= (byte)m_Leds.Length;
-                        ledStatus = 0;
-                        for (byte i = 0; i <= counterForLeds; i++)
-                            ledStatus |= m_Leds[i];
-                        m_Report[9] = ledStatus;
-                    }
-                    else
-                    {
-                        m_Report[9] = m_Leds[m_ControllerId];
+                        case DsBattery.Charging:
+                            counterForLeds++;
+                            counterForLeds %= (byte)m_Leds.Length;
+                            ledStatus = 0;
+                            for (byte i = 0; i <= counterForLeds; i++)
+                                ledStatus |= m_Leds[i];
+                            break;
+                        case DsBattery.Low:
+                            ledStatus = (byte)(m_Leds[0]);
+                            break;
+                        case DsBattery.Medium:
+                            ledStatus = (byte)(m_Leds[0] | m_Leds[1]);
+                            break;
+                        case DsBattery.High:
+                            ledStatus = (byte)(m_Leds[0] | m_Leds[1] | m_Leds[2]);
+                            break;
+                        case DsBattery.Full:
+                        case DsBattery.Charged:
+                            ledStatus = (byte)(m_Leds[0] | m_Leds[1] | m_Leds[2] | m_Leds[3]);
+                            break;
+                        default: ;
+                            break;
                     }
 
-                    if (GlobalConfiguration.Instance.DisableLED) m_Report[9] = 0;
+                    if (GlobalConfiguration.Instance.DisableLED) ledStatus = 0;
+
+                    m_Report[9] = ledStatus;
 
                     SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
                 }
