@@ -60,7 +60,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Ds4InputUpdateDelay" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">16</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="ForceBluetoothDriverReinstallation" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
