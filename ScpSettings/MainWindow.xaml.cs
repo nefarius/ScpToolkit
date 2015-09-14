@@ -83,5 +83,12 @@ namespace ScpSettings
 
             RumbleLatencyGroupBox.Header = string.Format("Rumble Latency: {0} ms", value);
         }
+
+        private void Slider_LEDsPeriodChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var value = (int)e.NewValue;
+
+            LEDsFlashingPeriodGroupBox.Header = string.Format("LEDs flashing period: {0} ms", value);
+        }
     }
 }

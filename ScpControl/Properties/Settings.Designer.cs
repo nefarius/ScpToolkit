@@ -387,5 +387,17 @@ namespace ScpControl.Properties {
                 this["BluetoothDisconnectSoundFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        public int LEDsFlashingPeriod {
+            get {
+                return ((int)(this["LEDsFlashingPeriod"]));
+            }
+            set {
+                this["LEDsFlashingPeriod"] = value;
+            }
+        }
     }
 }

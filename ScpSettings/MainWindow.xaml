@@ -154,6 +154,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <!-- Rumble Latency -->
@@ -169,8 +170,20 @@
                         </StackPanel>
                     </GroupBox>
 
+                    <GroupBox Header="LEDs flashing period: 300 ms"
+                              x:Name="LEDsFlashingPeriodGroupBox"
+                              Grid.Row="1" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock>
+                                Defines LEDs flashin period when charging. Min value - 300ms, max value - 2000ms.
+                            </TextBlock>
+                            <Slider TickFrequency="100" Maximum="2000" Minimum="300" IsSnapToTickEnabled="True"
+                                Value="{Binding Path=LEDsPeriod}" ValueChanged="Slider_LEDsPeriodChanged" />
+                        </StackPanel>
+                    </GroupBox>
+
                     <!-- led status -->
-                    <GroupBox Header="Leds status" Grid.Row="1">
+                    <GroupBox Header="Leds status" Grid.Row="2">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition />

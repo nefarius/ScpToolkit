@@ -271,6 +271,12 @@ namespace ScpControl.ScpCore
             set { Settings.Default.BluetoothDisconnectSoundFile = value; }
         }
 
+        public int LEDsPeriod
+        {
+            get { return Settings.Default.LEDsFlashingPeriod; }
+            set { Settings.Default.LEDsFlashingPeriod = value; }
+        }
+
         #endregion
     }
 }
