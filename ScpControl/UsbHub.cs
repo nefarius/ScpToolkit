@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 
@@ -7,7 +8,7 @@ namespace ScpControl
 {
     public partial class UsbHub : ScpHub
     {
-        private readonly UsbDevice[] _device = new UsbDevice[4];
+        private readonly UsbDevice[] _devices = new UsbDevice[4];
 
         public UsbHub()
         {
@@ -23,11 +24,9 @@ namespace ScpControl
 
         public override Boolean Open()
         {
-            for (Byte Pad = 0; Pad < _device.Length; Pad++)
+            for (Byte pad = 0; pad < _devices.Length; pad++)
             {
-                _device[Pad] = new UsbDevice();
-
-                _device[Pad].PadId = (DsPadId)Pad;
+                _devices[pad] = new UsbDevice { PadId = (DsPadId)pad };
             }
 
             return base.Open();
@@ -37,15 +36,15 @@ namespace ScpControl
         {
             m_Started = true;
 
-            Byte Index = 0;
+            Byte index = 0;
 
             // enumerate DS4 devices
-            for (Byte instance = 0; instance < _device.Length && Index < _device.Length; instance++)
+            for (Byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
             {
                 try
                 {
                     UsbDevice current = new UsbDs4();
-                    current.PadId = (DsPadId)Index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
@@ -53,7 +52,7 @@ namespace ScpControl
                         {
                             current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
 
-                            _device[Index++] = current;
+                            _devices[index++] = current;
                         }
                         else current.Close();
                     }
@@ -67,12 +66,12 @@ namespace ScpControl
             }
 
             // enumerate DS3 devices
-            for (Byte instance = 0; instance < _device.Length && Index < _device.Length; instance++)
+            for (Byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
             {
                 try
                 {
                     UsbDevice current = new UsbDs3();
-                    current.PadId = (DsPadId)Index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
@@ -80,7 +79,7 @@ namespace ScpControl
                         {
                             current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
 
-                            _device[Index++] = current;
+                            _devices[index++] = current;
                         }
                         else current.Close();
                     }
@@ -95,11 +94,11 @@ namespace ScpControl
 
             try
             {
-                for (Index = 0; Index < _device.Length; Index++)
+                for (index = 0; index < _devices.Length; index++)
                 {
-                    if (_device[Index].State == DsState.Reserved)
+                    if (_devices[index].State == DsState.Reserved)
                     {
-                        _device[Index].Start();
+                        _devices[index].Start();
                     }
                 }
             }
@@ -117,12 +116,9 @@ namespace ScpControl
 
             try
             {
-                for (Int32 Index = 0; Index < _device.Length; Index++)
+                foreach (var t in _devices.Where(t => t.State == DsState.Connected))
                 {
-                    if (_device[Index].State == DsState.Connected)
-                    {
-                        _device[Index].Stop();
-                    }
+                    t.Stop();
                 }
             }
             catch (Exception ex)
@@ -139,12 +135,9 @@ namespace ScpControl
 
             try
             {
-                for (Int32 Index = 0; Index < _device.Length; Index++)
+                foreach (var t in _devices.Where(t => t.State == DsState.Connected))
                 {
-                    if (_device[Index].State == DsState.Connected)
-                    {
-                        _device[Index].Close();
-                    }
+                    t.Close();
                 }
             }
             catch (Exception ex)
@@ -201,12 +194,12 @@ namespace ScpControl
 
                             if (LogArrival(arrived))
                             {
-                                if (_device[(Byte)arrived.PadId].IsShutdown)
+                                if (_devices[(Byte)arrived.PadId].IsShutdown)
                                 {
-                                    _device[(Byte)arrived.PadId].IsShutdown = false;
+                                    _devices[(Byte)arrived.PadId].IsShutdown = false;
 
-                                    _device[(Byte)arrived.PadId].Close();
-                                    _device[(Byte)arrived.PadId] = arrived;
+                                    _devices[(Byte)arrived.PadId].Close();
+                                    _devices[(Byte)arrived.PadId] = arrived;
 
                                     return arrived.PadId;
                                 }
@@ -214,8 +207,8 @@ namespace ScpControl
                                 {
                                     arrived.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
 
-                                    _device[(Byte)arrived.PadId].Close();
-                                    _device[(Byte)arrived.PadId] = arrived;
+                                    _devices[(Byte)arrived.PadId].Close();
+                                    _devices[(Byte)arrived.PadId] = arrived;
 
                                     if (m_Started) arrived.Start();
                                     return arrived.PadId;
@@ -229,16 +222,13 @@ namespace ScpControl
 
                 case ScpDevice.Notified.Removal:
                     {
-                        for (Int32 index = 0; index < _device.Length; index++)
+                        foreach (UsbDevice t in _devices.Where(t => t.State == DsState.Connected && Path == t.Path))
                         {
-                            if (_device[index].State == DsState.Connected && Path == _device[index].Path)
-                            {
-                                Log.InfoFormat("-- Device Removal [{0}]", _device[index].Local);
+                            Log.InfoFormat("-- Device Removal [{0}]", t.Local);
 
-                                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
+                            AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
 
-                                _device[index].Stop();
-                            }
+                            t.Stop();
                         }
                     }
                     break;

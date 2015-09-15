@@ -261,10 +261,10 @@ namespace ScpControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public byte Ds4InputUpdateDelay {
+        [global::System.Configuration.DefaultSettingValueAttribute("Fastest")]
+        public global::ScpControl.Bluetooth.Ds4UpdateRate Ds4InputUpdateDelay {
             get {
-                return ((byte)(this["Ds4InputUpdateDelay"]));
+                return ((global::ScpControl.Bluetooth.Ds4UpdateRate)(this["Ds4InputUpdateDelay"]));
             }
             set {
                 this["Ds4InputUpdateDelay"] = value;

@@ -47,6 +47,7 @@
       <HintPath>..\packages\MadMilkman.Ini.1.0.4.0\lib\net20\MadMilkman.Ini.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="PropertyChanged">
       <HintPath>..\packages\PropertyChanged.Fody.1.50.3\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
       <Private>False</Private>
@@ -150,6 +151,7 @@
     <Compile Include="Utilities\DumpHelper.cs" />
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
+    <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\GlobalConfiguration.cs" />
     <Compile Include="ScpCore\HCI.cs" />

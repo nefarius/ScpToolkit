@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using PropertyChanged;
+using ScpControl.Bluetooth;
 using ScpControl.Properties;
 
 namespace ScpControl.ScpCore
@@ -41,7 +42,7 @@ namespace ScpControl.ScpCore
 
         public object Clone()
         {
-            return (GlobalConfiguration) MemberwiseClone();
+            return (GlobalConfiguration)MemberwiseClone();
         }
 
         public static void Load()
@@ -56,14 +57,14 @@ namespace ScpControl.ScpCore
 
         public static GlobalConfiguration Request()
         {
-            return (GlobalConfiguration) Instance.Clone();
+            return (GlobalConfiguration)Instance.Clone();
         }
 
         public static void Submit(GlobalConfiguration configuration)
         {
             foreach (
                 var propertyInfo in
-                    typeof (GlobalConfiguration).GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
+                    typeof(GlobalConfiguration).GetProperties().Where(propertyInfo => propertyInfo.CanWrite))
             {
                 propertyInfo.SetValue(Instance, propertyInfo.GetValue(configuration));
             }
@@ -182,12 +183,12 @@ namespace ScpControl.ScpCore
             get { return MBdLink; }
         }
 
-        public byte Ds4InputUpdateDelay
+        public Ds4UpdateRate Ds4InputUpdateDelay
         {
             get { return Settings.Default.Ds4InputUpdateDelay; }
             set
             {
-                if (value > 0x00 && value < 0x3D)
+                if (Enum.IsDefined(typeof(Ds4UpdateRate), value))
                     Settings.Default.Ds4InputUpdateDelay = value;
             }
         }

@@ -43,7 +43,7 @@ namespace ScpControl.Bluetooth
             _device = new BthDongle();
 
             _device.Arrival += On_Arrival;
-            _device.Report += On_Report;
+            _device.HidReportReceived += On_Report;
 
             if (!_device.Open()) _device.Close();
 
@@ -117,7 +117,7 @@ namespace ScpControl.Bluetooth
                             _device = arrived;
 
                             _device.Arrival += On_Arrival;
-                            _device.Report += On_Report;
+                            _device.HidReportReceived += On_Report;
 
                             if (m_Started) _device.Start();
                             break;

@@ -59,8 +59,8 @@
     <Setting Name="DumpHidReports" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Ds4InputUpdateDelay" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">10</Value>
+    <Setting Name="Ds4InputUpdateDelay" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="ScpControl.Bluetooth.Ds4UpdateRate" Scope="User">
+      <Value Profile="(Default)">Fastest</Value>
     </Setting>
     <Setting Name="ForceBluetoothDriverReinstallation" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

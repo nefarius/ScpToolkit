@@ -92,7 +92,7 @@ namespace ScpControl.Bluetooth
         #endregion
 
         public event EventHandler<ArrivalEventArgs> Arrival;
-        public event EventHandler<ReportEventArgs> Report;
+        public event EventHandler<ReportEventArgs> HidReportReceived;
 
         private bool LogArrival(IDsDevice arrived)
         {
@@ -266,7 +266,7 @@ namespace ScpControl.Bluetooth
 
         private void On_Report(object sender, ReportEventArgs e)
         {
-            if (Report != null) Report(sender, e);
+            if (HidReportReceived != null) HidReportReceived(sender, e);
         }
 
         #endregion
