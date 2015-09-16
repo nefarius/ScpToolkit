@@ -479,19 +479,5 @@ namespace ScpControl.Bluetooth
                 }
             }
         }
-
-        /// <summary>
-        ///     Gets or sets the incoming HID report update rate.
-        /// </summary>
-        public byte HidReportUpdateRate
-        {
-            get { return _hidReport[2]; }
-            set
-            {
-                _hidReport[2] = value;
-                // TODO: for testing only!
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
-            }
-        }
     }
 }
