@@ -106,7 +106,7 @@ namespace ScpControl.Usb
         {
             if (!IsActive) return State == DsState.Connected;
 
-            Array.Copy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
+            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
 
             m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
             m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;

@@ -155,7 +155,7 @@ namespace ScpControl.Usb
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
-            Array.Copy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
+            Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
 
             if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
             {
@@ -191,7 +191,7 @@ namespace ScpControl.Usb
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
-            Array.Copy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
+            Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
 
             if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
             {

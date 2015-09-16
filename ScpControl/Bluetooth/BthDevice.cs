@@ -21,37 +21,13 @@ namespace ScpControl.Bluetooth
             m_Tick = DateTime.Now,
             m_Disconnect = DateTime.Now;
 
-        private byte[] m_Master = new byte[6];
         protected uint m_Packet;
         protected byte m_PlugStatus = 0;
         private bool m_Publish;
         protected uint m_Queued = 0;
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
         protected DsState m_State = DsState.Disconnected;
-
-        #region Ctors
-
-        public BthDevice()
-        {
-            InitializeComponent();
-        }
-
-        public BthDevice(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
-        }
-
-        public BthDevice(IBthDevice device, byte[] master, byte lsb, byte msb) : base(new BthHandle(lsb, msb))
-        {
-            InitializeComponent();
-
-            m_Device = device;
-            m_Master = master;
-        }
-
-        #endregion
+        private readonly byte[] m_Master = new byte[6];
 
         public DsState State
         {
@@ -90,7 +66,7 @@ namespace ScpControl.Bluetooth
 
         public virtual bool Start()
         {
-            Array.Copy(LocalMac, 0, m_ReportArgs.Report, (int) DsOffset.Address, LocalMac.Length);
+            Buffer.BlockCopy(LocalMac, 0, m_ReportArgs.Report, (int) DsOffset.Address, LocalMac.Length);
 
             m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
             m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
@@ -240,5 +216,30 @@ namespace ScpControl.Bluetooth
                 Process(now);
             }
         }
+
+        #region Ctors
+
+        public BthDevice()
+        {
+            InitializeComponent();
+        }
+
+        public BthDevice(IContainer container)
+        {
+            container.Add(this);
+
+            InitializeComponent();
+        }
+
+        public BthDevice(IBthDevice device, byte[] master, byte lsb, byte msb)
+            : base(new BthHandle(lsb, msb))
+        {
+            InitializeComponent();
+
+            m_Device = device;
+            m_Master = master;
+        }
+
+        #endregion
     }
 }

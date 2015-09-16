@@ -28,7 +28,7 @@ namespace ScpControl.ScpCore
 
         internal DsPacket Load(byte[] Native)
         {
-            Array.Copy(Native, (int)DsOffset.Address, m_Local, 0, m_Local.Length);
+            Buffer.BlockCopy(Native, (int)DsOffset.Address, m_Local, 0, m_Local.Length);
 
             m_Detail.Load(
                 (DsPadId)Native[(int)DsOffset.Pad],
