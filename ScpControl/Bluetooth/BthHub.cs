@@ -4,9 +4,14 @@ using ScpControl.Sound;
 
 namespace ScpControl.Bluetooth
 {
+    /// <summary>
+    ///     Represents a Bluetooth hub.
+    /// </summary>
     public partial class BthHub : ScpHub
     {
         private BthDongle _device;
+
+        #region Ctors
 
         public BthHub()
         {
@@ -19,6 +24,8 @@ namespace ScpControl.Bluetooth
 
             InitializeComponent();
         }
+
+        #endregion
 
         public string Dongle
         {

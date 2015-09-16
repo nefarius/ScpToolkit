@@ -6,6 +6,9 @@ using ScpControl.Sound;
 
 namespace ScpControl
 {
+    /// <summary>
+    ///     Represents an USB hub.
+    /// </summary>
     public partial class UsbHub : ScpHub
     {
         private readonly UsbDevice[] _devices = new UsbDevice[4];

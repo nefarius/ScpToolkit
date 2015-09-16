@@ -4,6 +4,9 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {
+    /// <summary>
+    ///     Represents a generic Bluetooth client device.
+    /// </summary>
     public partial class BthDevice : BthConnection, IDsDevice
     {
         protected byte m_BatteryStatus = 0;
@@ -26,6 +29,8 @@ namespace ScpControl.Bluetooth
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
         protected DsState m_State = DsState.Disconnected;
 
+        #region Ctors
+
         public BthDevice()
         {
             InitializeComponent();
@@ -45,6 +50,8 @@ namespace ScpControl.Bluetooth
             m_Device = device;
             m_Master = master;
         }
+
+        #endregion
 
         public DsState State
         {

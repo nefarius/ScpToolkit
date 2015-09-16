@@ -4,6 +4,9 @@ using ScpControl.ScpCore;
 
 namespace ScpControl
 {
+    /// <summary>
+    ///     Represents a DualShock 3 controller connected via USB.
+    /// </summary>
     public partial class UsbDs3 : UsbDevice
     {
         public static string USB_CLASS_GUID = "{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}";
@@ -137,9 +140,9 @@ namespace ScpControl
             return false;
         }
 
-        protected override void Parse(byte[] Report)
+        protected override void Parse(byte[] report)
         {
-            if (Report[0] != 0x01) return;
+            if (report[0] != 0x01) return;
 
             if (m_Packet++ + 1 < m_Packet)
             {
@@ -147,14 +150,14 @@ namespace ScpControl
                 m_Packet = 0;
             }
 
-            m_ReportArgs.Report[2] = m_BatteryStatus = Report[30];
+            m_ReportArgs.Report[2] = m_BatteryStatus = report[30];
 
             m_ReportArgs.Report[4] = (byte)(m_Packet >> 0 & 0xFF);
             m_ReportArgs.Report[5] = (byte)(m_Packet >> 8 & 0xFF);
             m_ReportArgs.Report[6] = (byte)(m_Packet >> 16 & 0xFF);
             m_ReportArgs.Report[7] = (byte)(m_Packet >> 24 & 0xFF);
 
-            var buttons = (Ds3Button)((Report[2] << 0) | (Report[3] << 8) | (Report[4] << 16) | (Report[5] << 24));
+            var buttons = (Ds3Button)((report[2] << 0) | (report[3] << 8) | (report[4] << 16) | (report[5] << 24));
             var trigger = false;
 
             if ((buttons & Ds3Button.L1) == Ds3Button.L1
@@ -163,12 +166,12 @@ namespace ScpControl
                 )
             {
                 trigger = true;
-                Report[4] ^= 0x1;
+                report[4] ^= 0x1;
             }
 
             for (var index = 8; index < 57; index++)
             {
-                m_ReportArgs.Report[index] = Report[index - 8];
+                m_ReportArgs.Report[index] = report[index - 8];
             }
 
             if (trigger && !m_IsDisconnect)

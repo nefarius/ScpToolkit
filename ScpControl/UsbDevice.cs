@@ -4,6 +4,9 @@ using ScpControl.ScpCore;
 
 namespace ScpControl
 {
+    /// <summary>
+    ///     Represents a generic USB device.
+    /// </summary>
     public partial class UsbDevice : ScpDevice, IDsDevice
     {
         protected byte m_BatteryStatus = 0;
@@ -22,7 +25,9 @@ namespace ScpControl
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
         protected DsState m_State = DsState.Disconnected;
 
-        protected UsbDevice(string Guid) : base(Guid)
+        #region Ctors
+
+        protected UsbDevice(string guid) : base(guid)
         {
             InitializeComponent();
         }
@@ -38,6 +43,8 @@ namespace ScpControl
 
             InitializeComponent();
         }
+
+        #endregion
 
         public virtual bool IsShutdown
         {
@@ -97,22 +104,21 @@ namespace ScpControl
 
         public override bool Start()
         {
-            if (IsActive)
-            {
-                Array.Copy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
+            if (!IsActive) return State == DsState.Connected;
 
-                m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
-                m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
+            Array.Copy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
 
-                m_State = DsState.Connected;
-                m_Packet = 0;
+            m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
+            m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
 
-                HID_Worker.RunWorkerAsync();
-                tmUpdate.Enabled = true;
+            m_State = DsState.Connected;
+            m_Packet = 0;
 
-                Rumble(0, 0);
-                Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote);
-            }
+            HID_Worker.RunWorkerAsync();
+            tmUpdate.Enabled = true;
+
+            Rumble(0, 0);
+            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote);
 
             return State == DsState.Connected;
         }
@@ -146,7 +152,7 @@ namespace ScpControl
         {
         }
 
-        protected virtual void Parse(byte[] Report)
+        protected virtual void Parse(byte[] report)
         {
         }
 

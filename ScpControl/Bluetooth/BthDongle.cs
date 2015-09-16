@@ -9,7 +9,7 @@ using ScpControl.ScpCore;
 namespace ScpControl.Bluetooth
 {
     /// <summary>
-    ///     Communication logic for Bluetooth host dongles.
+    ///     Represents a Bluetooth host device.
     /// </summary>
     public sealed partial class BthDongle : ScpDevice, IBthDevice
     {
@@ -22,6 +22,8 @@ namespace ScpControl.Bluetooth
         private byte[] _localMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
+
+        #region Ctors
 
         public BthDongle()
             : base(BTH_CLASS_GUID)
@@ -38,6 +40,8 @@ namespace ScpControl.Bluetooth
 
             InitializeComponent();
         }
+
+        #endregion
 
         public string Local
         {

@@ -13,6 +13,9 @@ namespace ScpControl.Bluetooth
         Slowest = 0xB0 // 20 Hz
     }
 
+    /// <summary>
+    ///     Represents a DualShock 4 controller connected via Bluetooth.
+    /// </summary>
     public partial class BthDs4 : BthDevice
     {
         private const int R = 9; // Led Offsets
@@ -178,6 +181,9 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
+        /// <summary>
+        ///     Supported HID input update rates.
+        /// </summary>
         public static Dictionary<Ds4UpdateRate, string> UpdateRates
         {
             get

@@ -6,9 +6,14 @@ using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
+    /// <summary>
+    ///     Represents a DualShock 3 controller connected via Bluetooth.
+    /// </summary>
     public partial class BthDs3 : BthDevice
     {
         private byte[] m_Enable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
+
+        #region HID Reports
 
         private readonly byte[][] _hidInitReport =
         {
@@ -59,6 +64,10 @@ namespace ScpControl.Bluetooth
             0x00, 0x00, 0x00
         };
 
+        #endregion
+
+        #region Ctors
+
         public BthDs3()
         {
             InitializeComponent();
@@ -75,6 +84,8 @@ namespace ScpControl.Bluetooth
             : base(device, master, lsb, msb)
         {
         }
+
+        #endregion
 
         public override DsPadId PadId
         {
@@ -203,6 +214,12 @@ namespace ScpControl.Bluetooth
             OnHidReportReceived();
         }
 
+        /// <summary>
+        ///     Send a rumble request to the controller.
+        /// </summary>
+        /// <param name="large">Rumble with large (left) motor.</param>
+        /// <param name="small">Rumble with small (right) motor.</param>
+        /// <returns></returns>
         public override bool Rumble(byte large, byte small)
         {
             lock (this)
@@ -254,30 +271,30 @@ namespace ScpControl.Bluetooth
         {
             lock (this)
             {
-                if (m_State == DsState.Connected)
+                if (m_State != DsState.Connected) return;
+
+                if ((now - m_Tick).TotalMilliseconds >= 500 && m_Packet > 0)
                 {
-                    if ((now - m_Tick).TotalMilliseconds >= 500 && m_Packet > 0)
+                    m_Tick = now;
+
+                    if (m_Queued == 0) m_Queued = 1;
+
+                    if (Battery < DsBattery.Medium)
                     {
-                        m_Tick = now;
-
-                        if (m_Queued == 0) m_Queued = 1;
-
-                        if (Battery < DsBattery.Medium)
-                        {
-                            _hidReport[11] ^= _leds[m_ControllerId];
-                        }
-                        else
-                        {
-                            _hidReport[11] |= _leds[m_ControllerId];
-                        }
+                        _hidReport[11] ^= _leds[m_ControllerId];
                     }
+                    else
+                    {
+                        _hidReport[11] |= _leds[m_ControllerId];
+                    }
+                }
 
-                    if (GlobalConfiguration.Instance.DisableLED) _hidReport[11] = 0;
+                if (GlobalConfiguration.Instance.DisableLED) _hidReport[11] = 0;
 
-                    #region Fake DS3 workaround
+                #region Fake DS3 workaround
 
-                    // TODO: doesn't work, breaks communication with "genuine" 3rd party controller
-                    /*
+                // TODO: doesn't work, breaks communication with "genuine" 3rd party controller
+                /*
                     if (IsFake)
                     {
                         _hidReport[0] = 0xA2;
@@ -286,20 +303,17 @@ namespace ScpControl.Bluetooth
                     }
                      * */
 
-                    #endregion
+                #endregion
 
-                    if (!m_Blocked && m_Queued > 0)
-                    {
-                        if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Latency)
-                        {
-                            m_Last = now;
-                            m_Blocked = true;
-                            m_Queued--;
+                if (m_Blocked || m_Queued <= 0) return;
 
-                            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
-                        }
-                    }
-                }
+                if (!((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Latency)) return;
+
+                m_Last = now;
+                m_Blocked = true;
+                m_Queued--;
+
+                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
             }
         }
     }

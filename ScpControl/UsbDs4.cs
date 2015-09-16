@@ -4,6 +4,9 @@ using ScpControl.ScpCore;
 
 namespace ScpControl
 {
+    /// <summary>
+    ///     Represents a DualShock 4 controller connected via USB.
+    /// </summary>
     public sealed partial class UsbDs4 : UsbDevice
     {
         private const int R = 6; // Led Offsets
@@ -12,6 +15,8 @@ namespace ScpControl
         public static string USB_CLASS_GUID = "{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}";
         private byte m_Brightness = GlobalConfiguration.Instance.Brightness;
         private bool m_DisableLightBar;
+
+        #region HID Report
 
         private byte[] m_Report =
         {
@@ -25,6 +30,10 @@ namespace ScpControl
             0x00
         };
 
+        #endregion
+
+        #region Ctors
+
         public UsbDs4() : base(USB_CLASS_GUID)
         {
             InitializeComponent();
@@ -36,6 +45,8 @@ namespace ScpControl
 
             InitializeComponent();
         }
+
+        #endregion
 
         public override DsPadId PadId
         {
@@ -81,11 +92,11 @@ namespace ScpControl
             }
         }
 
-        private byte MapBattery(byte Value)
+        private static byte MapBattery(byte value)
         {
             var mapped = (byte) DsBattery.None;
 
-            switch (Value)
+            switch (value)
             {
                 case 0x10:
                 case 0x11:
@@ -115,9 +126,9 @@ namespace ScpControl
                 m_State = DsState.Reserved;
                 GetDeviceInstance(ref m_Instance);
 
-                var Transfered = 0;
+                var transfered = 0;
 
-                if (SendTransfer(0xA1, 0x01, 0x0312, m_Buffer, ref Transfered))
+                if (SendTransfer(0xA1, 0x01, 0x0312, m_Buffer, ref transfered))
                 {
                     m_Master = new[]
                     {m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10]};
@@ -135,25 +146,24 @@ namespace ScpControl
         {
             m_Model = (byte) DsModel.DS4;
 
-            if (GlobalConfiguration.Instance.Repair)
+            if (!GlobalConfiguration.Instance.Repair) return base.Start();
+
+            var transfered = 0;
+            byte[] buffer =
             {
-                var transfered = 0;
-                byte[] buffer =
-                {
-                    0x13, m_Master[5], m_Master[4], m_Master[3], m_Master[2], m_Master[1], m_Master[0],
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-                };
+                0x13, m_Master[5], m_Master[4], m_Master[3], m_Master[2], m_Master[1], m_Master[0],
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+            };
 
-                Array.Copy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
+            Array.Copy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
 
-                if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
-                {
-                    Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, Remote);
-                }
-                else
-                {
-                    Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", Local, Remote);
-                }
+            if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
+            {
+                Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, Remote);
+            }
+            else
+            {
+                Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", Local, Remote);
             }
 
             return base.Start();
@@ -185,9 +195,9 @@ namespace ScpControl
 
             if (SendTransfer(0x21, 0x09, 0x0313, buffer, ref transfered))
             {
-                for (var Index = 0; Index < m_Master.Length; Index++)
+                for (var index = 0; index < m_Master.Length; index++)
                 {
-                    m_Master[Index] = master[Index];
+                    m_Master[index] = master[index];
                 }
 
                 Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", Local, Remote);
@@ -198,56 +208,56 @@ namespace ScpControl
             return false;
         }
 
-        protected override void Parse(byte[] Report)
+        protected override void Parse(byte[] report)
         {
-            if (Report[0] != 0x01) return;
+            if (report[0] != 0x01) return;
 
             m_Packet++;
 
-            m_ReportArgs.Report[2] = m_BatteryStatus = MapBattery(Report[30]);
+            m_ReportArgs.Report[2] = m_BatteryStatus = MapBattery(report[30]);
 
             m_ReportArgs.Report[4] = (byte) (m_Packet >> 0 & 0xFF);
             m_ReportArgs.Report[5] = (byte) (m_Packet >> 8 & 0xFF);
             m_ReportArgs.Report[6] = (byte) (m_Packet >> 16 & 0xFF);
             m_ReportArgs.Report[7] = (byte) (m_Packet >> 24 & 0xFF);
 
-            var buttons = (Ds4Button) ((Report[5] << 0) | (Report[6] << 8) | (Report[7] << 16));
+            var buttons = (Ds4Button) ((report[5] << 0) | (report[6] << 8) | (report[7] << 16));
 
             //++ Convert HAT to DPAD
-            Report[5] &= 0xF0;
+            report[5] &= 0xF0;
 
             switch ((uint) buttons & 0xF)
             {
                 case 0:
-                    Report[5] |= (byte) (Ds4Button.Up);
+                    report[5] |= (byte) (Ds4Button.Up);
                     break;
                 case 1:
-                    Report[5] |= (byte) (Ds4Button.Up | Ds4Button.Right);
+                    report[5] |= (byte) (Ds4Button.Up | Ds4Button.Right);
                     break;
                 case 2:
-                    Report[5] |= (byte) (Ds4Button.Right);
+                    report[5] |= (byte) (Ds4Button.Right);
                     break;
                 case 3:
-                    Report[5] |= (byte) (Ds4Button.Right | Ds4Button.Down);
+                    report[5] |= (byte) (Ds4Button.Right | Ds4Button.Down);
                     break;
                 case 4:
-                    Report[5] |= (byte) (Ds4Button.Down);
+                    report[5] |= (byte) (Ds4Button.Down);
                     break;
                 case 5:
-                    Report[5] |= (byte) (Ds4Button.Down | Ds4Button.Left);
+                    report[5] |= (byte) (Ds4Button.Down | Ds4Button.Left);
                     break;
                 case 6:
-                    Report[5] |= (byte) (Ds4Button.Left);
+                    report[5] |= (byte) (Ds4Button.Left);
                     break;
                 case 7:
-                    Report[5] |= (byte) (Ds4Button.Left | Ds4Button.Up);
+                    report[5] |= (byte) (Ds4Button.Left | Ds4Button.Up);
                     break;
             }
             //--
 
             for (var index = 8; index < 72; index++)
             {
-                m_ReportArgs.Report[index] = Report[index - 8];
+                m_ReportArgs.Report[index] = report[index - 8];
             }
 
             OnHidReportReceived();
@@ -257,38 +267,37 @@ namespace ScpControl
         {
             lock (this)
             {
-                if ((now - m_Last).TotalMilliseconds >= 500)
+                if (!((now - m_Last).TotalMilliseconds >= 500)) return;
+
+                var transfered = 0;
+
+                m_Last = now;
+
+                if (!GlobalConfiguration.Instance.IsLightBarDisabled)
                 {
-                    var transfered = 0;
-
-                    m_Last = now;
-
-                    if (!GlobalConfiguration.Instance.IsLightBarDisabled)
+                    if (Battery != DsBattery.Charged)
                     {
-                        if (Battery != DsBattery.Charged)
-                        {
-                            m_Report[9] = m_Report[10] = 0x80;
-                        }
-                        else
-                        {
-                            m_Report[9] = m_Report[10] = 0x00;
-                        }
+                        m_Report[9] = m_Report[10] = 0x80;
                     }
-
-                    if (GlobalConfiguration.Instance.Brightness != m_Brightness)
+                    else
                     {
-                        m_Brightness = GlobalConfiguration.Instance.Brightness;
-                        PadId = PadId;
+                        m_Report[9] = m_Report[10] = 0x00;
                     }
-
-                    if (GlobalConfiguration.Instance.IsLightBarDisabled != m_DisableLightBar)
-                    {
-                        m_DisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
-                        PadId = PadId;
-                    }
-
-                    WriteIntPipe(m_Report, m_Report.Length, ref transfered);
                 }
+
+                if (GlobalConfiguration.Instance.Brightness != m_Brightness)
+                {
+                    m_Brightness = GlobalConfiguration.Instance.Brightness;
+                    PadId = PadId;
+                }
+
+                if (GlobalConfiguration.Instance.IsLightBarDisabled != m_DisableLightBar)
+                {
+                    m_DisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
+                    PadId = PadId;
+                }
+
+                WriteIntPipe(m_Report, m_Report.Length, ref transfered);
             }
         }
     }
