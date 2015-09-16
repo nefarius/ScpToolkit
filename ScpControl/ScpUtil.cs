@@ -62,23 +62,17 @@ namespace ScpControl
     public interface IBthDevice
     {
         int HCI_Disconnect(BthHandle handle);
-        int HID_Command(byte[] Handle, byte[] Channel, byte[] Data);
+        int HID_Command(byte[] handle, byte[] channel, byte[] data);
     }
 
     public class DsNull : IDsDevice
     {
-        private DsPadId m_PadId = DsPadId.None;
-
-        public DsNull(DsPadId PadId)
+        public DsNull(DsPadId padId)
         {
-            m_PadId = PadId;
+            PadId = padId;
         }
 
-        public DsPadId PadId
-        {
-            get { return m_PadId; }
-            set { m_PadId = value; }
-        }
+        public DsPadId PadId { get; set; }
 
         public DsConnection Connection
         {
@@ -148,7 +142,7 @@ namespace ScpControl
             this.Device = device;
         }
 
-        public IDsDevice Device { get; set; }
+        public IDsDevice Device { get; private set; }
 
         public bool Handled { get; set; }
     }

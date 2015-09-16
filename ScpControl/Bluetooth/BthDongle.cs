@@ -69,23 +69,23 @@ namespace ScpControl.Bluetooth
 
         #region HIDP Commands
 
-        public int HID_Command(byte[] Handle, byte[] Channel, byte[] Data)
+        public int HID_Command(byte[] handle, byte[] channel, byte[] data)
         {
             var Transfered = 0;
-            var Buffer = new byte[Data.Length + 8];
+            var Buffer = new byte[data.Length + 8];
 
-            Buffer[0] = Handle[0];
-            Buffer[1] = Handle[1];
-            Buffer[2] = (byte)((Data.Length + 4) % 256);
-            Buffer[3] = (byte)((Data.Length + 4) / 256);
-            Buffer[4] = (byte)(Data.Length % 256);
-            Buffer[5] = (byte)(Data.Length / 256);
-            Buffer[6] = Channel[0];
-            Buffer[7] = Channel[1];
+            Buffer[0] = handle[0];
+            Buffer[1] = handle[1];
+            Buffer[2] = (byte)((data.Length + 4) % 256);
+            Buffer[3] = (byte)((data.Length + 4) / 256);
+            Buffer[4] = (byte)(data.Length % 256);
+            Buffer[5] = (byte)(data.Length / 256);
+            Buffer[6] = channel[0];
+            Buffer[7] = channel[1];
 
-            for (var i = 0; i < Data.Length; i++) Buffer[i + 8] = Data[i];
+            for (var i = 0; i < data.Length; i++) Buffer[i + 8] = data[i];
 
-            WriteBulkPipe(Buffer, Data.Length + 8, ref Transfered);
+            WriteBulkPipe(Buffer, data.Length + 8, ref Transfered);
             return Transfered;
         }
 

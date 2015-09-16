@@ -364,7 +364,6 @@ namespace ScpDriver
 
                 try
                 {
-                    uint result = 0;
                     var rebootRequired = false;
 
                     if (cbService.Checked)
