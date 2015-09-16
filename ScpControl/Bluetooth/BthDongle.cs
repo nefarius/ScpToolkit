@@ -91,20 +91,8 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
-        public event EventHandler<ArrivalEventArgs> Arrival;
+        public event EventHandler<ArrivalEventArgs> DeviceArrived;
         public event EventHandler<ReportEventArgs> HidReportReceived;
-
-        private bool LogArrival(IDsDevice arrived)
-        {
-            var args = new ArrivalEventArgs(arrived);
-
-            if (Arrival != null)
-            {
-                Arrival(this, args);
-            }
-
-            return args.Handled;
-        }
 
         public override bool Open(int instance = 0)
         {
@@ -250,11 +238,23 @@ namespace ScpControl.Bluetooth
 
         #region Events
 
+        private bool OnDeviceArrival(IDsDevice arrived)
+        {
+            var args = new ArrivalEventArgs(arrived);
+
+            if (DeviceArrived != null)
+            {
+                DeviceArrived(this, args);
+            }
+
+            return args.Handled;
+        }
+
         private void OnInitialised(BthDevice connection)
         {
-            if (LogArrival(connection))
+            if (OnDeviceArrival(connection))
             {
-                connection.HidReportReceived += On_Report;
+                connection.HidReportReceived += OnHidReportReceived;
                 connection.Start();
             }
         }
@@ -264,7 +264,7 @@ namespace ScpControl.Bluetooth
             if (count > 0) _connected[new BthHandle(lsb, msb)].Completed();
         }
 
-        private void On_Report(object sender, ReportEventArgs e)
+        private void OnHidReportReceived(object sender, ReportEventArgs e)
         {
             if (HidReportReceived != null) HidReportReceived(sender, e);
         }

@@ -10,6 +10,8 @@ namespace ScpControl
     {
         private readonly UsbDevice[] _devices = new UsbDevice[4];
 
+        #region Ctors
+
         public UsbHub()
         {
             InitializeComponent();
@@ -21,6 +23,8 @@ namespace ScpControl
 
             InitializeComponent();
         }
+
+        #endregion
 
         public override Boolean Open()
         {
@@ -50,7 +54,7 @@ namespace ScpControl
                     {
                         if (LogArrival(current))
                         {
-                            current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
+                            current.HidReportReceived += new EventHandler<ReportEventArgs>(OnHidReportReceived);
 
                             _devices[index++] = current;
                         }
@@ -77,7 +81,7 @@ namespace ScpControl
                     {
                         if (LogArrival(current))
                         {
-                            current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
+                            current.HidReportReceived += new EventHandler<ReportEventArgs>(OnHidReportReceived);
 
                             _devices[index++] = current;
                         }
@@ -205,7 +209,7 @@ namespace ScpControl
                                 }
                                 else
                                 {
-                                    arrived.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
+                                    arrived.HidReportReceived += new EventHandler<ReportEventArgs>(OnHidReportReceived);
 
                                     _devices[(Byte)arrived.PadId].Close();
                                     _devices[(Byte)arrived.PadId] = arrived;
