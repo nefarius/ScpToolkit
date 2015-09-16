@@ -1,4 +1,4 @@
-﻿namespace ScpControl
+﻿namespace ScpControl.Usb
 {
     partial class UsbHub
     {

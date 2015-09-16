@@ -184,16 +184,16 @@
       <DependentUpon>ScpTimer.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.cs" />
-    <Compile Include="UsbDevice.cs">
+    <Compile Include="Usb\UsbDevice.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UsbDevice.Designer.cs">
+    <Compile Include="Usb\UsbDevice.Designer.cs">
       <DependentUpon>UsbDevice.cs</DependentUpon>
     </Compile>
-    <Compile Include="UsbDs4.cs">
+    <Compile Include="Usb\UsbDs4.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UsbDs4.Designer.cs">
+    <Compile Include="Usb\UsbDs4.Designer.cs">
       <DependentUpon>UsbDs4.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -222,16 +222,16 @@
       <DependentUpon>ScpHub.cs</DependentUpon>
     </Compile>
     <Compile Include="ScpUtil.cs" />
-    <Compile Include="UsbDs3.cs">
+    <Compile Include="Usb\UsbDs3.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UsbDs3.Designer.cs">
+    <Compile Include="Usb\UsbDs3.Designer.cs">
       <DependentUpon>UsbDs3.cs</DependentUpon>
     </Compile>
-    <Compile Include="UsbHub.cs">
+    <Compile Include="Usb\UsbHub.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UsbHub.Designer.cs">
+    <Compile Include="Usb\UsbHub.Designer.cs">
       <DependentUpon>UsbHub.cs</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ControlExtensions.cs" />
@@ -266,16 +266,16 @@
     <EmbeddedResource Include="ScpProxy.resx">
       <DependentUpon>ScpProxy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UsbDevice.resx">
+    <EmbeddedResource Include="Usb\UsbDevice.resx">
       <DependentUpon>UsbDevice.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UsbDs4.resx">
+    <EmbeddedResource Include="Usb\UsbDs4.resx">
       <DependentUpon>UsbDs4.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RootHub.resx">
       <DependentUpon>RootHub.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UsbDs3.resx">
+    <EmbeddedResource Include="Usb\UsbDs3.resx">
       <DependentUpon>UsbDs3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

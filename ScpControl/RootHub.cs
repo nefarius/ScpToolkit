@@ -13,6 +13,7 @@ using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
+using ScpControl.Usb;
 using ScpControl.Utilities;
 using ScpControl.Wcf;
 

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using ScpControl.ScpCore;
 
-namespace ScpControl
+namespace ScpControl.Usb
 {
     /// <summary>
     ///     Represents a generic USB device.

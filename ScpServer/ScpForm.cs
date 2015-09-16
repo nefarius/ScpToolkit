@@ -10,6 +10,7 @@ using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
+using ScpControl.Usb;
 using ScpControl.Utilities;
 using ScpServer.Properties;
 

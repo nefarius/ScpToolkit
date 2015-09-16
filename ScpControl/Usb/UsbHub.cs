@@ -4,7 +4,7 @@ using System.Linq;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 
-namespace ScpControl
+namespace ScpControl.Usb
 {
     /// <summary>
     ///     Represents an USB hub.
