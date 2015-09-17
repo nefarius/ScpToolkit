@@ -50,6 +50,10 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
 ## To-Do list
  * Increase supported controller count from 4 to 8
+ * Rewrite profile manager
+ * Add Turbo option
+ * Add support for fake PANHAI DS3 controllers
+ * Fix pressure sensitivity for PCSX2
 
 ## Compatible Controllers
 To be filled...
