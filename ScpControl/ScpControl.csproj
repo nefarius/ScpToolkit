@@ -148,6 +148,9 @@
     <Compile Include="ScpCore\GamePadEnums.cs" />
     <Compile Include="ScpCore\Profile.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />
+    <Compile Include="Usb\UsbDs3Afterglow.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utilities\DumpHelper.cs" />
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
