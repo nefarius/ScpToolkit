@@ -82,7 +82,11 @@ namespace ScpControl
                     #region WCF client
 
                     var address = new EndpointAddress(new Uri("net.tcp://localhost:26760/ScpRootHubService"));
-                    var binding = new NetTcpBinding();
+                    var binding = new NetTcpBinding()
+                    {
+                        TransferMode = TransferMode.Streamed,
+                        Security = new NetTcpSecurity() { Mode = SecurityMode.None }
+                    };
                     var factory = new ChannelFactory<IScpCommandService>(binding, address);
 
                     _rootHub = factory.CreateChannel(address);

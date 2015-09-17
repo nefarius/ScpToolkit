@@ -39,7 +39,7 @@ namespace ScpControl
         // USB hub
         private readonly UsbHub _usbHub = new UsbHub();
         private readonly Cache[] _mCache = { new Cache(), new Cache(), new Cache(), new Cache() };
-        
+
         private readonly byte[][] _mNative =
         {
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
@@ -59,7 +59,7 @@ namespace ScpControl
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
             new byte[2] {0, 0}
         };
-        
+
         /// <summary>
         ///     Checks if the native stream is available or disabled in configuration.
         /// </summary>
@@ -360,7 +360,11 @@ namespace ScpControl
             {
                 var baseAddress = new Uri("net.tcp://localhost:26760/ScpRootHubService");
 
-                var binding = new NetTcpBinding();
+                var binding = new NetTcpBinding()
+                {
+                    TransferMode = TransferMode.Streamed,
+                    Security = new NetTcpSecurity() { Mode = SecurityMode.None }
+                };
 
                 _rootHubServiceHost = new ServiceHost(this, baseAddress);
                 _rootHubServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
