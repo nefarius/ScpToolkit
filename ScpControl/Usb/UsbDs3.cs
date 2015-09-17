@@ -10,6 +10,9 @@ namespace ScpControl.Usb
     public partial class UsbDs3 : UsbDevice
     {
         public static string USB_CLASS_GUID = "{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}";
+
+        #region HID Reports
+
         private byte[] m_Enable = { 0x42, 0x0C, 0x00, 0x00 };
         private byte[] m_Leds = { 0x02, 0x04, 0x08, 0x10 };
 
@@ -27,6 +30,10 @@ namespace ScpControl.Usb
             0x00, 0x00, 0x00
         };
 
+        #endregion
+
+        #region Ctors
+
         public UsbDs3()
             : base(USB_CLASS_GUID)
         {
@@ -40,6 +47,8 @@ namespace ScpControl.Usb
 
             InitializeComponent();
         }
+
+        #endregion
 
         public override DsPadId PadId
         {
@@ -74,7 +83,8 @@ namespace ScpControl.Usb
 
                 m_Mac = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
                     m_Local[3], m_Local[4], m_Local[5]);
-                Log.DebugFormat("MAC = {0}", m_Mac);
+
+                Log.InfoFormat("Successfully opened device with MAC address {0}", m_Mac);
             }
 
             return State == DsState.Reserved;
