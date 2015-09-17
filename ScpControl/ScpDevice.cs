@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using log4net;
 using ScpControl.Driver;
 
@@ -42,6 +44,26 @@ namespace ScpControl
 
         public string Path { get; protected set; }
 
+        public short VendorId { get; private set; }
+
+        public short ProductId { get; private set; }
+
+        private void GetHardwareId(string devicePath)
+        {
+            // regex to extract vendor ID and product ID from hardware ID string
+            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
+            // matched groups
+            var matches = regex.Match(devicePath).Groups;
+
+            // very basic check
+            if (matches.Count < 3)
+                return;
+
+            // get values
+            VendorId = short.Parse(matches[1].Value, NumberStyles.HexNumber);
+            ProductId = short.Parse(matches[2].Value, NumberStyles.HexNumber);
+        }
+
         public virtual bool Open(int instance = 0)
         {
             var devicePath = string.Empty;
@@ -56,8 +78,10 @@ namespace ScpControl
 
         public virtual bool Open(string devicePath)
         {
-            Path = devicePath.ToUpper();
+            GetHardwareId(devicePath);
 
+            Path = devicePath.ToUpper();
+            
             if (GetDeviceHandle(Path))
             {
                 if (Usb.Initialize(FileHandle, ref _winUsbHandle))

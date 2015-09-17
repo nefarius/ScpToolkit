@@ -13,51 +13,35 @@ namespace ScpControl.Usb
     {
         private readonly UsbDevice[] _devices = new UsbDevice[4];
 
-        #region Ctors
-
-        public UsbHub()
+        public override bool Open()
         {
-            InitializeComponent();
-        }
-
-        public UsbHub(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
-        }
-
-        #endregion
-
-        public override Boolean Open()
-        {
-            for (Byte pad = 0; pad < _devices.Length; pad++)
+            for (byte pad = 0; pad < _devices.Length; pad++)
             {
-                _devices[pad] = new UsbDevice { PadId = (DsPadId)pad };
+                _devices[pad] = new UsbDevice {PadId = (DsPadId) pad};
             }
 
             return base.Open();
         }
 
-        public override Boolean Start()
+        public override bool Start()
         {
             m_Started = true;
 
-            Byte index = 0;
+            byte index = 0;
 
             // enumerate DS4 devices
-            for (Byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
+            for (byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
             {
                 try
                 {
                     UsbDevice current = new UsbDs4();
-                    current.PadId = (DsPadId)index;
+                    current.PadId = (DsPadId) index;
 
                     if (current.Open(instance))
                     {
                         if (LogArrival(current))
                         {
-                            current.HidReportReceived += new EventHandler<ReportEventArgs>(OnHidReportReceived);
+                            current.HidReportReceived += OnHidReportReceived;
 
                             _devices[index++] = current;
                         }
@@ -73,18 +57,40 @@ namespace ScpControl.Usb
             }
 
             // enumerate DS3 devices
-            for (Byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
+            for (byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
             {
                 try
                 {
                     UsbDevice current = new UsbDs3();
-                    current.PadId = (DsPadId)index;
+                    current.PadId = (DsPadId) index;
 
                     if (current.Open(instance))
                     {
+                        #region Afterglow AP.2 Wireless Controller for PS3 workaround
+
+                        // if Afterglow AP.2 Wireless Controller for PS3 is detected...
+                        if (current.VendorId == 0x0E6F && current.ProductId == 0x0214)
+                        {
+                            Log.InfoFormat(
+                                "Afterglow AP.2 Wireless Controller for PS3 detected [VID: {0:X}] [PID: {1:X}], workaround applied",
+                                current.VendorId, current.ProductId);
+                            // ...close device...
+                            current.Close();
+                            // ...and create customized object
+                            current = new UsbDs3Afterglow();
+
+                            // open and continue plug-in procedure on success
+                            if (!current.Open(instance))
+                                continue;
+                        }
+
+                        #endregion
+
+                        // notify bus of new device
                         if (LogArrival(current))
                         {
-                            current.HidReportReceived += new EventHandler<ReportEventArgs>(OnHidReportReceived);
+                            // listen for HID reports
+                            current.HidReportReceived += OnHidReportReceived;
 
                             _devices[index++] = current;
                         }
@@ -117,7 +123,7 @@ namespace ScpControl.Usb
             return base.Start();
         }
 
-        public override Boolean Stop()
+        public override bool Stop()
         {
             m_Started = false;
 
@@ -136,7 +142,7 @@ namespace ScpControl.Usb
             return base.Stop();
         }
 
-        public override Boolean Close()
+        public override bool Close()
         {
             m_Started = false;
 
@@ -155,7 +161,7 @@ namespace ScpControl.Usb
             return base.Close();
         }
 
-        public override Boolean Suspend()
+        public override bool Suspend()
         {
             Stop();
             Close();
@@ -163,7 +169,7 @@ namespace ScpControl.Usb
             return base.Suspend();
         }
 
-        public override Boolean Resume()
+        public override bool Resume()
         {
             Open();
             Start();
@@ -171,77 +177,110 @@ namespace ScpControl.Usb
             return base.Resume();
         }
 
-        public override DsPadId Notify(ScpDevice.Notified notification, String Class, String Path)
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
         {
             Log.InfoFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, Path);
 
             switch (notification)
             {
                 case ScpDevice.Notified.Arrival:
+                {
+                    var arrived = new UsbDevice();
+
+                    if (string.Equals(Class, UsbDs3.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        UsbDevice arrived = new UsbDevice();
-
-                        if (string.Equals(Class, UsbDs3.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            arrived = new UsbDs3();
-                            Log.Debug("-- DS3 Arrival Event");
-                        }
-
-                        if (string.Equals(Class, UsbDs4.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
-                        {
-                            arrived = new UsbDs4();
-                            Log.Debug("-- DS4 Arrival Event");
-                        }
-
-                        Log.InfoFormat("Arrival event for GUID {0} received", Class);
-
-                        if (arrived.Open(Path))
-                        {
-                            Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
-
-                            if (LogArrival(arrived))
-                            {
-                                if (_devices[(Byte)arrived.PadId].IsShutdown)
-                                {
-                                    _devices[(Byte)arrived.PadId].IsShutdown = false;
-
-                                    _devices[(Byte)arrived.PadId].Close();
-                                    _devices[(Byte)arrived.PadId] = arrived;
-
-                                    return arrived.PadId;
-                                }
-                                else
-                                {
-                                    arrived.HidReportReceived += new EventHandler<ReportEventArgs>(OnHidReportReceived);
-
-                                    _devices[(Byte)arrived.PadId].Close();
-                                    _devices[(Byte)arrived.PadId] = arrived;
-
-                                    if (m_Started) arrived.Start();
-                                    return arrived.PadId;
-                                }
-                            }
-                        }
-
-                        arrived.Close();
+                        arrived = new UsbDs3();
+                        Log.Debug("-- DS3 Arrival Event");
                     }
+
+                    if (string.Equals(Class, UsbDs4.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        arrived = new UsbDs4();
+                        Log.Debug("-- DS4 Arrival Event");
+                    }
+
+                    Log.InfoFormat("Arrival event for GUID {0} received", Class);
+
+                    if (arrived.Open(Path))
+                    {
+                        Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
+
+                        #region Afterglow AP.2 Wireless Controller for PS3 workaround
+
+                        // if Afterglow AP.2 Wireless Controller for PS3 is detected...
+                        if (arrived.VendorId == 0x0E6F && arrived.ProductId == 0x0214)
+                        {
+                            Log.InfoFormat(
+                                "Afterglow AP.2 Wireless Controller for PS3 detected [VID: {0:X}] [PID: {1:X}], workaround applied",
+                                arrived.VendorId, arrived.ProductId);
+                            // ...close device...
+                            arrived.Close();
+                            // ...and create customized object
+                            arrived = new UsbDs3Afterglow();
+
+                            // open and continue plug-in procedure on success
+                            if (!arrived.Open(Path))
+                                break;
+                        }
+
+                        #endregion
+
+                        if (LogArrival(arrived))
+                        {
+                            if (_devices[(byte) arrived.PadId].IsShutdown)
+                            {
+                                _devices[(byte) arrived.PadId].IsShutdown = false;
+
+                                _devices[(byte) arrived.PadId].Close();
+                                _devices[(byte) arrived.PadId] = arrived;
+
+                                return arrived.PadId;
+                            }
+                            arrived.HidReportReceived += OnHidReportReceived;
+
+                            _devices[(byte) arrived.PadId].Close();
+                            _devices[(byte) arrived.PadId] = arrived;
+
+                            if (m_Started) arrived.Start();
+                            return arrived.PadId;
+                        }
+                    }
+
+                    arrived.Close();
+                }
                     break;
 
                 case ScpDevice.Notified.Removal:
+                {
+                    foreach (var t in _devices.Where(t => t.State == DsState.Connected && Path == t.Path))
                     {
-                        foreach (UsbDevice t in _devices.Where(t => t.State == DsState.Connected && Path == t.Path))
-                        {
-                            Log.InfoFormat("-- Device Removal [{0}]", t.Local);
+                        Log.InfoFormat("-- Device Removal [{0}]", t.Local);
 
-                            AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
+                        AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
 
-                            t.Stop();
-                        }
+                        t.Stop();
                     }
+                }
                     break;
             }
 
             return DsPadId.None;
         }
+
+        #region Ctors
+
+        public UsbHub()
+        {
+            InitializeComponent();
+        }
+
+        public UsbHub(IContainer container)
+        {
+            container.Add(this);
+
+            InitializeComponent();
+        }
+
+        #endregion
     }
 }
