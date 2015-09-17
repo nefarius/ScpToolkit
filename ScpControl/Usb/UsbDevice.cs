@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using ScpControl.ScpCore;
 
 namespace ScpControl.Usb
@@ -24,6 +26,7 @@ namespace ScpControl.Usb
         protected bool m_Publish = false;
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
         protected DsState m_State = DsState.Disconnected;
+        private CancellationTokenSource _hidCancellationTokenSource = new CancellationTokenSource();
 
         #region Ctors
 
@@ -114,7 +117,8 @@ namespace ScpControl.Usb
             m_State = DsState.Connected;
             m_Packet = 0;
 
-            HID_Worker.RunWorkerAsync();
+            Task.Factory.StartNew(HidWorker, _hidCancellationTokenSource.Token);
+
             tmUpdate.Enabled = true;
 
             Rumble(0, 0);
@@ -170,6 +174,9 @@ namespace ScpControl.Usb
                 tmUpdate.Enabled = false;
                 m_State = DsState.Reserved;
 
+                _hidCancellationTokenSource.Cancel();
+                _hidCancellationTokenSource = new CancellationTokenSource();
+
                 OnHidReportReceived();
             }
 
@@ -216,14 +223,19 @@ namespace ScpControl.Usb
             throw new Exception();
         }
 
-        private void HID_Worker_Thread(object sender, DoWorkEventArgs e)
+        /// <summary>
+        ///     Worker thread polling for incoming USB interrupts.
+        /// </summary>
+        /// <param name="o">Task cancellation token.</param>
+        private void HidWorker(object o)
         {
+            var token = (CancellationToken) o;
             var transfered = 0;
             var buffer = new byte[64];
 
             Log.Debug("-- USB Device : HID_Worker_Thread Starting");
 
-            while (IsActive)
+            while (!token.IsCancellationRequested)
             {
                 try
                 {

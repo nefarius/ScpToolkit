@@ -29,12 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.HID_Worker = new System.ComponentModel.BackgroundWorker();
             this.tmUpdate = new ScpControl.ScpTimer(this.components);
-            // 
-            // HID_Worker
-            // 
-            this.HID_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.HID_Worker_Thread);
             // 
             // tmUpdate
             // 
@@ -47,7 +42,6 @@
 
         #endregion
 
-        protected System.ComponentModel.BackgroundWorker HID_Worker;
         private ScpTimer tmUpdate;
 
     }
