@@ -18,7 +18,7 @@ namespace ScpControl.Usb
 
         #region HID Report
 
-        private byte[] m_Report =
+        private readonly byte[] _hidReport =
         {
             0x05,
             0xFF, 0x00, 0x00, 0x00, 0x00,
@@ -53,41 +53,42 @@ namespace ScpControl.Usb
             get { return (DsPadId) m_ControllerId; }
             set
             {
+                if (GlobalConfiguration.Instance.IsLightBarDisabled)
+                {
+                    _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
+                    return;
+                }
+
                 m_ControllerId = (byte) value;
                 m_ReportArgs.Pad = PadId;
 
                 switch (value)
                 {
                     case DsPadId.One: // Blue
-                        m_Report[R] = 0x00;
-                        m_Report[G] = 0x00;
-                        m_Report[B] = _brightness;
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = 0x00;
+                        _hidReport[B] = _brightness;
                         break;
                     case DsPadId.Two: // Green
-                        m_Report[R] = 0x00;
-                        m_Report[G] = _brightness;
-                        m_Report[B] = 0x00;
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = _brightness;
+                        _hidReport[B] = 0x00;
                         break;
                     case DsPadId.Three: // Yellow
-                        m_Report[R] = _brightness;
-                        m_Report[G] = _brightness;
-                        m_Report[B] = 0x00;
+                        _hidReport[R] = _brightness;
+                        _hidReport[G] = _brightness;
+                        _hidReport[B] = 0x00;
                         break;
                     case DsPadId.Four: // Cyan
-                        m_Report[R] = 0x00;
-                        m_Report[G] = _brightness;
-                        m_Report[B] = _brightness;
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = _brightness;
+                        _hidReport[B] = _brightness;
                         break;
                     case DsPadId.None: // Red
-                        m_Report[R] = _brightness;
-                        m_Report[G] = 0x00;
-                        m_Report[B] = 0x00;
+                        _hidReport[R] = _brightness;
+                        _hidReport[G] = 0x00;
+                        _hidReport[B] = 0x00;
                         break;
-                }
-
-                if (GlobalConfiguration.Instance.IsLightBarDisabled)
-                {
-                    m_Report[R] = m_Report[G] = m_Report[B] = m_Report[12] = m_Report[13] = 0x00;
                 }
             }
         }
@@ -182,10 +183,10 @@ namespace ScpControl.Usb
             {
                 var transfered = 0;
 
-                m_Report[4] = small;
-                m_Report[5] = large;
+                _hidReport[4] = small;
+                _hidReport[5] = large;
 
-                return WriteIntPipe(m_Report, m_Report.Length, ref transfered);
+                return WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);
             }
         }
 
@@ -288,11 +289,11 @@ namespace ScpControl.Usb
                 {
                     if (Battery != DsBattery.Charged)
                     {
-                        m_Report[9] = m_Report[10] = 0x80;
+                        _hidReport[9] = _hidReport[10] = 0x80;
                     }
                     else
                     {
-                        m_Report[9] = m_Report[10] = 0x00;
+                        _hidReport[9] = _hidReport[10] = 0x00;
                     }
                 }
 
@@ -308,7 +309,7 @@ namespace ScpControl.Usb
                     PadId = PadId;
                 }
 
-                WriteIntPipe(m_Report, m_Report.Length, ref transfered);
+                WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);
             }
         }
     }
