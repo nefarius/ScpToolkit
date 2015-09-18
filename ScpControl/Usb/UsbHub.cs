@@ -17,7 +17,7 @@ namespace ScpControl.Usb
         {
             for (byte pad = 0; pad < _devices.Length; pad++)
             {
-                _devices[pad] = new UsbDevice {PadId = (DsPadId) pad};
+                _devices[pad] = new UsbDevice { PadId = (DsPadId)pad };
             }
 
             return base.Open();
@@ -35,7 +35,7 @@ namespace ScpControl.Usb
                 try
                 {
                     UsbDevice current = new UsbDs4();
-                    current.PadId = (DsPadId) index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
@@ -62,29 +62,11 @@ namespace ScpControl.Usb
                 try
                 {
                     UsbDevice current = new UsbDs3();
-                    current.PadId = (DsPadId) index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
-                        #region Afterglow AP.2 Wireless Controller for PS3 workaround
-
-                        // if Afterglow AP.2 Wireless Controller for PS3 is detected...
-                        if (current.VendorId == 0x0E6F && current.ProductId == 0x0214)
-                        {
-                            Log.InfoFormat(
-                                "Afterglow AP.2 Wireless Controller for PS3 detected [VID: {0:X}] [PID: {1:X}], workaround applied",
-                                current.VendorId, current.ProductId);
-                            // ...close device...
-                            current.Close();
-                            // ...and create customized object
-                            current = new UsbDs3Afterglow();
-
-                            // open and continue plug-in procedure on success
-                            if (!current.Open(instance))
-                                continue;
-                        }
-
-                        #endregion
+                        if (!Apply3RdPartyWorkaroundsForDs3(ref current, instance)) continue;
 
                         // notify bus of new device
                         if (LogArrival(current))
@@ -121,6 +103,64 @@ namespace ScpControl.Usb
             }
 
             return base.Start();
+        }
+
+        /// <summary>
+        ///     Checks if the given USB device is a 3rd party device and applies common workarounds.
+        /// </summary>
+        /// <param name="current">The device to check.</param>
+        /// <param name="instance">The device instance.</param>
+        /// <param name="path">The device path.</param>
+        /// <returns></returns>
+        private static bool Apply3RdPartyWorkaroundsForDs3(ref UsbDevice current, byte instance = 0x00, string path = default(string))
+        {
+            var padId = current.PadId;
+
+            #region Afterglow AP.2 Wireless Controller for PS3 workaround
+
+            // if Afterglow AP.2 Wireless Controller for PS3 is detected...
+            if (current.VendorId == 0x0E6F && current.ProductId == 0x0214)
+            {
+                Log.InfoFormat(
+                    "Afterglow AP.2 Wireless Controller for PS3 detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
+                    current.VendorId, current.ProductId);
+                // ...close device...
+                current.Close();
+                // ...and create customized object
+                current = new UsbDs3Afterglow()
+                {
+                    PadId = padId
+                };
+
+                // open and continue plug-in procedure on success
+                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
+            }
+
+            #endregion
+
+            #region Quad Stick workaround
+
+            // if Quad Stick is detected...
+            if (current.VendorId == 0x16D0 && current.ProductId == 0x092B)
+            {
+                Log.InfoFormat(
+                    "Quad Stick detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
+                    current.VendorId, current.ProductId);
+                // ...close device...
+                current.Close();
+                // ...and create customized object
+                current = new UsbDs3QuadStick()
+                {
+                    PadId = padId
+                };
+
+                // open and continue plug-in procedure on success
+                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
+            }
+
+            #endregion
+
+            return true;
         }
 
         public override bool Stop()
@@ -184,83 +224,65 @@ namespace ScpControl.Usb
             switch (notification)
             {
                 case ScpDevice.Notified.Arrival:
-                {
-                    var arrived = new UsbDevice();
-
-                    if (string.Equals(Class, UsbDs3.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        arrived = new UsbDs3();
-                        Log.Debug("-- DS3 Arrival Event");
-                    }
+                        var arrived = new UsbDevice();
 
-                    if (string.Equals(Class, UsbDs4.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        arrived = new UsbDs4();
-                        Log.Debug("-- DS4 Arrival Event");
-                    }
-
-                    Log.InfoFormat("Arrival event for GUID {0} received", Class);
-
-                    if (arrived.Open(Path))
-                    {
-                        Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
-
-                        #region Afterglow AP.2 Wireless Controller for PS3 workaround
-
-                        // if Afterglow AP.2 Wireless Controller for PS3 is detected...
-                        if (arrived.VendorId == 0x0E6F && arrived.ProductId == 0x0214)
+                        if (string.Equals(Class, UsbDs3.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            Log.InfoFormat(
-                                "Afterglow AP.2 Wireless Controller for PS3 detected [VID: {0:X}] [PID: {1:X}], workaround applied",
-                                arrived.VendorId, arrived.ProductId);
-                            // ...close device...
-                            arrived.Close();
-                            // ...and create customized object
-                            arrived = new UsbDs3Afterglow();
-
-                            // open and continue plug-in procedure on success
-                            if (!arrived.Open(Path))
-                                break;
+                            arrived = new UsbDs3();
+                            Log.Debug("-- DS3 Arrival Event");
                         }
 
-                        #endregion
-
-                        if (LogArrival(arrived))
+                        if (string.Equals(Class, UsbDs4.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            if (_devices[(byte) arrived.PadId].IsShutdown)
+                            arrived = new UsbDs4();
+                            Log.Debug("-- DS4 Arrival Event");
+                        }
+
+                        Log.InfoFormat("Arrival event for GUID {0} received", Class);
+
+                        if (arrived.Open(Path))
+                        {
+                            Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
+
+                            if (!Apply3RdPartyWorkaroundsForDs3(ref arrived, path: Path)) break;
+
+                            if (LogArrival(arrived))
                             {
-                                _devices[(byte) arrived.PadId].IsShutdown = false;
+                                if (_devices[(byte)arrived.PadId].IsShutdown)
+                                {
+                                    _devices[(byte)arrived.PadId].IsShutdown = false;
 
-                                _devices[(byte) arrived.PadId].Close();
-                                _devices[(byte) arrived.PadId] = arrived;
+                                    _devices[(byte)arrived.PadId].Close();
+                                    _devices[(byte)arrived.PadId] = arrived;
 
+                                    return arrived.PadId;
+                                }
+                                arrived.HidReportReceived += OnHidReportReceived;
+
+                                _devices[(byte)arrived.PadId].Close();
+                                _devices[(byte)arrived.PadId] = arrived;
+
+                                if (m_Started) arrived.Start();
                                 return arrived.PadId;
                             }
-                            arrived.HidReportReceived += OnHidReportReceived;
-
-                            _devices[(byte) arrived.PadId].Close();
-                            _devices[(byte) arrived.PadId] = arrived;
-
-                            if (m_Started) arrived.Start();
-                            return arrived.PadId;
                         }
-                    }
 
-                    arrived.Close();
-                }
+                        arrived.Close();
+                    }
                     break;
 
                 case ScpDevice.Notified.Removal:
-                {
-                    foreach (var t in _devices.Where(t => t.State == DsState.Connected && Path == t.Path))
                     {
-                        Log.InfoFormat("-- Device Removal [{0}]", t.Local);
+                        foreach (var t in _devices.Where(t => t.State == DsState.Connected && Path == t.Path))
+                        {
+                            Log.InfoFormat("-- Device Removal [{0}]", t.Local);
 
-                        AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
+                            AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
 
-                        t.Stop();
+                            t.Stop();
+                        }
                     }
-                }
                     break;
             }
 

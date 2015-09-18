@@ -151,6 +151,9 @@
     <Compile Include="Usb\UsbDs3Afterglow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Usb\UsbDs3QuadStick.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utilities\DumpHelper.cs" />
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
