@@ -42,7 +42,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 7. Copy the contents of the `bin` directory to the location you created.
 8. Run `ScpDriver.exe`. You may be propted to permit execution as administrator. Please accept or the installation will fail.
 9. The next step depends on your operating system:
- - XP/Vista: check the Force Install option.
+ - Vista: check the Force Install option.
  - Win 7/8/8.1: leave it unchecked.
 10. Click Install.
 
