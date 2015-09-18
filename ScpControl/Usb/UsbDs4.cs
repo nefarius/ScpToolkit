@@ -13,8 +13,8 @@ namespace ScpControl.Usb
         private const int G = 7; // Led Offsets
         private const int B = 8; // Led Offsets
         public static string USB_CLASS_GUID = "{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}";
-        private byte m_Brightness = GlobalConfiguration.Instance.Brightness;
-        private bool m_DisableLightBar;
+        private byte _brightness = GlobalConfiguration.Instance.Brightness;
+        private bool _isLightBarDisabled;
 
         #region HID Report
 
@@ -61,25 +61,25 @@ namespace ScpControl.Usb
                     case DsPadId.One: // Blue
                         m_Report[R] = 0x00;
                         m_Report[G] = 0x00;
-                        m_Report[B] = m_Brightness;
+                        m_Report[B] = _brightness;
                         break;
                     case DsPadId.Two: // Green
                         m_Report[R] = 0x00;
-                        m_Report[G] = m_Brightness;
+                        m_Report[G] = _brightness;
                         m_Report[B] = 0x00;
                         break;
                     case DsPadId.Three: // Yellow
-                        m_Report[R] = m_Brightness;
-                        m_Report[G] = m_Brightness;
+                        m_Report[R] = _brightness;
+                        m_Report[G] = _brightness;
                         m_Report[B] = 0x00;
                         break;
                     case DsPadId.Four: // Cyan
                         m_Report[R] = 0x00;
-                        m_Report[G] = m_Brightness;
-                        m_Report[B] = m_Brightness;
+                        m_Report[G] = _brightness;
+                        m_Report[B] = _brightness;
                         break;
                     case DsPadId.None: // Red
-                        m_Report[R] = m_Brightness;
+                        m_Report[R] = _brightness;
                         m_Report[G] = 0x00;
                         m_Report[B] = 0x00;
                         break;
@@ -146,6 +146,7 @@ namespace ScpControl.Usb
         {
             m_Model = (byte) DsModel.DS4;
 
+            // skip repairing if disabled in global configuration
             if (!GlobalConfiguration.Instance.Repair) return base.Start();
 
             var transfered = 0;
@@ -169,6 +170,12 @@ namespace ScpControl.Usb
             return base.Start();
         }
 
+        /// <summary>
+        ///     Send Rumble request to controller.
+        /// </summary>
+        /// <param name="large">Larg motor.</param>
+        /// <param name="small">Small motor.</param>
+        /// <returns>Always true.</returns>
         public override bool Rumble(byte large, byte small)
         {
             lock (this)
@@ -208,6 +215,10 @@ namespace ScpControl.Usb
             return false;
         }
 
+        /// <summary>
+        ///     Interprets a HID report sent by a DualShock 4 device.
+        /// </summary>
+        /// <param name="report">The HID report as byte array.</param>
         protected override void Parse(byte[] report)
         {
             if (report[0] != 0x01) return;
@@ -285,15 +296,15 @@ namespace ScpControl.Usb
                     }
                 }
 
-                if (GlobalConfiguration.Instance.Brightness != m_Brightness)
+                if (GlobalConfiguration.Instance.Brightness != _brightness)
                 {
-                    m_Brightness = GlobalConfiguration.Instance.Brightness;
+                    _brightness = GlobalConfiguration.Instance.Brightness;
                     PadId = PadId;
                 }
 
-                if (GlobalConfiguration.Instance.IsLightBarDisabled != m_DisableLightBar)
+                if (GlobalConfiguration.Instance.IsLightBarDisabled != _isLightBarDisabled)
                 {
-                    m_DisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
+                    _isLightBarDisabled = GlobalConfiguration.Instance.IsLightBarDisabled;
                     PadId = PadId;
                 }
 

@@ -11,9 +11,9 @@ namespace ScpControl.Bluetooth
     /// </summary>
     public partial class BthDs3 : BthDevice
     {
-        private byte[] m_Enable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
-
         #region HID Reports
+
+        private readonly byte[] _hidCommandEnable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
 
         private readonly byte[][] _hidInitReport =
         {
@@ -47,7 +47,7 @@ namespace ScpControl.Bluetooth
             }
         };
 
-        private readonly byte[] _leds = { 0x02, 0x04, 0x08, 0x10 };
+        private readonly byte[] _ledOffsets = { 0x02, 0x04, 0x08, 0x10 };
 
         private readonly byte[] _hidReport =
         {
@@ -95,7 +95,7 @@ namespace ScpControl.Bluetooth
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                _hidReport[11] = _leds[m_ControllerId];
+                _hidReport[11] = _ledOffsets[m_ControllerId];
             }
         }
 
@@ -106,17 +106,19 @@ namespace ScpControl.Bluetooth
 
             var bdc = IniConfig.Instance.BthDs3;
 
+            // TODO: validate the effect on different models
             if (bdc.SupportedMacs.Any(m => Local.StartsWith(m))) // Fix up for Fake DS3
             {
                 Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
 
-                m_Enable[0] = 0xA3;
+                _hidCommandEnable[0] = 0xA3;
 
                 _hidReport[0] = 0xA2;
                 _hidReport[3] = 0x00;
                 _hidReport[5] = 0x00;
             }
 
+            // TODO: validate the effect on different models
             if (bdc.SupportedNames.Any(n => RemoteName.EndsWith(n))) // Fix up for Fake DS3
             {
                 Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
@@ -128,7 +130,7 @@ namespace ScpControl.Bluetooth
             m_Queued = 1;
             m_Blocked = true;
             m_Last = DateTime.Now;
-            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Enable);
+            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidCommandEnable);
 
             return base.Start();
         }
@@ -281,11 +283,11 @@ namespace ScpControl.Bluetooth
 
                     if (Battery < DsBattery.Medium)
                     {
-                        _hidReport[11] ^= _leds[m_ControllerId];
+                        _hidReport[11] ^= _ledOffsets[m_ControllerId];
                     }
                     else
                     {
-                        _hidReport[11] |= _leds[m_ControllerId];
+                        _hidReport[11] |= _ledOffsets[m_ControllerId];
                     }
                 }
 

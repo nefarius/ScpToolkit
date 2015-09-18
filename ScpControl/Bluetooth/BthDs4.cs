@@ -5,6 +5,9 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {
+    /// <summary>
+    ///     Supported HID input update rates.
+    /// </summary>
     public enum Ds4UpdateRate : byte
     {
         Fastest = 0x80, // 1000 Hz

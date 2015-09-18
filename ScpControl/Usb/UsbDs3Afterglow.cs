@@ -87,5 +87,11 @@
 
             b[0] = 0x01;
         }
+
+        public override bool Pair(byte[] master)
+        {
+            // controller uses it's own wireless protocol, pairing is not needed
+            return true;
+        }
     }
 }

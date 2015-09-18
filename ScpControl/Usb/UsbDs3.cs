@@ -13,10 +13,10 @@ namespace ScpControl.Usb
 
         #region HID Reports
 
-        private byte[] m_Enable = { 0x42, 0x0C, 0x00, 0x00 };
-        private byte[] m_Leds = { 0x02, 0x04, 0x08, 0x10 };
+        private readonly byte[] _hidCommandEnable = { 0x42, 0x0C, 0x00, 0x00 };
+        private readonly byte[] _ledOffsets = { 0x02, 0x04, 0x08, 0x10 };
 
-        private byte[] m_Report =
+        private readonly byte[] _hidReport =
         {
             0x00, 0xFF, 0x00, 0xFF, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00,
@@ -58,7 +58,7 @@ namespace ScpControl.Usb
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                m_Report[9] = m_Leds[m_ControllerId];
+                _hidReport[9] = _ledOffsets[m_ControllerId];
             }
         }
 
@@ -98,7 +98,7 @@ namespace ScpControl.Usb
             {
                 var transfered = 0;
 
-                if (SendTransfer(0x21, 0x09, 0x03F4, m_Enable, ref transfered))
+                if (SendTransfer(0x21, 0x09, 0x03F4, _hidCommandEnable, ref transfered))
                 {
                     base.Start();
                 }
@@ -107,6 +107,12 @@ namespace ScpControl.Usb
             return State == DsState.Connected;
         }
 
+        /// <summary>
+        ///     Send Rumble request to controller.
+        /// </summary>
+        /// <param name="large">Larg motor.</param>
+        /// <param name="small">Small motor.</param>
+        /// <returns>Always true.</returns>
         public override bool Rumble(byte large, byte small)
         {
             lock (this)
@@ -115,18 +121,18 @@ namespace ScpControl.Usb
 
                 if (GlobalConfiguration.Instance.DisableRumble)
                 {
-                    m_Report[2] = 0;
-                    m_Report[4] = 0;
+                    _hidReport[2] = 0;
+                    _hidReport[4] = 0;
                 }
                 else
                 {
-                    m_Report[2] = (byte)(small > 0 ? 0x01 : 0x00);
-                    m_Report[4] = large;
+                    _hidReport[2] = (byte)(small > 0 ? 0x01 : 0x00);
+                    _hidReport[4] = large;
                 }
 
-                m_Report[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : m_Leds[m_ControllerId]);
+                _hidReport[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : _ledOffsets[m_ControllerId]);
 
-                return SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
+                return SendTransfer(0x21, 0x09, 0x0201, _hidReport, ref transfered);
             }
         }
 
@@ -220,16 +226,16 @@ namespace ScpControl.Usb
 
                     if (Battery == DsBattery.Charging)
                     {
-                        m_Report[9] ^= m_Leds[m_ControllerId];
+                        _hidReport[9] ^= _ledOffsets[m_ControllerId];
                     }
                     else
                     {
-                        m_Report[9] |= m_Leds[m_ControllerId];
+                        _hidReport[9] |= _ledOffsets[m_ControllerId];
                     }
 
-                    if (GlobalConfiguration.Instance.DisableLED) m_Report[9] = 0;
+                    if (GlobalConfiguration.Instance.DisableLED) _hidReport[9] = 0;
 
-                    SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
+                    SendTransfer(0x21, 0x09, 0x0201, _hidReport, ref transfered);
                 }
             }
         }
