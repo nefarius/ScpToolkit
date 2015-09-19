@@ -54,6 +54,8 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * Add Turbo option
  * Add support for fake PANHAI DS3 controllers
  * Fix pressure sensitivity for PCSX2
+ * Implement gyroscope and accelerometer readout for DS3 and DS4
+ * Implement touchpad readout for DS4
 
 ## Compatible Controllers
 To be filled...
