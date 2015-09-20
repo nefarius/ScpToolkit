@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
         Title="ScpToolkit Driver Installer" Height="560" Width="1020" WindowStartupLocation="CenterScreen"
-        Icon="Scp.ico">
+        Icon="Scp.ico" Initialized="Window_Initialized" Loaded="Window_Loaded">
     <Grid Background="#FF1B1B1B">
         <StackPanel Margin="10">
+            <!-- Top control bar -->
             <Grid x:Name="InstallGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -24,6 +25,7 @@
                             <CheckBox IsChecked="{Binding Path=InstallBluetoothDriver}">Install Bluetooth driver</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallDualShock3Driver}">Install DualShock 3 driver</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallDualShock4Driver}">Install DualShock 4 driver</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=ForceDriverInstallation}">Force Driver Installation</CheckBox>
                         </StackPanel>
 
                         <!-- Runtime packages -->
@@ -31,7 +33,7 @@
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2010Redist}">Download &amp; Install Microsoft Visual C++ 2010 Redistributable Package</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2013Redist}">Download &amp; Install Visual C++ Redistributable Packages für Visual Studio 2013</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallDirectXRuntime}">Download &amp; Install DirectX End-User Runtime</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}" IsEnabled="{Binding Path=IsXbox360DriverPresent}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
                         </StackPanel>
                     </DockPanel>
                 </GroupBox>
@@ -43,6 +45,10 @@
                     <Button Margin="20,5,20,20" Command="{Binding ExitClickCommand}">Exit</Button>
                 </StackPanel>
             </Grid>
+            
+            <!-- Progress bar -->
+            <ProgressBar x:Name="MainProgressBar" Margin="0,10" Height="20"/>
+            
         </StackPanel>
     </Grid>
 </Window>

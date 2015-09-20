@@ -6,7 +6,7 @@ using ScpControl.Utilities;
 
 namespace ScpDriverInstaller.Utilities
 {
-    public static class RedistPackageInstaller
+    public class RedistPackageInstaller
     {
         #region Microsoft Visual C++ 2010 Redistributable Package
 
@@ -42,31 +42,77 @@ namespace ScpDriverInstaller.Utilities
 
         #region Xbox 360 Controller Driver for Windows
 
-        private static FileDownloader _xboxDrvWin7X64Downloader =
+        private static readonly FileDownloader XboxDrvWin7X64Downloader =
             new FileDownloader(
                 "http://download.microsoft.com/download/6/9/4/69446ACF-E625-4CCF-8F56-58B589934CD3/Xbox360_64Eng.exe");
 
-        private static FileDownloader _xboxDrvWin7X86Downloader =
+        private static readonly FileDownloader XboxDrvWin7X86Downloader =
             new FileDownloader(
                 "http://download.microsoft.com/download/6/9/4/69446ACF-E625-4CCF-8F56-58B589934CD3/Xbox360_32Eng.exe");
 
-        private static FileDownloader _xboxDrvVistaX64Downloader =
+        private static readonly FileDownloader XboxDrvVistaX64Downloader =
             new FileDownloader(
                 "http://download.microsoft.com/download/6/9/4/69446ACF-E625-4CCF-8F56-58B589934CD3/Xbox360_64Eng.exe");
 
-        private static FileDownloader _xboxDrvVistaX86Downloader =
+        private static readonly FileDownloader XboxDrvVistaX86Downloader =
             new FileDownloader(
                 "http://download.microsoft.com/download/6/9/4/69446ACF-E625-4CCF-8F56-58B589934CD3/Xbox360_32Eng.exe");
 
         #endregion
 
+        #region Singleton
+
+        private static readonly Lazy<RedistPackageInstaller> LazyInstance = new Lazy<RedistPackageInstaller>(() => new RedistPackageInstaller());
+
+        public static RedistPackageInstaller Instance
+        {
+            get { return LazyInstance.Value; }
+        }
+
+        #endregion
+
+        #region Ctors
+
+        private RedistPackageInstaller()
+        {
+            // clean-up previous downloads
+            if (Directory.Exists(TempPathRoot))
+                Directory.Delete(TempPathRoot, true);
+
+            Msvc2010Sp1X64Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+            Msvc2010Sp1X86Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+            Msvc2013X64Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+            Msvc2013X86Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+
+            DxRedistOfflineInstallerDownloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+
+            XboxDrvWin7X64Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+            XboxDrvVistaX64Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+            XboxDrvVistaX86Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+            XboxDrvWin7X86Downloader.ProgressChanged += (sender, args) => OnProgressChanged(args);
+        }
+
+        #endregion
+
         private static readonly string TempPathRoot = Path.Combine(Path.GetTempPath(), "SCP_REDIST");
+
+        #region Events
+
+        public event ProgressChangedEventHandler ProgressChanged;
+
+        private void OnProgressChanged(ProgressChangedEventArgs e)
+        {
+            if (ProgressChanged != null)
+                ProgressChanged(null, e);
+        }
+
+        #endregion
 
         /// <summary>
         ///     Downloads and installs the Microsoft Visual C++ 2010 Redistributable Package, depending on the hosts architecture.
         /// </summary>
         /// <returns>The async object.</returns>
-        public static async Task DownloadAndInstallMsvc2010Async()
+        public async Task DownloadAndInstallMsvc2010Async()
         {
             var tempPath = Path.Combine(TempPathRoot, "MSVC2010");
             const string args = "/passive /norestart";
@@ -93,7 +139,7 @@ namespace ScpDriverInstaller.Utilities
         ///     Downloads and installs the Visual C++ Redistributable Packages für Visual Studio 2013, depending on the hosts architecture.
         /// </summary>
         /// <returns>The async object.</returns>
-        public static async Task DownloadAndInstallMsvc2013()
+        public async Task DownloadAndInstallMsvc2013Async()
         {
             var tempPath = Path.Combine(TempPathRoot, "MSVC2013");
             const string args = "/install /passive /norestart";
@@ -116,7 +162,7 @@ namespace ScpDriverInstaller.Utilities
             }
         }
 
-        public static async Task DownloadAndInstallDirectXRedist()
+        public async Task DownloadAndInstallDirectXRedistAsync()
         {
             // current users temporary directory
             var tempPath = Path.Combine(TempPathRoot, "DXSETUP");
@@ -131,7 +177,46 @@ namespace ScpDriverInstaller.Utilities
             await Task.Run(() => Process.Start(targetFile, string.Format("/Q /T:\"{0}\"", tempPath)).WaitForExit());
 
             // run actual setup
-            await Task.Run(() => Process.Start(Path.Combine(tempPath, "DXSETUP.exe"), "/silent"));
+            await Task.Run(() => Process.Start(Path.Combine(tempPath, "DXSETUP.exe"), "/silent").WaitForExit());
+        }
+
+        public async Task DownloadAndInstallXbox360DriverAsync()
+        {
+            var tempPath = Path.Combine(TempPathRoot, "XBOX360DRV");
+            //const string args = "/install /passive /norestart";
+
+            if (Environment.Is64BitProcess)
+            {
+                var targetFile = Path.Combine(tempPath, "Xbox360_64Eng.exe");
+
+                switch (OsInfoHelper.OsParse(OsInfoHelper.OsInfo))
+                {
+                    case OsType.Vista:
+                        await XboxDrvVistaX64Downloader.DownloadAsync(targetFile);
+                        break;
+                    case OsType.Win7:
+                        await XboxDrvWin7X64Downloader.DownloadAsync(targetFile);
+                        break;
+                }
+
+                await Task.Run(() => Process.Start(targetFile).WaitForExit());
+            }
+            else
+            {
+                var targetFile = Path.Combine(tempPath, "Xbox360_32Eng.exe");
+
+                switch (OsInfoHelper.OsParse(OsInfoHelper.OsInfo))
+                {
+                    case OsType.Vista:
+                        await XboxDrvVistaX86Downloader.DownloadAsync(targetFile);
+                        break;
+                    case OsType.Win7:
+                        await XboxDrvWin7X86Downloader.DownloadAsync(targetFile);
+                        break;
+                }
+
+                await Task.Run(() => Process.Start(targetFile).WaitForExit());
+            }
         }
     }
 }

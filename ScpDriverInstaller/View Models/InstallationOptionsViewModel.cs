@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using PropertyChanged;
+using ScpControl.Utilities;
 
 namespace ScpDriverInstaller.View_Models
 {
@@ -28,6 +29,13 @@ namespace ScpDriverInstaller.View_Models
         public bool InstallDirectXRuntime { get; set; }
 
         public bool InstallXbox360Driver { get; set; }
+
+        public bool IsXbox360DriverPresent
+        {
+            get { return (OsInfoHelper.OsParse(OsInfoHelper.OsInfo) >= OsType.Win8); }
+        }
+
+        public bool ForceDriverInstallation { get; set; }
 
         public InstallationOptionsViewModel()
         {

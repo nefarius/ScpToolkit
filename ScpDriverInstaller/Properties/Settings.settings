@@ -1,7 +1,15 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ScpDriverInstaller.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="VirtualBusClassGuid" Type="System.Guid" Scope="Application">
+      <Value Profile="(Default)">f679f562-3164-42ce-a4db-e7ddbe723909</Value>
+    </Setting>
+    <Setting Name="InfFilePath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">.\System\</Value>
+    </Setting>
+    <Setting Name="ScpServiceName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">SCP DSx Service</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
