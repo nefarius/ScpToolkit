@@ -19,6 +19,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 ## Installation requirements
  * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
  * [Microsoft .NET Framework 4.5](https://www.microsoft.com/en-US/download/details.aspx?id=42642)
+ * [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-US/download/details.aspx?id=5555)
  * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=40784)
  * [DirectX Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=35)
  * [Xbox 360 Controller driver](https://www.microsoft.com/hardware/en-US/d/xbox-360-controller-for-windows)
