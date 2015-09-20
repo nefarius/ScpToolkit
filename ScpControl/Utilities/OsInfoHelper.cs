@@ -37,6 +37,16 @@ namespace ScpControl.Utilities
             }
         }
 
+        public static bool IsVc2010Installed
+        {
+            get
+            {
+                return
+                    Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\DevDiv\vc\Servicing\10.0\red") !=
+                    null;
+            }
+        }
+
         public static string OsInfo
         {
             get

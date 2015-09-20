@@ -1,8 +1,11 @@
 ﻿<Window x:Class="ScpDriverInstaller.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="ScpToolkit Driver Installer" Height="350" Width="525" WindowStartupLocation="CenterScreen" Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
-        
+        <StackPanel>
+            <Button Content="Start" Click="Button_Click"/>
+            <ProgressBar x:Name="TestProgressBar" Height="128"/>
+        </StackPanel>
     </Grid>
 </Window>
