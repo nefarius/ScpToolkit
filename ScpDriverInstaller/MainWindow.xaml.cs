@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
-using ScpControl.Utilities;
-using ScpDriverInstaller.Utilities;
+using ScpDriverInstaller.View_Models;
 
 namespace ScpDriverInstaller
 {
@@ -10,28 +9,32 @@ namespace ScpDriverInstaller
     /// </summary>
     public partial class MainWindow : Window
     {
-        private FileDownloader _dldr;
+        private readonly InstallationOptionsViewModel _viewModel = new InstallationOptionsViewModel();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            _dldr = new FileDownloader("http://download.microsoft.com/download/8/4/A/84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14/directx_Jun2010_redist.exe");
+            _viewModel.InstallButtonClicked += ViewModelOnInstallButtonClicked;
+            _viewModel.UninstallButtonClicked += ViewModelOnUninstallButtonClicked;
+            _viewModel.ExitButtonClicked += ViewModelOnExitButtonClicked;
 
-            _dldr.ProgressChanged += (sender, args) =>
-            {
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    TestProgressBar.Value = args.CurrentProgressPercentage;
-                }));
-            };
+            InstallGrid.DataContext = _viewModel;
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private void ViewModelOnExitButtonClicked(object sender, EventArgs eventArgs)
         {
-            //await _dldr.DownloadAsync(@"D:\Temp\lulz.exe");
+            Close();
+        }
 
-            await RedistPackageInstaller.DownloadAndInstallDirectXRedist();
+        private void ViewModelOnUninstallButtonClicked(object sender, EventArgs eventArgs)
+        {
+            
+        }
+
+        private void ViewModelOnInstallButtonClicked(object sender, EventArgs eventArgs)
+        {
+            
         }
     }
 }
