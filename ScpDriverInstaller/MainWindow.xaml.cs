@@ -97,6 +97,7 @@ namespace ScpDriverInstaller
             if (_viewModel.InstallXbox360Driver)
             {
                 Log.Info("Installing Xbox 360 Controller Driver for Windows");
+                await RedistPackageInstaller.Instance.DownloadAndInstallXbox360DriverAsync();
             }
 
             MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
