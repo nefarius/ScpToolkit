@@ -30,9 +30,9 @@ namespace ScpDriverInstaller.View_Models
 
         public bool InstallXbox360Driver { get; set; }
 
-        public bool IsXbox360DriverPresent
+        public bool IsXbox360DriverNeeded
         {
-            get { return (OsInfoHelper.OsParse(OsInfoHelper.OsInfo) >= OsType.Win8); }
+            get { return !(OsInfoHelper.OsParse(OsInfoHelper.OsInfo) >= OsType.Win8); }
         }
 
         public bool ForceDriverInstallation { get; set; }

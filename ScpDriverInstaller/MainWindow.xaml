@@ -33,7 +33,7 @@
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2010Redist}">Download &amp; Install Microsoft Visual C++ 2010 Redistributable Package</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2013Redist}">Download &amp; Install Visual C++ Redistributable Packages für Visual Studio 2013</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallDirectXRuntime}">Download &amp; Install DirectX End-User Runtime</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}" IsEnabled="{Binding Path=IsXbox360DriverPresent}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}" IsEnabled="{Binding Path=IsXbox360DriverNeeded}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
                         </StackPanel>
                     </DockPanel>
                 </GroupBox>
