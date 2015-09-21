@@ -104,29 +104,6 @@ namespace ScpControl.Bluetooth
             CanStartHid = false;
             m_State = DsState.Connected;
 
-            var bdc = IniConfig.Instance.BthDs3;
-
-            // TODO: validate the effect on different models
-            if (bdc.SupportedMacs.Any(m => Local.StartsWith(m))) // Fix up for Fake DS3
-            {
-                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
-
-                _hidCommandEnable[0] = 0xA3;
-
-                _hidReport[0] = 0xA2;
-                _hidReport[3] = 0x00;
-                _hidReport[5] = 0x00;
-            }
-
-            // TODO: validate the effect on different models
-            if (bdc.SupportedNames.Any(n => RemoteName.EndsWith(n))) // Fix up for Fake DS3
-            {
-                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
-
-                _hidReport[3] = 0x00;
-                _hidReport[5] = 0x00;
-            }
-
             m_Queued = 1;
             m_Blocked = true;
             m_Last = DateTime.Now;
@@ -295,15 +272,12 @@ namespace ScpControl.Bluetooth
 
                 #region Fake DS3 workaround
 
-                // TODO: doesn't work, breaks communication with "genuine" 3rd party controller
-                /*
-                    if (IsFake)
-                    {
-                        _hidReport[0] = 0xA2;
-                        _hidReport[3] = 0x00;
-                        _hidReport[5] = 0x00;
-                    }
-                     * */
+                if (IsFake)
+                {
+                    _hidReport[0] = 0xA2;
+                    _hidReport[3] = 0x00;
+                    _hidReport[5] = 0x00;
+                }
 
                 #endregion
 

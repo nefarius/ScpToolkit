@@ -56,7 +56,8 @@ namespace ScpControl.Utilities
                 
                 Hci = new HciCfg()
                 {
-                    SupportedNames = ini.Sections["HCI"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value)
+                    SupportedNames = ini.Sections["Host Controller Interface"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value),
+                    GenuineMacAddresses = ini.Sections["Host Controller Interface"].Keys.Where(k => k.Name == "GenuineMacAddress").Select(v => v.Value)
                 };
 
                 Ds3Driver = new Ds3DriverCfg()
@@ -110,6 +111,7 @@ namespace ScpControl.Utilities
         public class HciCfg
         {
             public IEnumerable<string> SupportedNames { get; set; }
+            public IEnumerable<string> GenuineMacAddresses { get; set; }
         }
 
         public class Ds3DriverCfg

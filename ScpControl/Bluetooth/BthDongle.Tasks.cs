@@ -316,37 +316,21 @@ namespace ScpControl.Bluetooth
 
                             if (connection.CanStartService)
                             {
-                                if (connection.ServiceByPass)
-                                {
-                                    Log.DebugFormat(">> ServiceByPass [{0} - {1}]", connection.Local,
-                                        connection.RemoteName);
+                                UInt16 DCID = BthConnection.Dcid++;
+                                L2_DCID = new Byte[2] { (Byte)((DCID >> 0) & 0xFF), (Byte)((DCID >> 8) & 0xFF) };
 
-                                    connection.CanStartService = false;
-                                    OnInitialised(connection);
+                                if (!connection.IsFake)
+                                {
+                                    L2CAP_Connection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_DCID, L2CAP.PSM.HID_Service);
+                                    Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
+                                        L2CAP.Code.L2CAP_Connection_Request,
+                                        (Byte)L2CAP.Code.L2CAP_Connection_Request,
+                                        (Byte)L2CAP.PSM.HID_Service);
                                 }
                                 else
                                 {
-                                    var DCID = BthConnection.Dcid++;
-                                    Log.DebugFormat("DCID = {0}", DCID);
-
-                                    L2_DCID = new byte[2] { (byte)((DCID >> 0) & 0xFF), (byte)((DCID >> 8) & 0xFF) };
-
-                                    if (!connection.IsFake)
-                                    {
-                                        L2CAP_Connection_Request(connection.HciHandle.Bytes,
-                                            _hidReportId++,
-                                            L2_DCID,
-                                            L2CAP.PSM.HID_Service);
-                                        Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
-                                            L2CAP.Code.L2CAP_Connection_Request,
-                                            (byte)L2CAP.Code.L2CAP_Connection_Request,
-                                            (byte)L2CAP.PSM.HID_Service);
-                                    }
-                                    else
-                                    {
-                                        connection.CanStartService = false;
-                                        OnInitialised(connection);
-                                    }
+                                    connection.CanStartService = false;
+                                    OnInitialised(connection);
                                 }
                             }
                             break;
@@ -419,6 +403,7 @@ namespace ScpControl.Bluetooth
         {
             var token = (CancellationToken)o;
             var nameList = new SortedDictionary<string, string>();
+            var hci = IniConfig.Instance.Hci;
 
             var bStarted = false;
             var bd = string.Empty;
@@ -752,28 +737,20 @@ namespace ScpControl.Bluetooth
 
                                     Connection = Add(Buffer[3], (byte)(Buffer[4] | 0x20), nameList[bd]);
 
-                                    // TODO: fix workaround, breaks my controller
-                                    if (Buffer[10] != 0x00 || Buffer[9] != 0x07 || Buffer[8] != 0x04)
+                                    #region Fake DS3 workaround
+
+                                    if (!hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                     {
-                                        //Connection.IsFake = true;
-                                        //Log.Info("-- Fake DualShock3 found, workaround applied");
-                                        Log.Info("-- Fake DualShock3 found");
+                                        Connection.IsFake = true;
+                                        Log.Debug("-- Fake DualShock 3 found. Workaround applied");
                                     }
                                     else
                                     {
-                                        //Connection.IsFake = false;
-                                        Log.Info("-- Genuine Sony DualShock3 found");
+                                        Connection.IsFake = false;
+                                        Log.Debug("-- Genuine Sony DualShock 3 found");
                                     }
 
-                                    // fetch configuration from .INI
-                                    var bdc = IniConfig.Instance.BthDongle;
-
-                                    // check if current device matches names or MACs
-                                    if (bdc.SupportedNames.Any(n => nameList[bd].Contains(n))
-                                        || bdc.SupportedMacs.Any(m => bd.StartsWith(m)))
-                                    {
-                                        Connection.ServiceByPass = true;
-                                    }
+                                    #endregion
 
                                     Connection.RemoteName = nameList[bd];
                                     nameList.Remove(bd);
@@ -811,8 +788,6 @@ namespace ScpControl.Bluetooth
                                     Log.InfoFormat("-- Remote Name : {0} - {1}", bd, Name);
 
                                     for (var i = 0; i < 6; i++) BD_Addr[i] = Buffer[i + 3];
-
-                                    var hci = IniConfig.Instance.Hci;
 
                                     if (hci.SupportedNames.Any(n => Name.StartsWith(n))
                                         || hci.SupportedNames.Any(n => Name == n))
