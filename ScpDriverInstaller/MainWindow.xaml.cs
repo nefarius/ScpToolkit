@@ -104,8 +104,6 @@ namespace ScpDriverInstaller
 
             #endregion
 
-            /*
-
             #region Driver Installation
 
             await Task.Run(() =>
@@ -201,8 +199,6 @@ namespace ScpDriverInstaller
             });
 
             #endregion
-
-            */
 
             #region Post-Installation
 
