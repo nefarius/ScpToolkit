@@ -280,9 +280,13 @@ namespace ScpControl.Bluetooth
                             if (buffer[16] == 0) // Success
                             {
                                 L2_SCID = new byte[2] { buffer[12], buffer[13] };
+                                Log.DebugFormat("L2_SCID = [{0:X2}, {1:X2}]", L2_SCID[0], L2_SCID[1]);
+
                                 L2_DCID = new byte[2] { buffer[14], buffer[15] };
+                                Log.DebugFormat("L2_DCID = [{0:X2}, {1:X2}]", L2_DCID[0], L2_DCID[1]);
 
                                 var DCID = (ushort)(buffer[15] << 8 | buffer[14]);
+                                Log.DebugFormat("DCID (shifted) = {0:X2}", DCID);
 
                                 connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
 
