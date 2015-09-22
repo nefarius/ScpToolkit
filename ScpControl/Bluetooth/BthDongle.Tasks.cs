@@ -742,12 +742,12 @@ namespace ScpControl.Bluetooth
                                     if (!hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                     {
                                         Connection.IsFake = true;
-                                        Log.Debug("-- Fake DualShock 3 found. Workaround applied");
+                                        Log.Warn("-- Fake DualShock 3 found. Workaround applied");
                                     }
                                     else
                                     {
                                         Connection.IsFake = false;
-                                        Log.Debug("-- Genuine Sony DualShock 3 found");
+                                        Log.Info("-- Genuine Sony DualShock 3 found");
                                     }
 
                                     #endregion
