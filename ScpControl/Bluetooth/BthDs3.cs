@@ -275,7 +275,7 @@ namespace ScpControl.Bluetooth
                 if (IsFake)
                 {
                     _hidReport[0] = 0xA2;
-                    _hidReport[3] = 0x00;
+                    _hidReport[3] = 0xFF;
                     _hidReport[5] = 0x00;
                 }
 

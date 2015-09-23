@@ -333,6 +333,7 @@ namespace ScpControl.Bluetooth
                                 }
                                 else
                                 {
+                                    connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_DCID);
                                     connection.CanStartService = false;
                                     OnInitialised(connection);
                                 }
