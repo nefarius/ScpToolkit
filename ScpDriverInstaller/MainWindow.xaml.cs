@@ -3,6 +3,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
@@ -234,7 +235,8 @@ namespace ScpDriverInstaller
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            Log.InfoFormat("SCP Driver Installer {0} [{1}]", Assembly.GetExecutingAssembly().GetName().Version, DateTime.Now);
+            Log.InfoFormat("SCP Driver Installer {0} [Built: {1}]", Assembly.GetExecutingAssembly().GetName().Version,
+                AssemblyHelper.LinkerTimestamp);
 
             _installer = Difx.Instance;
             _installer.OnLogEvent += Logger;
@@ -247,6 +249,15 @@ namespace ScpDriverInstaller
             // is MSVC already installed?
             _viewModel.InstallMsvc2010Redist = !OsInfoHelper.IsVc2010Installed;
             _viewModel.InstallMsvc2013Redist = !OsInfoHelper.IsVc2013Installed;
+
+            // unblock system files
+            foreach (var fInfo in Directory.GetFiles(WorkingDirectory, "*.*", SearchOption.AllDirectories)
+                .Where(s => s.EndsWith(".dll") || s.EndsWith(".inf") || s.EndsWith(".sys") || s.EndsWith(".cat"))
+                .Select(file => new FileInfo(file))
+                .Where(fInfo => fInfo.Unblock()))
+            {
+                Log.InfoFormat("Unblocked file {0}", fInfo.Name);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

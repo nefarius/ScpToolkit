@@ -157,6 +157,7 @@
     <Compile Include="Usb\UsbDs3QuadStick.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Utilities\AssemblyHelper.cs" />
     <Compile Include="Utilities\DumpHelper.cs" />
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\FileDownloader.cs" />

@@ -12,7 +12,7 @@ namespace ScpControl.Utilities
     {
         private const string ZoneIdentifierStreamName = "Zone.Identifier";
 
-        public static void Unblock(this FileInfo file)
+        public static bool Unblock(this FileInfo file)
         {
             if (file == null)
             {
@@ -24,10 +24,11 @@ namespace ScpControl.Utilities
                 throw new FileNotFoundException("Unable to find the specified file.", file.FullName);
             }
 
-            if (file.Exists && file.AlternateDataStreamExists(ZoneIdentifierStreamName))
-            {
-                file.DeleteAlternateDataStream(ZoneIdentifierStreamName);
-            }
+            if (!file.Exists || !file.AlternateDataStreamExists(ZoneIdentifierStreamName)) return false;
+            
+            file.DeleteAlternateDataStream(ZoneIdentifierStreamName);
+
+            return true;
         }
     }
 
