@@ -29,22 +29,6 @@ namespace ScpDriverInstaller
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private readonly InstallationOptionsViewModel _viewModel = new InstallationOptionsViewModel();
 
-        #region Private fields
-
-        private bool _bthDriverConfigured;
-        private bool _busDeviceConfigured;
-        private bool _busDriverConfigured;
-        private bool _ds3DriverConfigured;
-        private bool _ds4DriverConfigured;
-        private IntPtr _hWnd;
-        private Difx _installer;
-        private bool _reboot;
-        private Cursor _saved;
-        private bool _scpServiceConfigured;
-        private OsType _valid = OsType.Invalid;
-
-        #endregion
-
         #region Ctor
 
         public MainWindow()
@@ -60,6 +44,43 @@ namespace ScpDriverInstaller
 
             InstallGrid.DataContext = _viewModel;
         }
+
+        #endregion
+
+        #region Misc. Helpers
+
+        private static void Logger(DifxLog Event, int error, string description)
+        {
+            switch (Event)
+            {
+                case DifxLog.DIFXAPI_ERROR:
+                    Log.Error(description);
+                    break;
+                case DifxLog.DIFXAPI_INFO:
+                case DifxLog.DIFXAPI_SUCCESS:
+                    Log.Info(description);
+                    break;
+                case DifxLog.DIFXAPI_WARNING:
+                    Log.Warn(description);
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Private fields
+
+        private bool _bthDriverConfigured;
+        private bool _busDeviceConfigured;
+        private bool _busDriverConfigured;
+        private bool _ds3DriverConfigured;
+        private bool _ds4DriverConfigured;
+        private IntPtr _hWnd;
+        private Difx _installer;
+        private bool _reboot;
+        private Cursor _saved;
+        private bool _scpServiceConfigured;
+        private OsType _valid = OsType.Invalid;
 
         #endregion
 
@@ -79,6 +100,7 @@ namespace ScpDriverInstaller
             _saved = Cursor;
             Cursor = Cursors.Wait;
             InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
+            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
 
             #endregion
 
@@ -87,7 +109,6 @@ namespace ScpDriverInstaller
             await Task.Run(() =>
             {
                 string devPath = string.Empty, instanceId = string.Empty;
-                uint result = 0;
 
                 try
                 {
@@ -115,6 +136,8 @@ namespace ScpDriverInstaller
                         service.Uninstall(state);
                         _scpServiceConfigured = true;
                     }
+
+                    uint result = 0;
 
                     if (_viewModel.InstallBluetoothDriver)
                     {
@@ -194,7 +217,6 @@ namespace ScpDriverInstaller
             InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
             Cursor = _saved;
 
-            Cursor = _saved;
 
             if (_reboot)
                 Log.Info("[Reboot Required]");
@@ -202,7 +224,7 @@ namespace ScpDriverInstaller
             Log.Info("-- Uninstall Summary --");
 
             if (_scpServiceConfigured)
-                Log.Info("SCP DS3 Service uninstalled");
+                Log.Info("SCP DSx Service uninstalled");
 
             if (_busDeviceConfigured)
                 Log.Info("Bus Device uninstalled");
@@ -368,7 +390,7 @@ namespace ScpDriverInstaller
 
             Log.Info("-- Install Summary --");
             if (_scpServiceConfigured)
-                Log.Info("SCP DS3 Service installed");
+                Log.Info("SCP DSx Service installed");
 
             if (_busDeviceConfigured)
                 Log.Info("Bus Device installed");
@@ -386,27 +408,6 @@ namespace ScpDriverInstaller
                 Log.Info("DualShock 4 USB Driver installed");
 
             #endregion
-        }
-
-        #endregion
-
-        #region Misc. Helpers
-
-        private static void Logger(DifxLog Event, int error, string description)
-        {
-            switch (Event)
-            {
-                case DifxLog.DIFXAPI_ERROR:
-                    Log.Error(description);
-                    break;
-                case DifxLog.DIFXAPI_INFO:
-                case DifxLog.DIFXAPI_SUCCESS:
-                    Log.Info(description);
-                    break;
-                case DifxLog.DIFXAPI_WARNING:
-                    Log.Warn(description);
-                    break;
-            }
         }
 
         #endregion
@@ -444,8 +445,18 @@ namespace ScpDriverInstaller
         {
             _hWnd = new WindowInteropHelper(this).Handle;
 
+            // link download progress to progress bar
             RedistPackageInstaller.Instance.ProgressChanged +=
                 (o, args) => { Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage); };
+
+            // link NotifyAppender to TextBlock
+            foreach (
+                var appender in
+                    LogManager.GetCurrentLoggers()
+                        .SelectMany(log => log.Logger.Repository.GetAppenders().OfType<NotifyAppender>()))
+            {
+                LogTextBlock.DataContext = appender;
+            }
         }
 
         #endregion

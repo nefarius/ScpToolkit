@@ -32,15 +32,13 @@
             this.components = new System.ComponentModel.Container();
             this.rootHub = new ScpControl.RootHub(this.components);
             // 
-            // rootHub
-            // 
-            // 
             // Ds3Service
             // 
             this.AutoLog = false;
             this.CanHandlePowerEvent = true;
             this.CanShutdown = true;
             this.ServiceName = "Ds3Service";
+
         }
 
         #endregion

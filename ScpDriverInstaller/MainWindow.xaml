@@ -60,6 +60,7 @@
                       Grid.Row="2">
                 <ScrollViewer>
                     <TextBlock Text="{Binding Notification}" 
+                               x:Name="LogTextBlock"
                                FontFamily="Courier New"
                                TextWrapping="Wrap">
                         <TextBlock.DataContext>
