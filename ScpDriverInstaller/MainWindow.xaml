@@ -3,7 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
         xmlns:utilities="clr-namespace:ScpDriverInstaller.Utilities"
-        Title="ScpToolkit Driver Installer" Height="560" Width="1020" WindowStartupLocation="CenterScreen"
+        Title="ScpToolkit Driver Installer" 
+        Height="560" Width="1020" 
+        MinHeight="560" MinWidth="1020"
+        WindowStartupLocation="CenterScreen"
         Icon="Scp.ico" Initialized="Window_Initialized" Loaded="Window_Loaded">
     <Grid Background="#FF1B1B1B">
         <Grid Margin="10">
@@ -28,11 +31,11 @@
                 <GroupBox Header="Installation options">
                     <DockPanel>
                         <StackPanel Margin="0,0,10,0">
-                            <CheckBox IsChecked="{Binding Path=InstallWindowsService}">Install Windows Service</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallBluetoothDriver}">Install Bluetooth driver</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallDualShock3Driver}">Install DualShock 3 driver</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallDualShock4Driver}">Install DualShock 4 driver</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=ForceDriverInstallation}">Force Driver Installation</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallWindowsService}" ToolTip="Install Windows Service running in the background (recommended)">Install Windows Service</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallBluetoothDriver}" ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">Install Bluetooth driver</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallDualShock3Driver}" ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">Install DualShock 3 driver</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallDualShock4Driver}" ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">Install DualShock 4 driver</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=ForceDriverInstallation}" ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">Force Driver Installation</CheckBox>
                         </StackPanel>
 
                         <!-- Runtime packages -->
@@ -41,6 +44,7 @@
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2013Redist}">Download &amp; Install Visual C++ Redistributable Packages für Visual Studio 2013</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallDirectXRuntime}">Download &amp; Install DirectX End-User Runtime</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}" IsEnabled="{Binding Path=IsXbox360DriverNeeded}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
+                            <TextBlock Margin="35,0,0,0">Note: ticking one or more of the boxes above requires an internet connection!</TextBlock>
                         </StackPanel>
                     </DockPanel>
                 </GroupBox>
