@@ -67,6 +67,8 @@ namespace ScpDriverInstaller
 
         private void ViewModelOnExitButtonClicked(object sender, EventArgs eventArgs)
         {
+            Log.Info("Closing installer");
+
             Close();
         }
 
