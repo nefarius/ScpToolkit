@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Threading;
 using log4net;
 using ScpControl.Driver;
 using ScpControl.Utilities;
@@ -27,20 +26,26 @@ namespace ScpDriverInstaller
     public partial class MainWindow : Window
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly InstallationOptionsViewModel _viewModel = new InstallationOptionsViewModel();
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private readonly InstallationOptionsViewModel _viewModel = new InstallationOptionsViewModel();
+
+        #region Private fields
 
         private bool _bthDriverConfigured;
         private bool _busDeviceConfigured;
         private bool _busDriverConfigured;
         private bool _ds3DriverConfigured;
         private bool _ds4DriverConfigured;
+        private IntPtr _hWnd;
         private Difx _installer;
         private bool _reboot;
         private Cursor _saved;
         private bool _scpServiceConfigured;
         private OsType _valid = OsType.Invalid;
-        private IntPtr _hWnd;
+
+        #endregion
+
+        #region Ctor
 
         public MainWindow()
         {
@@ -56,6 +61,10 @@ namespace ScpDriverInstaller
             InstallGrid.DataContext = _viewModel;
         }
 
+        #endregion
+
+        #region View Model events
+
         private void ViewModelOnExitButtonClicked(object sender, EventArgs eventArgs)
         {
             Close();
@@ -63,7 +72,149 @@ namespace ScpDriverInstaller
 
         private async void ViewModelOnUninstallButtonClicked(object sender, EventArgs eventArgs)
         {
+            #region Pre-Installation
 
+            _saved = Cursor;
+            Cursor = Cursors.Wait;
+            InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
+
+            #endregion
+
+            #region Uninstallation
+
+            await Task.Run(() =>
+            {
+                string devPath = string.Empty, instanceId = string.Empty;
+                uint result = 0;
+
+                try
+                {
+                    var rebootRequired = false;
+                    _bthDriverConfigured = false;
+                    _ds3DriverConfigured = false;
+                    _ds4DriverConfigured = false;
+                    _busDriverConfigured = false;
+                    _busDeviceConfigured = false;
+
+                    if (_viewModel.InstallWindowsService)
+                    {
+                        IDictionary state = new Hashtable();
+                        var service =
+                            new AssemblyInstaller(Directory.GetCurrentDirectory() + @"\ScpService.exe", null);
+
+                        state.Clear();
+                        service.UseNewContext = true;
+
+                        if (Stop(Settings.Default.ScpServiceName))
+                        {
+                            Logger(DifxLog.DIFXAPI_INFO, 0, Settings.Default.ScpServiceName + " Stopped.");
+                        }
+
+                        service.Uninstall(state);
+                        _scpServiceConfigured = true;
+                    }
+
+                    if (_viewModel.InstallBluetoothDriver)
+                    {
+                        result = DriverInstaller.UninstallBluetoothDongles(ref rebootRequired);
+
+                        if (result > 0) _bthDriverConfigured = true;
+                        _reboot |= rebootRequired;
+                    }
+
+                    if (_viewModel.InstallDualShock3Driver)
+                    {
+                        result = DriverInstaller.UninstallDualShock3Controllers(ref rebootRequired);
+
+                        if (result > 0) _ds3DriverConfigured = true;
+                        _reboot |= rebootRequired;
+                    }
+
+                    if (_viewModel.InstallDualShock4Driver)
+                    {
+                        result = DriverInstaller.UninstallDualShock4Controllers(ref rebootRequired);
+
+                        if (result > 0) _ds4DriverConfigured = true;
+                        _reboot |= rebootRequired;
+                    }
+
+                    if (Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
+                    {
+                        if (Devcon.Remove(Settings.Default.VirtualBusClassGuid, devPath, instanceId))
+                        {
+                            Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Removed");
+                            _busDeviceConfigured = true;
+
+                            _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"),
+                                DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
+                                out rebootRequired);
+                            _reboot |= rebootRequired;
+
+                            _busDriverConfigured = true;
+                            _busDeviceConfigured = true;
+                        }
+                        else
+                        {
+                            Logger(DifxLog.DIFXAPI_ERROR, 0, "Virtual Bus Removal Failure");
+                        }
+                    }
+                }
+                catch (InstallException instex)
+                {
+                    if (!(instex.InnerException is Win32Exception))
+                    {
+                        Log.ErrorFormat("Error during uninstallation: {0}", instex);
+                        return;
+                    }
+
+                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
+                    {
+                        case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
+                            Log.Warn("Service doesn't exist, maybe it was uninstalled before");
+                            break;
+                        default:
+                            Log.ErrorFormat("Win32-Error during uninstallation: {0}",
+                                (Win32Exception) instex.InnerException);
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Error during uninstallation: {0}", ex);
+                }
+            });
+
+            #endregion
+
+            #region Post-Uninstallation
+
+            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
+            InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
+            Cursor = _saved;
+
+            Cursor = _saved;
+
+            if (_reboot)
+                Log.Info("[Reboot Required]");
+
+            Log.Info("-- Uninstall Summary --");
+
+            if (_scpServiceConfigured)
+                Log.Info("SCP DS3 Service uninstalled");
+
+            if (_busDeviceConfigured)
+                Log.Info("Bus Device uninstalled");
+
+            if (_busDriverConfigured)
+                Log.Info("Bus Driver uninstalled");
+
+            if (_ds3DriverConfigured)
+                Log.Info("DS3 USB Driver uninstalled");
+
+            if (_bthDriverConfigured)
+                Log.Info("Bluetooth Driver uninstalled");
+
+            #endregion
         }
 
         private async void ViewModelOnInstallButtonClicked(object sender, EventArgs eventArgs)
@@ -151,14 +302,16 @@ namespace ScpDriverInstaller
 
                     if (_viewModel.InstallDualShock3Driver)
                     {
-                        Dispatcher.Invoke(() => result = DriverInstaller.InstallDualShock3Controllers(_hWnd, forceInstall));
+                        Dispatcher.Invoke(
+                            () => result = DriverInstaller.InstallDualShock3Controllers(_hWnd, forceInstall));
 
                         if (result > 0) _ds3DriverConfigured = true;
                     }
 
                     if (_viewModel.InstallDualShock4Driver)
                     {
-                        Dispatcher.Invoke(() => result = DriverInstaller.InstallDualShock4Controllers(_hWnd, forceInstall));
+                        Dispatcher.Invoke(
+                            () => result = DriverInstaller.InstallDualShock4Controllers(_hWnd, forceInstall));
 
                         if (result > 0) _ds4DriverConfigured = true;
                     }
@@ -233,6 +386,31 @@ namespace ScpDriverInstaller
             #endregion
         }
 
+        #endregion
+
+        #region Misc. Helpers
+
+        private static void Logger(DifxLog Event, int error, string description)
+        {
+            switch (Event)
+            {
+                case DifxLog.DIFXAPI_ERROR:
+                    Log.Error(description);
+                    break;
+                case DifxLog.DIFXAPI_INFO:
+                case DifxLog.DIFXAPI_SUCCESS:
+                    Log.Info(description);
+                    break;
+                case DifxLog.DIFXAPI_WARNING:
+                    Log.Warn(description);
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region Window events
+
         private void Window_Initialized(object sender, EventArgs e)
         {
             Log.InfoFormat("SCP Driver Installer {0} [Built: {1}]", Assembly.GetExecutingAssembly().GetName().Version,
@@ -264,11 +442,13 @@ namespace ScpDriverInstaller
         {
             _hWnd = new WindowInteropHelper(this).Handle;
 
-            RedistPackageInstaller.Instance.ProgressChanged += (o, args) =>
-            {
-                Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage);
-            };
+            RedistPackageInstaller.Instance.ProgressChanged +=
+                (o, args) => { Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage); };
         }
+
+        #endregion
+
+        #region Windows Service Helpers
 
         private static bool Start(string service)
         {
@@ -312,13 +492,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
                         break;
                 }
             }
@@ -330,23 +510,6 @@ namespace ScpDriverInstaller
             return false;
         }
 
-        private static void Logger(DifxLog Event, int error, string description)
-        {
-            switch (Event)
-            {
-                case DifxLog.DIFXAPI_ERROR:
-                    Log.Error(description);
-                    break;
-                case DifxLog.DIFXAPI_INFO:
-                case DifxLog.DIFXAPI_SUCCESS:
-                    Log.Info(description);
-                    break;
-                case DifxLog.DIFXAPI_WARNING:
-                    Log.Warn(description);
-                    break;
-            }
-        }
-
-
+        #endregion
     }
 }
