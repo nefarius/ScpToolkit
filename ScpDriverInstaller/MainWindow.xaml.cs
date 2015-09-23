@@ -27,6 +27,7 @@ namespace ScpDriverInstaller
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly InstallationOptionsViewModel _viewModel = new InstallationOptionsViewModel();
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
         private bool _bthDriverConfigured;
         private bool _busDeviceConfigured;
