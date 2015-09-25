@@ -44,6 +44,7 @@ namespace ScpControl.Bluetooth
 
         private readonly byte[] _leds = { 0x02, 0x04, 0x08, 0x10 };
         private byte ledStatus = 0;
+        private byte counterForLeds = 0;
 
         private readonly byte[] _hidReport =
         {
@@ -263,8 +264,19 @@ namespace ScpControl.Bluetooth
 
                         if (m_Queued == 0) m_Queued = 1;
 
+                        ledStatus = 0;
+
                         switch (Battery)
                         {
+                            case DsBattery.None:
+                                ledStatus = (byte)(_leds[0] | _leds[3]);
+                                break;
+                            case DsBattery.Dieing:
+                                counterForLeds++;
+                                counterForLeds %= 2;
+                                if (counterForLeds == 1)
+                                    ledStatus = _leds[0];
+                                break;
                             case DsBattery.Low:
                                 ledStatus = (byte)(_leds[0]);
                                 break;
@@ -285,7 +297,7 @@ namespace ScpControl.Bluetooth
 
 
                         _hidReport[11] = ledStatus;
-                        
+
                     }
 
                     #region Fake DS3 workaround
