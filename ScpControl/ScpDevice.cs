@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -82,7 +84,7 @@ namespace ScpControl
             GetHardwareId(devicePath);
 
             Path = devicePath.ToUpper();
-            
+
             if (GetDeviceHandle(Path))
             {
                 if (Usb.Initialize(FileHandle, ref _winUsbHandle))
@@ -99,7 +101,7 @@ namespace ScpControl
                     else
                     {
                         Usb.Free(_winUsbHandle);
-                        _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+                        _winUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
                     }
                 }
                 else
@@ -120,14 +122,14 @@ namespace ScpControl
         {
             IsActive = false;
 
-            if (!(_winUsbHandle == (IntPtr) INVALID_HANDLE_VALUE))
+            if (!(_winUsbHandle == (IntPtr)INVALID_HANDLE_VALUE))
             {
                 Usb.AbortPipe(_winUsbHandle, IntIn);
                 Usb.AbortPipe(_winUsbHandle, BulkIn);
                 Usb.AbortPipe(_winUsbHandle, BulkOut);
 
                 Usb.Free(_winUsbHandle);
-                _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+                _winUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
             }
 
             if (FileHandle != IntPtr.Zero)
@@ -143,6 +145,11 @@ namespace ScpControl
         public virtual bool Close()
         {
             return Stop();
+        }
+
+        protected static ushort ToValue(UsbHidReportRequestType type, UsbHidReportRequestId id)
+        {
+            return BitConverter.ToUInt16(new[] { (byte)id, (byte)type }, 0);
         }
 
         #region WinUSB wrapper methods
@@ -170,7 +177,7 @@ namespace ScpControl
         protected bool SendTransfer(UsbHidRequestType requestType, UsbHidRequest request, ushort value, byte[] buffer,
             ref int transfered)
         {
-            return SendTransfer((byte) requestType, (byte) request, value, buffer, ref transfered);
+            return SendTransfer((byte)requestType, (byte)request, value, buffer, ref transfered);
         }
 
         protected bool SendTransfer(byte requestType, byte request, ushort value, byte[] buffer, ref int transfered)
@@ -183,7 +190,7 @@ namespace ScpControl
                 Request = request,
                 Value = value,
                 Index = 0,
-                Length = (ushort) buffer.Length
+                Length = (ushort)buffer.Length
             };
 
             return Usb.ControlTransfer(_winUsbHandle, setup, buffer, buffer.Length, ref transfered, IntPtr.Zero);
@@ -235,10 +242,12 @@ namespace ScpControl
             public int dbcc_devicetype;
             public int dbcc_reserved;
 
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)] public byte[]
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)]
+            public byte[]
                 dbcc_classguid;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 255)] public char[] dbcc_name;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 255)]
+            public char[] dbcc_name;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -280,7 +289,7 @@ namespace ScpControl
             RAW_IO = 7
         }
 
-        
+
 
         protected enum USB_DEVICE_SPEED
         {
@@ -302,7 +311,7 @@ namespace ScpControl
             internal byte MaxPower;
         }
 
-        
+
 
         protected const int DIF_PROPERTYCHANGE = 0x12;
         protected const int DICS_ENABLE = 1;
@@ -333,7 +342,7 @@ namespace ScpControl
         private Guid _class = Guid.Empty;
 
         protected IntPtr FileHandle = IntPtr.Zero;
-        private IntPtr _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+        private IntPtr _winUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
 
         protected byte IntIn = 0xFF;
         protected byte IntOut = 0xFF;
@@ -540,7 +549,7 @@ namespace ScpControl
             FileHandle = CreateFile(path, (GENERIC_WRITE | GENERIC_READ), FILE_SHARE_READ | FILE_SHARE_WRITE,
                 IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
 
-            if (FileHandle == IntPtr.Zero || FileHandle == (IntPtr) INVALID_HANDLE_VALUE)
+            if (FileHandle == IntPtr.Zero || FileHandle == (IntPtr)INVALID_HANDLE_VALUE)
             {
                 FileHandle = IntPtr.Zero;
                 var lastError = GetLastError();

@@ -1,4 +1,8 @@
-﻿namespace ScpControl.Usb
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ScpControl.Usb
 {
     public enum UsbRequestType : byte
     {
@@ -46,5 +50,25 @@
         SetReport = 0x09,
         SetIdle = 0x0A,
         SetProtocol = 0x0B
+    }
+
+    public enum UsbHidReportRequestType : byte
+    {
+        Input = 0x01,
+        Output = 0x02,
+        Feature = 0x03
+    }
+
+    public enum UsbHidReportRequestId : byte
+    {
+        One = 0x01
+    }
+
+    public static class UsbHidReportRequestExtensions
+    {
+        public static ushort ToValue(this IEnumerable<Enum> array)
+        {
+            return BitConverter.ToUInt16(array.Cast<byte>().ToArray(), 0);
+        }
     }
 }

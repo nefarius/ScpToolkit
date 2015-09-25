@@ -132,7 +132,9 @@ namespace ScpControl.Usb
 
                 _hidReport[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : _ledOffsets[m_ControllerId]);
 
-                return SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0201, _hidReport, ref transfered);
+                return SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
+                    ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
+                    _hidReport, ref transfered);
             }
         }
 
@@ -235,7 +237,9 @@ namespace ScpControl.Usb
 
                     if (GlobalConfiguration.Instance.DisableLED) _hidReport[9] = 0;
 
-                    SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0201, _hidReport, ref transfered);
+                    SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
+                        ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One), 
+                        _hidReport, ref transfered);
                 }
             }
         }
