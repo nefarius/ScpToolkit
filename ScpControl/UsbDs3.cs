@@ -207,25 +207,16 @@ namespace ScpControl
 
                     m_Last = now;
 
+                    ledStatus = 0;
+
                     switch (Battery)
                     {
                         case DsBattery.Charging:
                             counterForLeds++;
                             counterForLeds %= (byte)m_Leds.Length;
-                            ledStatus = 0;
                             for (byte i = 0; i <= counterForLeds; i++)
                                 ledStatus |= m_Leds[i];
                             break;
-                        case DsBattery.Low:
-                            ledStatus = (byte)(m_Leds[0]);
-                            break;
-                        case DsBattery.Medium:
-                            ledStatus = (byte)(m_Leds[0] | m_Leds[1]);
-                            break;
-                        case DsBattery.High:
-                            ledStatus = (byte)(m_Leds[0] | m_Leds[1] | m_Leds[2]);
-                            break;
-                        case DsBattery.Full:
                         case DsBattery.Charged:
                             ledStatus = (byte)(m_Leds[0] | m_Leds[1] | m_Leds[2] | m_Leds[3]);
                             break;

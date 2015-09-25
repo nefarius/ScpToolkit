@@ -43,6 +43,7 @@ namespace ScpControl.Bluetooth
         };
 
         private readonly byte[] _leds = { 0x02, 0x04, 0x08, 0x10 };
+        private byte ledStatus = 0;
 
         private readonly byte[] _hidReport =
         {
@@ -84,7 +85,7 @@ namespace ScpControl.Bluetooth
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                _hidReport[11] = _leds[m_ControllerId];
+                _hidReport[11] = ledStatus;
             }
         }
 
@@ -262,17 +263,30 @@ namespace ScpControl.Bluetooth
 
                         if (m_Queued == 0) m_Queued = 1;
 
-                        if (Battery < DsBattery.Medium)
+                        switch (Battery)
                         {
-                            _hidReport[11] ^= _leds[m_ControllerId];
+                            case DsBattery.Low:
+                                ledStatus = (byte)(_leds[0]);
+                                break;
+                            case DsBattery.Medium:
+                                ledStatus = (byte)(_leds[0] | _leds[1]);
+                                break;
+                            case DsBattery.High:
+                                ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2]);
+                                break;
+                            case DsBattery.Full:
+                                ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2] | _leds[3]);
+                                break;
+                            default: ;
+                                break;
                         }
-                        else
-                        {
-                            _hidReport[11] |= _leds[m_ControllerId];
-                        }
-                    }
 
-                    if (GlobalConfiguration.Instance.DisableLED) _hidReport[11] = 0;
+                        if (GlobalConfiguration.Instance.DisableLED) ledStatus = 0;
+
+
+                        _hidReport[11] = ledStatus;
+                        
+                    }
 
                     #region Fake DS3 workaround
 
