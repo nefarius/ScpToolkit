@@ -95,12 +95,6 @@ namespace ScpControl.ScpCore
             set { Settings.Default.FlipAxisRy = value; }
         }
 
-        public bool DisableLED
-        {
-            get { return Settings.Default.DisableLed; }
-            set { Settings.Default.DisableLed = value; }
-        }
-
         public bool DisableRumble
         {
             get { return Settings.Default.DisableRumble; }
@@ -281,6 +275,33 @@ namespace ScpControl.ScpCore
         {
             get { return Settings.Default.Ds3LEDsFunction; }
             set { Settings.Default.Ds3LEDsFunction = value; }
+        }
+
+        public bool Ds3PadIDLEDsFlashCharging
+        {
+            get { return Settings.Default.Ds3PadIDLEDsFlashCharging; }
+            set { Settings.Default.Ds3PadIDLEDsFlashCharging = value; }
+        }
+
+        public bool Ds3LEDsCustom1
+        {
+            get { return Settings.Default.Ds3LEDsCustom1; }
+            set { Settings.Default.Ds3LEDsCustom1 = value; }
+        }
+        public bool Ds3LEDsCustom2
+        {
+            get { return Settings.Default.Ds3LEDsCustom2; }
+            set { Settings.Default.Ds3LEDsCustom2 = value; }
+        }
+        public bool Ds3LEDsCustom3
+        {
+            get { return Settings.Default.Ds3LEDsCustom3; }
+            set { Settings.Default.Ds3LEDsCustom3 = value; }
+        }
+        public bool Ds3LEDsCustom4
+        {
+            get { return Settings.Default.Ds3LEDsCustom4; }
+            set { Settings.Default.Ds3LEDsCustom4 = value; }
         }
 
         #endregion
