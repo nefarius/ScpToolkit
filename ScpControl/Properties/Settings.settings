@@ -89,8 +89,11 @@
     <Setting Name="BluetoothDisconnectSoundFile" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">Media\disconnect.flac</Value>
     </Setting>
-    <Setting Name="LEDsFlashingPeriod" Type="System.Int32" Scope="User">
+    <Setting Name="Ds3LEDsFlashingPeriod" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1500</Value>
+    </Setting>
+    <Setting Name="Ds3LEDsFunction" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

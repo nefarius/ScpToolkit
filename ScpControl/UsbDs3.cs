@@ -201,7 +201,7 @@ namespace ScpControl
                     }
                 }
 
-                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.LEDsPeriod && m_Packet > 0)
+                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod && m_Packet > 0)
                 {
                     var transfered = 0;
 

@@ -391,12 +391,24 @@ namespace ScpControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1500")]
-        public int LEDsFlashingPeriod {
+        public int Ds3LEDsFlashingPeriod {
             get {
-                return ((int)(this["LEDsFlashingPeriod"]));
+                return ((int)(this["Ds3LEDsFlashingPeriod"]));
             }
             set {
-                this["LEDsFlashingPeriod"] = value;
+                this["Ds3LEDsFlashingPeriod"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Ds3LEDsFunction {
+            get {
+                return ((int)(this["Ds3LEDsFunction"]));
+            }
+            set {
+                this["Ds3LEDsFunction"] = value;
             }
         }
     }
