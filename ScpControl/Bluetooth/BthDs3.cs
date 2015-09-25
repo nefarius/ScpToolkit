@@ -266,54 +266,34 @@ namespace ScpControl.Bluetooth
 
                         ledStatus = 0;
 
-                        switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
+                        switch (Battery)
                         {
-                            case 0:
-                                ledStatus = 0;
+                            case DsBattery.None:
+                                ledStatus = (byte)(_leds[0] | _leds[3]);
                                 break;
-                            case 1:
-                                ledStatus = _leds[m_ControllerId];
+                            case DsBattery.Dieing:
+                                counterForLeds++;
+                                counterForLeds %= 2;
+                                if (counterForLeds == 1)
+                                    ledStatus = _leds[0];
                                 break;
-                            case 2:
-                                switch (Battery)
-                                {
-                                    case DsBattery.None:
-                                        ledStatus = (byte)(_leds[0] | _leds[3]);
-                                        break;
-                                    case DsBattery.Dieing:
-                                        counterForLeds++;
-                                        counterForLeds %= 2;
-                                        if (counterForLeds == 1)
-                                            ledStatus = _leds[0];
-                                        break;
-                                    case DsBattery.Low:
-                                        ledStatus = (byte)(_leds[0]);
-                                        break;
-                                    case DsBattery.Medium:
-                                        ledStatus = (byte)(_leds[0] | _leds[1]);
-                                        break;
-                                    case DsBattery.High:
-                                        ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2]);
-                                        break;
-                                    case DsBattery.Full:
-                                        ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2] | _leds[3]);
-                                        break;
-                                    default: ;
-                                        break;
-                                }
+                            case DsBattery.Low:
+                                ledStatus = (byte)(_leds[0]);
                                 break;
-                            case 3:
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _leds[0];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _leds[1];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _leds[2];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _leds[3];
+                            case DsBattery.Medium:
+                                ledStatus = (byte)(_leds[0] | _leds[1]);
                                 break;
-                            default:
-                                ledStatus = 0;
+                            case DsBattery.High:
+                                ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2]);
+                                break;
+                            case DsBattery.Full:
+                                ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2] | _leds[3]);
+                                break;
+                            default: ;
                                 break;
                         }
 
-                        if (GlobalConfiguration.Instance.Ds3LEDsFunc == 0) ledStatus = 0;
+                        if (GlobalConfiguration.Instance.DisableLED) ledStatus = 0;
 
 
                         _hidReport[11] = ledStatus;
