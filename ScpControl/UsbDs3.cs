@@ -209,22 +209,50 @@ namespace ScpControl
 
                     ledStatus = 0;
 
-                    switch (Battery)
+                    switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
                     {
-                        case DsBattery.Charging:
-                            counterForLeds++;
-                            counterForLeds %= (byte)m_Leds.Length;
-                            for (byte i = 0; i <= counterForLeds; i++)
-                                ledStatus |= m_Leds[i];
+                        case 0:
+                            ledStatus = 0;
                             break;
-                        case DsBattery.Charged:
-                            ledStatus = (byte)(m_Leds[0] | m_Leds[1] | m_Leds[2] | m_Leds[3]);
+                        case 1:
+                            if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging)
+                            {
+                                counterForLeds++;
+                                counterForLeds %= 2;
+                                if (counterForLeds == 1)
+                                    ledStatus = m_Leds[m_ControllerId];
+                            }
+                            else ledStatus = m_Leds[m_ControllerId];
                             break;
-                        default: ;
+                        case 2:
+                            switch (Battery)
+                            {
+                                case DsBattery.None:
+                                    ledStatus = 0;
+                                    break;
+                                case DsBattery.Charging:
+                                    counterForLeds++;
+                                    counterForLeds %= (byte)m_Leds.Length;
+                                    for (byte i = 0; i <= counterForLeds; i++)
+                                        ledStatus |= m_Leds[i];
+                                    break;
+                                case DsBattery.Charged:
+                                    ledStatus = (byte)(m_Leds[0] | m_Leds[1] | m_Leds[2] | m_Leds[3]);
+                                    break;
+                                default: ;
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= m_Leds[0];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= m_Leds[1];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= m_Leds[2];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= m_Leds[3];
+                            break;
+                        default:
+                            ledStatus = 0;
                             break;
                     }
-
-                    if (GlobalConfiguration.Instance.DisableLED) ledStatus = 0;
 
                     m_Report[9] = ledStatus;
 
