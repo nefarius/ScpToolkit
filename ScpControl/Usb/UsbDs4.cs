@@ -129,7 +129,7 @@ namespace ScpControl.Usb
 
                 var transfered = 0;
 
-                if (SendTransfer(UsbHidRequestType.DeviceToHost, 0x01, 0x0312, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x0312, m_Buffer, ref transfered))
                 {
                     m_Master = new[]
                     {m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10]};
@@ -159,7 +159,7 @@ namespace ScpControl.Usb
 
             Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
 
-            if (SendTransfer(UsbHidRequestType.HostToDevice, 0x09, 0x0313, buffer, ref transfered))
+            if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {
                 Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, Remote);
             }
@@ -201,7 +201,7 @@ namespace ScpControl.Usb
 
             Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
 
-            if (SendTransfer(UsbHidRequestType.HostToDevice, 0x09, 0x0313, buffer, ref transfered))
+            if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {
                 for (var index = 0; index < m_Master.Length; index++)
                 {

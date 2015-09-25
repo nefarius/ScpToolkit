@@ -24,4 +24,27 @@
         HostToDevice = 0x21,
         DeviceToHost = 0xA1
     }
+
+    /// <summary>
+    ///     <see href="http://www.usb.org/developers/hidpage/HID1_11.pdf">Class-Specific Requests</see>
+    /// </summary>
+    /// <remarks>
+    /// Value       Description 
+    /// 0x01        GET_REPORT 
+    /// 0x02        GET_IDLE
+    /// 0x03        GET_PROTOCOL
+    /// 0x04-0x08   Reserved
+    /// 0x09        SET_REPORT
+    /// 0x0A        SET_IDLE
+    /// 0x0B        SET_PROTOCOL 
+    /// </remarks>
+    public enum UsbHidRequest : byte
+    {
+        GetReport = 0x01,
+        GetIdle = 0x02,
+        GetProtocol = 0x03,
+        SetReport = 0x09,
+        SetIdle = 0x0A,
+        SetProtocol = 0x0B
+    }
 }

@@ -167,10 +167,10 @@ namespace ScpControl
             return IsActive && Usb.WritePipe(_winUsbHandle, BulkOut, buffer, length, ref transfered, IntPtr.Zero);
         }
 
-        protected bool SendTransfer(UsbHidRequestType requestType, byte request, ushort value, byte[] buffer,
+        protected bool SendTransfer(UsbHidRequestType requestType, UsbHidRequest request, ushort value, byte[] buffer,
             ref int transfered)
         {
-            return SendTransfer((byte) requestType, request, value, buffer, ref transfered);
+            return SendTransfer((byte) requestType, (byte) request, value, buffer, ref transfered);
         }
 
         protected bool SendTransfer(byte requestType, byte request, ushort value, byte[] buffer, ref int transfered)
