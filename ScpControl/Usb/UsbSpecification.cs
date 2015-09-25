@@ -63,12 +63,4 @@ namespace ScpControl.Usb
     {
         One = 0x01
     }
-
-    public static class UsbHidReportRequestExtensions
-    {
-        public static ushort ToValue(this IEnumerable<Enum> array)
-        {
-            return BitConverter.ToUInt16(array.Cast<byte>().ToArray(), 0);
-        }
-    }
 }
