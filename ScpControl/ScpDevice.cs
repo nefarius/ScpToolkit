@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using log4net;
 using ScpControl.Driver;
+using ScpControl.Usb;
 
 namespace ScpControl
 {
@@ -164,6 +165,12 @@ namespace ScpControl
         protected bool WriteBulkPipe(byte[] buffer, int length, ref int transfered)
         {
             return IsActive && Usb.WritePipe(_winUsbHandle, BulkOut, buffer, length, ref transfered, IntPtr.Zero);
+        }
+
+        protected bool SendTransfer(UsbHidRequestType requestType, byte request, ushort value, byte[] buffer,
+            ref int transfered)
+        {
+            return SendTransfer((byte) requestType, request, value, buffer, ref transfered);
         }
 
         protected bool SendTransfer(byte requestType, byte request, ushort value, byte[] buffer, ref int transfered)

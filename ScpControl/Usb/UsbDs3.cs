@@ -71,12 +71,12 @@ namespace ScpControl.Usb
 
                 var transfered = 0;
 
-                if (SendTransfer(0xA1, 0x01, 0x03F5, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, 0x01, 0x03F5, m_Buffer, ref transfered))
                 {
                     m_Master = new[] { m_Buffer[2], m_Buffer[3], m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7] };
                 }
 
-                if (SendTransfer(0xA1, 0x01, 0x03F2, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, 0x01, 0x03F2, m_Buffer, ref transfered))
                 {
                     m_Local = new[] { m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7], m_Buffer[8], m_Buffer[9] };
                 }
@@ -98,7 +98,7 @@ namespace ScpControl.Usb
             {
                 var transfered = 0;
 
-                if (SendTransfer(0x21, 0x09, 0x03F4, _hidCommandEnable, ref transfered))
+                if (SendTransfer(UsbHidRequestType.HostToDevice, 0x09, 0x03F4, _hidCommandEnable, ref transfered))
                 {
                     base.Start();
                 }
@@ -132,7 +132,7 @@ namespace ScpControl.Usb
 
                 _hidReport[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : _ledOffsets[m_ControllerId]);
 
-                return SendTransfer(0x21, 0x09, 0x0201, _hidReport, ref transfered);
+                return SendTransfer(UsbHidRequestType.HostToDevice, 0x09, 0x0201, _hidReport, ref transfered);
             }
         }
 
@@ -141,7 +141,7 @@ namespace ScpControl.Usb
             var transfered = 0;
             byte[] buffer = { 0x00, 0x00, master[0], master[1], master[2], master[3], master[4], master[5] };
 
-            if (SendTransfer(0x21, 0x09, 0x03F5, buffer, ref transfered))
+            if (SendTransfer(UsbHidRequestType.HostToDevice, 0x09, 0x03F5, buffer, ref transfered))
             {
                 for (var index = 0; index < m_Master.Length; index++)
                 {
@@ -235,7 +235,7 @@ namespace ScpControl.Usb
 
                     if (GlobalConfiguration.Instance.DisableLED) _hidReport[9] = 0;
 
-                    SendTransfer(0x21, 0x09, 0x0201, _hidReport, ref transfered);
+                    SendTransfer(UsbHidRequestType.HostToDevice, 0x09, 0x0201, _hidReport, ref transfered);
                 }
             }
         }
