@@ -25,8 +25,12 @@ namespace ScpControl.Usb
     /// </remarks>
     public enum UsbHidRequestType : byte
     {
+        // Class-Specific Requests
         HostToDevice = 0x21,
-        DeviceToHost = 0xA1
+        DeviceToHost = 0xA1,
+        // Standard Requests
+        GetDescriptor = 0x81,
+        SetDescriptor = 0x01
     }
 
     /// <summary>
@@ -44,12 +48,16 @@ namespace ScpControl.Usb
     /// </remarks>
     public enum UsbHidRequest : byte
     {
+        // Class-Specific Requests
         GetReport = 0x01,
         GetIdle = 0x02,
         GetProtocol = 0x03,
         SetReport = 0x09,
         SetIdle = 0x0A,
-        SetProtocol = 0x0B
+        SetProtocol = 0x0B,
+        // Standard Requests
+        GetDescriptor = 0x06,
+        SetDescriptor = 0x07
     }
 
     public enum UsbHidReportRequestType : byte
@@ -62,5 +70,12 @@ namespace ScpControl.Usb
     public enum UsbHidReportRequestId : byte
     {
         One = 0x01
+    }
+
+    public enum UsbHidDescriptorType : byte
+    {
+        Hid = 0x21,
+        Report = 0x22,
+        PhysicalDescriptor = 0x23
     }
 }
