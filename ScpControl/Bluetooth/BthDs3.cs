@@ -310,9 +310,6 @@ namespace ScpControl.Bluetooth
                                 break;
                         }
 
-                        if (GlobalConfiguration.Instance.Ds3LEDsFunc == 0) ledStatus = 0;
-
-
                         _hidReport[11] = ledStatus;
 
                     }
