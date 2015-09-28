@@ -4,17 +4,17 @@
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
         xmlns:customControls="clr-namespace:ScpSettings.Controls"
         xmlns:local="clr-namespace:ScpSettings"
+        xmlns:bluetooth="clr-namespace:ScpControl.Bluetooth;assembly=ScpControl"
         Title="ScpToolkit Global Configuration" Height="650" Width="480" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing" Initialized="Window_Initialized" Icon="Scp.ico">
-    <Window.Resources>
-        <local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />
-    </Window.Resources>
     <Grid Background="#FF1B1B1B">
         <Grid.Resources>
+            <bluetooth:BthDs4 x:Key="BthDs4" />
+            <local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />
             <Style TargetType="{x:Type TextBlock}">
-                <Setter Property="TextWrapping" Value="Wrap"/>
-                <Setter Property="TextAlignment" Value="Justify"/>
-                <Setter Property="Margin" Value="0,0,0,10"/>
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="TextAlignment" Value="Justify" />
+                <Setter Property="Margin" Value="0,0,0,10" />
             </Style>
         </Grid.Resources>
 
@@ -27,17 +27,17 @@
                 <ScrollViewer>
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
                         <!-- Flip axis -->
                         <GroupBox Header="Flip Axis">
                             <StackPanel>
                                 <TextBlock Margin="0,0,0,10">
-                                Ticking one of the checkboxes below inverts the axis direction to its opposite.
+                                    Ticking one of the checkboxes below inverts the axis direction to its opposite.
                                 </TextBlock>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -51,24 +51,24 @@
                                     </Grid.ColumnDefinitions>
 
                                     <CheckBox Grid.Row="0"
-                                      Grid.Column="0"
-                                      IsChecked="{Binding Path=FlipLX}">
+                                              Grid.Column="0"
+                                              IsChecked="{Binding Path=FlipLX}">
                                         Left thumb X-Axis
                                     </CheckBox>
 
                                     <CheckBox Grid.Row="1" Grid.Column="0"
-                                      IsChecked="{Binding Path=FlipLY}">
+                                              IsChecked="{Binding Path=FlipLY}">
                                         Left thumb Y-Axis
                                     </CheckBox>
 
                                     <CheckBox Grid.Row="0"
-                                      Grid.Column="1"
-                                      IsChecked="{Binding Path=FlipRX}">
+                                              Grid.Column="1"
+                                              IsChecked="{Binding Path=FlipRX}">
                                         Right thumb X-Axis
                                     </CheckBox>
 
                                     <CheckBox Grid.Row="1" Grid.Column="1"
-                                      IsChecked="{Binding Path=FlipRY}">
+                                              IsChecked="{Binding Path=FlipRY}">
                                         Right thumb Y-Axis
                                     </CheckBox>
                                 </Grid>
@@ -77,7 +77,7 @@
 
                         <!-- Dead-zone threshold -->
                         <GroupBox Header="Dead-zone threshold"
-                              Grid.Row="1">
+                                  Grid.Row="1">
                             <StackPanel>
                                 <TextBlock>
                                     The so called "Dead Zone" is a virtual area on the controller where the Thumb Sticks are in their absolute zero/default position. Some controllers might be more sensitive to movement of the entire controller, falsely interpreting it as movement on the sticks. If your thumb sticks tend to jitter around even without touching anything, try to increase the values below.
@@ -94,40 +94,40 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Row="0" Grid.Column="0"
-                                   HorizontalAlignment="Right">
+                                           HorizontalAlignment="Right">
                                         Left Stick
                                     </Label>
 
                                     <Label Grid.Row="1" Grid.Column="0"
-                                   HorizontalAlignment="Right">
+                                           HorizontalAlignment="Right">
                                         Right Stick
                                     </Label>
 
                                     <Slider Grid.Row="0" Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Margin="5" Maximum="127" LargeChange="8"
-                                    Value="{Binding Path=DeadZoneL}" />
+                                            VerticalAlignment="Center"
+                                            Margin="5" Maximum="127" LargeChange="8"
+                                            Value="{Binding Path=DeadZoneL}" />
 
                                     <Slider Grid.Row="1" Grid.Column="1"
-                                    VerticalAlignment="Center"
-                                    Margin="5" Maximum="127" LargeChange="8"
-                                    Value="{Binding Path=DeadZoneR}" />
+                                            VerticalAlignment="Center"
+                                            Margin="5" Maximum="127" LargeChange="8"
+                                            Value="{Binding Path=DeadZoneR}" />
                                 </Grid>
                             </StackPanel>
                         </GroupBox>
 
                         <!-- Idle Timeout -->
                         <GroupBox Header="Idle Timeout: 10 minutes"
-                              x:Name="IdleTimoutGroupBox"
-                              Grid.Row="2">
+                                  x:Name="IdleTimoutGroupBox"
+                                  Grid.Row="2">
                             <StackPanel>
                                 <TextBlock>
-                                Defines the timespan after the controller gets shut off automatically if no input changes are received.
+                                    Defines the timespan after the controller gets shut off automatically if no input changes are received.
                                 </TextBlock>
                                 <Slider Maximum="30"
-                                Value="{Binding Path=IdleTimeout}"
-                                ValueChanged="IdleTimoutSlider_ValueChanged"
-                                LargeChange="5" SmallChange="1" />
+                                        Value="{Binding Path=IdleTimeout}"
+                                        ValueChanged="IdleTimoutSlider_ValueChanged"
+                                        LargeChange="5" SmallChange="1" />
                             </StackPanel>
                         </GroupBox>
 
@@ -170,7 +170,7 @@
                                 Defines the minimal duration the rumble request will be sent to the controller until it stops.
                             </TextBlock>
                             <Slider LargeChange="1" Maximum="16"
-                                Value="{Binding Path=Latency}" ValueChanged="Slider_ValueChanged" />
+                                    Value="{Binding Path=Latency}" ValueChanged="Slider_ValueChanged" />
                         </StackPanel>
                     </GroupBox>
 
@@ -261,43 +261,17 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0">
-                                The DualShock 4 has the capability to alter the frequency it's sending input to the Bluetooth host. The default value is a good tradeoff between accuracy and performance consumption. Move the slider to the left if you're experiencing high CPU consumption, move it to the right for maximum accuracy and lowest latency. If you change this value, you have to re-connect your controller for it to take affect.
+                                The DualShock 4 has the capability to alter the frequency it's sending input to the Bluetooth host. The default value is the highest possible rate the controller can utilize. Choose a lower value from the box below if you're experiencing high CPU consumption, leave it at the greatest value for maximum accuracy and lowest latency. If you change this setting, you have to re-connect your controller for it to take affect.
                             </TextBlock>
 
-                            <Grid Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Label Grid.Column="0"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Center">
-                                    Slow
-                                </Label>
-
-                                <Slider Grid.Column="1"
-                                        VerticalAlignment="Center"
-                                        RenderTransformOrigin="0.5,0.5" Maximum="60" Minimum="1" SmallChange="1"
-                                        LargeChange="10"
-                                        Value="{Binding Path=Ds4InputUpdateDelay}">
-                                    <Slider.RenderTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform />
-                                            <SkewTransform />
-                                            <RotateTransform Angle="-180" />
-                                            <TranslateTransform />
-                                        </TransformGroup>
-                                    </Slider.RenderTransform>
-                                </Slider>
-
-                                <Label Grid.Column="2"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center">
-                                    Fast
-                                </Label>
-                            </Grid>
+                            <DockPanel Grid.Row="1">
+                                <Label HorizontalAlignment="Right">HID Input update rate: </Label>
+                                <ComboBox
+                                    ItemsSource="{Binding Source={StaticResource BthDs4}, Path=UpdateRates}"
+                                    SelectedValue="{Binding Path=Ds4InputUpdateDelay, Mode=TwoWay}"
+                                    DisplayMemberPath="Value"
+                                    SelectedValuePath="Key" />
+                            </DockPanel>
                         </Grid>
                     </GroupBox>
 
@@ -307,8 +281,8 @@
                               Grid.Row="1">
                         <StackPanel>
                             <Slider Maximum="255"
-                                Value="{Binding Path=Brightness}" LargeChange="16"
-                                ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1" />
+                                    Value="{Binding Path=Brightness}" LargeChange="16"
+                                    ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1" />
                             <TextBlock>
                                 Hint: move the slider all the way to the left to disable the Light Bar entirely.
                             </TextBlock>
@@ -355,27 +329,30 @@
                         <TextBlock>
                             Startup:
                         </TextBlock>
-                        <customControls:FileBrowserControl FilePath="{Binding Path=StartupSoundFile, Mode=TwoWay}"/>
+                        <customControls:FileBrowserControl FilePath="{Binding Path=StartupSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             USB connect:
                         </TextBlock>
-                        <customControls:FileBrowserControl FilePath="{Binding Path=UsbConnectSoundFile, Mode=TwoWay}"/>
+                        <customControls:FileBrowserControl FilePath="{Binding Path=UsbConnectSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             USB disconnect:
                         </TextBlock>
-                        <customControls:FileBrowserControl FilePath="{Binding Path=UsbDisconnectSoundFile, Mode=TwoWay}"/>
+                        <customControls:FileBrowserControl
+                            FilePath="{Binding Path=UsbDisconnectSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             Bluetooth connect:
                         </TextBlock>
-                        <customControls:FileBrowserControl FilePath="{Binding Path=BluetoothConnectSoundFile, Mode=TwoWay}"/>
+                        <customControls:FileBrowserControl
+                            FilePath="{Binding Path=BluetoothConnectSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             Bluetooth disconnect:
                         </TextBlock>
-                        <customControls:FileBrowserControl FilePath="{Binding Path=BluetoothDisconnectSoundFile, Mode=TwoWay}"/>
+                        <customControls:FileBrowserControl
+                            FilePath="{Binding Path=BluetoothDisconnectSoundFile, Mode=TwoWay}" />
 
                     </StackPanel>
                 </GroupBox>

@@ -36,7 +36,7 @@ namespace ScpControl
         {
             var args = new ArrivalEventArgs(Arrived);
 
-            On_Arrival(this, args);
+            OnDeviceArrival(this, args);
 
             return args.Handled;
         }
@@ -87,12 +87,12 @@ namespace ScpControl
             return DsPadId.None;
         }
 
-        protected virtual void On_Arrival(object sender, ArrivalEventArgs e)
+        protected virtual void OnDeviceArrival(object sender, ArrivalEventArgs e)
         {
             if (Arrival != null) Arrival(this, e);
         }
 
-        protected virtual void On_Report(object sender, ReportEventArgs e)
+        protected virtual void OnHidReportReceived(object sender, ReportEventArgs e)
         {
             if (Report != null) Report(sender, e);
         }

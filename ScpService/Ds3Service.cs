@@ -12,6 +12,7 @@ using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.ScpCore;
+using ScpControl.Usb;
 
 namespace ScpService
 {

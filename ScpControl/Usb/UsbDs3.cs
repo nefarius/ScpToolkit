@@ -2,17 +2,21 @@
 using System.ComponentModel;
 using ScpControl.ScpCore;
 
-namespace ScpControl
+namespace ScpControl.Usb
 {
+    /// <summary>
+    ///     Represents a DualShock 3 controller connected via USB.
+    /// </summary>
     public partial class UsbDs3 : UsbDevice
     {
         public static string USB_CLASS_GUID = "{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}";
-        private byte[] m_Enable = { 0x42, 0x0C, 0x00, 0x00 };
-        private byte[] m_Leds = { 0x02, 0x04, 0x08, 0x10 };
-        private byte counterForLeds = 0;
-        private byte ledStatus = 0;
 
-        private byte[] m_Report =
+        #region HID Reports
+
+        private readonly byte[] _hidCommandEnable = { 0x42, 0x0C, 0x00, 0x00 };
+        private readonly byte[] _ledOffsets = { 0x02, 0x04, 0x08, 0x10 };
+
+        private readonly byte[] _hidReport =
         {
             0x00, 0xFF, 0x00, 0xFF, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00,
@@ -25,6 +29,10 @@ namespace ScpControl
             0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00
         };
+
+        #endregion
+
+        #region Ctors
 
         public UsbDs3()
             : base(USB_CLASS_GUID)
@@ -40,6 +48,11 @@ namespace ScpControl
             InitializeComponent();
         }
 
+        #endregion
+
+        private byte counterForLeds = 0;
+        private byte ledStatus = 0;
+
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }
@@ -48,7 +61,7 @@ namespace ScpControl
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                m_Report[9] = ledStatus;
+                _hidReport[9] = ledStatus;
             }
         }
 
@@ -61,19 +74,20 @@ namespace ScpControl
 
                 var transfered = 0;
 
-                if (SendTransfer(0xA1, 0x01, 0x03F5, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x03F5, m_Buffer, ref transfered))
                 {
                     m_Master = new[] { m_Buffer[2], m_Buffer[3], m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7] };
                 }
 
-                if (SendTransfer(0xA1, 0x01, 0x03F2, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x03F2, m_Buffer, ref transfered))
                 {
                     m_Local = new[] { m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7], m_Buffer[8], m_Buffer[9] };
                 }
 
                 m_Mac = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
                     m_Local[3], m_Local[4], m_Local[5]);
-                Log.DebugFormat("MAC = {0}", m_Mac);
+
+                Log.InfoFormat("Successfully opened device with MAC address {0}", m_Mac);
             }
 
             return State == DsState.Reserved;
@@ -87,7 +101,7 @@ namespace ScpControl
             {
                 var transfered = 0;
 
-                if (SendTransfer(0x21, 0x09, 0x03F4, m_Enable, ref transfered))
+                if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x03F4, _hidCommandEnable, ref transfered))
                 {
                     base.Start();
                 }
@@ -96,6 +110,12 @@ namespace ScpControl
             return State == DsState.Connected;
         }
 
+        /// <summary>
+        ///     Send Rumble request to controller.
+        /// </summary>
+        /// <param name="large">Larg motor.</param>
+        /// <param name="small">Small motor.</param>
+        /// <returns>Always true.</returns>
         public override bool Rumble(byte large, byte small)
         {
             lock (this)
@@ -104,18 +124,20 @@ namespace ScpControl
 
                 if (GlobalConfiguration.Instance.DisableRumble)
                 {
-                    m_Report[2] = 0;
-                    m_Report[4] = 0;
+                    _hidReport[2] = 0;
+                    _hidReport[4] = 0;
                 }
                 else
                 {
-                    m_Report[2] = (byte)(small > 0 ? 0x01 : 0x00);
-                    m_Report[4] = large;
+                    _hidReport[2] = (byte)(small > 0 ? 0x01 : 0x00);
+                    _hidReport[4] = large;
                 }
 
-                m_Report[9] = ledStatus;
+                _hidReport[9] = ledStatus;
 
-                return SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
+                return SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
+                    ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
+                    _hidReport, ref transfered);
             }
         }
 
@@ -124,7 +146,7 @@ namespace ScpControl
             var transfered = 0;
             byte[] buffer = { 0x00, 0x00, master[0], master[1], master[2], master[3], master[4], master[5] };
 
-            if (SendTransfer(0x21, 0x09, 0x03F5, buffer, ref transfered))
+            if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x03F5, buffer, ref transfered))
             {
                 for (var index = 0; index < m_Master.Length; index++)
                 {
@@ -139,9 +161,9 @@ namespace ScpControl
             return false;
         }
 
-        protected override void Parse(byte[] Report)
+        protected override void Parse(byte[] report)
         {
-            if (Report[0] != 0x01) return;
+            if (report[0] != 0x01) return;
 
             if (m_Packet++ + 1 < m_Packet)
             {
@@ -149,14 +171,14 @@ namespace ScpControl
                 m_Packet = 0;
             }
 
-            m_ReportArgs.Report[2] = m_BatteryStatus = Report[30];
+            m_ReportArgs.Report[2] = m_BatteryStatus = report[30];
 
             m_ReportArgs.Report[4] = (byte)(m_Packet >> 0 & 0xFF);
             m_ReportArgs.Report[5] = (byte)(m_Packet >> 8 & 0xFF);
             m_ReportArgs.Report[6] = (byte)(m_Packet >> 16 & 0xFF);
             m_ReportArgs.Report[7] = (byte)(m_Packet >> 24 & 0xFF);
 
-            var buttons = (Ds3Button)((Report[2] << 0) | (Report[3] << 8) | (Report[4] << 16) | (Report[5] << 24));
+            var buttons = (Ds3Button)((report[2] << 0) | (report[3] << 8) | (report[4] << 16) | (report[5] << 24));
             var trigger = false;
 
             if ((buttons & Ds3Button.L1) == Ds3Button.L1
@@ -165,12 +187,12 @@ namespace ScpControl
                 )
             {
                 trigger = true;
-                Report[4] ^= 0x1;
+                report[4] ^= 0x1;
             }
 
             for (var index = 8; index < 57; index++)
             {
-                m_ReportArgs.Report[index] = Report[index - 8];
+                m_ReportArgs.Report[index] = report[index - 8];
             }
 
             if (trigger && !m_IsDisconnect)
@@ -220,9 +242,9 @@ namespace ScpControl
                                 counterForLeds++;
                                 counterForLeds %= 2;
                                 if (counterForLeds == 1)
-                                    ledStatus = m_Leds[m_ControllerId];
+                                    ledStatus = _ledOffsets[m_ControllerId];
                             }
-                            else ledStatus = m_Leds[m_ControllerId];
+                            else ledStatus = _ledOffsets[m_ControllerId];
                             break;
                         case 2:
                             switch (Battery)
@@ -232,31 +254,33 @@ namespace ScpControl
                                     break;
                                 case DsBattery.Charging:
                                     counterForLeds++;
-                                    counterForLeds %= (byte)m_Leds.Length;
+                                    counterForLeds %= (byte)_ledOffsets.Length;
                                     for (byte i = 0; i <= counterForLeds; i++)
-                                        ledStatus |= m_Leds[i];
+                                        ledStatus |= _ledOffsets[i];
                                     break;
                                 case DsBattery.Charged:
-                                    ledStatus = (byte)(m_Leds[0] | m_Leds[1] | m_Leds[2] | m_Leds[3]);
+                                    ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
                                     break;
                                 default: ;
                                     break;
                             }
                             break;
                         case 3:
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= m_Leds[0];
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= m_Leds[1];
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= m_Leds[2];
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= m_Leds[3];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _ledOffsets[0];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _ledOffsets[1];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _ledOffsets[2];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _ledOffsets[3];
                             break;
                         default:
                             ledStatus = 0;
                             break;
                     }
 
-                    m_Report[9] = ledStatus;
+                    _hidReport[9] = ledStatus;
 
-                    SendTransfer(0x21, 0x09, 0x0201, m_Report, ref transfered);
+                    SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
+                        ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One), 
+                        _hidReport, ref transfered);
                 }
             }
         }

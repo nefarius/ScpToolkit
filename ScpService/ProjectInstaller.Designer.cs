@@ -39,7 +39,7 @@
             // 
             // serviceInstaller
             // 
-            this.serviceInstaller.DisplayName = "SCP DS3 Service";
+            this.serviceInstaller.DisplayName = "SCP DSx Service";
             this.serviceInstaller.ServiceName = "Ds3Service";
             this.serviceInstaller.ServicesDependedOn = new string[] {
         "ScpVBus"};

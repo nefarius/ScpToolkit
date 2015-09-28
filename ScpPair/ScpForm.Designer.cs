@@ -1,4 +1,6 @@
-﻿namespace ScpPair
+﻿using ScpControl.Usb;
+
+namespace ScpPair
 {
     partial class ScpForm
     {
@@ -29,7 +31,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.usbDevice = new ScpControl.UsbDs3(this.components);
+            this.usbDevice = new UsbDs3(this.components);
             this.tmEnable = new System.Windows.Forms.Timer(this.components);
             this.tbMaster = new System.Windows.Forms.TextBox();
             this.lblLocal = new System.Windows.Forms.Label();
@@ -134,7 +136,7 @@
 
         #endregion
 
-        private ScpControl.UsbDs3 usbDevice;
+        private UsbDs3 usbDevice;
         private System.Windows.Forms.Timer tmEnable;
         private System.Windows.Forms.TextBox tbMaster;
         private System.Windows.Forms.Label lblLocal;

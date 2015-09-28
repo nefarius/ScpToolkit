@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using log4net;
 using ScpControl.Driver;
+using ScpControl.Usb;
 
 namespace ScpControl
 {
@@ -13,8 +18,9 @@ namespace ScpControl
     public partial class ScpDevice : Component
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        protected static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly WinUsbWrapper Usb = WinUsbWrapper.Instance;
+
+        #region Ctors
 
         protected ScpDevice()
         {
@@ -35,15 +41,37 @@ namespace ScpControl
             this._class = new Guid(Class);
         }
 
+        #endregion
+
         protected bool IsActive { get; set; }
 
         public string Path { get; protected set; }
+
+        public short VendorId { get; private set; }
+
+        public short ProductId { get; private set; }
+
+        private void GetHardwareId(string devicePath)
+        {
+            // regex to extract vendor ID and product ID from hardware ID string
+            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
+            // matched groups
+            var matches = regex.Match(devicePath).Groups;
+
+            // very basic check
+            if (matches.Count < 3)
+                return;
+
+            // get values
+            VendorId = short.Parse(matches[1].Value, NumberStyles.HexNumber);
+            ProductId = short.Parse(matches[2].Value, NumberStyles.HexNumber);
+        }
 
         public virtual bool Open(int instance = 0)
         {
             var devicePath = string.Empty;
 
-            if (Find(_class, ref devicePath, instance))
+            if (FindDevice(_class, ref devicePath, instance))
             {
                 Open(devicePath);
             }
@@ -53,6 +81,8 @@ namespace ScpControl
 
         public virtual bool Open(string devicePath)
         {
+            GetHardwareId(devicePath);
+
             Path = devicePath.ToUpper();
 
             if (GetDeviceHandle(Path))
@@ -71,7 +101,7 @@ namespace ScpControl
                     else
                     {
                         Usb.Free(_winUsbHandle);
-                        _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+                        _winUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
                     }
                 }
                 else
@@ -92,14 +122,14 @@ namespace ScpControl
         {
             IsActive = false;
 
-            if (!(_winUsbHandle == (IntPtr) INVALID_HANDLE_VALUE))
+            if (!(_winUsbHandle == (IntPtr)INVALID_HANDLE_VALUE))
             {
                 Usb.AbortPipe(_winUsbHandle, IntIn);
                 Usb.AbortPipe(_winUsbHandle, BulkIn);
                 Usb.AbortPipe(_winUsbHandle, BulkOut);
 
                 Usb.Free(_winUsbHandle);
-                _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+                _winUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
             }
 
             if (FileHandle != IntPtr.Zero)
@@ -117,42 +147,53 @@ namespace ScpControl
             return Stop();
         }
 
+        protected static ushort ToValue(UsbHidReportRequestType type, UsbHidReportRequestId id)
+        {
+            return BitConverter.ToUInt16(new[] { (byte)id, (byte)type }, 0);
+        }
+
         #region WinUSB wrapper methods
 
-        protected bool ReadIntPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool ReadIntPipe(byte[] buffer, int length, ref int transfered)
         {
-            return IsActive && Usb.ReadPipe(_winUsbHandle, IntIn, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && Usb.ReadPipe(_winUsbHandle, IntIn, buffer, length, ref transfered, IntPtr.Zero);
         }
 
-        protected bool ReadBulkPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool ReadBulkPipe(byte[] buffer, int length, ref int transfered)
         {
-            return IsActive && Usb.ReadPipe(_winUsbHandle, BulkIn, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && Usb.ReadPipe(_winUsbHandle, BulkIn, buffer, length, ref transfered, IntPtr.Zero);
         }
 
-        protected bool WriteIntPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool WriteIntPipe(byte[] buffer, int length, ref int transfered)
         {
-            return IsActive && Usb.WritePipe(_winUsbHandle, IntOut, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && Usb.WritePipe(_winUsbHandle, IntOut, buffer, length, ref transfered, IntPtr.Zero);
         }
 
-        protected bool WriteBulkPipe(byte[] Buffer, int Length, ref int Transfered)
+        protected bool WriteBulkPipe(byte[] buffer, int length, ref int transfered)
         {
-            return IsActive && Usb.WritePipe(_winUsbHandle, BulkOut, Buffer, Length, ref Transfered, IntPtr.Zero);
+            return IsActive && Usb.WritePipe(_winUsbHandle, BulkOut, buffer, length, ref transfered, IntPtr.Zero);
         }
 
-        protected bool SendTransfer(byte RequestType, byte Request, ushort Value, byte[] Buffer, ref int Transfered)
+        protected bool SendTransfer(UsbHidRequestType requestType, UsbHidRequest request, ushort value, byte[] buffer,
+            ref int transfered)
+        {
+            return SendTransfer((byte)requestType, (byte)request, value, buffer, ref transfered);
+        }
+
+        protected bool SendTransfer(byte requestType, byte request, ushort value, byte[] buffer, ref int transfered)
         {
             if (!IsActive) return false;
 
             var setup = new WINUSB_SETUP_PACKET
             {
-                RequestType = RequestType,
-                Request = Request,
-                Value = Value,
+                RequestType = requestType,
+                Request = request,
+                Value = value,
                 Index = 0,
-                Length = (ushort) Buffer.Length
+                Length = (ushort)buffer.Length
             };
 
-            return Usb.ControlTransfer(_winUsbHandle, setup, Buffer, Buffer.Length, ref Transfered, IntPtr.Zero);
+            return Usb.ControlTransfer(_winUsbHandle, setup, buffer, buffer.Length, ref transfered, IntPtr.Zero);
         }
 
         #endregion
@@ -201,10 +242,12 @@ namespace ScpControl
             public int dbcc_devicetype;
             public int dbcc_reserved;
 
-            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)] public byte[]
+            [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = 16)]
+            public byte[]
                 dbcc_classguid;
 
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 255)] public char[] dbcc_name;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 255)]
+            public char[] dbcc_name;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -246,7 +289,7 @@ namespace ScpControl
             RAW_IO = 7
         }
 
-        
+
 
         protected enum USB_DEVICE_SPEED
         {
@@ -268,7 +311,7 @@ namespace ScpControl
             internal byte MaxPower;
         }
 
-        
+
 
         protected const int DIF_PROPERTYCHANGE = 0x12;
         protected const int DICS_ENABLE = 1;
@@ -299,7 +342,7 @@ namespace ScpControl
         private Guid _class = Guid.Empty;
 
         protected IntPtr FileHandle = IntPtr.Zero;
-        private IntPtr _winUsbHandle = (IntPtr) INVALID_HANDLE_VALUE;
+        private IntPtr _winUsbHandle = (IntPtr)INVALID_HANDLE_VALUE;
 
         protected byte IntIn = 0xFF;
         protected byte IntOut = 0xFF;
@@ -373,26 +416,26 @@ namespace ScpControl
 
         #region Protected Methods
 
-        protected virtual bool Find(Guid Target, ref string Path, int Instance = 0)
+        protected virtual bool FindDevice(Guid target, ref string path, int instance = 0)
         {
             var detailDataBuffer = IntPtr.Zero;
             var deviceInfoSet = IntPtr.Zero;
 
             try
             {
-                SP_DEVICE_INTERFACE_DATA DeviceInterfaceData = new SP_DEVICE_INTERFACE_DATA(),
+                SP_DEVICE_INTERFACE_DATA deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA(),
                     da = new SP_DEVICE_INTERFACE_DATA();
                 int bufferSize = 0, memberIndex = 0;
 
-                deviceInfoSet = SetupDiGetClassDevs(ref Target, IntPtr.Zero, IntPtr.Zero,
+                deviceInfoSet = SetupDiGetClassDevs(ref target, IntPtr.Zero, IntPtr.Zero,
                     DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
-                DeviceInterfaceData.cbSize = da.cbSize = Marshal.SizeOf(DeviceInterfaceData);
+                deviceInterfaceData.cbSize = da.cbSize = Marshal.SizeOf(deviceInterfaceData);
 
-                while (SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref Target, memberIndex,
-                    ref DeviceInterfaceData))
+                while (SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref target, memberIndex,
+                    ref deviceInterfaceData))
                 {
-                    SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, IntPtr.Zero, 0,
+                    SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, IntPtr.Zero, 0,
                         ref bufferSize, ref da);
                     {
                         detailDataBuffer = Marshal.AllocHGlobal(bufferSize);
@@ -400,15 +443,15 @@ namespace ScpControl
                         Marshal.WriteInt32(detailDataBuffer,
                             (IntPtr.Size == 4) ? (4 + Marshal.SystemDefaultCharSize) : 8);
 
-                        if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, detailDataBuffer,
+                        if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, detailDataBuffer,
                             bufferSize, ref bufferSize, ref da))
                         {
                             var pDevicePathName = detailDataBuffer + 4;
 
-                            Path = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
+                            path = (Marshal.PtrToStringAuto(pDevicePathName) ?? "ERROR").ToUpper();
                             Marshal.FreeHGlobal(detailDataBuffer);
 
-                            if (memberIndex == Instance) return true;
+                            if (memberIndex == instance) return true;
                         }
                         else Marshal.FreeHGlobal(detailDataBuffer);
                     }
@@ -432,26 +475,26 @@ namespace ScpControl
             return false;
         }
 
-        protected virtual bool GetDeviceInstance(ref string Instance)
+        protected virtual bool GetDeviceInstance(ref string instance)
         {
             var detailDataBuffer = IntPtr.Zero;
             var deviceInfoSet = IntPtr.Zero;
 
             try
             {
-                SP_DEVICE_INTERFACE_DATA DeviceInterfaceData = new SP_DEVICE_INTERFACE_DATA(),
+                SP_DEVICE_INTERFACE_DATA deviceInterfaceData = new SP_DEVICE_INTERFACE_DATA(),
                     da = new SP_DEVICE_INTERFACE_DATA();
                 int bufferSize = 0, memberIndex = 0;
 
                 deviceInfoSet = SetupDiGetClassDevs(ref _class, IntPtr.Zero, IntPtr.Zero,
                     DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
-                DeviceInterfaceData.cbSize = da.cbSize = Marshal.SizeOf(DeviceInterfaceData);
+                deviceInterfaceData.cbSize = da.cbSize = Marshal.SizeOf(deviceInterfaceData);
 
                 while (SetupDiEnumDeviceInterfaces(deviceInfoSet, IntPtr.Zero, ref _class, memberIndex,
-                    ref DeviceInterfaceData))
+                    ref deviceInterfaceData))
                 {
-                    SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, IntPtr.Zero, 0,
+                    SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, IntPtr.Zero, 0,
                         ref bufferSize, ref da);
                     {
                         detailDataBuffer = Marshal.AllocHGlobal(bufferSize);
@@ -459,21 +502,21 @@ namespace ScpControl
                         Marshal.WriteInt32(detailDataBuffer,
                             (IntPtr.Size == 4) ? (4 + Marshal.SystemDefaultCharSize) : 8);
 
-                        if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref DeviceInterfaceData, detailDataBuffer,
+                        if (SetupDiGetDeviceInterfaceDetail(deviceInfoSet, ref deviceInterfaceData, detailDataBuffer,
                             bufferSize, ref bufferSize, ref da))
                         {
                             var pDevicePathName = detailDataBuffer + 4;
 
-                            var Current = Marshal.PtrToStringAuto(pDevicePathName).ToUpper();
+                            var current = (Marshal.PtrToStringAuto(pDevicePathName) ?? "ERROR").ToUpper();
                             Marshal.FreeHGlobal(detailDataBuffer);
 
-                            if (Current == Path)
+                            if (current == Path)
                             {
-                                var nBytes = 256;
+                                const int nBytes = 256;
                                 var ptrInstanceBuf = Marshal.AllocHGlobal(nBytes);
 
                                 CM_Get_Device_ID(da.Flags, ptrInstanceBuf, nBytes, 0);
-                                Instance = Marshal.PtrToStringAuto(ptrInstanceBuf).ToUpper();
+                                instance = (Marshal.PtrToStringAuto(ptrInstanceBuf) ?? "ERROR").ToUpper();
 
                                 Marshal.FreeHGlobal(ptrInstanceBuf);
                                 return true;
@@ -501,12 +544,12 @@ namespace ScpControl
             return false;
         }
 
-        protected virtual bool GetDeviceHandle(string Path)
+        protected virtual bool GetDeviceHandle(string path)
         {
-            FileHandle = CreateFile(Path, (GENERIC_WRITE | GENERIC_READ), FILE_SHARE_READ | FILE_SHARE_WRITE,
+            FileHandle = CreateFile(path, (GENERIC_WRITE | GENERIC_READ), FILE_SHARE_READ | FILE_SHARE_WRITE,
                 IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, 0);
 
-            if (FileHandle == IntPtr.Zero || FileHandle == (IntPtr) INVALID_HANDLE_VALUE)
+            if (FileHandle == IntPtr.Zero || FileHandle == (IntPtr)INVALID_HANDLE_VALUE)
             {
                 FileHandle = IntPtr.Zero;
                 var lastError = GetLastError();
@@ -577,7 +620,7 @@ namespace ScpControl
             }
         }
 
-        protected virtual bool RestartDevice(string InstanceId)
+        protected virtual bool RestartDevice(string instanceId)
         {
             var deviceInfoSet = IntPtr.Zero;
 
@@ -589,7 +632,7 @@ namespace ScpControl
                 deviceInfoSet = SetupDiGetClassDevs(ref _class, IntPtr.Zero, IntPtr.Zero,
                     DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
-                if (SetupDiOpenDeviceInfo(deviceInfoSet, InstanceId, IntPtr.Zero, 0, ref deviceInterfaceData))
+                if (SetupDiOpenDeviceInfo(deviceInfoSet, instanceId, IntPtr.Zero, 0, ref deviceInterfaceData))
                 {
                     var props = new SP_PROPCHANGE_PARAMS();
 

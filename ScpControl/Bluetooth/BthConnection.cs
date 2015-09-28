@@ -65,7 +65,6 @@ namespace ScpControl.Bluetooth
         public bool CanStartHid { get; set; }
         public bool CanStartService { get; set; }
         public bool IsServiceStarted { get; set; }
-        public bool ServiceByPass { get; set; }
         public bool IsStarted { get; set; }
         public bool IsFake { get; set; }
 

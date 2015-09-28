@@ -38,6 +38,9 @@ namespace ScpControl.Driver
         {
             uint uninstalled = 0;
 
+            if (!Directory.Exists(DriverDirectory))
+                return uninstalled;
+
             foreach (
                 var file in
                     Directory.GetFiles(DriverDirectory)
@@ -76,6 +79,9 @@ namespace ScpControl.Driver
         {
             uint uninstalled = 0;
 
+            if (!Directory.Exists(DriverDirectory))
+                return uninstalled;
+
             foreach (
                 var file in
                     Directory.GetFiles(DriverDirectory)
@@ -113,6 +119,9 @@ namespace ScpControl.Driver
         public static uint UninstallDualShock4Controllers(ref bool rebootRequired)
         {
             uint uninstalled = 0;
+
+            if (!Directory.Exists(DriverDirectory))
+                return uninstalled;
 
             foreach (
                 var file in

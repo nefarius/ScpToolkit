@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
 
-namespace ScpProfiler.Value_Converters
+namespace ScpControl.Value_Converters
 {
     public class EnumDescriptionConverter : IValueConverter
     {
@@ -37,7 +37,7 @@ namespace ScpProfiler.Value_Converters
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return string.Empty;
+            return (Enum)value;
         }
     }
 }

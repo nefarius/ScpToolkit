@@ -248,10 +248,10 @@ namespace ScpControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("16")]
-        public byte Ds4InputUpdateDelay {
+        [global::System.Configuration.DefaultSettingValueAttribute("Fastest")]
+        public global::ScpControl.Bluetooth.Ds4UpdateRate Ds4InputUpdateDelay {
             get {
-                return ((byte)(this["Ds4InputUpdateDelay"]));
+                return ((global::ScpControl.Bluetooth.Ds4UpdateRate)(this["Ds4InputUpdateDelay"]));
             }
             set {
                 this["Ds4InputUpdateDelay"] = value;
@@ -401,7 +401,7 @@ namespace ScpControl.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Ds3PadIDLEDsFlashCharging {
             get {
                 return ((bool)(this["Ds3PadIDLEDsFlashCharging"]));

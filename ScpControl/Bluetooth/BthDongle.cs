@@ -9,7 +9,7 @@ using ScpControl.ScpCore;
 namespace ScpControl.Bluetooth
 {
     /// <summary>
-    ///     Communication logic for Bluetooth host dongles.
+    ///     Represents a Bluetooth host device.
     /// </summary>
     public sealed partial class BthDongle : ScpDevice, IBthDevice
     {
@@ -22,6 +22,8 @@ namespace ScpControl.Bluetooth
         private byte[] _localMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
+
+        #region Ctors
 
         public BthDongle()
             : base(BTH_CLASS_GUID)
@@ -38,6 +40,8 @@ namespace ScpControl.Bluetooth
 
             InitializeComponent();
         }
+
+        #endregion
 
         public string Local
         {
@@ -69,42 +73,30 @@ namespace ScpControl.Bluetooth
 
         #region HIDP Commands
 
-        public int HID_Command(byte[] Handle, byte[] Channel, byte[] Data)
+        public int HID_Command(byte[] handle, byte[] channel, byte[] data)
         {
             var Transfered = 0;
-            var Buffer = new byte[Data.Length + 8];
+            var Buffer = new byte[data.Length + 8];
 
-            Buffer[0] = Handle[0];
-            Buffer[1] = Handle[1];
-            Buffer[2] = (byte)((Data.Length + 4) % 256);
-            Buffer[3] = (byte)((Data.Length + 4) / 256);
-            Buffer[4] = (byte)(Data.Length % 256);
-            Buffer[5] = (byte)(Data.Length / 256);
-            Buffer[6] = Channel[0];
-            Buffer[7] = Channel[1];
+            Buffer[0] = handle[0];
+            Buffer[1] = handle[1];
+            Buffer[2] = (byte)((data.Length + 4) % 256);
+            Buffer[3] = (byte)((data.Length + 4) / 256);
+            Buffer[4] = (byte)(data.Length % 256);
+            Buffer[5] = (byte)(data.Length / 256);
+            Buffer[6] = channel[0];
+            Buffer[7] = channel[1];
 
-            for (var i = 0; i < Data.Length; i++) Buffer[i + 8] = Data[i];
+            for (var i = 0; i < data.Length; i++) Buffer[i + 8] = data[i];
 
-            WriteBulkPipe(Buffer, Data.Length + 8, ref Transfered);
+            WriteBulkPipe(Buffer, data.Length + 8, ref Transfered);
             return Transfered;
         }
 
         #endregion
 
-        public event EventHandler<ArrivalEventArgs> Arrival;
-        public event EventHandler<ReportEventArgs> Report;
-
-        private bool LogArrival(IDsDevice arrived)
-        {
-            var args = new ArrivalEventArgs(arrived);
-
-            if (Arrival != null)
-            {
-                Arrival(this, args);
-            }
-
-            return args.Handled;
-        }
+        public event EventHandler<ArrivalEventArgs> DeviceArrived;
+        public event EventHandler<ReportEventArgs> HidReportReceived;
 
         public override bool Open(int instance = 0)
         {
@@ -250,11 +242,23 @@ namespace ScpControl.Bluetooth
 
         #region Events
 
+        private bool OnDeviceArrival(IDsDevice arrived)
+        {
+            var args = new ArrivalEventArgs(arrived);
+
+            if (DeviceArrived != null)
+            {
+                DeviceArrived(this, args);
+            }
+
+            return args.Handled;
+        }
+
         private void OnInitialised(BthDevice connection)
         {
-            if (LogArrival(connection))
+            if (OnDeviceArrival(connection))
             {
-                connection.HidReportReceived += On_Report;
+                connection.HidReportReceived += OnHidReportReceived;
                 connection.Start();
             }
         }
@@ -264,9 +268,9 @@ namespace ScpControl.Bluetooth
             if (count > 0) _connected[new BthHandle(lsb, msb)].Completed();
         }
 
-        private void On_Report(object sender, ReportEventArgs e)
+        private void OnHidReportReceived(object sender, ReportEventArgs e)
         {
-            if (Report != null) Report(sender, e);
+            if (HidReportReceived != null) HidReportReceived(sender, e);
         }
 
         #endregion

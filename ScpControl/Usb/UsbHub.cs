@@ -1,59 +1,49 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 
-namespace ScpControl
+namespace ScpControl.Usb
 {
+    /// <summary>
+    ///     Represents an USB hub.
+    /// </summary>
     public partial class UsbHub : ScpHub
     {
-        private readonly UsbDevice[] _device = new UsbDevice[4];
+        private readonly UsbDevice[] _devices = new UsbDevice[4];
 
-        public UsbHub()
+        public override bool Open()
         {
-            InitializeComponent();
-        }
-
-        public UsbHub(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
-        }
-
-        public override Boolean Open()
-        {
-            for (Byte Pad = 0; Pad < _device.Length; Pad++)
+            for (byte pad = 0; pad < _devices.Length; pad++)
             {
-                _device[Pad] = new UsbDevice();
-
-                _device[Pad].PadId = (DsPadId)Pad;
+                _devices[pad] = new UsbDevice { PadId = (DsPadId)pad };
             }
 
             return base.Open();
         }
 
-        public override Boolean Start()
+        public override bool Start()
         {
             m_Started = true;
 
-            Byte Index = 0;
+            byte index = 0;
 
             // enumerate DS4 devices
-            for (Byte instance = 0; instance < _device.Length && Index < _device.Length; instance++)
+            for (byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
             {
                 try
                 {
                     UsbDevice current = new UsbDs4();
-                    current.PadId = (DsPadId)Index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
                         if (LogArrival(current))
                         {
-                            current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
+                            current.HidReportReceived += OnHidReportReceived;
 
-                            _device[Index++] = current;
+                            _devices[index++] = current;
                         }
                         else current.Close();
                     }
@@ -67,20 +57,24 @@ namespace ScpControl
             }
 
             // enumerate DS3 devices
-            for (Byte instance = 0; instance < _device.Length && Index < _device.Length; instance++)
+            for (byte instance = 0; instance < _devices.Length && index < _devices.Length; instance++)
             {
                 try
                 {
                     UsbDevice current = new UsbDs3();
-                    current.PadId = (DsPadId)Index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
+                        if (!Apply3RdPartyWorkaroundsForDs3(ref current, instance)) continue;
+
+                        // notify bus of new device
                         if (LogArrival(current))
                         {
-                            current.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
+                            // listen for HID reports
+                            current.HidReportReceived += OnHidReportReceived;
 
-                            _device[Index++] = current;
+                            _devices[index++] = current;
                         }
                         else current.Close();
                     }
@@ -95,11 +89,11 @@ namespace ScpControl
 
             try
             {
-                for (Index = 0; Index < _device.Length; Index++)
+                for (index = 0; index < _devices.Length; index++)
                 {
-                    if (_device[Index].State == DsState.Reserved)
+                    if (_devices[index].State == DsState.Reserved)
                     {
-                        _device[Index].Start();
+                        _devices[index].Start();
                     }
                 }
             }
@@ -110,19 +104,16 @@ namespace ScpControl
 
             return base.Start();
         }
-
-        public override Boolean Stop()
+        
+        public override bool Stop()
         {
             m_Started = false;
 
             try
             {
-                for (Int32 Index = 0; Index < _device.Length; Index++)
+                foreach (var t in _devices.Where(t => t.State == DsState.Connected))
                 {
-                    if (_device[Index].State == DsState.Connected)
-                    {
-                        _device[Index].Stop();
-                    }
+                    t.Stop();
                 }
             }
             catch (Exception ex)
@@ -133,18 +124,15 @@ namespace ScpControl
             return base.Stop();
         }
 
-        public override Boolean Close()
+        public override bool Close()
         {
             m_Started = false;
 
             try
             {
-                for (Int32 Index = 0; Index < _device.Length; Index++)
+                foreach (var t in _devices.Where(t => t.State == DsState.Connected))
                 {
-                    if (_device[Index].State == DsState.Connected)
-                    {
-                        _device[Index].Close();
-                    }
+                    t.Close();
                 }
             }
             catch (Exception ex)
@@ -155,7 +143,7 @@ namespace ScpControl
             return base.Close();
         }
 
-        public override Boolean Suspend()
+        public override bool Suspend()
         {
             Stop();
             Close();
@@ -163,7 +151,7 @@ namespace ScpControl
             return base.Suspend();
         }
 
-        public override Boolean Resume()
+        public override bool Resume()
         {
             Open();
             Start();
@@ -171,7 +159,7 @@ namespace ScpControl
             return base.Resume();
         }
 
-        public override DsPadId Notify(ScpDevice.Notified notification, String Class, String Path)
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
         {
             Log.InfoFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, Path);
 
@@ -179,7 +167,7 @@ namespace ScpControl
             {
                 case ScpDevice.Notified.Arrival:
                     {
-                        UsbDevice arrived = new UsbDevice();
+                        var arrived = new UsbDevice();
 
                         if (string.Equals(Class, UsbDs3.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
                         {
@@ -199,27 +187,26 @@ namespace ScpControl
                         {
                             Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
 
+                            if (!Apply3RdPartyWorkaroundsForDs3(ref arrived, path: Path)) break;
+
                             if (LogArrival(arrived))
                             {
-                                if (_device[(Byte)arrived.PadId].IsShutdown)
+                                if (_devices[(byte)arrived.PadId].IsShutdown)
                                 {
-                                    _device[(Byte)arrived.PadId].IsShutdown = false;
+                                    _devices[(byte)arrived.PadId].IsShutdown = false;
 
-                                    _device[(Byte)arrived.PadId].Close();
-                                    _device[(Byte)arrived.PadId] = arrived;
+                                    _devices[(byte)arrived.PadId].Close();
+                                    _devices[(byte)arrived.PadId] = arrived;
 
                                     return arrived.PadId;
                                 }
-                                else
-                                {
-                                    arrived.HidReportReceived += new EventHandler<ReportEventArgs>(On_Report);
+                                arrived.HidReportReceived += OnHidReportReceived;
 
-                                    _device[(Byte)arrived.PadId].Close();
-                                    _device[(Byte)arrived.PadId] = arrived;
+                                _devices[(byte)arrived.PadId].Close();
+                                _devices[(byte)arrived.PadId] = arrived;
 
-                                    if (m_Started) arrived.Start();
-                                    return arrived.PadId;
-                                }
+                                if (m_Started) arrived.Start();
+                                return arrived.PadId;
                             }
                         }
 
@@ -229,16 +216,13 @@ namespace ScpControl
 
                 case ScpDevice.Notified.Removal:
                     {
-                        for (Int32 index = 0; index < _device.Length; index++)
+                        foreach (var t in _devices.Where(t => t.State == DsState.Connected && Path == t.Path))
                         {
-                            if (_device[index].State == DsState.Connected && Path == _device[index].Path)
-                            {
-                                Log.InfoFormat("-- Device Removal [{0}]", _device[index].Local);
+                            Log.InfoFormat("-- Device Removal [{0}]", t.Local);
 
-                                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
+                            AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
 
-                                _device[index].Stop();
-                            }
+                            t.Stop();
                         }
                     }
                     break;
@@ -246,5 +230,21 @@ namespace ScpControl
 
             return DsPadId.None;
         }
+
+        #region Ctors
+
+        public UsbHub()
+        {
+            InitializeComponent();
+        }
+
+        public UsbHub(IContainer container)
+        {
+            container.Add(this);
+
+            InitializeComponent();
+        }
+
+        #endregion
     }
 }

@@ -6,9 +6,14 @@ using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
+    /// <summary>
+    ///     Represents a DualShock 3 controller connected via Bluetooth.
+    /// </summary>
     public partial class BthDs3 : BthDevice
     {
-        private byte[] m_Enable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
+        #region HID Reports
+
+        private readonly byte[] _hidCommandEnable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
 
         private readonly byte[][] _hidInitReport =
         {
@@ -42,9 +47,7 @@ namespace ScpControl.Bluetooth
             }
         };
 
-        private readonly byte[] _leds = { 0x02, 0x04, 0x08, 0x10 };
-        private byte ledStatus = 0;
-        private byte counterForLeds = 0;
+        private readonly byte[] _ledOffsets = { 0x02, 0x04, 0x08, 0x10 };
 
         private readonly byte[] _hidReport =
         {
@@ -60,6 +63,10 @@ namespace ScpControl.Bluetooth
             0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00
         };
+
+        #endregion
+
+        #region Ctors
 
         public BthDs3()
         {
@@ -78,6 +85,11 @@ namespace ScpControl.Bluetooth
         {
         }
 
+        #endregion
+
+        private byte ledStatus = 0;
+        private byte counterForLeds = 0;
+
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }
@@ -95,31 +107,10 @@ namespace ScpControl.Bluetooth
             CanStartHid = false;
             m_State = DsState.Connected;
 
-            var bdc = IniConfig.Instance.BthDs3;
-
-            if (bdc.SupportedMacs.Any(m => Local.StartsWith(m))) // Fix up for Fake DS3
-            {
-                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
-
-                m_Enable[0] = 0xA3;
-
-                _hidReport[0] = 0xA2;
-                _hidReport[3] = 0x00;
-                _hidReport[5] = 0x00;
-            }
-
-            if (bdc.SupportedNames.Any(n => RemoteName.EndsWith(n))) // Fix up for Fake DS3
-            {
-                Log.WarnFormat("Fake DS3 detected: {0} [{1}]", RemoteName, Local);
-
-                _hidReport[3] = 0x00;
-                _hidReport[5] = 0x00;
-            }
-
             m_Queued = 1;
             m_Blocked = true;
             m_Last = DateTime.Now;
-            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), m_Enable);
+            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidCommandEnable);
 
             return base.Start();
         }
@@ -205,6 +196,12 @@ namespace ScpControl.Bluetooth
             OnHidReportReceived();
         }
 
+        /// <summary>
+        ///     Send a rumble request to the controller.
+        /// </summary>
+        /// <param name="large">Rumble with large (left) motor.</param>
+        /// <param name="small">Rumble with small (right) motor.</param>
+        /// <returns></returns>
         public override bool Rumble(byte large, byte small)
         {
             lock (this)
@@ -256,11 +253,11 @@ namespace ScpControl.Bluetooth
         {
             lock (this)
             {
-                if (m_State == DsState.Connected)
+                if (m_State != DsState.Connected) return;
+
+                if ((now - m_Tick).TotalMilliseconds >= 500 && m_Packet > 0)
                 {
-                    if ((now - m_Tick).TotalMilliseconds >= 500 && m_Packet > 0)
-                    {
-                        m_Tick = now;
+                    m_Tick = now;
 
                         if (m_Queued == 0) m_Queued = 1;
 
@@ -272,41 +269,41 @@ namespace ScpControl.Bluetooth
                                 ledStatus = 0;
                                 break;
                             case 1:
-                                ledStatus = _leds[m_ControllerId];
+                                ledStatus = _ledOffsets[m_ControllerId];
                                 break;
                             case 2:
                                 switch (Battery)
                                 {
                                     case DsBattery.None:
-                                        ledStatus = (byte)(_leds[0] | _leds[3]);
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[3]);
                                         break;
                                     case DsBattery.Dieing:
                                         counterForLeds++;
                                         counterForLeds %= 2;
                                         if (counterForLeds == 1)
-                                            ledStatus = _leds[0];
+                                            ledStatus = _ledOffsets[0];
                                         break;
                                     case DsBattery.Low:
-                                        ledStatus = (byte)(_leds[0]);
+                                        ledStatus = (byte)(_ledOffsets[0]);
                                         break;
                                     case DsBattery.Medium:
-                                        ledStatus = (byte)(_leds[0] | _leds[1]);
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1]);
                                         break;
                                     case DsBattery.High:
-                                        ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2]);
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2]);
                                         break;
                                     case DsBattery.Full:
-                                        ledStatus = (byte)(_leds[0] | _leds[1] | _leds[2] | _leds[3]);
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
                                         break;
                                     default: ;
                                         break;
                                 }
                                 break;
                             case 3:
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _leds[0];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _leds[1];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _leds[2];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _leds[3];
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _ledOffsets[0];
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _ledOffsets[1];
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _ledOffsets[2];
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _ledOffsets[3];
                                 break;
                             default:
                                 ledStatus = 0;
@@ -320,33 +317,29 @@ namespace ScpControl.Bluetooth
 
                     }
 
-                    #region Fake DS3 workaround
-
-                    // TODO: doesn't work, breaks communication with "genuine" 3rd party controller
-                    /*
-                    if (IsFake)
-                    {
-                        _hidReport[0] = 0xA2;
-                        _hidReport[3] = 0x00;
-                        _hidReport[5] = 0x00;
-                    }
-                     * */
-
-                    #endregion
-
-                    if (!m_Blocked && m_Queued > 0)
-                    {
-                        if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Latency)
-                        {
-                            m_Last = now;
-                            m_Blocked = true;
-                            m_Queued--;
-
-                            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
-                        }
-                    }
                 }
-            }
+
+                #region Fake DS3 workaround
+
+                if (IsFake)
+                {
+                    _hidReport[0] = 0xA2;
+                    _hidReport[3] = 0xFF;
+                    _hidReport[5] = 0x00;
+                }
+
+                #endregion
+
+                if (m_Blocked || m_Queued <= 0) return;
+
+                if (!((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Latency)) return;
+
+                m_Last = now;
+                m_Blocked = true;
+                m_Queued--;
+
+                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
+            
         }
     }
 }

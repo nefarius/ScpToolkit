@@ -1,6 +1,6 @@
-﻿namespace ScpControl
+﻿namespace ScpControl.Usb
 {
-    partial class UsbDevice
+    partial class UsbDs3
     {
         /// <summary>
         /// Required designer variable.
@@ -28,27 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.HID_Worker = new System.ComponentModel.BackgroundWorker();
-            this.tmUpdate = new ScpControl.ScpTimer(this.components);
-            // 
-            // HID_Worker
-            // 
-            this.HID_Worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.HID_Worker_Thread);
-            // 
-            // tmUpdate
-            // 
-            this.tmUpdate.Enabled = false;
-            this.tmUpdate.Interval = ((uint)(10u));
-            this.tmUpdate.Tag = null;
-            this.tmUpdate.Tick += new System.EventHandler(this.On_Timer);
 
         }
 
         #endregion
-
-        protected System.ComponentModel.BackgroundWorker HID_Worker;
-        private ScpTimer tmUpdate;
 
     }
 }

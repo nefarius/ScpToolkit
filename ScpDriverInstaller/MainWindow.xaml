@@ -1,0 +1,78 @@
+﻿<Window x:Class="ScpDriverInstaller.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
+        xmlns:utilities="clr-namespace:ScpDriverInstaller.Utilities"
+        Title="ScpToolkit Driver Installer" 
+        Height="560" Width="1020" 
+        MinHeight="560" MinWidth="1020"
+        WindowStartupLocation="CenterScreen"
+        Icon="Scp.ico" Initialized="Window_Initialized" Loaded="Window_Loaded">
+    <Grid Background="#FF1B1B1B">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <!-- Top control bar -->
+            <Grid x:Name="InstallGrid" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="200" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.DataContext>
+                    <viewModels:InstallationOptionsViewModel/>
+                </Grid.DataContext>
+
+                <!-- Installation options -->
+                <GroupBox Header="Installation options">
+                    <DockPanel>
+                        <StackPanel Margin="0,0,10,0">
+                            <CheckBox IsChecked="{Binding Path=InstallWindowsService}" ToolTip="Install Windows Service running in the background (recommended)">Install Windows Service</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallBluetoothDriver}" ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">Install Bluetooth driver</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallDualShock3Driver}" ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">Install DualShock 3 driver</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallDualShock4Driver}" ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">Install DualShock 4 driver</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=ForceDriverInstallation}" ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">Force Driver Installation</CheckBox>
+                        </StackPanel>
+
+                        <!-- Runtime packages -->
+                        <StackPanel>
+                            <CheckBox IsChecked="{Binding Path=InstallMsvc2010Redist}">Download &amp; Install Microsoft Visual C++ 2010 Redistributable Package</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallMsvc2013Redist}">Download &amp; Install Visual C++ Redistributable Packages für Visual Studio 2013</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallDirectXRuntime}">Download &amp; Install DirectX End-User Runtime</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}" IsEnabled="{Binding Path=IsXbox360DriverNeeded}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
+                            <TextBlock Margin="35,0,0,0">Note: ticking one or more of the boxes above requires an internet connection!</TextBlock>
+                        </StackPanel>
+                    </DockPanel>
+                </GroupBox>
+
+                <!-- Buttons -->
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <Button Margin="20,20,20,5" Command="{Binding InstallClickCommand}">Install</Button>
+                    <Button Margin="20,5" Command="{Binding UninstallClickCommand}">Uninstall</Button>
+                    <Button Margin="20,5,20,20" Command="{Binding ExitClickCommand}">Exit</Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Progress bar -->
+            <ProgressBar x:Name="MainProgressBar" Grid.Row="1" Margin="0,10" Height="20"/>
+
+            <GroupBox Header="Log" 
+                      Grid.Row="2">
+                <ScrollViewer>
+                    <TextBlock Text="{Binding Notification}" 
+                               x:Name="LogTextBlock"
+                               FontFamily="Courier New"
+                               TextWrapping="Wrap">
+                        <TextBlock.DataContext>
+                            <utilities:NotifyAppender/>
+                        </TextBlock.DataContext>
+                    </TextBlock>
+                </ScrollViewer>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</Window>

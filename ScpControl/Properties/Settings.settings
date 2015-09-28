@@ -56,8 +56,8 @@
     <Setting Name="DumpHidReports" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Ds4InputUpdateDelay" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Byte" Scope="User">
-      <Value Profile="(Default)">16</Value>
+    <Setting Name="Ds4InputUpdateDelay" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="ScpControl.Bluetooth.Ds4UpdateRate" Scope="User">
+      <Value Profile="(Default)">Fastest</Value>
     </Setting>
     <Setting Name="ForceBluetoothDriverReinstallation" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -93,7 +93,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="Ds3PadIDLEDsFlashCharging" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Ds3LEDsCustom1" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

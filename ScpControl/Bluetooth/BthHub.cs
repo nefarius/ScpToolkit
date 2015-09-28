@@ -4,9 +4,14 @@ using ScpControl.Sound;
 
 namespace ScpControl.Bluetooth
 {
+    /// <summary>
+    ///     Represents a Bluetooth hub.
+    /// </summary>
     public partial class BthHub : ScpHub
     {
         private BthDongle _device;
+
+        #region Ctors
 
         public BthHub()
         {
@@ -19,6 +24,8 @@ namespace ScpControl.Bluetooth
 
             InitializeComponent();
         }
+
+        #endregion
 
         public string Dongle
         {
@@ -42,8 +49,8 @@ namespace ScpControl.Bluetooth
         {
             _device = new BthDongle();
 
-            _device.Arrival += On_Arrival;
-            _device.Report += On_Report;
+            _device.DeviceArrived += OnDeviceArrival;
+            _device.HidReportReceived += OnHidReportReceived;
 
             if (!_device.Open()) _device.Close();
 
@@ -116,8 +123,8 @@ namespace ScpControl.Bluetooth
                             _device.Close();
                             _device = arrived;
 
-                            _device.Arrival += On_Arrival;
-                            _device.Report += On_Report;
+                            _device.DeviceArrived += OnDeviceArrival;
+                            _device.HidReportReceived += OnHidReportReceived;
 
                             if (m_Started) _device.Start();
                             break;

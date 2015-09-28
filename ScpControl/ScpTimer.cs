@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace ScpControl
 {
+    /// <summary>
+    ///     A high precision timer.
+    /// </summary>
     public partial class ScpTimer : Component
     {
         protected EventArgs m_Args = new EventArgs();

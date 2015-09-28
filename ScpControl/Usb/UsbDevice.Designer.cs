@@ -1,6 +1,6 @@
-﻿namespace ScpControl
+﻿namespace ScpControl.Usb
 {
-    sealed partial class UsbDs4
+    partial class UsbDevice
     {
         /// <summary>
         /// Required designer variable.
@@ -28,11 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.tmUpdate = new ScpControl.ScpTimer(this.components);
+            // 
+            // tmUpdate
+            // 
+            this.tmUpdate.Enabled = false;
+            this.tmUpdate.Interval = ((uint)(10u));
+            this.tmUpdate.Tag = null;
+            this.tmUpdate.Tick += new System.EventHandler(this.On_Timer);
 
         }
 
         #endregion
 
+        private ScpTimer tmUpdate;
 
     }
 }

@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
 {
+    /// <summary>
+    ///     Supported HID input update rates.
+    /// </summary>
     public enum Ds4UpdateRate : byte
     {
-        [Description("1000 Hz")]
-        Fastest = 0x80,
-        [Description("66 Hz")]
-        Fast = 0xD0,
-        [Description("31 Hz")]
-        Slow = 0xA0,
-        [Description("20 Hz")]
-        Slowest = 0xB0
+        Fastest = 0x80, // 1000 Hz
+        Fast = 0xD0, // 66 Hz
+        Slow = 0xA0, // 31 Hz
+        Slowest = 0xB0 // 20 Hz
     }
 
+    /// <summary>
+    ///     Represents a DualShock 4 controller connected via Bluetooth.
+    /// </summary>
     public partial class BthDs4 : BthDevice
     {
         private const int R = 9; // Led Offsets
@@ -181,6 +184,23 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
+        /// <summary>
+        ///     Supported HID input update rates.
+        /// </summary>
+        public static Dictionary<Ds4UpdateRate, string> UpdateRates
+        {
+            get
+            {
+                return new Dictionary<Ds4UpdateRate, string>()
+                {
+                    {Ds4UpdateRate.Fastest, "1000 Hz"},
+                    {Ds4UpdateRate.Fast, "66 Hz"},
+                    {Ds4UpdateRate.Slow, "31 Hz"},
+                    {Ds4UpdateRate.Slowest, "20 Hz"}
+                };
+            }
+        }
+
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }
@@ -232,7 +252,7 @@ namespace ScpControl.Bluetooth
             CanStartHid = false;
             m_State = DsState.Connected;
 
-            _hidReport[2] = GlobalConfiguration.Instance.Ds4InputUpdateDelay;
+            _hidReport[2] = (byte)GlobalConfiguration.Instance.Ds4InputUpdateDelay;
 
             m_Last = DateTime.Now;
             Rumble(0, 0);
@@ -460,20 +480,6 @@ namespace ScpControl.Bluetooth
                         m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        ///     Gets or sets the incoming HID report update rate.
-        /// </summary>
-        public byte HidReportUpdateRate
-        {
-            get { return _hidReport[2]; }
-            set
-            {
-                _hidReport[2] = value;
-                // TODO: for testing only!
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
             }
         }
     }

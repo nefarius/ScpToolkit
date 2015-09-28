@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:myself="clr-namespace:ScpProfiler"
-             xmlns:valueConverters="clr-namespace:ScpProfiler.Value_Converters"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:valueConverters="clr-namespace:ScpControl.Value_Converters;assembly=ScpControl"
              mc:Ignorable="d"
              MinHeight="48" MinWidth="600" Width="886">
     <UserControl.Resources>

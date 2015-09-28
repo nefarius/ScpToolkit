@@ -98,7 +98,6 @@
     <Compile Include="ThumbStickAxisControl.xaml.cs">
       <DependentUpon>ThumbStickAxisControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
     <Page Include="ButtonMappingEntryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
