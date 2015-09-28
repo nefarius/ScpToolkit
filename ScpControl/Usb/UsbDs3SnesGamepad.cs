@@ -66,16 +66,16 @@ namespace ScpControl.Usb
             //m_ReportArgs.Report[25] = report[14]; // Square (analog)
 
             m_ReportArgs.Report[10] |= (byte) ((report[3] == 0xFF) ? 0x20 : 0x00); // D-Pad right
-            //m_ReportArgs.Report[15] = report[7]; // D-Pad right
+            m_ReportArgs.Report[23] = (byte)((report[3] == 0xFF) ? 0xFF : 0x00); // D-Pad right
 
             m_ReportArgs.Report[10] |= (byte) ((report[3] == 0x00) ? 0x80 : 0x00); // D-Pad left
-            //m_ReportArgs.Report[17] = report[8]; // D-Pad left
+            m_ReportArgs.Report[25] = (byte)((report[3] == 0x00) ? 0xFF : 0x00); // D-Pad left
 
             m_ReportArgs.Report[10] |= (byte) ((report[4] == 0x00) ? 0x10 : 0x00); // D-Pad up
-            //m_ReportArgs.Report[14] = report[9]; // D-Pad up
+            m_ReportArgs.Report[22] = (byte)((report[4] == 0x00) ? 0xFF : 0x00); // D-Pad up
 
             m_ReportArgs.Report[10] |= (byte) ((report[4] == 0xFF) ? 0x40 : 0x00); // D-Pad down
-            //m_ReportArgs.Report[16] = report[10]; // D-Pad down
+            m_ReportArgs.Report[24] = (byte)((report[4] == 0xFF) ? 0xFF : 0x00); // D-Pad down
 
             //m_ReportArgs.Report[12] ^= 0x1;
 
