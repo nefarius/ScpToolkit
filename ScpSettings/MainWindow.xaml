@@ -220,8 +220,8 @@
                                 Custom
                             </RadioButton>
 
-                            <CheckBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" IsChecked="{Binding Path=Ds3PadIDLEDsFlashCharging}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=1}" >
-                                Flash when charging
+                            <CheckBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" IsChecked="{Binding Path=Ds3PadIDLEDsFlashCharging}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=1}" >
+                                Flash when charging or discharged
                             </CheckBox>
 
                             <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding Path=Ds3LEDsCustom1}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=3}">

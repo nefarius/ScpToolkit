@@ -269,7 +269,14 @@ namespace ScpControl.Bluetooth
                                 ledStatus = 0;
                                 break;
                             case 1:
-                                ledStatus = _ledOffsets[m_ControllerId];
+                                if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging)
+                                {
+                                    counterForLeds++;
+                                    counterForLeds %= 2;
+                                    if (counterForLeds == 1)
+                                        ledStatus = _ledOffsets[m_ControllerId];
+                                }
+                                else ledStatus = _ledOffsets[m_ControllerId];
                                 break;
                             case 2:
                                 switch (Battery)
@@ -278,13 +285,13 @@ namespace ScpControl.Bluetooth
                                         ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[3]);
                                         break;
                                     case DsBattery.Dieing:
+                                        ledStatus = (byte)(_ledOffsets[1] | _ledOffsets[2]);
+                                        break;
+                                    case DsBattery.Low:
                                         counterForLeds++;
                                         counterForLeds %= 2;
                                         if (counterForLeds == 1)
                                             ledStatus = _ledOffsets[0];
-                                        break;
-                                    case DsBattery.Low:
-                                        ledStatus = (byte)(_ledOffsets[0]);
                                         break;
                                     case DsBattery.Medium:
                                         ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1]);
