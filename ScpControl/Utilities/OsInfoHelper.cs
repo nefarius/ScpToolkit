@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Management;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using log4net;
 using Microsoft.Win32;
 
@@ -51,37 +48,9 @@ namespace ScpControl.Utilities
         {
             get
             {
-                var info = string.Empty;
-
-                try
-                {
-                    using (var mos = new ManagementObjectSearcher("SELECT * FROM  Win32_OperatingSystem"))
-                    {
-                        foreach (var mo in mos.Get().Cast<ManagementObject>())
-                        {
-                            info =
-                                Regex.Replace(mo.GetPropertyValue("Caption").ToString(), @"[^A-Za-z0-9 \.]", "").Trim();
-
-                            var spv = mo.GetPropertyValue("ServicePackMajorVersion");
-
-                            if (spv != null && spv.ToString() != "0")
-                            {
-                                info += " Service Pack " + spv;
-                            }
-
-                            info = string.Format("{0} ({1} {2})", info, Environment.OSVersion.Version,
-                                Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE"));
-
-                            mo.Dispose();
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.ErrorFormat("Couldn't query operating system information: {0}", ex);
-                }
-
-                return info;
+                return string.Format("Microsoft {0} {1} ({2} {3})",
+                    OsVersionInfo.Name, OsVersionInfo.Edition,
+                    OsVersionInfo.Version, OsVersionInfo.OSBits);
             }
         }
 
