@@ -42,7 +42,7 @@ namespace ScpControl.Utilities
             get
             {
                 return
-                    Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\DevDiv\vc\Servicing\10.0\red") !=
+                    Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist") !=
                     null;
             }
         }
