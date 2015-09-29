@@ -86,25 +86,25 @@
     <Setting Name="BluetoothDisconnectSoundFile" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.String" Scope="User">
       <Value Profile="(Default)">Media\disconnect.flac</Value>
     </Setting>
-    <Setting Name="Ds3LEDsFlashingPeriod" Type="System.Int32" Scope="User">
+    <Setting Name="Ds3LEDsFlashingPeriod" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1500</Value>
     </Setting>
-    <Setting Name="Ds3LEDsFunction" Type="System.Int32" Scope="User">
+    <Setting Name="Ds3LEDsFunction" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
-    <Setting Name="Ds3PadIDLEDsFlashCharging" Type="System.Boolean" Scope="User">
+    <Setting Name="Ds3PadIDLEDsFlashCharging" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="Ds3LEDsCustom1" Type="System.Boolean" Scope="User">
+    <Setting Name="Ds3LEDsCustom1" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Ds3LEDsCustom2" Type="System.Boolean" Scope="User">
+    <Setting Name="Ds3LEDsCustom2" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Ds3LEDsCustom3" Type="System.Boolean" Scope="User">
+    <Setting Name="Ds3LEDsCustom3" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="Ds3LEDsCustom4" Type="System.Boolean" Scope="User">
+    <Setting Name="Ds3LEDsCustom4" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

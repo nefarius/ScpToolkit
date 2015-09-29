@@ -258,7 +258,7 @@ namespace ScpControl.Usb
                                     for (byte i = 0; i <= counterForLeds; i++)
                                         ledStatus |= _ledOffsets[i];
                                     break;
-                                case DsBattery.Charged:
+                                case DsBattery.Full:
                                     ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
                                     break;
                                 default: ;

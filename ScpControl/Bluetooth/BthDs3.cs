@@ -269,7 +269,7 @@ namespace ScpControl.Bluetooth
                                 ledStatus = 0;
                                 break;
                             case 1:
-                                if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging)
+                                if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging && Battery == DsBattery.Charging)
                                 {
                                     counterForLeds++;
                                     counterForLeds %= 2;
