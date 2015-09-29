@@ -173,6 +173,7 @@
     <Compile Include="Utilities\OSVersionInfoClass.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
     <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
+    <Compile Include="Value Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\GlobalConfiguration.cs" />
     <Compile Include="ScpCore\HCI.cs" />
