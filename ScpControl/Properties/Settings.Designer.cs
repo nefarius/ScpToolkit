@@ -465,5 +465,18 @@ namespace ScpControl.Properties {
                 this["Ds3LEDsCustom4"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseDs3CounterfeitWorkarounds {
+            get {
+                return ((bool)(this["UseDs3CounterfeitWorkarounds"]));
+            }
+            set {
+                this["UseDs3CounterfeitWorkarounds"] = value;
+            }
+        }
     }
 }

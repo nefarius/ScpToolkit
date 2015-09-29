@@ -154,131 +154,141 @@
 
             <!-- DualShock 3 specific -->
             <controls:AccordionItem Header="DualShock 3 specific">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <!-- Rumble Latency -->
-                    <GroupBox Header="Rumble Latency: 128 ms"
-                              x:Name="RumbleLatencyGroupBox"
-                              Grid.Row="0" Margin="0,0,0,10">
-                        <StackPanel>
-                            <TextBlock>
-                                Defines the minimal duration the rumble request will be sent to the controller until it stops.
-                            </TextBlock>
-                            <Slider LargeChange="1" Maximum="16"
-                                    Value="{Binding Path=Latency}" ValueChanged="Slider_ValueChanged" />
-                        </StackPanel>
-                    </GroupBox>
+                        <!-- Rumble Latency -->
+                        <GroupBox Header="Rumble Latency: 128 ms"
+                                  x:Name="RumbleLatencyGroupBox"
+                                  Grid.Row="0" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock>
+                                    Defines the minimal duration the rumble request will be sent to the controller until it stops.
+                                </TextBlock>
+                                <Slider LargeChange="1" Maximum="16"
+                                        Value="{Binding Path=Latency}" ValueChanged="Slider_ValueChanged" />
+                            </StackPanel>
+                        </GroupBox>
 
-                    <!-- LEDs flashing period -->
-                    <GroupBox Header="LEDs flashing period: 300 ms"
-                              x:Name="LEDsFlashingPeriodGroupBox"
-                              Grid.Row="1" Margin="0,0,0,10">
-                        <StackPanel>
-                            <TextBlock>
-                                Defines LEDs flashing period when charging or dieing.
-                            </TextBlock>
+                        <!-- LEDs flashing period -->
+                        <GroupBox Header="LEDs flashing period: 300 ms"
+                                  x:Name="LEDsFlashingPeriodGroupBox"
+                                  Grid.Row="1" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock>
+                                    Defines LEDs flashing period when charging or dieing.
+                                </TextBlock>
 
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Minimum value -->
+                                    <Label Grid.Column="0">
+                                        300 ms
+                                    </Label>
+
+                                    <!-- Adjustment slider -->
+                                    <Slider Grid.Column="1"
+                                            TickFrequency="100" Maximum="2000" Minimum="300"
+                                            IsSnapToTickEnabled="True"
+                                            VerticalAlignment="Center"
+                                            Value="{Binding Path=Ds3LEDsPeriod}"
+                                            ValueChanged="Slider_LEDsPeriodChanged" />
+
+                                    <!-- Maximum value -->
+                                    <Label Grid.Column="2">
+                                        2000 ms
+                                    </Label>
+                                </Grid>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!-- LED status -->
+                        <GroupBox Header="Leds status" Grid.Row="2">
                             <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                
-                                <!-- Minimum value -->
-                                <Label Grid.Column="0">
-                                    300 ms
-                                </Label>
-                                
-                                <!-- Adjustment slider -->
-                                <Slider Grid.Column="1" 
-                                        TickFrequency="100" Maximum="2000" Minimum="300" 
-                                        IsSnapToTickEnabled="True"
-                                        VerticalAlignment="Center"
-                                    Value="{Binding Path=Ds3LEDsPeriod}" ValueChanged="Slider_LEDsPeriodChanged" />
 
-                                <!-- Maximum value -->
-                                <Label Grid.Column="2">
-                                    2000 ms
-                                </Label>
+                                <RadioButton Grid.Row="0" Grid.Column="0" GroupName="led"
+                                             IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=0}">
+                                    Disable
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="1" Grid.Column="0" GroupName="led"
+                                             IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=1}">
+                                    Pad ID
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="2" Grid.Column="0" GroupName="led"
+                                             IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=2}">
+                                    Charge status
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="3" Grid.Column="0" GroupName="led"
+                                             IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
+                                    Custom
+                                </RadioButton>
+
+                                <CheckBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4"
+                                          VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=Ds3PadIDLEDsFlashCharging}"
+                                          IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=1}">
+                                    Flash when charging or dieing
+                                </CheckBox>
+
+                                <CheckBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=Ds3LEDsCustom1}"
+                                          IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
+                                    1
+                                </CheckBox>
+                                <CheckBox Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=Ds3LEDsCustom2}"
+                                          IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
+                                    2
+                                </CheckBox>
+                                <CheckBox Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=Ds3LEDsCustom3}"
+                                          IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
+                                    3
+                                </CheckBox>
+                                <CheckBox Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=Ds3LEDsCustom4}"
+                                          IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
+                                    4
+                                </CheckBox>
                             </Grid>
-                        </StackPanel>
-                    </GroupBox>
+                        </GroupBox>
 
-                    <!-- LED status -->
-                    <GroupBox Header="Leds status" Grid.Row="2">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <RadioButton Grid.Row="0" Grid.Column="0" GroupName="led"
-                                         IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=0}">
-                                Disable
-                            </RadioButton>
-
-                            <RadioButton Grid.Row="1" Grid.Column="0" GroupName="led"
-                                         IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=1}">
-                                Pad ID
-                            </RadioButton>
-
-                            <RadioButton Grid.Row="2" Grid.Column="0" GroupName="led"
-                                         IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=2}">
-                                Charge status
-                            </RadioButton>
-
-                            <RadioButton Grid.Row="3" Grid.Column="0" GroupName="led"
-                                         IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
-                                Custom
-                            </RadioButton>
-
-                            <CheckBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4"
-                                      VerticalContentAlignment="Center"
-                                      IsChecked="{Binding Path=Ds3PadIDLEDsFlashCharging}"
-                                      IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=1}">
-                                Flash when charging or dieing
-                            </CheckBox>
-
-                            <CheckBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"
-                                      IsChecked="{Binding Path=Ds3LEDsCustom1}"
-                                      IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
-                                1
-                            </CheckBox>
-                            <CheckBox Grid.Row="3" Grid.Column="2" VerticalContentAlignment="Center"
-                                      IsChecked="{Binding Path=Ds3LEDsCustom2}"
-                                      IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
-                                2
-                            </CheckBox>
-                            <CheckBox Grid.Row="3" Grid.Column="3" VerticalContentAlignment="Center"
-                                      IsChecked="{Binding Path=Ds3LEDsCustom3}"
-                                      IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
-                                3
-                            </CheckBox>
-                            <CheckBox Grid.Row="3" Grid.Column="4" VerticalContentAlignment="Center"
-                                      IsChecked="{Binding Path=Ds3LEDsCustom4}"
-                                      IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=3}">
-                                4
-                            </CheckBox>
-                        </Grid>
-                    </GroupBox>
-
-                </Grid>
+                        <!-- Hacks & Workarounds -->
+                        <GroupBox Header="Hacks &amp; Workarounds" Grid.Row="3">
+                            <StackPanel>
+                                <CheckBox IsChecked="{Binding Path=UseDs3CounterfeitWorkarounds}">Enable support for counterfeit controllers</CheckBox>
+                            </StackPanel>
+                        </GroupBox>
+                    </Grid>
+                </ScrollViewer>
             </controls:AccordionItem>
 
             <!-- DualShock 4 specific -->

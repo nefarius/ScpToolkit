@@ -325,7 +325,7 @@ namespace ScpControl.Bluetooth
 
                 #region Fake DS3 workaround
 
-                if (IsFake)
+                if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds && IsFake)
                 {
                     _hidReport[0] = 0xA2;
                     _hidReport[3] = 0xFF;

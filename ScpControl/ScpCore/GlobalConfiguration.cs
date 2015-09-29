@@ -289,20 +289,29 @@ namespace ScpControl.ScpCore
             get { return Settings.Default.Ds3LEDsCustom1; }
             set { Settings.Default.Ds3LEDsCustom1 = value; }
         }
+
         public bool Ds3LEDsCustom2
         {
             get { return Settings.Default.Ds3LEDsCustom2; }
             set { Settings.Default.Ds3LEDsCustom2 = value; }
         }
+
         public bool Ds3LEDsCustom3
         {
             get { return Settings.Default.Ds3LEDsCustom3; }
             set { Settings.Default.Ds3LEDsCustom3 = value; }
         }
+
         public bool Ds3LEDsCustom4
         {
             get { return Settings.Default.Ds3LEDsCustom4; }
             set { Settings.Default.Ds3LEDsCustom4 = value; }
+        }
+
+        public bool UseDs3CounterfeitWorkarounds
+        {
+            get { return Settings.Default.UseDs3CounterfeitWorkarounds; }
+            set { Settings.Default.UseDs3CounterfeitWorkarounds = value; }
         }
 
         #endregion

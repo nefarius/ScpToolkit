@@ -107,5 +107,8 @@
     <Setting Name="Ds3LEDsCustom4" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="UseDs3CounterfeitWorkarounds" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
