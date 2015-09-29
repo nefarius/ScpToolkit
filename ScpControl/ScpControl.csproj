@@ -147,7 +147,6 @@
     </Compile>
     <Compile Include="Rx\IChannel.cs" />
     <Compile Include="Rx\ScpNativeFeedChannel.cs" />
-    <Compile Include="ScpCore\Ds3LedStatus.cs" />
     <Compile Include="ScpCore\DsDetail.cs" />
     <Compile Include="ScpCore\DsPacket.cs" />
     <Compile Include="ScpCore\GamePadEnums.cs" />
