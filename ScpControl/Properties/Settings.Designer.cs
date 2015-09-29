@@ -97,19 +97,6 @@ namespace ScpControl.Properties {
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DisableLed {
-            get {
-                return ((bool)(this["DisableLed"]));
-            }
-            set {
-                this["DisableLed"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DisableRumble {
             get {
                 return ((bool)(this["DisableRumble"]));
@@ -385,6 +372,90 @@ namespace ScpControl.Properties {
             }
             set {
                 this["BluetoothDisconnectSoundFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        public int Ds3LEDsFlashingPeriod {
+            get {
+                return ((int)(this["Ds3LEDsFlashingPeriod"]));
+            }
+            set {
+                this["Ds3LEDsFlashingPeriod"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Ds3LEDsFunction {
+            get {
+                return ((int)(this["Ds3LEDsFunction"]));
+            }
+            set {
+                this["Ds3LEDsFunction"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Ds3PadIDLEDsFlashCharging {
+            get {
+                return ((bool)(this["Ds3PadIDLEDsFlashCharging"]));
+            }
+            set {
+                this["Ds3PadIDLEDsFlashCharging"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Ds3LEDsCustom1 {
+            get {
+                return ((bool)(this["Ds3LEDsCustom1"]));
+            }
+            set {
+                this["Ds3LEDsCustom1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Ds3LEDsCustom2 {
+            get {
+                return ((bool)(this["Ds3LEDsCustom2"]));
+            }
+            set {
+                this["Ds3LEDsCustom2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Ds3LEDsCustom3 {
+            get {
+                return ((bool)(this["Ds3LEDsCustom3"]));
+            }
+            set {
+                this["Ds3LEDsCustom3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Ds3LEDsCustom4 {
+            get {
+                return ((bool)(this["Ds3LEDsCustom4"]));
+            }
+            set {
+                this["Ds3LEDsCustom4"] = value;
             }
         }
     }
