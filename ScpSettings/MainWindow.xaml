@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
         xmlns:customControls="clr-namespace:ScpSettings.Controls"
+        xmlns:local="clr-namespace:ScpSettings"
         xmlns:bluetooth="clr-namespace:ScpControl.Bluetooth;assembly=ScpControl"
         Title="ScpToolkit Global Configuration" Height="650" Width="480" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing" Initialized="Window_Initialized" Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
         <Grid.Resources>
             <bluetooth:BthDs4 x:Key="BthDs4" />
-
+            <local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />
             <Style TargetType="{x:Type TextBlock}">
                 <Setter Property="TextWrapping" Value="Wrap" />
                 <Setter Property="TextAlignment" Value="Justify" />
@@ -157,6 +158,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
                     <!-- Rumble Latency -->
@@ -172,11 +174,72 @@
                         </StackPanel>
                     </GroupBox>
 
-                    <!-- Disable LED -->
-                    <CheckBox Grid.Row="1"
-                              IsChecked="{Binding Path=DisableLED}">
-                        Disable LEDs
-                    </CheckBox>
+                    <GroupBox Header="LEDs flashing period: 300 ms"
+                              x:Name="LEDsFlashingPeriodGroupBox"
+                              Grid.Row="1" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock>
+                                Defines LEDs flashing period when charging. Min value - 300ms, max value - 2000ms.
+                            </TextBlock>
+                            <Slider TickFrequency="100" Maximum="2000" Minimum="300" IsSnapToTickEnabled="True"
+                                Value="{Binding Path=Ds3LEDsPeriod}" ValueChanged="Slider_LEDsPeriodChanged" />
+                        </StackPanel>
+                    </GroupBox>
+
+                    <!-- led status -->
+                    <GroupBox Header="Leds status" Grid.Row="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton Grid.Row="0" Grid.Column="0" GroupName="led" IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=0}">
+                                Disable
+                            </RadioButton>
+
+                            <RadioButton Grid.Row="1" Grid.Column="0" GroupName="led" IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=1}">
+                                Pad ID
+                            </RadioButton>
+
+                            <RadioButton Grid.Row="2" Grid.Column="0" GroupName="led" IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=2}">
+                                Charge status
+                            </RadioButton>
+
+                            <RadioButton Grid.Row="3" Grid.Column="0" GroupName="led" IsChecked="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=3}">
+                                Custom
+                            </RadioButton>
+
+                            <CheckBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" IsChecked="{Binding Path=Ds3PadIDLEDsFlashCharging}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=1}" >
+                                Flash when charging or discharged
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{Binding Path=Ds3LEDsCustom1}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=3}">
+                                1
+                            </CheckBox>
+                            <CheckBox Grid.Row="3" Grid.Column="2" IsChecked="{Binding Path=Ds3LEDsCustom2}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=3}">
+                                2
+                            </CheckBox>
+                            <CheckBox Grid.Row="3" Grid.Column="3" IsChecked="{Binding Path=Ds3LEDsCustom3}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=3}">
+                                3
+                            </CheckBox>
+                            <CheckBox Grid.Row="3" Grid.Column="4" IsChecked="{Binding Path=Ds3LEDsCustom4}" IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=3}">
+                                4
+                            </CheckBox>
+                        </Grid>
+                    </GroupBox>
+                    <!-- led status -->
+
                 </Grid>
             </controls:AccordionItem>
 

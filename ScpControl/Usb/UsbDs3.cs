@@ -50,6 +50,9 @@ namespace ScpControl.Usb
 
         #endregion
 
+        private byte counterForLeds = 0;
+        private byte ledStatus = 0;
+
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }
@@ -58,7 +61,7 @@ namespace ScpControl.Usb
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                _hidReport[9] = _ledOffsets[m_ControllerId];
+                _hidReport[9] = ledStatus;
             }
         }
 
@@ -130,7 +133,7 @@ namespace ScpControl.Usb
                     _hidReport[4] = large;
                 }
 
-                _hidReport[9] = (byte)(GlobalConfiguration.Instance.DisableLED ? 0 : _ledOffsets[m_ControllerId]);
+                _hidReport[9] = ledStatus;
 
                 return SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
                     ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
@@ -220,22 +223,60 @@ namespace ScpControl.Usb
                     }
                 }
 
-                if ((now - m_Last).TotalMilliseconds >= 1500 && m_Packet > 0)
+                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod && m_Packet > 0)
                 {
                     var transfered = 0;
 
                     m_Last = now;
 
-                    if (Battery == DsBattery.Charging)
+                    ledStatus = 0;
+
+                    switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
                     {
-                        _hidReport[9] ^= _ledOffsets[m_ControllerId];
-                    }
-                    else
-                    {
-                        _hidReport[9] |= _ledOffsets[m_ControllerId];
+                        case 0:
+                            ledStatus = 0;
+                            break;
+                        case 1:
+                            if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging)
+                            {
+                                counterForLeds++;
+                                counterForLeds %= 2;
+                                if (counterForLeds == 1)
+                                    ledStatus = _ledOffsets[m_ControllerId];
+                            }
+                            else ledStatus = _ledOffsets[m_ControllerId];
+                            break;
+                        case 2:
+                            switch (Battery)
+                            {
+                                case DsBattery.None:
+                                    ledStatus = 0;
+                                    break;
+                                case DsBattery.Charging:
+                                    counterForLeds++;
+                                    counterForLeds %= (byte)_ledOffsets.Length;
+                                    for (byte i = 0; i <= counterForLeds; i++)
+                                        ledStatus |= _ledOffsets[i];
+                                    break;
+                                case DsBattery.Charged:
+                                    ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
+                                    break;
+                                default: ;
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _ledOffsets[0];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _ledOffsets[1];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _ledOffsets[2];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _ledOffsets[3];
+                            break;
+                        default:
+                            ledStatus = 0;
+                            break;
                     }
 
-                    if (GlobalConfiguration.Instance.DisableLED) _hidReport[9] = 0;
+                    _hidReport[9] = ledStatus;
 
                     SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
                         ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One), 

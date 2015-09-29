@@ -87,6 +87,9 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
+        private byte ledStatus = 0;
+        private byte counterForLeds = 0;
+
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }
@@ -95,7 +98,7 @@ namespace ScpControl.Bluetooth
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                _hidReport[11] = _ledOffsets[m_ControllerId];
+                _hidReport[11] = ledStatus;
             }
         }
 
@@ -256,19 +259,69 @@ namespace ScpControl.Bluetooth
                 {
                     m_Tick = now;
 
-                    if (m_Queued == 0) m_Queued = 1;
+                        if (m_Queued == 0) m_Queued = 1;
 
-                    if (Battery < DsBattery.Medium)
-                    {
-                        _hidReport[11] ^= _ledOffsets[m_ControllerId];
+                        ledStatus = 0;
+
+                        switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
+                        {
+                            case 0:
+                                ledStatus = 0;
+                                break;
+                            case 1:
+                                if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging)
+                                {
+                                    counterForLeds++;
+                                    counterForLeds %= 2;
+                                    if (counterForLeds == 1)
+                                        ledStatus = _ledOffsets[m_ControllerId];
+                                }
+                                else ledStatus = _ledOffsets[m_ControllerId];
+                                break;
+                            case 2:
+                                switch (Battery)
+                                {
+                                    case DsBattery.None:
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[3]);
+                                        break;
+                                    case DsBattery.Dieing:
+                                        ledStatus = (byte)(_ledOffsets[1] | _ledOffsets[2]);
+                                        break;
+                                    case DsBattery.Low:
+                                        counterForLeds++;
+                                        counterForLeds %= 2;
+                                        if (counterForLeds == 1)
+                                            ledStatus = _ledOffsets[0];
+                                        break;
+                                    case DsBattery.Medium:
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1]);
+                                        break;
+                                    case DsBattery.High:
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2]);
+                                        break;
+                                    case DsBattery.Full:
+                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
+                                        break;
+                                    default: ;
+                                        break;
+                                }
+                                break;
+                            case 3:
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _ledOffsets[0];
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _ledOffsets[1];
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _ledOffsets[2];
+                                if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _ledOffsets[3];
+                                break;
+                            default:
+                                ledStatus = 0;
+                                break;
+                        }
+
+                        _hidReport[11] = ledStatus;
+
                     }
-                    else
-                    {
-                        _hidReport[11] |= _ledOffsets[m_ControllerId];
-                    }
+
                 }
-
-                if (GlobalConfiguration.Instance.DisableLED) _hidReport[11] = 0;
 
                 #region Fake DS3 workaround
 
@@ -290,7 +343,7 @@ namespace ScpControl.Bluetooth
                 m_Queued--;
 
                 m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
-            }
+            
         }
     }
 }
