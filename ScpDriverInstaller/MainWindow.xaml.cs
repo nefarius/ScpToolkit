@@ -463,49 +463,8 @@ namespace ScpDriverInstaller
             base.OnSourceInitialized(e);
 
             _hWnd = new WindowInteropHelper(this).Handle;
-            var mainWindowSrc = HwndSource.FromHwnd(_hWnd);
-
-            if (mainWindowSrc != null)
-                mainWindowSrc.AddHook(WndProc);
         }
-
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg == WdiWrapper.WmLibwdiLogger)
-            {
-                handled = true;
-
-                var logLevel =(WdiLogLevel)Enum.Parse(typeof(WdiLogLevel),wParam.ToString());
-                var message = WdiWrapper.Instance.GetLogMessage();
-
-                if(string.IsNullOrEmpty(message))
-                    return IntPtr.Zero;
-
-                switch (logLevel)
-                {
-                    case WdiLogLevel.WDI_LOG_LEVEL_DEBUG:
-                        Log.Debug(message);
-                        break;
-                    case WdiLogLevel.WDI_LOG_LEVEL_ERROR:
-                        Log.Error(message);
-                        break;
-                    case WdiLogLevel.WDI_LOG_LEVEL_INFO:
-                        Log.Info(message);
-                        break;
-                    case WdiLogLevel.WDI_LOG_LEVEL_NONE:
-                        Log.Info(message);
-                        break;
-                    case WdiLogLevel.WDI_LOG_LEVEL_WARNING:
-                        Log.Warn(message);
-                        break;
-                }
-            }
-
-            //return DefWindowProc(hwnd, msg, wParam, lParam);
-
-            return IntPtr.Zero;
-        }
-
+        
         #endregion
 
         #region Windows Service Helpers
@@ -569,17 +528,6 @@ namespace ScpDriverInstaller
 
             return false;
         }
-
-        #endregion
-
-        #region P/Invoke
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr DefWindowProc(
-            IntPtr hWnd,
-            int msg,
-            IntPtr wParam,
-            IntPtr lParam);
 
         #endregion
     }

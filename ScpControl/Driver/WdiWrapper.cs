@@ -150,9 +150,6 @@ namespace ScpControl.Driver
             // set parent window handle (may be IntPtr.Zero)
             var intOpts = new wdi_options_install_driver {hWnd = hwnd};
 
-            // register logger on supplied window handle
-            wdi_register_logger(hwnd, WmLibwdiLogger, 0);
-
             // receive USB device list
             wdi_create_list(ref pList, ref listOpts);
             // save original pointer to free list
@@ -220,9 +217,6 @@ namespace ScpControl.Driver
             // free used memory
             wdi_destroy_list(devices);
 
-            // free message logger
-            wdi_unregister_logger(hwnd);
-
             return result;
         }
 
@@ -236,21 +230,6 @@ namespace ScpControl.Driver
         {
             var namePtr = wdi_get_vendor_name(vendorId);
             return Marshal.PtrToStringAnsi(namePtr);
-        }
-
-        public string GetLogMessage()
-        {
-            const uint bufsize = 8192;
-            uint messageSize = 0;
-            var message = string.Empty;
-            var buffer = Marshal.AllocHGlobal((int)bufsize);
-
-            if(wdi_read_logger(buffer, bufsize, ref messageSize) == (int)WdiErrorCode.WDI_SUCCESS)
-                message = Marshal.PtrToStringAnsi(buffer);
-
-            Marshal.FreeHGlobal(buffer);
-
-            return message;
         }
 
         #region Structs
