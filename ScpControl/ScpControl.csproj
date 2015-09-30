@@ -135,6 +135,9 @@
     <Compile Include="Driver\DriverInstaller.cs" />
     <Compile Include="Driver\LibusbKWrapper.cs" />
     <Compile Include="Driver\NativeLibraryWrapper.cs" />
+    <Compile Include="Driver\PNPUtilLib\DriverStoreEntry.cs" />
+    <Compile Include="Driver\PNPUtilLib\IDriverStore.cs" />
+    <Compile Include="Driver\PNPUtilLib\PNPUtil.cs" />
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
