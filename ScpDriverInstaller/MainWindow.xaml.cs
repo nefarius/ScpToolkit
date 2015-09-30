@@ -5,6 +5,7 @@ using System.Configuration.Install;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -192,14 +193,14 @@ namespace ScpDriverInstaller
                         return;
                     }
 
-                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception) instex.InnerException);
+                                (Win32Exception)instex.InnerException);
                             break;
                     }
                 }
@@ -443,8 +444,6 @@ namespace ScpDriverInstaller
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _hWnd = new WindowInteropHelper(this).Handle;
-
             // link download progress to progress bar
             RedistPackageInstaller.Instance.ProgressChanged +=
                 (o, args) => { Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage); };
@@ -458,6 +457,54 @@ namespace ScpDriverInstaller
                 LogTextBlock.DataContext = appender;
             }
         }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            _hWnd = new WindowInteropHelper(this).Handle;
+            /*var mainWindowSrc = HwndSource.FromHwnd(_hWnd);
+
+            if (mainWindowSrc != null)
+                mainWindowSrc.AddHook(WndProc);*/
+        }
+
+        /*
+         * TODO: to be implemented properly
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WdiWrapper.WmLibwdiLogger)
+            {
+                handled = true;
+
+                var logLevel =(WdiLogLevel)Enum.Parse(typeof(WdiLogLevel),wParam.ToString());
+                var message = WdiWrapper.Instance.GetLogMessage();
+
+                switch (logLevel)
+                {
+                    case WdiLogLevel.WDI_LOG_LEVEL_DEBUG:
+                        Log.Debug(message);
+                        break;
+                    case WdiLogLevel.WDI_LOG_LEVEL_ERROR:
+                        Log.Error(message);
+                        break;
+                    case WdiLogLevel.WDI_LOG_LEVEL_INFO:
+                        Log.Info(message);
+                        break;
+                    case WdiLogLevel.WDI_LOG_LEVEL_NONE:
+                        Log.Info(message);
+                        break;
+                    case WdiLogLevel.WDI_LOG_LEVEL_WARNING:
+                        Log.Warn(message);
+                        break;
+                }
+            }
+
+            //return DefWindowProc(hwnd, msg, wParam, lParam);
+
+            return IntPtr.Zero;
+        }
+         * */
 
         #endregion
 
@@ -505,13 +552,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
                         break;
                 }
             }
@@ -522,6 +569,17 @@ namespace ScpDriverInstaller
 
             return false;
         }
+
+        #endregion
+
+        #region P/Invoke
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr DefWindowProc(
+            IntPtr hWnd,
+            int msg,
+            IntPtr wParam,
+            IntPtr lParam);
 
         #endregion
     }

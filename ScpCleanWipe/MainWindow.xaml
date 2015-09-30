@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ScpCleanWipe.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ScpToolkit CleanWipe Utility" Height="350" Width="525" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="ScpToolkit CleanWipe Utility" Height="350" Width="525" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Grid Background="#FF1B1B1B">
         
     </Grid>
