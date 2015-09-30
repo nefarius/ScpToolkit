@@ -463,14 +463,12 @@ namespace ScpDriverInstaller
             base.OnSourceInitialized(e);
 
             _hWnd = new WindowInteropHelper(this).Handle;
-            /*var mainWindowSrc = HwndSource.FromHwnd(_hWnd);
+            var mainWindowSrc = HwndSource.FromHwnd(_hWnd);
 
             if (mainWindowSrc != null)
-                mainWindowSrc.AddHook(WndProc);*/
+                mainWindowSrc.AddHook(WndProc);
         }
 
-        /*
-         * TODO: to be implemented properly
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             if (msg == WdiWrapper.WmLibwdiLogger)
@@ -479,6 +477,9 @@ namespace ScpDriverInstaller
 
                 var logLevel =(WdiLogLevel)Enum.Parse(typeof(WdiLogLevel),wParam.ToString());
                 var message = WdiWrapper.Instance.GetLogMessage();
+
+                if(string.IsNullOrEmpty(message))
+                    return IntPtr.Zero;
 
                 switch (logLevel)
                 {
@@ -504,7 +505,6 @@ namespace ScpDriverInstaller
 
             return IntPtr.Zero;
         }
-         * */
 
         #endregion
 

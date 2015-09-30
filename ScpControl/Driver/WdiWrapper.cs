@@ -45,6 +45,8 @@ namespace ScpControl.Driver
     /// </summary>
     public class WdiWrapper : NativeLibraryWrapper<WdiWrapper>
     {
+        public static uint WmLibwdiLogger { get { return 0x0400 + 1; } }
+
         /// <summary>
         ///     The USB driver solution to install.
         /// </summary>
@@ -65,6 +67,12 @@ namespace ScpControl.Driver
         private WdiWrapper()
         {
             LoadNativeLibrary("libwdi", @"libwdi\x86\libwdi.dll", @"libwdi\amd64\libwdi.dll");
+
+#if DEBUG
+            wdi_set_log_level(WdiLogLevel.WDI_LOG_LEVEL_DEBUG);
+#else
+            wdi_set_log_level(WdiLogLevel.WDI_LOG_LEVEL_INFO);
+#endif
         }
         
         public int WdfVersion
@@ -142,6 +150,9 @@ namespace ScpControl.Driver
             // set parent window handle (may be IntPtr.Zero)
             var intOpts = new wdi_options_install_driver {hWnd = hwnd};
 
+            // register logger on supplied window handle
+            wdi_register_logger(hwnd, WmLibwdiLogger, 0);
+
             // receive USB device list
             wdi_create_list(ref pList, ref listOpts);
             // save original pointer to free list
@@ -209,6 +220,9 @@ namespace ScpControl.Driver
             // free used memory
             wdi_destroy_list(devices);
 
+            // free message logger
+            wdi_unregister_logger(hwnd);
+
             return result;
         }
 
@@ -222,6 +236,21 @@ namespace ScpControl.Driver
         {
             var namePtr = wdi_get_vendor_name(vendorId);
             return Marshal.PtrToStringAnsi(namePtr);
+        }
+
+        public string GetLogMessage()
+        {
+            const uint bufsize = 8192;
+            uint messageSize = 0;
+            var message = string.Empty;
+            var buffer = Marshal.AllocHGlobal((int)bufsize);
+
+            if(wdi_read_logger(buffer, bufsize, ref messageSize) == (int)WdiErrorCode.WDI_SUCCESS)
+                message = Marshal.PtrToStringAnsi(buffer);
+
+            Marshal.FreeHGlobal(buffer);
+
+            return message;
         }
 
         #region Structs
