@@ -144,7 +144,8 @@ namespace ScpControl.Driver
             var prepOpts = new wdi_options_prepare_driver
             {
                 driver_type = driverType,
-                device_guid = deviceGuid
+                device_guid = deviceGuid,
+                vendor_name = "ScpToolkit compatible device"
             };
 
             // set parent window handle (may be IntPtr.Zero)
@@ -263,12 +264,12 @@ namespace ScpControl.Driver
         private struct wdi_options_prepare_driver
         {
             [MarshalAs(UnmanagedType.I4)] public WdiDriverType driver_type;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string vendor_name;
+            [MarshalAs(UnmanagedType.LPStr)] public string vendor_name;
             [MarshalAs(UnmanagedType.LPStr)] public string device_guid;
-            public readonly bool disable_cat;
-            public readonly bool disable_signing;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string cert_subject;
-            public readonly bool use_wcid_driver;
+            public bool disable_cat;
+            public bool disable_signing;
+            [MarshalAs(UnmanagedType.LPStr)] public string cert_subject;
+            public bool use_wcid_driver;
         }
 
         [StructLayout(LayoutKind.Sequential)]
