@@ -320,23 +320,21 @@ namespace ScpDriverInstaller
 
                     if (_viewModel.InstallBluetoothDriver)
                     {
-                        Dispatcher.Invoke(() => result = DriverInstaller.InstallBluetoothDongles(_hWnd, forceInstall));
+                        result = DriverInstaller.InstallBluetoothDongles(force: forceInstall);
 
                         if (result > 0) _bthDriverConfigured = true;
                     }
 
                     if (_viewModel.InstallDualShock3Driver)
                     {
-                        Dispatcher.Invoke(
-                            () => result = DriverInstaller.InstallDualShock3Controllers(_hWnd, forceInstall));
+                        result = DriverInstaller.InstallDualShock3Controllers(force: forceInstall);
 
                         if (result > 0) _ds3DriverConfigured = true;
                     }
 
                     if (_viewModel.InstallDualShock4Driver)
                     {
-                        Dispatcher.Invoke(
-                            () => result = DriverInstaller.InstallDualShock4Controllers(_hWnd, forceInstall));
+                        result = DriverInstaller.InstallDualShock4Controllers(force: forceInstall);
 
                         if (result > 0) _ds4DriverConfigured = true;
                     }
