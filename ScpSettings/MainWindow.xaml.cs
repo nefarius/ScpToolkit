@@ -3,9 +3,6 @@ using System.ComponentModel;
 using System.Windows;
 using ScpControl;
 using ScpControl.ScpCore;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Globalization;
 
 namespace ScpSettings
 {
@@ -94,22 +91,4 @@ namespace ScpSettings
             LEDsFlashingPeriodGroupBox.Header = string.Format("LEDs flashing period: {0} ms", value);
         }
     }
-
-    public class RadioBoolToIntConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            int integer = (int)value;
-            if (integer == int.Parse(parameter.ToString()))
-                return true;
-            else
-                return false;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return parameter;
-        }
-    }
-
 }

@@ -72,7 +72,7 @@ namespace ScpControl.Usb
         One = 0x01
     }
 
-    public enum UsbHidDescriptorType : byte
+    public enum UsbHidClassDescriptorType : byte
     {
         Hid = 0x21,
         Report = 0x22,

@@ -744,7 +744,7 @@ namespace ScpControl.Bluetooth
 
                                     #region Fake DS3 workaround
 
-                                    if (!hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
+                                    if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds && !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                     {
                                         Connection.IsFake = true;
                                         Log.Warn("-- Fake DualShock 3 found. Workaround applied");

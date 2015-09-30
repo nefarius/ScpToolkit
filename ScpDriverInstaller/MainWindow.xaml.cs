@@ -5,6 +5,7 @@ using System.Configuration.Install;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -192,14 +193,14 @@ namespace ScpDriverInstaller
                         return;
                     }
 
-                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception) instex.InnerException);
+                                (Win32Exception)instex.InnerException);
                             break;
                     }
                 }
@@ -319,23 +320,21 @@ namespace ScpDriverInstaller
 
                     if (_viewModel.InstallBluetoothDriver)
                     {
-                        Dispatcher.Invoke(() => result = DriverInstaller.InstallBluetoothDongles(_hWnd, forceInstall));
+                        result = DriverInstaller.InstallBluetoothDongles(force: forceInstall);
 
                         if (result > 0) _bthDriverConfigured = true;
                     }
 
                     if (_viewModel.InstallDualShock3Driver)
                     {
-                        Dispatcher.Invoke(
-                            () => result = DriverInstaller.InstallDualShock3Controllers(_hWnd, forceInstall));
+                        result = DriverInstaller.InstallDualShock3Controllers(force: forceInstall);
 
                         if (result > 0) _ds3DriverConfigured = true;
                     }
 
                     if (_viewModel.InstallDualShock4Driver)
                     {
-                        Dispatcher.Invoke(
-                            () => result = DriverInstaller.InstallDualShock4Controllers(_hWnd, forceInstall));
+                        result = DriverInstaller.InstallDualShock4Controllers(force: forceInstall);
 
                         if (result > 0) _ds4DriverConfigured = true;
                     }
@@ -443,8 +442,6 @@ namespace ScpDriverInstaller
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _hWnd = new WindowInteropHelper(this).Handle;
-
             // link download progress to progress bar
             RedistPackageInstaller.Instance.ProgressChanged +=
                 (o, args) => { Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage); };
@@ -459,6 +456,13 @@ namespace ScpDriverInstaller
             }
         }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            _hWnd = new WindowInteropHelper(this).Handle;
+        }
+        
         #endregion
 
         #region Windows Service Helpers
@@ -505,13 +509,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
                         break;
                 }
             }

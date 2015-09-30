@@ -135,6 +135,9 @@
     <Compile Include="Driver\DriverInstaller.cs" />
     <Compile Include="Driver\LibusbKWrapper.cs" />
     <Compile Include="Driver\NativeLibraryWrapper.cs" />
+    <Compile Include="Driver\PNPUtilLib\DriverStoreEntry.cs" />
+    <Compile Include="Driver\PNPUtilLib\IDriverStore.cs" />
+    <Compile Include="Driver\PNPUtilLib\PNPUtil.cs" />
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
@@ -173,6 +176,7 @@
     <Compile Include="Utilities\OSVersionInfoClass.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
     <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
+    <Compile Include="Value Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\GlobalConfiguration.cs" />
     <Compile Include="ScpCore\HCI.cs" />
