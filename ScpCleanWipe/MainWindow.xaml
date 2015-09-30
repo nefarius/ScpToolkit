@@ -1,8 +1,27 @@
 ﻿<Window x:Class="ScpCleanWipe.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ScpToolkit CleanWipe Utility" Height="350" Width="525" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="ScpToolkit CleanWipe Utility" Height="350" Width="525" WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize" Icon="Scp.ico">
     <Grid Background="#FF1B1B1B">
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="176*" />
+            <RowDefinition Height="145*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Margin="10"
+                   TextWrapping="Wrap" TextAlignment="Justify" Foreground="#FFB9B9B9" FontSize="14">
+            This emergency utility can assist you in removing old traces of faild or outdated installations obstructing a
+            successful fresh installation of the ScpToolkit and its drivers. If you've got troubles with the driver installer
+            no one on the forums was able to help you might try this automated tool. It will try to stop, uninstall and kill
+            any remains of the Windows Service, delete Virtual Bus and libusbK driver packages from the driver store and
+            remove all self-signed root certificates issued by libwdi. Every system is unique, so you'll have to do this at
+            your own risk!
+        </TextBlock>
+
+        <Button Grid.Row="1" Margin="20" Foreground="#FFA40000" FontFamily="Segoe UI Semibold" FontSize="14"
+                Click="Button_Click" x:Name="MainButton">
+            I know that I'm doing this at my own risk; try to clean my system!
+        </Button>
     </Grid>
 </Window>
