@@ -237,7 +237,7 @@ namespace ScpControl.Usb
                             ledStatus = 0;
                             break;
                         case 1:
-                            if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging)
+                            if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging && Battery == DsBattery.Charging)
                             {
                                 counterForLeds++;
                                 counterForLeds %= 2;
@@ -258,7 +258,7 @@ namespace ScpControl.Usb
                                     for (byte i = 0; i <= counterForLeds; i++)
                                         ledStatus |= _ledOffsets[i];
                                     break;
-                                case DsBattery.Full:
+                                case DsBattery.Charged:
                                     ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
                                     break;
                                 default: ;
