@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using log4net;
+using ScpControl.Driver;
 using ScpControl.Driver.PNPUtilLib;
 
 namespace ScpCleanWipe
@@ -76,6 +78,8 @@ namespace ScpCleanWipe
 
             await Task.Run(() =>
             {
+                #region Service tasks
+
                 Log.InfoFormat("Stopping \"SCP DS3 Service\"...");
                 StopService("SCP DS3 Service");
 
@@ -100,6 +104,10 @@ namespace ScpCleanWipe
 
                 Process.Start("sc", "delete DsxService").WaitForExit();
 
+                #endregion
+
+                #region Driver store clean-up
+
                 Log.InfoFormat("Searching the driver store...");
                 var storeEntries = DrvStore.EnumeratePackages();
 
@@ -116,6 +124,34 @@ namespace ScpCleanWipe
                     DrvStore.DeletePackage(entry, true);
                 }
 
+                #endregion
+
+                #region Driver uninstallation
+
+                string devPath = string.Empty;
+                string instanceId = string.Empty;
+                bool rebootRequired = false;
+
+                DriverInstaller.UninstallBluetoothDongles(ref rebootRequired);
+
+                DriverInstaller.UninstallDualShock3Controllers(ref rebootRequired);
+
+                DriverInstaller.UninstallDualShock4Controllers(ref rebootRequired);
+
+                if (Devcon.Find(Guid.Parse("f679f562-3164-42ce-a4db-e7ddbe723909"), ref devPath, ref instanceId))
+                {
+                    if (Devcon.Remove(Guid.Parse("f679f562-3164-42ce-a4db-e7ddbe723909"), devPath, instanceId))
+                    {
+                        Difx.Instance.Uninstall(Path.Combine(@".\System\", @"ScpVBus.inf"),
+                            DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
+                            out rebootRequired);
+                    }
+                }
+
+                #endregion
+
+                #region Cert store clean-up
+
                 CertStore.Open(OpenFlags.MaxAllowed);
 
                 foreach (var cert in CertStore.Certificates.Cast<X509Certificate2>().Where(c => c.FriendlyName.Contains("libwdi")))
@@ -126,6 +162,8 @@ namespace ScpCleanWipe
 
                 //Close the store.
                 CertStore.Close();
+
+                #endregion
             });
 
             MainButton.IsEnabled = !MainButton.IsEnabled;
