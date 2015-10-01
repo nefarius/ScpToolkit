@@ -73,14 +73,14 @@ namespace ScpControl.Driver
 
         public static bool Create(string className, Guid classGuid, string node)
         {
-            var deviceInfoSet = (IntPtr) (-1);
+            var deviceInfoSet = (IntPtr)(-1);
             var deviceInfoData = new SP_DEVINFO_DATA();
 
             try
             {
                 deviceInfoSet = SetupDiCreateDeviceInfoList(ref classGuid, IntPtr.Zero);
 
-                if (deviceInfoSet == (IntPtr) (-1))
+                if (deviceInfoSet == (IntPtr)(-1))
                 {
                     return false;
                 }
@@ -96,7 +96,7 @@ namespace ScpControl.Driver
 
                 if (
                     !SetupDiSetDeviceRegistryProperty(deviceInfoSet, ref deviceInfoData, SPDRP_HARDWAREID, node,
-                        node.Length*2))
+                        node.Length * 2))
                 {
                     return false;
                 }
@@ -108,7 +108,7 @@ namespace ScpControl.Driver
             }
             finally
             {
-                if (deviceInfoSet != (IntPtr) (-1))
+                if (deviceInfoSet != (IntPtr)(-1))
                 {
                     SetupDiDestroyDeviceInfoList(deviceInfoSet);
                 }
@@ -162,6 +162,14 @@ namespace ScpControl.Driver
             return false;
         }
 
+        public static bool Refresh()
+        {
+            UInt32 devRoot;
+
+            if (CM_Locate_DevNode_Ex(out devRoot, IntPtr.Zero, 0, IntPtr.Zero) != CR_SUCCESS) return false;
+            return CM_Reenumerate_DevNode_Ex(devRoot, 0, IntPtr.Zero) == CR_SUCCESS;
+        }
+
         #region Constant and Structure Definitions
 
         private const int DIGCF_PRESENT = 0x0002;
@@ -198,6 +206,14 @@ namespace ScpControl.Driver
             internal int Scope;
             internal int HwProfile;
         }
+
+        private const uint CM_REENUMERATE_NORMAL = 0x00000000;
+        private const uint CM_REENUMERATE_SYNCHRONOUS = 0x00000001;
+        // XP and later versions 
+        private const uint CM_REENUMERATE_RETRY_INSTALLATION = 0x00000002;
+        private const uint CM_REENUMERATE_ASYNCHRONOUS = 0x00000004;
+
+        private const uint CR_SUCCESS = 0x00000000;
 
         #endregion
 
@@ -246,6 +262,13 @@ namespace ScpControl.Driver
         private static extern bool SetupDiSetClassInstallParams(IntPtr DeviceInfoSet,
             ref SP_DEVINFO_DATA DeviceInterfaceData, ref SP_REMOVEDEVICE_PARAMS ClassInstallParams,
             int ClassInstallParamsSize);
+
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern UInt32 CM_Locate_DevNode_Ex(out UInt32 pdnDevInst, IntPtr pDeviceID, UInt32 ulFlags,
+            IntPtr hMachine);
+
+        [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern UInt32 CM_Reenumerate_DevNode_Ex(UInt32 dnDevInst, UInt32 ulFlags, IntPtr hMachine);
 
         #endregion
     }

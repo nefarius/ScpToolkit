@@ -148,6 +148,23 @@ namespace ScpCleanWipe
                     }
                 }
 
+                while (Devcon.Find(Guid.Parse("2F87C733-60E0-4355-8515-95D6978418B2"), ref devPath, ref instanceId))
+                {
+                    Devcon.Remove(Guid.Parse("2F87C733-60E0-4355-8515-95D6978418B2"), devPath, instanceId);
+                }
+
+                while (Devcon.Find(Guid.Parse("E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA"), ref devPath, ref instanceId))
+                {
+                    Devcon.Remove(Guid.Parse("E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA"), devPath, instanceId);
+                }
+
+                while (Devcon.Find(Guid.Parse("2ED90CE1-376F-4982-8F7F-E056CBC3CA71"), ref devPath, ref instanceId))
+                {
+                    Devcon.Remove(Guid.Parse("2ED90CE1-376F-4982-8F7F-E056CBC3CA71"), devPath, instanceId);
+                }
+
+                Devcon.Refresh();
+
                 #endregion
 
                 #region Cert store clean-up
