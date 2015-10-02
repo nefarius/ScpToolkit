@@ -4,8 +4,6 @@
     {
         protected override void Parse(byte[] report)
         {
-            //ConvertAfterglowToValidBytes(ref report);
-
             if (report[26] != 0x02) return;
 
             if (m_Packet++ + 1 < m_Packet)
