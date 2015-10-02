@@ -48,7 +48,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  - Win 7/8/8.1: leave it unchecked.
 10. Click Install.
 
-![Install Screenshot](http://nefarius.at/wp-content/uploads/2015/08/16-08-_2015_22-11-11.png "Install Screenshot")
+![Install Screenshot](http://nefarius.at/wp-content/uploads/2013/12/02-10-_2015_23-54-37.png "Install Screenshot")
 
 ## To-Do list
  * Increase supported controller count from 4 to 8
