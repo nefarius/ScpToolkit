@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using ScpControl.ScpCore;
 
@@ -181,6 +182,7 @@ namespace ScpControl.Usb
             var buttons = (Ds3Button)((report[2] << 0) | (report[3] << 8) | (report[4] << 16) | (report[5] << 24));
             var trigger = false;
 
+            // detect Quick Disconnect combo (L1, R1 and PS buttons pressed at the same time)
             if ((buttons & Ds3Button.L1) == Ds3Button.L1
                 && (buttons & Ds3Button.R1) == Ds3Button.R1
                 && (buttons & Ds3Button.PS) == Ds3Button.PS
@@ -283,6 +285,97 @@ namespace ScpControl.Usb
                         _hidReport, ref transfered);
                 }
             }
+        }
+    }
+
+    public static class ReportEventArgsExtensions
+    {
+        public static void SetPacketCounter(this ReportEventArgs args, uint packet)
+        {
+            args.Report[4] = (byte)(packet >> 0 & 0xFF);
+            args.Report[5] = (byte)(packet >> 8 & 0xFF);
+            args.Report[6] = (byte)(packet >> 16 & 0xFF);
+            args.Report[7] = (byte)(packet >> 24 & 0xFF);
+        }
+
+        public static byte SetBatteryStatus(this ReportEventArgs args, byte[] report)
+        {
+            return args.Report[2] = report[30];
+        }
+
+        public static byte SetBatteryStatus(this ReportEventArgs args, DsBattery battery)
+        {
+            return args.Report[2] = (byte)battery;
+        }
+
+        public static void SetTriangleDigital(this ReportEventArgs args, int input)
+        {
+            args.Report[11] |= (byte)((input & 1) << 4);
+        }
+
+        public static void SetCircleDigital(this ReportEventArgs args, int input)
+        {
+            args.Report[11] |= (byte)((input & 1) << 5);
+        }
+
+        public static void SetCrossDigital(this ReportEventArgs args, int input)
+        {
+            args.Report[11] |= (byte)((input & 1) << 6);
+        }
+
+        public static void SetSquareDigital(this ReportEventArgs args, int input)
+        {
+            args.Report[11] |= (byte) ((input & 1) << 7); 
+        }
+
+        public static void SetDpadRightDigital(this ReportEventArgs args, bool input)
+        {
+            args.Report[10] |= (byte)(input ? 0x20 : 0x00);
+        }
+
+        public static void SetDpadLeftDigital(this ReportEventArgs args, bool input)
+        {
+            args.Report[10] |= (byte)(input ? 0x80 : 0x00);
+        }
+
+        public static void SetDpadUpDgital(this ReportEventArgs args, bool input)
+        {
+            args.Report[10] |= (byte)(input ? 0x10 : 0x00);
+        }
+
+        public static void SetDpadDownDigital(this ReportEventArgs args, bool input)
+        {
+            args.Report[10] |= (byte)(input ? 0x40 : 0x00);
+        }
+
+        public static void ZeroShoulderButtonsState(this ReportEventArgs args)
+        {
+            args.Report[11] = 0x00;
+        }
+
+        public static void ZeroSelectStartButtonsState(this ReportEventArgs args)
+        {
+            args.Report[10] = 0x00;
+        }
+
+        public static void SetSelect(this ReportEventArgs args, int input)
+        {
+            args.Report[10] |= (byte) (input & 1);
+        }
+
+        public static void SetStart(this ReportEventArgs args, int input)
+        {
+            args.Report[10] |= (byte)((input & 1) << 3);
+        }
+
+        public static void SetLeftShoulderDigital(this ReportEventArgs args, int input)
+        {
+            args.Report[11] |= (byte) ((input & 1) << 2);
+        }
+
+        public static void SetRightShoulderDigital(this ReportEventArgs args, int input)
+        {
+            args.Report[11] |= (byte)((input & 1) << 3);
         }
     }
 }

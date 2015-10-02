@@ -158,6 +158,9 @@
     <Compile Include="Usb\UsbDs3Afterglow.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Usb\UsbDs3LsiLogicGamepad.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Usb\UsbDs3QuadStick.cs">
       <SubType>Component</SubType>
     </Compile>
