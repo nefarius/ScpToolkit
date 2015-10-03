@@ -4,7 +4,7 @@
         xmlns:driver="clr-namespace:ScpControl.Driver;assembly=ScpControl"
         Title="ScpToolkit Gamepad Analyzer" Height="510" Width="700" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Initialized="Window_Initialized"
-        Background="#FF1B1B1B" Icon="Scp.ico" Closing="Window_Closing">
+        Background="#FF1B1B1B" Icon="gamepad.ico" Closing="Window_Closing">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
