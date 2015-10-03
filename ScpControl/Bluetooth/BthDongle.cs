@@ -43,6 +43,8 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
+        #region Properties
+
         public string Local
         {
             get
@@ -71,32 +73,36 @@ namespace ScpControl.Bluetooth
 
         public bool Initialised { get; private set; }
 
+        #endregion
+
         #region HIDP Commands
 
         public int HID_Command(byte[] handle, byte[] channel, byte[] data)
         {
-            var Transfered = 0;
-            var Buffer = new byte[data.Length + 8];
+            var transfered = 0;
+            var buffer = new byte[data.Length + 8];
 
-            Buffer[0] = handle[0];
-            Buffer[1] = handle[1];
-            Buffer[2] = (byte)((data.Length + 4) % 256);
-            Buffer[3] = (byte)((data.Length + 4) / 256);
-            Buffer[4] = (byte)(data.Length % 256);
-            Buffer[5] = (byte)(data.Length / 256);
-            Buffer[6] = channel[0];
-            Buffer[7] = channel[1];
+            buffer[0] = handle[0];
+            buffer[1] = handle[1];
+            buffer[2] = (byte)((data.Length + 4) % 256);
+            buffer[3] = (byte)((data.Length + 4) / 256);
+            buffer[4] = (byte)(data.Length % 256);
+            buffer[5] = (byte)(data.Length / 256);
+            buffer[6] = channel[0];
+            buffer[7] = channel[1];
 
-            for (var i = 0; i < data.Length; i++) Buffer[i + 8] = data[i];
+            for (var i = 0; i < data.Length; i++) buffer[i + 8] = data[i];
 
-            WriteBulkPipe(Buffer, data.Length + 8, ref Transfered);
-            return Transfered;
+            WriteBulkPipe(buffer, data.Length + 8, ref transfered);
+            return transfered;
         }
 
         #endregion
 
         public event EventHandler<ArrivalEventArgs> DeviceArrived;
         public event EventHandler<ReportEventArgs> HidReportReceived;
+
+        #region Actions
 
         public override bool Open(int instance = 0)
         {
@@ -164,6 +170,8 @@ namespace ScpControl.Bluetooth
             return closed;
         }
 
+        #endregion
+
         public override string ToString()
         {
             switch (State)
@@ -201,6 +209,7 @@ namespace ScpControl.Bluetooth
 
             if (_connected.Count < 4)
             {
+                // TODO: weak check, maybe improve in future
                 if (name == "Wireless Controller")
                     connection = new BthDs4(this, _localMac, lsb, msb);
                 else

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using ScpControl.ScpCore;
+using ScpControl.Sound;
 
 namespace ScpControl.Bluetooth
 {
@@ -73,6 +74,10 @@ namespace ScpControl.Bluetooth
 
             tmUpdate.Enabled = true;
 
+            // play connection sound
+            if(GlobalConfiguration.Instance.IsBluetoothConnectSoundEnabled)
+                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothConnectSoundFile);
+
             return m_State == DsState.Connected;
         }
 
@@ -113,6 +118,10 @@ namespace ScpControl.Bluetooth
 
                 m_Publish = false;
                 OnHidReportReceived();
+
+                // play disconnect sound
+                if(GlobalConfiguration.Instance.IsBluetoothDisconnectSoundEnabled)
+                    AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothDisconnectSoundFile);
             }
 
             return m_State == DsState.Reserved;

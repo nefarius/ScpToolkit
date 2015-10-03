@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using ScpControl.ScpCore;
+using ScpControl.Sound;
 
 namespace ScpControl.Usb
 {
@@ -123,6 +124,10 @@ namespace ScpControl.Usb
 
             Rumble(0, 0);
             Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote);
+
+            // connection sound
+            if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
+                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbConnectSoundFile);
 
             return State == DsState.Connected;
         }
