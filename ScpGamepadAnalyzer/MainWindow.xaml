@@ -72,7 +72,7 @@
 
         <!-- Step 5 -->
         <GroupBox Grid.Row="5"
-                  Header="5. Revert to oroginal driver">
+                  Header="5. Revert to original driver">
             <DockPanel>
                 <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">It's done! We can now change back to the devices original driver →</TextBlock>
                 <Button x:Name="RevertButton"
