@@ -7,6 +7,10 @@
              d:DesignHeight="40" d:DesignWidth="300">
     <Grid>
             <DockPanel>
+                <CheckBox x:Name="IsSoundEnabledCheckBox" 
+                          IsChecked="{Binding Path=IsSoundEnabled, Mode=TwoWay}"
+                          VerticalContentAlignment="Center"
+                          ToolTip="Enable or disable usage of this sound"/>
                 <Button Margin="5" Click="BrowseButton_Click">Browse...</Button>
                 <TextBox x:Name="FilePathTextBox" Margin="5" IsReadOnly="True"/>
             </DockPanel>

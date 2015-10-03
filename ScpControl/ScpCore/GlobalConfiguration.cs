@@ -21,6 +21,8 @@ namespace ScpControl.ScpCore
             0xD9, 0x66, 0x3C, 0xCE
         };
 
+        #region Singleton
+
         private GlobalConfiguration()
         {
         }
@@ -29,6 +31,10 @@ namespace ScpControl.ScpCore
         {
             get { return LazyInstance.Value; }
         }
+
+        #endregion
+
+        #region Const vars
 
         public static int IdleTimeoutMultiplier
         {
@@ -39,6 +45,8 @@ namespace ScpControl.ScpCore
         {
             get { return 16; }
         }
+
+        #endregion
 
         public object Clone()
         {
@@ -205,6 +213,8 @@ namespace ScpControl.ScpCore
             set { Settings.Default.ForceDs4DriverReinstallation = value; }
         }
 
+        #region Sound settings
+
         public bool SoundsEnabled
         {
             get { return Settings.Default.SoundsEnabled; }
@@ -265,6 +275,38 @@ namespace ScpControl.ScpCore
             }
             set { Settings.Default.BluetoothDisconnectSoundFile = value; }
         }
+
+        public bool IsStartupSoundEnabled
+        {
+            get { return Settings.Default.IsStartupSoundEnabled; }
+            set { Settings.Default.IsStartupSoundEnabled = value; }
+        }
+
+        public bool IsUsbConnectSoundEnabled
+        {
+            get { return Settings.Default.IsUsbConnectSoundEnabled; }
+            set { Settings.Default.IsUsbConnectSoundEnabled = value; }
+        }
+
+        public bool IsUsbDisconnectSoundEnabled
+        {
+            get { return Settings.Default.IsUsbDisconnectSoundEnabled; }
+            set { Settings.Default.IsUsbDisconnectSoundEnabled = value; }
+        }
+
+        public bool IsBluetoothConnectSoundEnabled
+        {
+            get { return Settings.Default.IsBluetoothConnectSoundEnabled; }
+            set { Settings.Default.IsBluetoothConnectSoundEnabled = value; }
+        }
+
+        public bool IsBluetoothDisconnectSoundEnabled
+        {
+            get { return Settings.Default.IsBluetoothDisconnectSoundEnabled; }
+            set { Settings.Default.IsBluetoothDisconnectSoundEnabled = value; }
+        }
+
+        #endregion
 
         public int Ds3LEDsPeriod
         {

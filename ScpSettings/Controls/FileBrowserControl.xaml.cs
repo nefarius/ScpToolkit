@@ -10,15 +10,41 @@ namespace ScpSettings.Controls
     /// </summary>
     public partial class FileBrowserControl : UserControl, INotifyPropertyChanged
     {
+        public static readonly DependencyProperty FilePathProperty =
+            DependencyProperty.Register
+                (
+                    "FilePath",
+                    typeof(string),
+                    typeof(FileBrowserControl),
+                    new FrameworkPropertyMetadata(OnFilePathChanged)
+                );
+
+        public static readonly DependencyProperty IsSoundEnabledProperty =
+            DependencyProperty.Register
+                (
+                    "IsSoundEnabled",
+                    typeof(bool),
+                    typeof(FileBrowserControl),
+                    new FrameworkPropertyMetadata(OnIsSoundEnabledChanged)
+                );
+
         public FileBrowserControl()
         {
             InitializeComponent();
+
+            IsSoundEnabledCheckBox.DataContext = this;
         }
 
         public string FilePath
         {
-            get { return (string) GetValue(FilePathProperty); }
+            get { return (string)GetValue(FilePathProperty); }
             set { SetValue(FilePathProperty, value); }
+        }
+
+        public bool IsSoundEnabled
+        {
+            get { return (bool)GetValue(IsSoundEnabledProperty); }
+            set { SetValue(IsSoundEnabledProperty, value); }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -30,6 +56,21 @@ namespace ScpSettings.Controls
             {
                 myUserControl.FilePathTextBox.Text = e.NewValue as string;
             }
+        }
+
+        private static void OnIsSoundEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var myUserControl = sender as FileBrowserControl;
+            if (myUserControl != null)
+            {
+                myUserControl.IsSoundEnabledCheckBox.IsChecked = e.NewValue as bool?;
+            }
+        }
+
+        private void OnPropertyChanged()
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs("FilePath"));
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
@@ -46,20 +87,5 @@ namespace ScpSettings.Controls
             FilePath = fileBrowser.FileName;
             OnPropertyChanged();
         }
-
-        private void OnPropertyChanged()
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs("FilePath"));
-        }
-
-        public static readonly DependencyProperty FilePathProperty =
-            DependencyProperty.Register
-                (
-                    "FilePath",
-                    typeof (string),
-                    typeof (FileBrowserControl),
-                    new FrameworkPropertyMetadata(OnFilePathChanged)
-                );
     }
 }

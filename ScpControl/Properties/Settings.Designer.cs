@@ -478,5 +478,70 @@ namespace ScpControl.Properties {
                 this["UseDs3CounterfeitWorkarounds"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsStartupSoundEnabled {
+            get {
+                return ((bool)(this["IsStartupSoundEnabled"]));
+            }
+            set {
+                this["IsStartupSoundEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsUsbConnectSoundEnabled {
+            get {
+                return ((bool)(this["IsUsbConnectSoundEnabled"]));
+            }
+            set {
+                this["IsUsbConnectSoundEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsUsbDisconnectSoundEnabled {
+            get {
+                return ((bool)(this["IsUsbDisconnectSoundEnabled"]));
+            }
+            set {
+                this["IsUsbDisconnectSoundEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsBluetoothConnectSoundEnabled {
+            get {
+                return ((bool)(this["IsBluetoothConnectSoundEnabled"]));
+            }
+            set {
+                this["IsBluetoothConnectSoundEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsBluetoothDisconnectSoundEnabled {
+            get {
+                return ((bool)(this["IsBluetoothDisconnectSoundEnabled"]));
+            }
+            set {
+                this["IsBluetoothDisconnectSoundEnabled"] = value;
+            }
+        }
     }
 }

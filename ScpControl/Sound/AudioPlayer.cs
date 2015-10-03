@@ -53,7 +53,9 @@ namespace ScpControl.Sound
 
         public void PlayCustomFile(string path)
         {
-            if (!GlobalConfiguration.Instance.SoundsEnabled || !File.Exists(path))
+            if (!GlobalConfiguration.Instance.SoundsEnabled 
+                || string.IsNullOrEmpty(path)
+                || !File.Exists(path))
                 return;
 
             _soundEngine.Play2D(path);

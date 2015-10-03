@@ -377,29 +377,36 @@
                         <TextBlock>
                             Startup:
                         </TextBlock>
-                        <customControls:FileBrowserControl FilePath="{Binding Path=StartupSoundFile, Mode=TwoWay}" />
+                        <customControls:FileBrowserControl
+                            IsSoundEnabled="{Binding Path=IsStartupSoundEnabled, Mode=TwoWay}"
+                            FilePath="{Binding Path=StartupSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             USB connect:
                         </TextBlock>
-                        <customControls:FileBrowserControl FilePath="{Binding Path=UsbConnectSoundFile, Mode=TwoWay}" />
+                        <customControls:FileBrowserControl 
+                            IsSoundEnabled="{Binding Path=IsUsbConnectSoundEnabled, Mode=TwoWay}"
+                            FilePath="{Binding Path=UsbConnectSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             USB disconnect:
                         </TextBlock>
                         <customControls:FileBrowserControl
+                            IsSoundEnabled="{Binding Path=IsUsbDisconnectSoundEnabled, Mode=TwoWay}"
                             FilePath="{Binding Path=UsbDisconnectSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             Bluetooth connect:
                         </TextBlock>
                         <customControls:FileBrowserControl
+                            IsSoundEnabled="{Binding Path=IsBluetoothConnectSoundEnabled, Mode=TwoWay}"
                             FilePath="{Binding Path=BluetoothConnectSoundFile, Mode=TwoWay}" />
 
                         <TextBlock>
                             Bluetooth disconnect:
                         </TextBlock>
                         <customControls:FileBrowserControl
+                            IsSoundEnabled="{Binding Path=IsBluetoothDisconnectSoundEnabled, Mode=TwoWay}"
                             FilePath="{Binding Path=BluetoothDisconnectSoundFile, Mode=TwoWay}" />
 
                     </StackPanel>
