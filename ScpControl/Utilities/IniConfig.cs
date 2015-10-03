@@ -39,20 +39,6 @@ namespace ScpControl.Utilities
             try
             {
                 ini.Load(fullPath);
-
-                BthDongle = new BthDongleCfg()
-                {
-                    SupportedNames =
-                        ini.Sections["BthDongle"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value),
-                    SupportedMacs = ini.Sections["BthDongle"].Keys.Where(k => k.Name == "SupportedMac").Select(v => v.Value)
-                };
-
-                BthDs3 = new BthDs3Cfg()
-                {
-                    SupportedNames =
-                        ini.Sections["BthDs3"].Keys.Where(k => k.Name == "SupportedName").Select(v => v.Value),
-                    SupportedMacs = ini.Sections["BthDs3"].Keys.Where(k => k.Name == "SupportedMac").Select(v => v.Value)
-                };
                 
                 Hci = new HciCfg()
                 {
@@ -89,24 +75,10 @@ namespace ScpControl.Utilities
             get { return LazyIinstance.Value; }
         }
 
-        public BthDongleCfg BthDongle { get; private set; }
-        public BthDs3Cfg BthDs3 { get; private set; }
         public HciCfg Hci { get; private set; }
         public Ds3DriverCfg Ds3Driver { get; private set; }
         public Ds4DriverCfg Ds4Driver { get; private set; }
         public BthDongleDriverCfg BthDongleDriver { get; private set; }
-
-        public class BthDongleCfg
-        {
-            public IEnumerable<string> SupportedMacs { get; set; }
-            public IEnumerable<string> SupportedNames { get; set; }
-        }
-
-        public class BthDs3Cfg
-        {
-            public IEnumerable<string> SupportedMacs { get; set; }
-            public IEnumerable<string> SupportedNames { get; set; }
-        }
 
         public class HciCfg
         {
