@@ -38,7 +38,8 @@ namespace ScpGamepadAnalyzer
                 WindowTitle = "I'm about to change the device driver!",
                 Content = string.Format("You selected the device {1}{0}{0}Want me to change the driver now?",
                     Environment.NewLine,
-                    selectedDevice)
+                    selectedDevice),
+                MainIcon = TaskDialogIcon.Information
             };
 
             var msgResult = msgBox.ShowDialog(this);
@@ -47,9 +48,30 @@ namespace ScpGamepadAnalyzer
 
             if (msgResult.ButtonType == ButtonType.Yes)
             {
-                WdiWrapper.Instance.InstallLibusbKDriver(selectedDevice.HardwareId, TempDeviceGuid, tmpPath,
+                var result = WdiWrapper.Instance.InstallLibusbKDriver(selectedDevice.HardwareId, TempDeviceGuid, tmpPath,
                     string.Format("{0}.inf", selectedDevice.Description),
                     _hwnd, true);
+
+                if (result == WdiErrorCode.WDI_SUCCESS)
+                {
+                    new TaskDialog
+                    {
+                        Buttons = {new TaskDialogButton(ButtonType.Ok)},
+                        WindowTitle = "Yay!",
+                        Content = "Driver changed successfully, proceed with the next step now.",
+                        MainIcon = TaskDialogIcon.Information
+                    }.ShowDialog(this);
+                }
+                else
+                {
+                    new TaskDialog
+                    {
+                        Buttons = {new TaskDialogButton(ButtonType.Ok)},
+                        WindowTitle = "Ohnoes!",
+                        Content = "It didn't work! What a shame :( Please reboot your machine, cross your fingers and try again.",
+                        MainIcon = TaskDialogIcon.Error
+                    }.ShowDialog(this);
+                }
             }
         }
     }
