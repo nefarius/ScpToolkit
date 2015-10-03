@@ -164,6 +164,9 @@
     <Compile Include="Usb\UsbDs3QuadStick.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Usb\UsbDs3ShanWanWirelessGamepad.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Usb\UsbDs3SnesGamepad.cs">
       <SubType>Component</SubType>
     </Compile>

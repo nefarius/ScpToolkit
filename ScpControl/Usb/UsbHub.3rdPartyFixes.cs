@@ -99,6 +99,27 @@
 
             #endregion
 
+            #region ShanWan Wireless Gamepad
+
+            if (current.VendorId == 0x2563 && current.ProductId == 0x0523)
+            {
+                Log.InfoFormat(
+                    "ShanWan Wireless Gamepad detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
+                    current.VendorId, current.ProductId);
+                // ...close device...
+                current.Close();
+                // ...and create customized object
+                current = new UsbDs3ShanWanWirelessGamepad()
+                {
+                    PadId = padId
+                };
+
+                // open and continue plug-in procedure on success
+                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
+            }
+
+            #endregion
+
             return true;
         }
     }
