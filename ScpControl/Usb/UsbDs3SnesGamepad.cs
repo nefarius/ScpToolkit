@@ -33,6 +33,8 @@ namespace ScpControl.Usb
                 m_Packet = 0;
             }
 
+            #region HID Report translation
+
             // no battery state since the Gamepad is USB-powered
             m_BatteryStatus = m_ReportArgs.SetBatteryStatus(DsBattery.None);
 
@@ -60,10 +62,12 @@ namespace ScpControl.Usb
             m_ReportArgs.SetDpadDownDigital(report[4] == 0xFF); // D-Pad down
 
             // This device has no thumb sticks, center axes
-            m_ReportArgs.SetLeftAxisY(0x7F);
-            m_ReportArgs.SetLeftAxisX(0x7F);
-            m_ReportArgs.SetRightAxisY(0x7F);
-            m_ReportArgs.SetRightAxisX(0x7F);
+            m_ReportArgs.SetLeftAxisY(0x80);
+            m_ReportArgs.SetLeftAxisX(0x80);
+            m_ReportArgs.SetRightAxisY(0x80);
+            m_ReportArgs.SetRightAxisX(0x80);
+
+            #endregion
 
             OnHidReportReceived();
         }

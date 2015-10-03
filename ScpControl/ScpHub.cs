@@ -73,7 +73,7 @@ namespace ScpControl
             return true;
         }
 
-        public virtual DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
+        public virtual DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
         {
             switch (notification)
             {

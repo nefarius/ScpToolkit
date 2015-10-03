@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using ScpControl.ScpCore;
-using ScpControl.Sound;
 
 namespace ScpControl.Bluetooth
 {
@@ -10,6 +9,56 @@ namespace ScpControl.Bluetooth
     public partial class BthHub : ScpHub
     {
         private BthDongle _device;
+
+        #region Windows messaging
+
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
+        {
+            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, path);
+
+            switch (notification)
+            {
+                case ScpDevice.Notified.Arrival:
+                {
+                    if (_device.State != DsState.Connected)
+                    {
+                        var arrived = new BthDongle();
+
+                        if (arrived.Open(path))
+                        {
+                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.Local);
+
+                            _device.Close();
+                            _device = arrived;
+
+                            _device.DeviceArrived += OnDeviceArrival;
+                            _device.HidReportReceived += OnHidReportReceived;
+
+                            if (m_Started) _device.Start();
+                            break;
+                        }
+
+                        arrived.Close();
+                        arrived.Dispose();
+                    }
+                }
+                    break;
+
+                case ScpDevice.Notified.Removal:
+
+                    if (_device.Path == path)
+                    {
+                        Log.DebugFormat("-- Device Removal [{0}]", _device.Local);
+
+                        _device.Stop();
+                    }
+                    break;
+            }
+
+            return DsPadId.None;
+        }
+
+        #endregion
 
         #region Ctors
 
@@ -27,12 +76,11 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
+        #region Properties
+
         public string Dongle
         {
-            get
-            {
-                return _device!=null ? _device.ToString() : "<UNKNOWN>";
-            }
+            get { return _device != null ? _device.ToString() : "<UNKNOWN>"; }
         }
 
         public string Master
@@ -44,6 +92,10 @@ namespace ScpControl.Bluetooth
         {
             get { return m_Started && _device.State == DsState.Connected && _device.Initialised; }
         }
+
+        #endregion
+
+        #region Actions
 
         public override bool Open()
         {
@@ -104,52 +156,6 @@ namespace ScpControl.Bluetooth
             return base.Resume();
         }
 
-        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
-        {
-            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, Path);
-
-            switch (notification)
-            {
-                case ScpDevice.Notified.Arrival:
-                {
-                    if (_device.State != DsState.Connected)
-                    {
-                        var arrived = new BthDongle();
-
-                        if (arrived.Open(Path))
-                        {
-                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.Local);
-
-                            _device.Close();
-                            _device = arrived;
-
-                            _device.DeviceArrived += OnDeviceArrival;
-                            _device.HidReportReceived += OnHidReportReceived;
-
-                            if (m_Started) _device.Start();
-                            break;
-                        }
-
-                        arrived.Close();
-                        arrived.Dispose();
-                    }
-                }
-                    break;
-
-                case ScpDevice.Notified.Removal:
-
-                    if (_device.Path == Path)
-                    {
-                        Log.DebugFormat("-- Device Removal [{0}]", _device.Local);
-
-                        AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothDisconnectSoundFile);
-
-                        _device.Stop();
-                    }
-                    break;
-            }
-
-            return DsPadId.None;
-        }
+        #endregion
     }
 }

@@ -167,26 +167,26 @@ namespace ScpControl
             }
         }
 
-        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string Path)
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
         {
             if (_mSuspended) return DsPadId.None;
 
             // forward message for wired DS4 to usb hub
             if (Class == UsbDs4.USB_CLASS_GUID)
             {
-                return _usbHub.Notify(notification, Class, Path);
+                return _usbHub.Notify(notification, Class, path);
             }
 
             // forward message for wired DS3 to usb hub
             if (Class == UsbDs3.USB_CLASS_GUID)
             {
-                return _usbHub.Notify(notification, Class, Path);
+                return _usbHub.Notify(notification, Class, path);
             }
 
             // forward message for any wireless device to bluetooth hub
             if (Class == BthDongle.BTH_CLASS_GUID)
             {
-                _bthHub.Notify(notification, Class, Path);
+                _bthHub.Notify(notification, Class, path);
             }
 
             return DsPadId.None;
