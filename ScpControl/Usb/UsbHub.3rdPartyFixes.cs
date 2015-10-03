@@ -120,6 +120,27 @@
 
             #endregion
 
+            #region GameStop PC Advanced Controller
+
+            if (current.VendorId == 0x11FF && current.ProductId == 0x3331)
+            {
+                Log.InfoFormat(
+                    "GameStop PC Advanced Controller detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
+                    current.VendorId, current.ProductId);
+                // ...close device...
+                current.Close();
+                // ...and create customized object
+                current = new UsbDs3GameStopPcAdvanced()
+                {
+                    PadId = padId
+                };
+
+                // open and continue plug-in procedure on success
+                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
+            }
+
+            #endregion
+
             return true;
         }
     }
