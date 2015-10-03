@@ -22,7 +22,7 @@ namespace ScpControl.Usb
 
         protected override void Parse(byte[] report)
         {
-            if (report[0] != 0x01) return;
+            if (report[6] != 0x00) return;
 
             if (m_Packet++ + 1 < m_Packet)
             {
