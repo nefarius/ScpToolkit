@@ -12,6 +12,7 @@ namespace ScpControl.Usb
     /// </summary>
     public partial class UsbDevice : ScpDevice, IDsDevice
     {
+        private CancellationTokenSource _hidCancellationTokenSource = new CancellationTokenSource();
         protected byte m_BatteryStatus = 0;
         protected byte[] m_Buffer = new byte[64];
         protected byte m_CableStatus = 0;
@@ -27,125 +28,6 @@ namespace ScpControl.Usb
         protected bool m_Publish = false;
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
         protected DsState m_State = DsState.Disconnected;
-        private CancellationTokenSource _hidCancellationTokenSource = new CancellationTokenSource();
-
-        #region Ctors
-
-        protected UsbDevice(string guid) : base(guid)
-        {
-            InitializeComponent();
-        }
-
-        public UsbDevice()
-        {
-            InitializeComponent();
-        }
-
-        public UsbDevice(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
-        }
-
-        #endregion
-
-        public virtual bool IsShutdown
-        {
-            get { return m_IsDisconnect; }
-            set { m_IsDisconnect = value; }
-        }
-
-        public virtual DsModel Model
-        {
-            get { return (DsModel) m_Model; }
-        }
-
-        public virtual DsPadId PadId
-        {
-            get { return (DsPadId) m_ControllerId; }
-            set
-            {
-                m_ControllerId = (byte) value;
-
-                m_ReportArgs.Pad = PadId;
-            }
-        }
-
-        public virtual DsConnection Connection
-        {
-            get { return DsConnection.USB; }
-        }
-
-        public virtual DsState State
-        {
-            get { return m_State; }
-        }
-
-        public virtual DsBattery Battery
-        {
-            get { return (DsBattery) m_BatteryStatus; }
-        }
-
-        public virtual byte[] BdAddress
-        {
-            get { return m_Local; }
-        }
-
-        public virtual string Local
-        {
-            get { return m_Mac; }
-        }
-
-        public virtual string Remote
-        {
-            get
-            {
-                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Master[0], m_Master[1], m_Master[2],
-                    m_Master[3], m_Master[4], m_Master[5]);
-            }
-        }
-
-        public override bool Start()
-        {
-            if (!IsActive) return State == DsState.Connected;
-
-            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
-
-            m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
-            m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
-
-            m_State = DsState.Connected;
-            m_Packet = 0;
-
-            Task.Factory.StartNew(HidWorker, _hidCancellationTokenSource.Token);
-
-            tmUpdate.Enabled = true;
-
-            Rumble(0, 0);
-            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote);
-
-            // connection sound
-            if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
-                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbConnectSoundFile);
-
-            return State == DsState.Connected;
-        }
-
-        public virtual bool Rumble(byte large, byte small)
-        {
-            return false;
-        }
-
-        public virtual bool Pair(byte[] master)
-        {
-            return false;
-        }
-
-        public virtual bool Disconnect()
-        {
-            return true;
-        }
 
         public event EventHandler<ReportEventArgs> HidReportReceived;
 
@@ -155,52 +37,6 @@ namespace ScpControl.Usb
             m_ReportArgs.Report[1] = (byte) m_State;
 
             if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
-        }
-
-        protected virtual void Process(DateTime now)
-        {
-        }
-
-        protected virtual void Parse(byte[] report)
-        {
-        }
-
-        protected virtual bool Shutdown()
-        {
-            Stop();
-
-            return RestartDevice(m_Instance);
-        }
-
-        public override bool Stop()
-        {
-            if (IsActive)
-            {
-                tmUpdate.Enabled = false;
-                m_State = DsState.Reserved;
-
-                _hidCancellationTokenSource.Cancel();
-                _hidCancellationTokenSource = new CancellationTokenSource();
-
-                OnHidReportReceived();
-            }
-
-            return base.Stop();
-        }
-
-        public override bool Close()
-        {
-            if (IsActive)
-            {
-                base.Close();
-
-                tmUpdate.Enabled = false;
-                m_State = DsState.Disconnected;
-
-                OnHidReportReceived();
-            }
-
-            return !IsActive;
         }
 
         public override string ToString()
@@ -265,5 +101,178 @@ namespace ScpControl.Usb
                 Process(DateTime.Now);
             }
         }
+
+        #region Ctors
+
+        protected UsbDevice(string guid)
+            : base(guid)
+        {
+            InitializeComponent();
+        }
+
+        public UsbDevice()
+        {
+            InitializeComponent();
+        }
+
+        public UsbDevice(IContainer container)
+        {
+            container.Add(this);
+
+            InitializeComponent();
+        }
+
+        #endregion
+
+        #region Properties
+
+        public virtual bool IsShutdown
+        {
+            get { return m_IsDisconnect; }
+            set { m_IsDisconnect = value; }
+        }
+
+        public virtual DsModel Model
+        {
+            get { return (DsModel) m_Model; }
+        }
+
+        public virtual DsPadId PadId
+        {
+            get { return (DsPadId) m_ControllerId; }
+            set
+            {
+                m_ControllerId = (byte) value;
+
+                m_ReportArgs.Pad = PadId;
+            }
+        }
+
+        public virtual DsConnection Connection
+        {
+            get { return DsConnection.USB; }
+        }
+
+        public virtual DsState State
+        {
+            get { return m_State; }
+        }
+
+        public virtual DsBattery Battery
+        {
+            get { return (DsBattery) m_BatteryStatus; }
+        }
+
+        public virtual byte[] BdAddress
+        {
+            get { return m_Local; }
+        }
+
+        public virtual string Local
+        {
+            get { return m_Mac; }
+        }
+
+        public virtual string Remote
+        {
+            get
+            {
+                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Master[0], m_Master[1], m_Master[2],
+                    m_Master[3], m_Master[4], m_Master[5]);
+            }
+        }
+
+        #endregion
+
+        #region Actions
+
+        public override bool Start()
+        {
+            if (!IsActive) return State == DsState.Connected;
+
+            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
+
+            m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
+            m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
+
+            m_State = DsState.Connected;
+            m_Packet = 0;
+
+            Task.Factory.StartNew(HidWorker, _hidCancellationTokenSource.Token);
+
+            tmUpdate.Enabled = true;
+
+            Rumble(0, 0);
+            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote);
+
+            // connection sound
+            if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
+                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbConnectSoundFile);
+
+            return State == DsState.Connected;
+        }
+
+        public virtual bool Rumble(byte large, byte small)
+        {
+            return false;
+        }
+
+        public virtual bool Pair(byte[] master)
+        {
+            return false;
+        }
+
+        public virtual bool Disconnect()
+        {
+            return true;
+        }
+
+        protected virtual void Process(DateTime now)
+        {
+        }
+
+        protected virtual void Parse(byte[] report)
+        {
+        }
+
+        protected virtual bool Shutdown()
+        {
+            Stop();
+
+            return RestartDevice(m_Instance);
+        }
+
+        public override bool Stop()
+        {
+            if (IsActive)
+            {
+                tmUpdate.Enabled = false;
+                m_State = DsState.Reserved;
+
+                _hidCancellationTokenSource.Cancel();
+                _hidCancellationTokenSource = new CancellationTokenSource();
+
+                OnHidReportReceived();
+            }
+
+            return base.Stop();
+        }
+
+        public override bool Close()
+        {
+            if (IsActive)
+            {
+                base.Close();
+
+                tmUpdate.Enabled = false;
+                m_State = DsState.Disconnected;
+
+                OnHidReportReceived();
+            }
+
+            return !IsActive;
+        }
+
+        #endregion
     }
 }
