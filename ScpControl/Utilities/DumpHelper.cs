@@ -11,6 +11,11 @@ namespace ScpControl.Utilities
     {
         private StreamWriter _writer;
 
+        public DumpHelper(string header, string file) : this(file)
+        {
+            _writer.WriteLine("{0}{1}{1}", header, Environment.NewLine);
+        }
+
         public DumpHelper(string file)
         {
             _writer = new StreamWriter(new FileStream(file, FileMode.Create, FileAccess.Write))
@@ -23,8 +28,6 @@ namespace ScpControl.Utilities
         {
             lock (this)
             {
-                _writer.Flush();
-                _writer.Dispose();
                 _writer = null;
             }
         }
