@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -94,6 +95,22 @@ namespace ScpControl.Driver
             IntPtr hwnd, bool force = false)
         {
             return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force, WdiDriverType.WDI_WINUSB);
+        }
+
+        /// <summary>
+        ///     Replaces the device driver of given device with libusbK.
+        /// </summary>
+        /// <param name="hardwareId">Hardware-ID of the device to change the driver for.</param>
+        /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
+        /// <param name="driverPath">Temporary path for driver auto-creation.</param>
+        /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
+        /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
+        /// <param name="force">Force driver installation even if the device is already using libusbK.</param>
+        /// <returns>The error code returned by libwdi.</returns>
+        public WdiErrorCode InstallLibusbKDriver(string hardwareId, Guid deviceGuid, string driverPath, string infName,
+            IntPtr hwnd, bool force = false)
+        {
+            return InstallDeviceDriver(hardwareId, deviceGuid.ToString(), driverPath, infName, hwnd, force, WdiDriverType.WDI_LIBUSBK);
         }
 
         /// <summary>
@@ -221,6 +238,57 @@ namespace ScpControl.Driver
             return result;
         }
 
+        public IEnumerable<WdiUsbDevice> UsbDeviceList
+        {
+            get
+            {
+                var wdiDevices = new List<WdiUsbDevice>();
+
+                // pointer to write device list to
+                var pList = IntPtr.Zero;
+                // list all USB devices, not only driverless ones
+                var listOpts = new wdi_options_create_list
+                {
+                    list_all = true,
+                    list_hubs = false,
+                    trim_whitespaces = false
+                };
+
+                // receive USB device list
+                wdi_create_list(ref pList, ref listOpts);
+                // save original pointer to free list
+                var devices = pList;
+
+                // loop through linked list until last element
+                while (pList != IntPtr.Zero)
+                {
+                    // translate device info to managed object
+                    var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
+
+                    // put info in managed object
+                    var wdiDevice = new WdiUsbDevice()
+                    {
+                        VendorId = info.vid,
+                        ProductId = info.pid,
+                        Description = info.desc,
+                        DeviceId = info.device_id,
+                        HardwareId = info.hardware_id,
+                        CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
+                    };
+
+                    wdiDevices.Add(wdiDevice);
+
+                    // continue with next device
+                    pList = info.next;
+                }
+
+                // free used memory
+                wdi_destroy_list(devices);
+
+                return wdiDevices;
+            }
+        }
+
         public string GetErrorMessage(WdiErrorCode errcode)
         {
             var msgPtr = wdi_strerror((int) errcode);
@@ -326,5 +394,20 @@ namespace ScpControl.Driver
         private static extern int wdi_unregister_logger(IntPtr hWnd);
 
         #endregion
+    }
+
+    public class WdiUsbDevice
+    {
+        public ushort VendorId { get; set; }
+        public ushort ProductId { get; set; }
+        public string Description { get; set; }
+        public string DeviceId { get; set; }
+        public string HardwareId { get; set; }
+        public string CurrentDriver { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0} (VID: {1:X4}, PID: {2:X4})", Description, VendorId, ProductId);
+        }
     }
 }
