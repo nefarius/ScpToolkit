@@ -110,7 +110,7 @@ namespace ScpControl.Driver
         public WdiErrorCode InstallLibusbKDriver(string hardwareId, Guid deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
-            return InstallDeviceDriver(hardwareId, deviceGuid.ToString(), driverPath, infName, hwnd, force, WdiDriverType.WDI_LIBUSBK);
+            return InstallDeviceDriver(hardwareId, deviceGuid.ToString("B"), driverPath, infName, hwnd, force, WdiDriverType.WDI_LIBUSBK);
         }
 
         /// <summary>

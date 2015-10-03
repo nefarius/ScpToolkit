@@ -29,5 +29,13 @@
                           SelectedIndex="0"/>
             </DockPanel>
         </GroupBox>
+
+        <GroupBox Grid.Row="2"
+                  Header="2. Open device">
+            <DockPanel>
+                <Button Margin="0,0,10,0" Click="OpenDeviceButton_OnClick">Open device</Button>
+                <Button Click="ButtonBase_OnClick">Default state</Button>
+            </DockPanel>
+        </GroupBox>
     </Grid>
 </Window>

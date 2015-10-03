@@ -15,7 +15,7 @@ namespace ScpControl.Utilities
         {
             _writer = new StreamWriter(new FileStream(file, FileMode.Create, FileAccess.Write))
             {
-                AutoFlush = false
+                AutoFlush = true
             };
         }
 
@@ -23,6 +23,8 @@ namespace ScpControl.Utilities
         {
             lock (this)
             {
+                _writer.Flush();
+                _writer.Dispose();
                 _writer = null;
             }
         }
@@ -42,6 +44,26 @@ namespace ScpControl.Utilities
                 }
 
                 var line = string.Format("{0} - {1}", DateTime.Now, sb);
+
+                _writer.WriteLine(line);
+            }
+        }
+
+        public void DumpArray(string description, byte[] array, int length)
+        {
+            lock (this)
+            {
+                if (_writer == null)
+                    return;
+
+                var sb = new StringBuilder(length * 2);
+
+                for (int i = 0; i < length; i++)
+                {
+                    sb.AppendFormat("{0:X2} ", array[i]);
+                }
+
+                var line = string.Format("{0,-30} - {1}", description, sb);
 
                 _writer.WriteLine(line);
             }

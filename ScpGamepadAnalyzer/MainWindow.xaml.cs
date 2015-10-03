@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Interop;
 using Ookii.Dialogs.Wpf;
 using ScpControl.Driver;
+using ScpControl.Usb;
 
 namespace ScpGamepadAnalyzer
 {
@@ -12,8 +13,8 @@ namespace ScpGamepadAnalyzer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly Guid TempDeviceGuid = Guid.Parse("433FA0C6-2BF1-4675-98C6-7F4FC99796FC");
         private IntPtr _hwnd;
+        private UsbGenericGamepad _device;
 
         public MainWindow()
         {
@@ -46,33 +47,46 @@ namespace ScpGamepadAnalyzer
 
             var tmpPath = Path.Combine(Path.GetTempPath(), "ScpGamepadAnalyzer");
 
-            if (msgResult.ButtonType == ButtonType.Yes)
-            {
-                var result = WdiWrapper.Instance.InstallLibusbKDriver(selectedDevice.HardwareId, TempDeviceGuid, tmpPath,
-                    string.Format("{0}.inf", selectedDevice.Description),
-                    _hwnd, true);
+            if (msgResult.ButtonType != ButtonType.Yes) return;
 
-                if (result == WdiErrorCode.WDI_SUCCESS)
+            var result = WdiWrapper.Instance.InstallLibusbKDriver(selectedDevice.HardwareId, UsbGenericGamepad.DeviceClassGuid, tmpPath,
+                string.Format("{0}.inf", selectedDevice.Description),
+                _hwnd, true);
+
+            if (result == WdiErrorCode.WDI_SUCCESS)
+            {
+                new TaskDialog
                 {
-                    new TaskDialog
-                    {
-                        Buttons = {new TaskDialogButton(ButtonType.Ok)},
-                        WindowTitle = "Yay!",
-                        Content = "Driver changed successfully, proceed with the next step now.",
-                        MainIcon = TaskDialogIcon.Information
-                    }.ShowDialog(this);
-                }
-                else
-                {
-                    new TaskDialog
-                    {
-                        Buttons = {new TaskDialogButton(ButtonType.Ok)},
-                        WindowTitle = "Ohnoes!",
-                        Content = "It didn't work! What a shame :( Please reboot your machine, cross your fingers and try again.",
-                        MainIcon = TaskDialogIcon.Error
-                    }.ShowDialog(this);
-                }
+                    Buttons = {new TaskDialogButton(ButtonType.Ok)},
+                    WindowTitle = "Yay!",
+                    Content = "Driver changed successfully, proceed with the next step now.",
+                    MainIcon = TaskDialogIcon.Information
+                }.ShowDialog(this);
             }
+            else
+            {
+                new TaskDialog
+                {
+                    Buttons = {new TaskDialogButton(ButtonType.Ok)},
+                    WindowTitle = "Ohnoes!",
+                    Content = "It didn't work! What a shame :( Please reboot your machine, cross your fingers and try again.",
+                    MainIcon = TaskDialogIcon.Error
+                }.ShowDialog(this);
+            }
+        }
+
+        private void OpenDeviceButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            _device = new UsbGenericGamepad();
+
+            var retval = _device.Open();
+
+            retval = _device.Start();
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            _device.CaptureDefault = true;
         }
     }
 }

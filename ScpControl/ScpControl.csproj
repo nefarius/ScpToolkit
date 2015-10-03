@@ -167,6 +167,9 @@
     <Compile Include="Usb\UsbDs3SnesGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Usb\UsbGenericGamepad.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Usb\UsbHub.3rdPartyFixes.cs">
       <SubType>Component</SubType>
     </Compile>
