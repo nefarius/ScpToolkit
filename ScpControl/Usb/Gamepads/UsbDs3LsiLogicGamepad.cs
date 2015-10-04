@@ -1,10 +1,23 @@
 ﻿using System;
 using ScpControl.ScpCore;
+using ScpControl.Utilities;
 
-namespace ScpControl.Usb
+namespace ScpControl.Usb.Gamepads
 {
+    /// <summary>
+    ///     LSI Logic Gamepad
+    /// </summary>
     public class UsbDs3LsiLogicGamepad : UsbDs3
     {
+        public override bool Open(string devicePath)
+        {
+            var retval = base.Open(devicePath);
+
+            m_Mac = MacAddressGenerator.NewMacAddress;
+
+            return retval;
+        }
+
         protected override void Process(DateTime now)
         {
             // ignore

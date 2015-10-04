@@ -158,19 +158,19 @@
     <Compile Include="Usb\UsbDs3Afterglow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\UsbDs3GameStopPcAdvanced.cs">
+    <Compile Include="Usb\Gamepads\UsbDs3GameStopPcAdvanced.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\UsbDs3LsiLogicGamepad.cs">
+    <Compile Include="Usb\Gamepads\UsbDs3LsiLogicGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Usb\UsbDs3QuadStick.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\UsbDs3ShanWanWirelessGamepad.cs">
+    <Compile Include="Usb\Gamepads\UsbDs3ShanWanWirelessGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\UsbDs3SnesGamepad.cs">
+    <Compile Include="Usb\Gamepads\UsbDs3SnesGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Usb\UsbGenericGamepad.cs">
@@ -186,6 +186,7 @@
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\FileDownloader.cs" />
     <Compile Include="Utilities\FileExtensions.cs" />
+    <Compile Include="Utilities\MacAddressGenerator.cs" />
     <Compile Include="Utilities\OSVersionInfoClass.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
     <Compile Include="Value Converters\EnumDescriptionConverter.cs" />

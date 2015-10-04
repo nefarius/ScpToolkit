@@ -1,4 +1,6 @@
-﻿namespace ScpControl.Usb
+﻿using ScpControl.Usb.Gamepads;
+
+namespace ScpControl.Usb
 {
     public partial class UsbHub
     {
