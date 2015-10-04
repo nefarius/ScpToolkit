@@ -113,27 +113,27 @@
             this.tmReset,
             this.tmExit});
             this.cmTray.Name = "cmTray";
-            this.cmTray.Size = new System.Drawing.Size(159, 92);
+            this.cmTray.Size = new System.Drawing.Size(153, 92);
             // 
             // tmProfile
             // 
             this.tmProfile.Enabled = false;
             this.tmProfile.Name = "tmProfile";
-            this.tmProfile.Size = new System.Drawing.Size(158, 22);
-            this.tmProfile.Text = "&Profile Manager";
+            this.tmProfile.Size = new System.Drawing.Size(152, 22);
+            this.tmProfile.Text = "&Input Tester";
             this.tmProfile.Click += new System.EventHandler(this.tmProfile_Click);
             // 
             // tmReset
             // 
             this.tmReset.Name = "tmReset";
-            this.tmReset.Size = new System.Drawing.Size(158, 22);
+            this.tmReset.Size = new System.Drawing.Size(152, 22);
             this.tmReset.Text = "&Reset Position";
             this.tmReset.Click += new System.EventHandler(this.tmReset_Click);
             // 
             // tmExit
             // 
             this.tmExit.Name = "tmExit";
-            this.tmExit.Size = new System.Drawing.Size(158, 22);
+            this.tmExit.Size = new System.Drawing.Size(152, 22);
             this.tmExit.Text = "E&xit";
             this.tmExit.Click += new System.EventHandler(this.tmExit_Click);
             // 

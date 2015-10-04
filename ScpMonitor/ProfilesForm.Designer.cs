@@ -55,21 +55,16 @@ namespace ScpMonitor
             this.rXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ttAxBar = new System.Windows.Forms.ToolTip(this.components);
-            this.btnView = new ScpMonitor.ScpButton();
-            this.btnDel = new ScpMonitor.ScpButton();
-            this.btnAdd = new ScpMonitor.ScpButton();
-            this.btnEdit = new ScpMonitor.ScpButton();
-            this.btnActivate = new ScpMonitor.ScpButton();
-            this.btnSave = new ScpMonitor.ScpButton();
-            this.axRY = new ScpMonitor.AxisControl();
-            this.axRX = new ScpMonitor.AxisControl();
             this.cbProfile = new System.Windows.Forms.ComboBox();
             this.cbPad = new System.Windows.Forms.ComboBox();
             this.scpProxy = new ScpControl.ScpProxy(this.components);
+            this.btnView = new ScpMonitor.ScpButton();
             this.axL = new ScpMonitor.AxisControl();
             this.axD = new ScpMonitor.AxisControl();
             this.axR = new ScpMonitor.AxisControl();
             this.axU = new ScpMonitor.AxisControl();
+            this.btnDel = new ScpMonitor.ScpButton();
+            this.btnAdd = new ScpMonitor.ScpButton();
             this.axTP = new ScpMonitor.AxisControl();
             this.axPS = new ScpMonitor.AxisControl();
             this.axOP = new ScpMonitor.AxisControl();
@@ -80,10 +75,15 @@ namespace ScpMonitor
             this.axT = new ScpMonitor.AxisControl();
             this.axR3 = new ScpMonitor.AxisControl();
             this.axL3 = new ScpMonitor.AxisControl();
+            this.btnEdit = new ScpMonitor.ScpButton();
+            this.btnActivate = new ScpMonitor.ScpButton();
+            this.btnSave = new ScpMonitor.ScpButton();
             this.axR1 = new ScpMonitor.AxisControl();
             this.axL1 = new ScpMonitor.AxisControl();
             this.axR2 = new ScpMonitor.AxisControl();
             this.axL2 = new ScpMonitor.AxisControl();
+            this.axRY = new ScpMonitor.AxisControl();
+            this.axRX = new ScpMonitor.AxisControl();
             this.axLY = new ScpMonitor.AxisControl();
             this.axLX = new ScpMonitor.AxisControl();
             this.msAxis.SuspendLayout();
@@ -253,114 +253,6 @@ namespace ScpMonitor
             this.ttAxBar.AutomaticDelay = 1000;
             this.ttAxBar.IsBalloon = true;
             // 
-            // btnView
-            // 
-            this.btnView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnView.Glassy = true;
-            this.btnView.Location = new System.Drawing.Point(381, 348);
-            this.btnView.Name = "btnView";
-            this.btnView.Size = new System.Drawing.Size(30, 21);
-            this.btnView.TabIndex = 29;
-            this.btnView.Text = "?";
-            this.ttAxBar.SetToolTip(this.btnView, "View the current Profile.");
-            this.btnView.UseVisualStyleBackColor = true;
-            this.btnView.Click += new System.EventHandler(this.btnView_Click);
-            // 
-            // btnDel
-            // 
-            this.btnDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDel.Enabled = false;
-            this.btnDel.Glassy = true;
-            this.btnDel.Location = new System.Drawing.Point(151, 348);
-            this.btnDel.Name = "btnDel";
-            this.btnDel.Size = new System.Drawing.Size(30, 21);
-            this.btnDel.TabIndex = 25;
-            this.btnDel.Text = "-";
-            this.ttAxBar.SetToolTip(this.btnDel, "Delete the current Profile.");
-            this.btnDel.UseVisualStyleBackColor = true;
-            this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Glassy = true;
-            this.btnAdd.Location = new System.Drawing.Point(121, 348);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(30, 21);
-            this.btnAdd.TabIndex = 24;
-            this.btnAdd.Text = "+";
-            this.ttAxBar.SetToolTip(this.btnAdd, "Add a new Profile.");
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEdit.Enabled = false;
-            this.btnEdit.Glassy = true;
-            this.btnEdit.Location = new System.Drawing.Point(411, 348);
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(30, 21);
-            this.btnEdit.TabIndex = 26;
-            this.btnEdit.Text = ">";
-            this.ttAxBar.SetToolTip(this.btnEdit, "Edit the current Profile.");
-            this.btnEdit.UseVisualStyleBackColor = true;
-            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-            // 
-            // btnActivate
-            // 
-            this.btnActivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnActivate.Glassy = true;
-            this.btnActivate.Location = new System.Drawing.Point(597, 348);
-            this.btnActivate.Name = "btnActivate";
-            this.btnActivate.Size = new System.Drawing.Size(75, 21);
-            this.btnActivate.TabIndex = 0;
-            this.btnActivate.Text = "Activate";
-            this.ttAxBar.SetToolTip(this.btnActivate, "Activate the current Profile on the Server.");
-            this.btnActivate.UseVisualStyleBackColor = true;
-            this.btnActivate.Click += new System.EventHandler(this.btnActivate_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Glassy = true;
-            this.btnSave.Location = new System.Drawing.Point(522, 348);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 21);
-            this.btnSave.TabIndex = 28;
-            this.btnSave.Text = "Save";
-            this.ttAxBar.SetToolTip(this.btnSave, "Save the Profile Map to the Server.");
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // axRY
-            // 
-            this.axRY.BackColor = System.Drawing.Color.Transparent;
-            this.axRY.Color = System.Drawing.Color.DodgerBlue;
-            this.axRY.ContextMenuStrip = this.msAxis;
-            this.axRY.Enabled = false;
-            this.axRY.Location = new System.Drawing.Point(410, 281);
-            this.axRY.Name = "axRY";
-            this.axRY.Orientation = ScpMonitor.Orientation.Left;
-            this.axRY.Size = new System.Drawing.Size(115, 15);
-            this.axRY.TabIndex = 22;
-            this.axRY.Text = "RY";
-            this.axRY.Value = ((byte)(0));
-            // 
-            // axRX
-            // 
-            this.axRX.BackColor = System.Drawing.Color.Transparent;
-            this.axRX.Color = System.Drawing.Color.DodgerBlue;
-            this.axRX.ContextMenuStrip = this.msAxis;
-            this.axRX.Enabled = false;
-            this.axRX.Location = new System.Drawing.Point(410, 260);
-            this.axRX.Name = "axRX";
-            this.axRX.Orientation = ScpMonitor.Orientation.Left;
-            this.axRX.Size = new System.Drawing.Size(115, 15);
-            this.axRX.TabIndex = 21;
-            this.axRX.Text = "RX";
-            this.axRX.Value = ((byte)(0));
-            // 
             // cbProfile
             // 
             this.cbProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -390,7 +282,21 @@ namespace ScpMonitor
             // 
             // scpProxy
             // 
-            this.scpProxy.NativeFeedReceived += new System.EventHandler<DsPacket>(this.Parse);
+            this.scpProxy.NativeFeedReceived += new System.EventHandler<ScpControl.ScpCore.DsPacket>(this.Parse);
+            // 
+            // btnView
+            // 
+            this.btnView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnView.Glassy = true;
+            this.btnView.Location = new System.Drawing.Point(381, 348);
+            this.btnView.Name = "btnView";
+            this.btnView.Size = new System.Drawing.Size(30, 21);
+            this.btnView.TabIndex = 29;
+            this.btnView.Text = "?";
+            this.ttAxBar.SetToolTip(this.btnView, "View the current Profile.");
+            this.btnView.UseVisualStyleBackColor = true;
+            this.btnView.Visible = false;
+            this.btnView.Click += new System.EventHandler(this.btnView_Click);
             // 
             // axL
             // 
@@ -443,6 +349,35 @@ namespace ScpMonitor
             this.axU.TabIndex = 8;
             this.axU.Text = "U";
             this.axU.Value = ((byte)(0));
+            // 
+            // btnDel
+            // 
+            this.btnDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDel.Enabled = false;
+            this.btnDel.Glassy = true;
+            this.btnDel.Location = new System.Drawing.Point(151, 348);
+            this.btnDel.Name = "btnDel";
+            this.btnDel.Size = new System.Drawing.Size(30, 21);
+            this.btnDel.TabIndex = 25;
+            this.btnDel.Text = "-";
+            this.ttAxBar.SetToolTip(this.btnDel, "Delete the current Profile.");
+            this.btnDel.UseVisualStyleBackColor = true;
+            this.btnDel.Visible = false;
+            this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnAdd.Glassy = true;
+            this.btnAdd.Location = new System.Drawing.Point(121, 348);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(30, 21);
+            this.btnAdd.TabIndex = 24;
+            this.btnAdd.Text = "+";
+            this.ttAxBar.SetToolTip(this.btnAdd, "Add a new Profile.");
+            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Visible = false;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // axTP
             // 
@@ -574,6 +509,49 @@ namespace ScpMonitor
             this.axL3.Text = "L3";
             this.axL3.Value = ((byte)(0));
             // 
+            // btnEdit
+            // 
+            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnEdit.Enabled = false;
+            this.btnEdit.Glassy = true;
+            this.btnEdit.Location = new System.Drawing.Point(411, 348);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(30, 21);
+            this.btnEdit.TabIndex = 26;
+            this.btnEdit.Text = ">";
+            this.ttAxBar.SetToolTip(this.btnEdit, "Edit the current Profile.");
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Visible = false;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
+            // 
+            // btnActivate
+            // 
+            this.btnActivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnActivate.Glassy = true;
+            this.btnActivate.Location = new System.Drawing.Point(597, 348);
+            this.btnActivate.Name = "btnActivate";
+            this.btnActivate.Size = new System.Drawing.Size(75, 21);
+            this.btnActivate.TabIndex = 0;
+            this.btnActivate.Text = "Activate";
+            this.ttAxBar.SetToolTip(this.btnActivate, "Activate the current Profile on the Server.");
+            this.btnActivate.UseVisualStyleBackColor = true;
+            this.btnActivate.Visible = false;
+            this.btnActivate.Click += new System.EventHandler(this.btnActivate_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSave.Glassy = true;
+            this.btnSave.Location = new System.Drawing.Point(522, 348);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 21);
+            this.btnSave.TabIndex = 28;
+            this.btnSave.Text = "Save";
+            this.ttAxBar.SetToolTip(this.btnSave, "Save the Profile Map to the Server.");
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Visible = false;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // axR1
             // 
             this.axR1.BackColor = System.Drawing.Color.Transparent;
@@ -627,6 +605,34 @@ namespace ScpMonitor
             this.axL2.TabIndex = 1;
             this.axL2.Text = "L2";
             this.axL2.Value = ((byte)(0));
+            // 
+            // axRY
+            // 
+            this.axRY.BackColor = System.Drawing.Color.Transparent;
+            this.axRY.Color = System.Drawing.Color.DodgerBlue;
+            this.axRY.ContextMenuStrip = this.msAxis;
+            this.axRY.Enabled = false;
+            this.axRY.Location = new System.Drawing.Point(410, 281);
+            this.axRY.Name = "axRY";
+            this.axRY.Orientation = ScpMonitor.Orientation.Left;
+            this.axRY.Size = new System.Drawing.Size(115, 15);
+            this.axRY.TabIndex = 22;
+            this.axRY.Text = "RY";
+            this.axRY.Value = ((byte)(0));
+            // 
+            // axRX
+            // 
+            this.axRX.BackColor = System.Drawing.Color.Transparent;
+            this.axRX.Color = System.Drawing.Color.DodgerBlue;
+            this.axRX.ContextMenuStrip = this.msAxis;
+            this.axRX.Enabled = false;
+            this.axRX.Location = new System.Drawing.Point(410, 260);
+            this.axRX.Name = "axRX";
+            this.axRX.Orientation = ScpMonitor.Orientation.Left;
+            this.axRX.Size = new System.Drawing.Size(115, 15);
+            this.axRX.TabIndex = 21;
+            this.axRX.Text = "RX";
+            this.axRX.Value = ((byte)(0));
             // 
             // axLY
             // 
@@ -703,7 +709,7 @@ namespace ScpMonitor
             this.Name = "ProfilesForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Profile Manager";
+            this.Text = "XInput Tester";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Close);
             this.Load += new System.EventHandler(this.Form_Load);
             this.VisibleChanged += new System.EventHandler(this.Form_Visible);
