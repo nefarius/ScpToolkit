@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ScpControl.Utilities
 {
@@ -19,7 +16,7 @@ namespace ScpControl.Utilities
                 var sBuilder = new StringBuilder();
                 var r = new Random();
 
-                for (int i = 0; i < 6; i++)
+                for (var i = 0; i < 6; i++)
                 {
                     var number = r.Next(0, 255);
                     var b = Convert.ToByte(number);
@@ -39,26 +36,20 @@ namespace ScpControl.Utilities
         {
             if (bitNumber < 8 && bitNumber > -1)
             {
-                return (byte)(b | (byte)(0x01 << bitNumber));
+                return (byte) (b | (byte) (0x01 << bitNumber));
             }
-            else
-            {
-                throw new InvalidOperationException(
-                "Der Wert für BitNumber " + bitNumber + " war nicht im zulässigen Bereich! (BitNumber = (min)0 - (max)7)");
-            }
+
+            throw new ArgumentOutOfRangeException(bitNumber.ToString());
         }
 
         private static byte UnsetBit(byte b, int bitNumber)
         {
             if (bitNumber < 8 && bitNumber > -1)
             {
-                return (byte)(b | (byte)(0x00 << bitNumber));
+                return (byte) (b | (byte) (0x00 << bitNumber));
             }
-            else
-            {
-                throw new InvalidOperationException(
-                "Der Wert für BitNumber " + bitNumber + " war nicht im zulässigen Bereich! (BitNumber = (min)0 - (max)7)");
-            }
+
+            throw new ArgumentOutOfRangeException(bitNumber.ToString());
         }
     }
 }
