@@ -1,21 +1,21 @@
 ﻿using System;
 using ScpControl.Utilities;
 
-namespace ScpControl.Usb
+namespace ScpControl.Usb.Gamepads
 {
-    public class UsbGenericGamepad : UsbDevice
+    public class UsbBlankGamepad : UsbDevice
     {
         public static readonly Guid DeviceClassGuid = Guid.Parse("433FA0C6-2BF1-4675-98C6-7F4FC99796FC");
         private readonly DumpHelper _dumper;
 
         #region Ctors
 
-        public UsbGenericGamepad()
+        public UsbBlankGamepad()
             : base(DeviceClassGuid.ToString())
         {
         }
 
-        public UsbGenericGamepad(string header, string dumpFileName) : this()
+        public UsbBlankGamepad(string header, string dumpFileName) : this()
         {
             _dumper = new DumpHelper(header, dumpFileName);
         }

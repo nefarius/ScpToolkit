@@ -1,38 +1,12 @@
-﻿using System;
-using ScpControl.ScpCore;
-using ScpControl.Utilities;
+﻿using ScpControl.ScpCore;
 
 namespace ScpControl.Usb.Gamepads
 {
     /// <summary>
     ///     DragonRise Inc. USB Gamepad SNES
     /// </summary>
-    public class UsbDs3SnesGamepad : UsbDs3
+    public class UsbDs3SnesGamepad : UsbGenericGamepad
     {
-        public override bool Open(string devicePath)
-        {
-            var retval = base.Open(devicePath);
-
-            m_Mac = MacAddressGenerator.NewMacAddress;
-
-            return retval;
-        }
-
-        protected override void Process(DateTime now)
-        {
-            // ignore
-        }
-
-        public override bool Pair(byte[] master)
-        {
-            return false; // ignore
-        }
-
-        public override bool Rumble(byte large, byte small)
-        {
-            return false; // ignore
-        }
-
         protected override void Parse(byte[] report)
         {
             if (report[0] != 0x01) return;

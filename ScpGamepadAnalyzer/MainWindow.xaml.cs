@@ -8,6 +8,7 @@ using System.Windows.Interop;
 using Ookii.Dialogs.Wpf;
 using ScpControl.Driver;
 using ScpControl.Usb;
+using ScpControl.Usb.Gamepads;
 
 namespace ScpGamepadAnalyzer
 {
@@ -19,7 +20,7 @@ namespace ScpGamepadAnalyzer
         private readonly SortedList<CaptureType, TaskDialog> _interpreterDiags =
             new SortedList<CaptureType, TaskDialog>();
 
-        private UsbGenericGamepad _device;
+        private UsbBlankGamepad _device;
         private IntPtr _hwnd;
         private WdiUsbDevice _wdiCurrent;
 
@@ -94,7 +95,7 @@ namespace ScpGamepadAnalyzer
             if (msgResult.ButtonType != ButtonType.Yes) return;
 
             var result = WdiWrapper.Instance.InstallLibusbKDriver(selectedDevice.HardwareId,
-                UsbGenericGamepad.DeviceClassGuid, tmpPath,
+                UsbBlankGamepad.DeviceClassGuid, tmpPath,
                 string.Format("{0}.inf", selectedDevice.Description),
                 _hwnd, true);
 
@@ -126,7 +127,7 @@ namespace ScpGamepadAnalyzer
 
         private void OpenDeviceButton_OnClick(object sender, RoutedEventArgs e)
         {
-            _device = new UsbGenericGamepad(_wdiCurrent.HardwareId,
+            _device = new UsbBlankGamepad(_wdiCurrent.HardwareId,
                 string.Format("{0}_hid-report.dump.txt", _wdiCurrent.Description));
 
             if (_device.Open() && _device.Start())
@@ -177,7 +178,7 @@ namespace ScpGamepadAnalyzer
                 return;
             }
 
-            if (Devcon.Remove(UsbGenericGamepad.DeviceClassGuid, _device.Path, null))
+            if (Devcon.Remove(UsbBlankGamepad.DeviceClassGuid, _device.Path, null))
             {
                 new TaskDialog
                 {

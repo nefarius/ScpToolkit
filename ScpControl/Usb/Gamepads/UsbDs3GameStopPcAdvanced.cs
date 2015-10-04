@@ -7,32 +7,8 @@ namespace ScpControl.Usb.Gamepads
     /// <summary>
     ///     GameStop PC Advanced Controller
     /// </summary>
-    public class UsbDs3GameStopPcAdvanced : UsbDs3
+    public class UsbDs3GameStopPcAdvanced : UsbGenericGamepad
     {
-        public override bool Open(string devicePath)
-        {
-            var retval = base.Open(devicePath);
-
-            m_Mac = MacAddressGenerator.NewMacAddress;
-
-            return retval;
-        }
-
-        protected override void Process(DateTime now)
-        {
-            // ignore
-        }
-
-        public override bool Pair(byte[] master)
-        {
-            return false; // ignore
-        }
-
-        public override bool Rumble(byte large, byte small)
-        {
-            return false; // ignore
-        }
-
         protected override void Parse(byte[] report)
         {
             if (report[7] != 0xC0 && report[7] != 0x40) return;
