@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
+using ScpControl.Utilities;
 
 namespace ScpControl.Usb
 {
@@ -208,6 +209,21 @@ namespace ScpControl.Usb
             // connection sound
             if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
                 AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbConnectSoundFile);
+
+            #region HID Report Descripto
+
+            // try to retrieve HID Report Descriptor
+            var buffer = new byte[512];
+            var transfered = 0;
+
+            if (SendTransfer(UsbHidRequestType.GetDescriptor, UsbHidRequest.GetDescriptor,
+                ToValue(UsbHidClassDescriptorType.Report),
+                buffer, ref transfered))
+            {
+                Log.DebugFormat("-- HID Report Descriptor: {0}", buffer.ToHexString(transfered));
+            }
+
+            #endregion
 
             return State == DsState.Connected;
         }
