@@ -1,4 +1,5 @@
 ﻿using ScpControl.Usb;
+using ScpControl.Usb.Ds3;
 
 namespace ScpPair
 {

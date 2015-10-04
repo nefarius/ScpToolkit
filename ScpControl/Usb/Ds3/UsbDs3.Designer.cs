@@ -1,4 +1,4 @@
-﻿namespace ScpControl.Usb
+﻿namespace ScpControl.Usb.Ds3
 {
     partial class UsbDs3
     {

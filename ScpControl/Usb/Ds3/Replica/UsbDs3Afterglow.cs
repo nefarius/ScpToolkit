@@ -1,4 +1,4 @@
-﻿namespace ScpControl.Usb
+﻿namespace ScpControl.Usb.Ds3.Replica
 {
     public class UsbDs3Afterglow : UsbDs3
     {

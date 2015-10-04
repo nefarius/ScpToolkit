@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using ScpControl.ScpCore;
 
-namespace ScpControl.Usb
+namespace ScpControl.Usb.Ds3
 {
     /// <summary>
     ///     Represents a DualShock 3 controller connected via USB.

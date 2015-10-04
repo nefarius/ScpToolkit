@@ -159,7 +159,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Usb\ReportEventArgsExtensions.cs" />
-    <Compile Include="Usb\UsbDs3Afterglow.cs">
+    <Compile Include="Usb\Ds3\Replica\UsbDs3Afterglow.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Usb\Gamepads\UsbGameStopPcAdvanced.cs">
@@ -168,7 +168,7 @@
     <Compile Include="Usb\Gamepads\UsbLsiLogicGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\UsbDs3QuadStick.cs">
+    <Compile Include="Usb\Ds3\Replica\UsbDs3QuadStick.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Usb\Gamepads\UsbShanWanWirelessGamepad.cs">
@@ -233,10 +233,10 @@
     <Compile Include="Usb\UsbDevice.Designer.cs">
       <DependentUpon>UsbDevice.cs</DependentUpon>
     </Compile>
-    <Compile Include="Usb\UsbDs4.cs">
+    <Compile Include="Usb\Ds4\UsbDs4.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\UsbDs4.Designer.cs">
+    <Compile Include="Usb\Ds4\UsbDs4.Designer.cs">
       <DependentUpon>UsbDs4.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -265,10 +265,10 @@
       <DependentUpon>ScpHub.cs</DependentUpon>
     </Compile>
     <Compile Include="ScpUtil.cs" />
-    <Compile Include="Usb\UsbDs3.cs">
+    <Compile Include="Usb\Ds3\UsbDs3.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\UsbDs3.Designer.cs">
+    <Compile Include="Usb\Ds3\UsbDs3.Designer.cs">
       <DependentUpon>UsbDs3.cs</DependentUpon>
     </Compile>
     <Compile Include="Usb\UsbHub.cs">
@@ -312,13 +312,13 @@
     <EmbeddedResource Include="Usb\UsbDevice.resx">
       <DependentUpon>UsbDevice.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Usb\UsbDs4.resx">
+    <EmbeddedResource Include="Usb\Ds4\UsbDs4.resx">
       <DependentUpon>UsbDs4.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="RootHub.resx">
       <DependentUpon>RootHub.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Usb\UsbDs3.resx">
+    <EmbeddedResource Include="Usb\Ds3\UsbDs3.resx">
       <DependentUpon>UsbDs3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

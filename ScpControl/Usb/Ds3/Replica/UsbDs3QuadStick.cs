@@ -1,4 +1,4 @@
-﻿namespace ScpControl.Usb
+﻿namespace ScpControl.Usb.Ds3.Replica
 {
     /// <summary>
     ///     Represents a <see href="http://www.quadstick.com/">Quad Stick</see> controller.

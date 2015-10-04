@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Linq;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
+using ScpControl.Usb.Ds3;
+using ScpControl.Usb.Ds4;
 
 namespace ScpControl.Usb
 {

@@ -1,4 +1,4 @@
-﻿namespace ScpControl.Usb
+﻿namespace ScpControl.Usb.Ds4
 {
     sealed partial class UsbDs4
     {

@@ -13,6 +13,8 @@ using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.ScpCore;
 using ScpControl.Usb;
+using ScpControl.Usb.Ds3;
+using ScpControl.Usb.Ds4;
 
 namespace ScpService
 {

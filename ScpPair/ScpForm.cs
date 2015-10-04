@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using ScpControl;
 using ScpControl.ScpCore;
 using ScpControl.Usb;
+using ScpControl.Usb.Ds3;
 using ScpControl.Utilities;
 using ScpPair.Properties;
 

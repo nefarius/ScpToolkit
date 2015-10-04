@@ -11,6 +11,8 @@ using ScpControl.Exceptions;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 using ScpControl.Usb;
+using ScpControl.Usb.Ds3;
+using ScpControl.Usb.Ds4;
 using ScpControl.Utilities;
 using ScpServer.Properties;
 

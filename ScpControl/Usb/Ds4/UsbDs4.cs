@@ -2,19 +2,23 @@
 using System.ComponentModel;
 using ScpControl.ScpCore;
 
-namespace ScpControl.Usb
+namespace ScpControl.Usb.Ds4
 {
     /// <summary>
     ///     Represents a DualShock 4 controller connected via USB.
     /// </summary>
     public sealed partial class UsbDs4 : UsbDevice
     {
+        #region Private vars
+
         private const int R = 6; // Led Offsets
         private const int G = 7; // Led Offsets
         private const int B = 8; // Led Offsets
         public static string USB_CLASS_GUID = "{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}";
         private byte _brightness = GlobalConfiguration.Instance.Brightness;
         private bool _isLightBarDisabled;
+
+        #endregion
 
         #region HID Report
 
@@ -47,6 +51,8 @@ namespace ScpControl.Usb
         }
 
         #endregion
+
+        #region Properties
 
         public override DsPadId PadId
         {
@@ -92,6 +98,10 @@ namespace ScpControl.Usb
                 }
             }
         }
+
+        #endregion
+
+        #region Actions
 
         private static byte MapBattery(byte value)
         {
@@ -312,5 +322,7 @@ namespace ScpControl.Usb
                 WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);
             }
         }
+
+        #endregion
     }
 }

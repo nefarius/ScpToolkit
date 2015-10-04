@@ -1,5 +1,6 @@
 ﻿using System;
 using ScpControl.ScpCore;
+using ScpControl.Usb.Ds3;
 using ScpControl.Utilities;
 
 namespace ScpControl.Usb.Gamepads

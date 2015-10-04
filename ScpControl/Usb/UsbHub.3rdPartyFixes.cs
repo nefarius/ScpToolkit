@@ -1,4 +1,5 @@
-﻿using ScpControl.Usb.Gamepads;
+﻿using ScpControl.Usb.Ds3.Replica;
+using ScpControl.Usb.Gamepads;
 
 namespace ScpControl.Usb
 {
