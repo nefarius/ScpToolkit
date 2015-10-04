@@ -75,29 +75,29 @@ namespace ScpControl.Usb.Gamepads
                     m_ReportArgs.SetDpadUpDigital(true);
                     break;
                 case 1:
-                    //m_ReportArgs.SetDpadUpDigital(true);
+                    m_ReportArgs.SetDpadUpDigital(true);
                     m_ReportArgs.SetDpadRightDigital(true);
                     break;
                 case 2:
-                    //m_ReportArgs.SetDpadRightDigital(true);
+                    m_ReportArgs.SetDpadRightDigital(true);
                     break;
                 case 3:
-                    //m_ReportArgs.SetDpadRightDigital(true);
-                    //m_ReportArgs.SetDpadDownDigital(true);
+                    m_ReportArgs.SetDpadRightDigital(true);
+                    m_ReportArgs.SetDpadDownDigital(true);
                     break;
                 case 4:
-                    //m_ReportArgs.SetDpadDownDigital(true);
+                    m_ReportArgs.SetDpadDownDigital(true);
                     break;
                 case 5:
                     m_ReportArgs.SetDpadDownDigital(true);
-                    //m_ReportArgs.SetDpadLeftDigital(true);
+                    m_ReportArgs.SetDpadLeftDigital(true);
                     break;
                 case 6:
-                    //m_ReportArgs.SetDpadLeftDigital(true);
+                    m_ReportArgs.SetDpadLeftDigital(true);
                     break;
                 case 7:
                     m_ReportArgs.SetDpadLeftDigital(true);
-                    //m_ReportArgs.SetDpadUpDigital(true);
+                    m_ReportArgs.SetDpadUpDigital(true);
                     break;
             }
 
