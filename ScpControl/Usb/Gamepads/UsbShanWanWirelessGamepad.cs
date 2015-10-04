@@ -5,7 +5,7 @@ namespace ScpControl.Usb.Gamepads
     /// <summary>
     ///     ShanWan Wireless Gamepad
     /// </summary>
-    public class UsbDs3ShanWanWirelessGamepad : UsbGenericGamepad
+    public class UsbShanWanWirelessGamepad : UsbGenericGamepad
     {
         protected override void Parse(byte[] report)
         {

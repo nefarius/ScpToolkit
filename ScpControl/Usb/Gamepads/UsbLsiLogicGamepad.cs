@@ -5,7 +5,7 @@ namespace ScpControl.Usb.Gamepads
     /// <summary>
     ///     LSI Logic Gamepad
     /// </summary>
-    public class UsbDs3LsiLogicGamepad : UsbGenericGamepad
+    public class UsbLsiLogicGamepad : UsbGenericGamepad
     {
         protected override void Parse(byte[] report)
         {

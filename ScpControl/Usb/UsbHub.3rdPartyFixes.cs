@@ -69,7 +69,7 @@ namespace ScpControl.Usb
                 // ...close device...
                 current.Close();
                 // ...and create customized object
-                current = new UsbDs3SnesGamepad()
+                current = new UsbSnesGamepad()
                 {
                     PadId = padId
                 };
@@ -90,7 +90,7 @@ namespace ScpControl.Usb
                 // ...close device...
                 current.Close();
                 // ...and create customized object
-                current = new UsbDs3LsiLogicGamepad()
+                current = new UsbLsiLogicGamepad()
                 {
                     PadId = padId
                 };
@@ -111,7 +111,7 @@ namespace ScpControl.Usb
                 // ...close device...
                 current.Close();
                 // ...and create customized object
-                current = new UsbDs3ShanWanWirelessGamepad()
+                current = new UsbShanWanWirelessGamepad()
                 {
                     PadId = padId
                 };
@@ -132,7 +132,7 @@ namespace ScpControl.Usb
                 // ...close device...
                 current.Close();
                 // ...and create customized object
-                current = new UsbDs3GameStopPcAdvanced()
+                current = new UsbGameStopPcAdvanced()
                 {
                     PadId = padId
                 };

@@ -5,7 +5,7 @@ namespace ScpControl.Usb.Gamepads
     /// <summary>
     ///     DragonRise Inc. USB Gamepad SNES
     /// </summary>
-    public class UsbDs3SnesGamepad : UsbGenericGamepad
+    public class UsbSnesGamepad : UsbGenericGamepad
     {
         protected override void Parse(byte[] report)
         {

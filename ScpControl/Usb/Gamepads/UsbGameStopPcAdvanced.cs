@@ -1,13 +1,11 @@
-﻿using System;
-using ScpControl.ScpCore;
-using ScpControl.Utilities;
+﻿using ScpControl.ScpCore;
 
 namespace ScpControl.Usb.Gamepads
 {
     /// <summary>
     ///     GameStop PC Advanced Controller
     /// </summary>
-    public class UsbDs3GameStopPcAdvanced : UsbGenericGamepad
+    public class UsbGameStopPcAdvanced : UsbGenericGamepad
     {
         protected override void Parse(byte[] report)
         {

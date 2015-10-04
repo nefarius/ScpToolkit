@@ -161,19 +161,19 @@
     <Compile Include="Usb\UsbDs3Afterglow.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\Gamepads\UsbDs3GameStopPcAdvanced.cs">
+    <Compile Include="Usb\Gamepads\UsbGameStopPcAdvanced.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\Gamepads\UsbDs3LsiLogicGamepad.cs">
+    <Compile Include="Usb\Gamepads\UsbLsiLogicGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Usb\UsbDs3QuadStick.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\Gamepads\UsbDs3ShanWanWirelessGamepad.cs">
+    <Compile Include="Usb\Gamepads\UsbShanWanWirelessGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\Gamepads\UsbDs3SnesGamepad.cs">
+    <Compile Include="Usb\Gamepads\UsbSnesGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Usb\Gamepads\UsbBlankGamepad.cs">
