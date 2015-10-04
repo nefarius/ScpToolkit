@@ -39,8 +39,9 @@ namespace ScpControl.Utilities
             get
             {
                 return
-                    Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist") !=
-                    null;
+                    !(Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist") ==
+                    null && Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\VisualStudio\10.0\VC\VCRedist") ==
+                    null);
             }
         }
 

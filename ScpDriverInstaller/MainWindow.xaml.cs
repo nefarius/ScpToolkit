@@ -298,21 +298,36 @@ namespace ScpDriverInstaller
                     if (forceInstall)
                         flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
 
+                    bool rebootRequired = false;
+                    var busInfPath = Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf");
 
                     if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
                     {
-                        if (Devcon.Create("System", new Guid("{4D36E97D-E325-11CE-BFC1-08002BE10318}"),
-                            "root\\ScpVBus\0\0"))
+                        if (Devcon.Install(busInfPath, ref rebootRequired))
                         {
-                            Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Created");
-                            _busDeviceConfigured = true;
+                            Log.Info("Virtual Bus Driver pre-installed in Windows Driver Store successfully");
+
+                            if (Devcon.Create("System", new Guid("{4D36E97D-E325-11CE-BFC1-08002BE10318}"),
+                                "root\\ScpVBus\0\0"))
+                            {
+                                Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Created");
+                                _busDeviceConfigured = true;
+                            }
+                            else
+                            {
+                                Log.Fatal("Virtual Bus Device creation failed");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            Log.FatalFormat("Virtual Bus Driver pre-installation failed with error {0}", Marshal.GetLastWin32Error());
+                            return;
                         }
                     }
-
-                    bool rebootRequired;
-
+                    
                     // install Virtual Bus driver
-                    result = _installer.Install(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"), flags,
+                    result = _installer.Install(busInfPath, flags,
                         out rebootRequired);
 
                     _reboot |= rebootRequired;

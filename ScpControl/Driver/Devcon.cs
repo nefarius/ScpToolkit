@@ -71,6 +71,11 @@ namespace ScpControl.Driver
             return false;
         }
 
+        public static bool Install(string fullInfPath, ref bool rebootRequired)
+        {
+            return DiInstallDriver(IntPtr.Zero, fullInfPath, DIIRFLAG_FORCE_INF, ref rebootRequired);
+        }
+
         public static bool Create(string className, Guid classGuid, string node)
         {
             var deviceInfoSet = (IntPtr)(-1);
@@ -117,7 +122,7 @@ namespace ScpControl.Driver
             return true;
         }
 
-        public static bool Remove(Guid ClassGuid, string Path, string InstanceId)
+        public static bool Remove(Guid classGuid, string path, string instanceId)
         {
             var deviceInfoSet = IntPtr.Zero;
 
@@ -126,10 +131,10 @@ namespace ScpControl.Driver
                 var deviceInterfaceData = new SP_DEVINFO_DATA();
 
                 deviceInterfaceData.cbSize = Marshal.SizeOf(deviceInterfaceData);
-                deviceInfoSet = SetupDiGetClassDevs(ref ClassGuid, IntPtr.Zero, IntPtr.Zero,
+                deviceInfoSet = SetupDiGetClassDevs(ref classGuid, IntPtr.Zero, IntPtr.Zero,
                     DIGCF_PRESENT | DIGCF_DEVICEINTERFACE);
 
-                if (SetupDiOpenDeviceInfo(deviceInfoSet, InstanceId, IntPtr.Zero, 0, ref deviceInterfaceData))
+                if (SetupDiOpenDeviceInfo(deviceInfoSet, instanceId, IntPtr.Zero, 0, ref deviceInterfaceData))
                 {
                     var props = new SP_REMOVEDEVICE_PARAMS();
 
@@ -215,6 +220,29 @@ namespace ScpControl.Driver
 
         private const uint CR_SUCCESS = 0x00000000;
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct SP_DRVINFO_DATA
+        {
+            internal UInt32 cbSize;
+            internal UInt32 DriverType;
+            internal IntPtr Reserved;
+            internal string Description;
+            internal string MfgName;
+            internal string ProviderName;
+            internal DateTime DriverDate;
+            internal UInt64 DriverVersion;
+        }
+
+        [Flags]
+        private enum DiFlags : uint
+        {
+            DIIDFLAG_SHOWSEARCHUI = 1,
+            DIIDFLAG_NOFINISHINSTALLUI = 2,
+            DIIDFLAG_INSTALLNULLDRIVER = 3
+        }
+
+        private const uint DIIRFLAG_FORCE_INF = 0x00000002;
+
         #endregion
 
         #region Interop Definitions
@@ -269,6 +297,22 @@ namespace ScpControl.Driver
 
         [DllImport("setupapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern UInt32 CM_Reenumerate_DevNode_Ex(UInt32 dnDevInst, UInt32 ulFlags, IntPtr hMachine);
+
+        [DllImport("newdev.dll", SetLastError = true)]
+        private static extern bool DiInstallDevice(
+            IntPtr hParent,
+            IntPtr lpInfoSet,
+            ref SP_DEVINFO_DATA DeviceInfoData,
+            ref SP_DRVINFO_DATA DriverInfoData,
+            DiFlags Flags,
+            ref bool NeedReboot);
+
+        [DllImport("newdev.dll", SetLastError = true)]
+        private static extern bool DiInstallDriver(
+            IntPtr hwndParent,
+            string FullInfPath,
+            uint Flags,
+            ref bool NeedReboot);
 
         #endregion
     }
