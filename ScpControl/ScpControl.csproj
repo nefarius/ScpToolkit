@@ -158,6 +158,7 @@
     <Compile Include="Usb\Gamepads\UsbGenericGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Usb\ReportEventArgsExtensions.cs" />
     <Compile Include="Usb\UsbDs3Afterglow.cs">
       <SubType>Component</SubType>
     </Compile>
