@@ -155,6 +155,9 @@
     <Compile Include="ScpCore\GamePadEnums.cs" />
     <Compile Include="ScpCore\Profile.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />
+    <Compile Include="Usb\Gamepads\UsbBadBigBenGamepad.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Usb\Gamepads\UsbGenericGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
