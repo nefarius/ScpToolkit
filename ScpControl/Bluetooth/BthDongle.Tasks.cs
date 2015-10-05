@@ -108,7 +108,7 @@ namespace ScpControl.Bluetooth
         }
 
         /// <summary>
-        ///     Parses an incoming DualShock 4 HID report .
+        ///     Parses an incoming DualShock 4 HID report.
         /// </summary>
         /// <param name="connection">The device handle the input buffer was received for.</param>
         /// <param name="buffer">The HID report in bytes.</param>
@@ -233,7 +233,7 @@ namespace ScpControl.Bluetooth
         }
 
         /// <summary>
-        ///     Parses an incoming DualShock 3 HID report .
+        ///     Parses an incoming DualShock 3 HID report.
         /// </summary>
         /// <param name="connection">The device handle the input buffer was received for.</param>
         /// <param name="buffer">The HID report in bytes.</param>
