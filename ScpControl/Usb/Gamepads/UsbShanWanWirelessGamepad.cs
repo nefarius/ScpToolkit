@@ -75,6 +75,9 @@ namespace ScpControl.Usb.Gamepads
             m_ReportArgs.SetLeftShoulderDigital(report[5] >> 0);
             m_ReportArgs.SetRightShoulderDigital(report[5] >> 1);
 
+            m_ReportArgs.SetLeftTriggerDigital(report[5] >> 2);
+            m_ReportArgs.SetRightTriggerDigital(report[5] >> 3);
+
             m_ReportArgs.SetLeftThumb(report[5] >> 6);
             m_ReportArgs.SetRightThumb(report[5] >> 7);
 
