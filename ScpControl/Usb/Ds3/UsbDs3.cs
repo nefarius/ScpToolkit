@@ -163,7 +163,7 @@ namespace ScpControl.Usb.Ds3
             return false;
         }
 
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (report[0] != 0x01) return;
 

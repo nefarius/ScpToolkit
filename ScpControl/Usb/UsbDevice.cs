@@ -83,7 +83,7 @@ namespace ScpControl.Usb
                 {
                     if (ReadIntPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
-                        Parse(buffer);
+                        ParseHidReport(buffer);
                     }
                 }
                 catch (Exception ex)
@@ -247,7 +247,7 @@ namespace ScpControl.Usb
         {
         }
 
-        protected virtual void Parse(byte[] report)
+        protected virtual void ParseHidReport(byte[] report)
         {
         }
 

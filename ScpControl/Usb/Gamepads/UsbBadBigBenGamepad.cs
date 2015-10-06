@@ -4,7 +4,7 @@ namespace ScpControl.Usb.Gamepads
 {
     public class UsbBadBigBenGamepad : UsbGenericGamepad
     {
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (report[4] != 0x00) return;
 

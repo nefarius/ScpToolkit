@@ -28,7 +28,7 @@ namespace ScpControl.Usb.Gamepads
 
         public CaptureType Capture { private get; set; }
 
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (Capture != CaptureType.Default)
             {

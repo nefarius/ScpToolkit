@@ -7,7 +7,7 @@ namespace ScpControl.Usb.Gamepads
     /// </summary>
     public class UsbGameStopPcAdvanced : UsbGenericGamepad
     {
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (report[7] != 0xC0 && report[7] != 0x40) return;
 

@@ -7,7 +7,7 @@ namespace ScpControl.Usb.Gamepads
     /// </summary>
     public class UsbSnesGamepad : UsbGenericGamepad
     {
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (report[0] != 0x01) return;
 

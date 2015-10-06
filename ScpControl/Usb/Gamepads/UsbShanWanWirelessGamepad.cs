@@ -7,7 +7,7 @@ namespace ScpControl.Usb.Gamepads
     /// </summary>
     public class UsbShanWanWirelessGamepad : UsbGenericGamepad
     {
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (report[6] != 0x00) return;
 

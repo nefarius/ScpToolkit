@@ -2,7 +2,7 @@
 {
     public class UsbDs3Afterglow : UsbDs3
     {
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (report[26] != 0x02) return;
 

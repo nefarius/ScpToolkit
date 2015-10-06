@@ -230,7 +230,7 @@ namespace ScpControl.Usb.Ds4
         ///     Interprets a HID report sent by a DualShock 4 device.
         /// </summary>
         /// <param name="report">The HID report as byte array.</param>
-        protected override void Parse(byte[] report)
+        protected override void ParseHidReport(byte[] report)
         {
             if (report[0] != 0x01) return;
 
