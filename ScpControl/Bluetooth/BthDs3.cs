@@ -284,7 +284,7 @@ namespace ScpControl.Bluetooth
                                     case DsBattery.None:
                                         ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[3]);
                                         break;
-                                    case DsBattery.Dieing:
+                                    case DsBattery.Dying:
                                         ledStatus = (byte)(_ledOffsets[1] | _ledOffsets[2]);
                                         break;
                                     case DsBattery.Low:

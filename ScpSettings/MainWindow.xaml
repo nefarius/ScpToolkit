@@ -182,7 +182,7 @@
                                   Grid.Row="1" Margin="0,0,0,10">
                             <StackPanel>
                                 <TextBlock>
-                                    Defines LEDs flashing period when charging or dieing.
+                                    Defines LEDs flashing period when charging or dying.
                                 </TextBlock>
 
                                 <Grid>
@@ -255,7 +255,7 @@
                                           VerticalContentAlignment="Center"
                                           IsChecked="{Binding Path=Ds3PadIDLEDsFlashCharging}"
                                           IsEnabled="{Binding Path=Ds3LEDsFunc, Converter={StaticResource RadioBoolToIntConverter}, ConverterParameter=1}">
-                                    Flash when charging or dieing
+                                    Flash when charging or dying
                                 </CheckBox>
 
                                 <CheckBox Grid.Row="3" Grid.Column="1" VerticalContentAlignment="Center"

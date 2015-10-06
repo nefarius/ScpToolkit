@@ -35,7 +35,7 @@ namespace ScpControl.ScpCore
     public enum DsBattery : byte
     {
         None = 0x00,
-        Dieing = 0x01,
+        Dying = 0x01,
         Low = 0x02,
         Medium = 0x03,
         High = 0x04,
