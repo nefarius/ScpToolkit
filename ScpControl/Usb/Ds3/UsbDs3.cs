@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using ScpControl.ScpCore;
+using ScpControl.Utilities;
 
 namespace ScpControl.Usb.Ds3
 {
@@ -53,6 +55,8 @@ namespace ScpControl.Usb.Ds3
         private byte counterForLeds = 0;
         private byte ledStatus = 0;
 
+        private bool IsFake { get; set; }
+        
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }
@@ -90,6 +94,12 @@ namespace ScpControl.Usb.Ds3
                     m_Local[3], m_Local[4], m_Local[5]);
 
                 Log.InfoFormat("Successfully opened device with MAC address {0}", m_Mac);
+
+                if (!IniConfig.Instance.Hci.GenuineMacAddresses.Any(m => m_Mac.StartsWith(m)))
+                {
+                    Log.InfoFormat("-- Fake DualShock detected [{0}]", m_Mac);
+                    IsFake = true;
+                }
             }
 
             return State == DsState.Reserved;
@@ -281,9 +291,20 @@ namespace ScpControl.Usb.Ds3
 
                     _hidReport[9] = ledStatus;
 
-                    SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
-                        ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One), 
-                        _hidReport, ref transfered);
+                    if (!IsFake)
+                    {
+                        SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
+                            ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
+                            _hidReport, ref transfered);
+                    }
+                    else
+                    {
+                        var buffer = new byte[_hidReport.Length + 1];
+                        Buffer.BlockCopy(_hidReport, 0, buffer, 1, _hidReport.Length);
+                        buffer[0] = 0x01;
+
+                        WriteIntPipe(buffer, buffer.Length, ref transfered);
+                    }
                 }
             }
         }
