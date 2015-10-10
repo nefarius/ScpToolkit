@@ -1,8 +1,9 @@
 ﻿<Window x:Class="ScpControlPanel.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ScpToolkit Control Panel" Height="350" Width="525" Background="#FF1B1B1B" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Dual Shock 3.ico">
+        xmlns:controls="clr-namespace:ScpControlPanel.Controls"
+        Title="ScpToolkit Control Panel" Height="445" Width="808" Background="#FF1B1B1B" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Dual Shock 3.ico">
     <Grid>
-        
+        <controls:PadEntryCollectionControl/>
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace ScpControl.ScpCore
 {
@@ -14,8 +15,11 @@ namespace ScpControl.ScpCore
 
     public enum DsState
     {
+        [Description("Disconnected")]
         Disconnected = 0x00,
+        [Description("Reserved")]
         Reserved = 0x01,
+        [Description("Connected")]
         Connected = 0x02
     };
 
@@ -24,8 +28,11 @@ namespace ScpControl.ScpCore
     /// </summary>
     public enum DsConnection
     {
+        [Description("None")]
         None = 0x00,
+        [Description("USB")]
         USB = 0x01,
+        [Description("Bluetooth")]
         BTH = 0x02
     };
 
@@ -59,9 +66,14 @@ namespace ScpControl.ScpCore
     /// </summary>
     public enum DsModel : byte
     {
+        [Description("None")]
         None = 0,
+        [Description("DualShock 3")]
         DS3 = 1,
-        DS4 = 2
+        [Description("DualShock 4")]
+        DS4 = 2,
+        [Description("Generic Gamepad")]
+        Generic = 3
     }
 
     public enum DsMatch

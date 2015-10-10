@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="ScpControlPanel.Controls.PadEntryCollectionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:ScpControlPanel.Controls"
+             mc:Ignorable="d" Height="260" Width="750">
+    <Grid>
+        <ListBox Padding="15" VerticalAlignment="Center">
+            <ListBox.Resources>
+                <Style TargetType="{x:Type controls:PadEntryControl}">
+                    <Setter Property="Margin" Value="0,0,0,5"/>
+                </Style>
+            </ListBox.Resources>
+            
+            <controls:PadEntryControl PadId="One" PacketCounter="32"/>
+            <controls:PadEntryControl PadId="Two" PadType="Generic" ConnectionType="BTH" BatteryStatus="Charging"/>
+            <controls:PadEntryControl PadId="Three" PacketCounter="36" ConnectionType="USB"/>
+            <controls:PadEntryControl PadId="Four" PadType="DS4" ConnectionType="BTH" BatteryStatus="Charging"/>
+        </ListBox>
+    </Grid>
+</UserControl>
