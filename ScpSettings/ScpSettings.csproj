@@ -37,7 +37,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Scp.ico</ApplicationIcon>
+    <ApplicationIcon>settings.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
@@ -153,6 +153,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Scp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="settings.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
