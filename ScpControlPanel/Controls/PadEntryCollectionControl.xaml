@@ -1,22 +1,42 @@
 ﻿<UserControl x:Class="ScpControlPanel.Controls.PadEntryCollectionControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:ScpControlPanel.Controls"
-             mc:Ignorable="d" Height="260" Width="750">
+             mc:Ignorable="d" Height="280" Width="770"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
-        <ListBox Padding="15" VerticalAlignment="Center">
-            <ListBox.Resources>
-                <Style TargetType="{x:Type controls:PadEntryControl}">
-                    <Setter Property="Margin" Value="0,0,0,5"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <DockPanel Grid.Row="0"
+                   LastChildFill="False">
+            <DockPanel.Resources>
+                <Style TargetType="{x:Type Label}">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="Foreground" Value="White"/>
                 </Style>
-            </ListBox.Resources>
-            
-            <controls:PadEntryControl PadId="One" PacketCounter="32"/>
-            <controls:PadEntryControl PadId="Two" PadType="Generic" ConnectionType="BTH" BatteryStatus="Charging"/>
-            <controls:PadEntryControl PadId="Three" PacketCounter="36" ConnectionType="USB"/>
-            <controls:PadEntryControl PadId="Four" PadType="DS4" ConnectionType="BTH" BatteryStatus="Charging"/>
-        </ListBox>
+            </DockPanel.Resources>
+            <Label Margin="70,0,0,0">Pad Id</Label>
+            <Label Margin="15,0,0,0">Controller type</Label>
+            <Label Margin="50,0,0,0">MAC address</Label>
+        </DockPanel>
+        
+        <!-- Pad list-->
+        <ListView Grid.Row="1"
+                  Padding="10" 
+                  ItemsSource="{Binding Path=PadEntryCollection}"
+                  Background="{x:Null}" BorderBrush="{x:Null}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Content="{Binding}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>

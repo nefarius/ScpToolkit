@@ -1,4 +1,6 @@
 ﻿using System.Windows;
+using ScpControl.ScpCore;
+using ScpControlPanel.Controls;
 
 namespace ScpControlPanel
 {
@@ -10,6 +12,10 @@ namespace ScpControlPanel
         public MainWindow()
         {
             InitializeComponent();
+
+            MainPadEntryCollectionControl.PadEntryCollection.Add(new PadEntryControl());
+
+            MainPadEntryCollectionControl.PadEntryCollection[0].ConnectionType = DsConnection.BTH;
         }
     }
 }

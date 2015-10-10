@@ -4,6 +4,6 @@
         xmlns:controls="clr-namespace:ScpControlPanel.Controls"
         Title="ScpToolkit Control Panel" Height="445" Width="808" Background="#FF1B1B1B" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Dual Shock 3.ico">
     <Grid>
-        <controls:PadEntryCollectionControl/>
+        <controls:PadEntryCollectionControl x:Name="MainPadEntryCollectionControl"/>
     </Grid>
 </Window>
