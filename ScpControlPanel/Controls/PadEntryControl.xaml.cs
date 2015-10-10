@@ -11,6 +11,9 @@ namespace ScpControlPanel.Controls
     public partial class PadEntryControl : UserControl
     {
         [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
+        public bool IsTopPad { get; set; }
+
+        [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
         public DsPadId PadId { get; set; }
 
         [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]

@@ -16,6 +16,11 @@ namespace ScpControlPanel
             MainPadEntryCollectionControl.PadEntryCollection.Add(new PadEntryControl());
 
             MainPadEntryCollectionControl.PadEntryCollection[0].ConnectionType = DsConnection.BTH;
+            MainPadEntryCollectionControl.PadEntryCollection[0].PadId = DsPadId.One;
+
+            MainPadEntryCollectionControl.PadEntryCollection.Add(new PadEntryControl() { PadId = DsPadId.Two });
+            MainPadEntryCollectionControl.PadEntryCollection.Add(new PadEntryControl() { PadId = DsPadId.Three });
+            MainPadEntryCollectionControl.PadEntryCollection.Add(new PadEntryControl() { PadId = DsPadId.Four });
         }
     }
 }

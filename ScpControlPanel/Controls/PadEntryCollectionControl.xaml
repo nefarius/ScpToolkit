@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:ScpControlPanel.Controls"
-             mc:Ignorable="d" Height="280" Width="770"
+             mc:Ignorable="d" Height="280" Width="770" MinHeight="280" MinWidth="770"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
         <Grid.RowDefinitions>
@@ -20,16 +19,20 @@
                     <Setter Property="Foreground" Value="White"/>
                 </Style>
             </DockPanel.Resources>
-            <Label Margin="70,0,0,0">Pad Id</Label>
-            <Label Margin="15,0,0,0">Controller type</Label>
+            <Label Margin="75,0,0,0">Pad Id</Label>
+            <Label Margin="10,0,0,0">Controller type</Label>
             <Label Margin="50,0,0,0">MAC address</Label>
+            <Label Margin="55,0,0,0">Connected</Label>
+            <Label Margin="25,0,0,0">Packets</Label>
+            <Label Margin="40,0,0,0">Battery</Label>
         </DockPanel>
         
         <!-- Pad list-->
         <ListView Grid.Row="1"
                   Padding="10" 
                   ItemsSource="{Binding Path=PadEntryCollection}"
-                  Background="{x:Null}" BorderBrush="{x:Null}">
+                  Background="{x:Null}" 
+                  BorderBrush="{x:Null}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

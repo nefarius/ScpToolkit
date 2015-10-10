@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Windows.Controls;
 using AutoDependencyPropertyMarker;
+using ScpControl.ScpCore;
 
 namespace ScpControlPanel.Controls
 {
@@ -10,13 +12,22 @@ namespace ScpControlPanel.Controls
     public partial class PadEntryCollectionControl : UserControl
     {
         [AutoDependencyProperty]
-        public List<PadEntryControl> PadEntryCollection { get; set; }
+        public ObservableCollection<PadEntryControl> PadEntryCollection { get; set; }
 
         public PadEntryCollectionControl()
         {
             InitializeComponent();
 
-            PadEntryCollection = new List<PadEntryControl>();
+            PadEntryCollection = new ObservableCollection<PadEntryControl>();
+            PadEntryCollection.CollectionChanged += PadEntryCollectionOnCollectionChanged;
+        }
+
+        private void PadEntryCollectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            foreach (PadEntryControl padEntryControl in notifyCollectionChangedEventArgs.NewItems)
+            {
+                padEntryControl.IsTopPad = (padEntryControl.PadId != DsPadId.One && padEntryControl.PadId != DsPadId.None);
+            }
         }
     }
 }

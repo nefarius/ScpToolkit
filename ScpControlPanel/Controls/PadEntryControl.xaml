@@ -25,7 +25,7 @@
                 </Style>
             </DockPanel.Resources>
 
-            <Button Margin="5">
+            <Button Margin="5" IsEnabled="{Binding Path=IsTopPad}">
                 <Image Source="../Icons/arrow-up.ico" Margin="5" />
             </Button>
 
