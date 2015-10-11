@@ -52,8 +52,14 @@ namespace ScpControl.Usb.Ds3
 
         #endregion
 
-        private byte counterForLeds = 0;
-        private byte ledStatus = 0;
+        #region Private fields
+
+        private byte _counterForLeds = 0;
+        private byte _ledStatus = 0;
+
+        #endregion
+
+        #region Properties
 
         private bool IsFake { get; set; }
         
@@ -65,9 +71,11 @@ namespace ScpControl.Usb.Ds3
                 m_ControllerId = (byte)value;
                 m_ReportArgs.Pad = PadId;
 
-                _hidReport[9] = ledStatus;
+                _hidReport[9] = _ledStatus;
             }
         }
+
+        #endregion
 
         #region Actions
 
@@ -127,7 +135,7 @@ namespace ScpControl.Usb.Ds3
         /// </summary>
         /// <param name="large">Larg motor.</param>
         /// <param name="small">Small motor.</param>
-        /// <returns>Always true.</returns>
+        /// <returns>The result of the send request, true if sent successfully, false otherwise.</returns>
         public override bool Rumble(byte large, byte small)
         {
             lock (this)
@@ -145,7 +153,7 @@ namespace ScpControl.Usb.Ds3
                     _hidReport[4] = large;
                 }
 
-                _hidReport[9] = ledStatus;
+                _hidReport[9] = _ledStatus;
 
                 return SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
                     ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
@@ -153,6 +161,11 @@ namespace ScpControl.Usb.Ds3
             }
         }
 
+        /// <summary>
+        ///     Pairs the current device to the provided Bluetooth host.
+        /// </summary>
+        /// <param name="master">The MAC address of the host.</param>
+        /// <returns>True on success, false otherwise.</returns>
         public override bool Pair(byte[] master)
         {
             var transfered = 0;
@@ -173,6 +186,10 @@ namespace ScpControl.Usb.Ds3
             return false;
         }
 
+        /// <summary>
+        ///     Interprets a HID report sent by a DualShock 3 device.
+        /// </summary>
+        /// <param name="report">The HID report as byte array.</param>
         protected override void ParseHidReport(byte[] report)
         {
             if (report[0] != 0x01) return;
@@ -221,6 +238,10 @@ namespace ScpControl.Usb.Ds3
             OnHidReportReceived();
         }
 
+        /// <summary>
+        ///     Sends periodic status updates to the controller (HID Output reports).
+        /// </summary>
+        /// <param name="now">The current timestamp.</param>
         protected override void Process(DateTime now)
         {
             lock (this)
@@ -241,54 +262,54 @@ namespace ScpControl.Usb.Ds3
                 if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod && m_Packet > 0)
                 {
                     m_Last = now;
-                    ledStatus = 0;
+                    _ledStatus = 0;
 
                     switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
                     {
                         case 0:
-                            ledStatus = 0;
+                            _ledStatus = 0;
                             break;
                         case 1:
                             if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging && Battery == DsBattery.Charging)
                             {
-                                counterForLeds++;
-                                counterForLeds %= 2;
-                                if (counterForLeds == 1)
-                                    ledStatus = _ledOffsets[m_ControllerId];
+                                _counterForLeds++;
+                                _counterForLeds %= 2;
+                                if (_counterForLeds == 1)
+                                    _ledStatus = _ledOffsets[m_ControllerId];
                             }
-                            else ledStatus = _ledOffsets[m_ControllerId];
+                            else _ledStatus = _ledOffsets[m_ControllerId];
                             break;
                         case 2:
                             switch (Battery)
                             {
                                 case DsBattery.None:
-                                    ledStatus = 0;
+                                    _ledStatus = 0;
                                     break;
                                 case DsBattery.Charging:
-                                    counterForLeds++;
-                                    counterForLeds %= (byte)_ledOffsets.Length;
-                                    for (byte i = 0; i <= counterForLeds; i++)
-                                        ledStatus |= _ledOffsets[i];
+                                    _counterForLeds++;
+                                    _counterForLeds %= (byte)_ledOffsets.Length;
+                                    for (byte i = 0; i <= _counterForLeds; i++)
+                                        _ledStatus |= _ledOffsets[i];
                                     break;
                                 case DsBattery.Charged:
-                                    ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
+                                    _ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
                                     break;
                                 default: ;
                                     break;
                             }
                             break;
                         case 3:
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _ledOffsets[0];
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _ledOffsets[1];
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _ledOffsets[2];
-                            if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _ledOffsets[3];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom1) _ledStatus |= _ledOffsets[0];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom2) _ledStatus |= _ledOffsets[1];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom3) _ledStatus |= _ledOffsets[2];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom4) _ledStatus |= _ledOffsets[3];
                             break;
                         default:
-                            ledStatus = 0;
+                            _ledStatus = 0;
                             break;
                     }
 
-                    _hidReport[9] = ledStatus;
+                    _hidReport[9] = _ledStatus;
                 }
 
                 #endregion
