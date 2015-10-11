@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using HidSharp.ReportDescriptors.Parser;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 using ScpControl.Utilities;
@@ -29,6 +30,7 @@ namespace ScpControl.Usb
         protected bool m_Publish = false;
         protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
         protected DsState m_State = DsState.Disconnected;
+        protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
 
         public event EventHandler<ReportEventArgs> HidReportReceived;
 
@@ -210,7 +212,7 @@ namespace ScpControl.Usb
             if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
                 AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbConnectSoundFile);
 
-            #region HID Report Descripto
+            #region Request HID Report Descriptor
 
             // try to retrieve HID Report Descriptor
             var buffer = new byte[512];
@@ -221,6 +223,9 @@ namespace ScpControl.Usb
                 buffer, ref transfered))
             {
                 Log.DebugFormat("-- HID Report Descriptor: {0}", buffer.ToHexString(transfered));
+
+                // store report descriptor
+                ReportDescriptor.Parse(buffer);
             }
 
             #endregion
