@@ -7,7 +7,7 @@
         Height="560" Width="1020" 
         MinHeight="560" MinWidth="1020"
         WindowStartupLocation="CenterScreen"
-        Icon="Scp.ico" Initialized="Window_Initialized" Loaded="Window_Loaded">
+        Icon="Usb.ico" Initialized="Window_Initialized" Loaded="Window_Loaded">
     <Grid Background="#FF1B1B1B">
         <Grid Margin="10">
             <Grid.RowDefinitions>
