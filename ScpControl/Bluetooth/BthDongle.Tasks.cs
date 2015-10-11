@@ -404,6 +404,10 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        /// <summary>
+        ///     Processes communication with the Bluetooth host device.
+        /// </summary>
+        /// <param name="o">The cancellation token to request task abortion.</param>
         private void HicWorker(object o)
         {
             var token = (CancellationToken)o;
