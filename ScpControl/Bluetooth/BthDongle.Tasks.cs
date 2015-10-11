@@ -413,14 +413,13 @@ namespace ScpControl.Bluetooth
             var bStarted = false;
             var bd = string.Empty;
 
-            var Buffer = new byte[512];
-            var BD_Addr = new byte[6];
-            var BD_Link = new byte[16];
+            var buffer = new byte[512];
+            var bdAddr = new byte[6];
+            var bdLink = new byte[16];
 
-            var Transfered = 0;
-            HCI.Event Event;
-            var Command = HCI.Command.HCI_Null;
-            var Connection = new BthConnection();
+            var transfered = 0;
+            var command = HCI.Command.HCI_Null;
+            var connection = new BthConnection();
 
             Log.InfoFormat("-- Bluetooth  : HCI_Worker_Thread Starting (IN: {0:X2})", IntIn);
 
@@ -430,30 +429,30 @@ namespace ScpControl.Bluetooth
             {
                 try
                 {
-                    if (ReadIntPipe(Buffer, Buffer.Length, ref Transfered) && Transfered > 0)
+                    if (ReadIntPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
-                        if (Enum.IsDefined(typeof(HCI.Event), Buffer[0]))
+                        if (Enum.IsDefined(typeof(HCI.Event), buffer[0]))
                         {
-                            Event = (HCI.Event)Buffer[0];
+                            var Event = (HCI.Event)buffer[0];
 
                             switch (Event)
                             {
                                 case HCI.Event.HCI_Command_Complete_EV:
 
-                                    Command = (HCI.Command)(ushort)(Buffer[3] | Buffer[4] << 8);
-                                    Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, Buffer[0], Buffer[5],
-                                        Command);
+                                    command = (HCI.Command)(ushort)(buffer[3] | buffer[4] << 8);
+                                    Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, buffer[0], buffer[5],
+                                        command);
                                     break;
 
                                 case HCI.Event.HCI_Command_Status_EV:
 
-                                    Command = (HCI.Command)(ushort)(Buffer[4] | Buffer[5] << 8);
-                                    Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, Buffer[0], Buffer[2],
-                                        Command);
+                                    command = (HCI.Command)(ushort)(buffer[4] | buffer[5] << 8);
+                                    Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, buffer[0], buffer[2],
+                                        command);
 
-                                    if (Buffer[2] != 0)
+                                    if (buffer[2] != 0)
                                     {
-                                        switch (Command)
+                                        switch (command)
                                         {
                                             case HCI.Command.HCI_Write_Simple_Pairing_Mode:
                                             case HCI.Command.HCI_Write_Authentication_Enable:
@@ -462,7 +461,7 @@ namespace ScpControl.Bluetooth
                                                 GlobalConfiguration.Instance.DisableSSP = true;
                                                 Log.Warn(
                                                     "-- Simple Pairing not supported on this device. [SSP Disabled]");
-                                                Transfered = HCI_Write_Scan_Enable();
+                                                transfered = HCI_Write_Scan_Enable();
                                                 break;
                                         }
                                     }
@@ -472,7 +471,7 @@ namespace ScpControl.Bluetooth
                                     break;
 
                                 default:
-                                    Log.DebugFormat(">> {0} [{1:X2}]", Event, Buffer[0]);
+                                    Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[0]);
                                     break;
                             }
 
@@ -480,38 +479,38 @@ namespace ScpControl.Bluetooth
                             {
                                 case HCI.Event.HCI_Command_Complete_EV:
 
-                                    if (Command == HCI.Command.HCI_Reset && Buffer[5] == 0 && !bStarted)
+                                    if (command == HCI.Command.HCI_Reset && buffer[5] == 0 && !bStarted)
                                     {
                                         bStarted = true;
                                         Thread.Sleep(250);
 
-                                        Transfered = HCI_Read_BD_Addr();
+                                        transfered = HCI_Read_BD_Addr();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Read_BD_ADDR && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Read_BD_ADDR && buffer[5] == 0)
                                     {
-                                        _localMac = new[] { Buffer[6], Buffer[7], Buffer[8], Buffer[9], Buffer[10], Buffer[11] };
+                                        _localMac = new[] { buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11] };
 
-                                        Transfered = HCI_Read_Buffer_Size();
+                                        transfered = HCI_Read_Buffer_Size();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Read_Buffer_Size && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Read_Buffer_Size && buffer[5] == 0)
                                     {
-                                        Log.DebugFormat("-- {0:X2}{1:X2}, {2:X2}, {3:X2}{4:X2}, {5:X2}{6:X2}", Buffer[7],
-                                            Buffer[6], Buffer[8], Buffer[10], Buffer[9], Buffer[12], Buffer[11]);
+                                        Log.DebugFormat("-- {0:X2}{1:X2}, {2:X2}, {3:X2}{4:X2}, {5:X2}{6:X2}", buffer[7],
+                                            buffer[6], buffer[8], buffer[10], buffer[9], buffer[12], buffer[11]);
 
-                                        Transfered = HCI_Read_Local_Version_Info();
+                                        transfered = HCI_Read_Local_Version_Info();
                                     }
 
                                     // incoming HCI firmware version information
-                                    if (Command == HCI.Command.HCI_Read_Local_Version_Info && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Read_Local_Version_Info && buffer[5] == 0)
                                     {
-                                        var hciMajor = Buffer[6];
-                                        var lmpMajor = Buffer[9];
+                                        var hciMajor = buffer[6];
+                                        var lmpMajor = buffer[9];
 
-                                        HciVersion = string.Format("{0}.{1:X4}", Buffer[6], Buffer[8] << 8 | Buffer[7]);
-                                        LmpVersion = string.Format("{0}.{1:X4}", Buffer[9],
-                                            Buffer[13] << 8 | Buffer[12]);
+                                        HciVersion = string.Format("{0}.{1:X4}", buffer[6], buffer[8] << 8 | buffer[7]);
+                                        LmpVersion = string.Format("{0}.{1:X4}", buffer[9],
+                                            buffer[13] << 8 | buffer[12]);
 
                                         Log.InfoFormat("-- Master {0}, HCI_Version {1}, LMP_Version {2}", Local,
                                             HciVersion, LmpVersion);
@@ -608,117 +607,117 @@ namespace ScpControl.Bluetooth
                                         if (hciMajor < 3 || lmpMajor < 3)
                                         {
                                             Log.FatalFormat("Unsupported Bluetooth Specification, aborting communication");
-                                            Transfered = HCI_Reset();
+                                            transfered = HCI_Reset();
                                             break;
                                         }
 
                                         // use simple pairing?
                                         if (GlobalConfiguration.Instance.DisableSSP)
                                         {
-                                            Transfered = HCI_Write_Scan_Enable();
+                                            transfered = HCI_Write_Scan_Enable();
                                         }
                                         else
                                         {
-                                            Transfered = HCI_Write_Simple_Pairing_Mode();
+                                            transfered = HCI_Write_Simple_Pairing_Mode();
                                         }
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Simple_Pairing_Mode)
+                                    if (command == HCI.Command.HCI_Write_Simple_Pairing_Mode)
                                     {
-                                        if (Buffer[5] == 0)
+                                        if (buffer[5] == 0)
                                         {
-                                            Transfered = HCI_Write_Simple_Pairing_Debug_Mode();
-                                        }
-                                        else
-                                        {
-                                            GlobalConfiguration.Instance.DisableSSP = true;
-                                            Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
-
-                                            Transfered = HCI_Write_Scan_Enable();
-                                        }
-                                    }
-
-                                    if (Command == HCI.Command.HCI_Write_Simple_Pairing_Debug_Mode)
-                                    {
-                                        Transfered = HCI_Write_Authentication_Enable();
-                                    }
-
-                                    if (Command == HCI.Command.HCI_Write_Authentication_Enable)
-                                    {
-                                        if (Buffer[5] == 0)
-                                        {
-                                            Transfered = HCI_Set_Event_Mask();
+                                            transfered = HCI_Write_Simple_Pairing_Debug_Mode();
                                         }
                                         else
                                         {
                                             GlobalConfiguration.Instance.DisableSSP = true;
                                             Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
-                                            Transfered = HCI_Write_Scan_Enable();
+                                            transfered = HCI_Write_Scan_Enable();
                                         }
                                     }
 
-                                    if (Command == HCI.Command.HCI_Set_Event_Mask)
+                                    if (command == HCI.Command.HCI_Write_Simple_Pairing_Debug_Mode)
                                     {
-                                        if (Buffer[5] == 0)
+                                        transfered = HCI_Write_Authentication_Enable();
+                                    }
+
+                                    if (command == HCI.Command.HCI_Write_Authentication_Enable)
+                                    {
+                                        if (buffer[5] == 0)
                                         {
-                                            Transfered = HCI_Write_Page_Timeout();
+                                            transfered = HCI_Set_Event_Mask();
                                         }
                                         else
                                         {
                                             GlobalConfiguration.Instance.DisableSSP = true;
                                             Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
 
-                                            Transfered = HCI_Write_Scan_Enable();
+                                            transfered = HCI_Write_Scan_Enable();
                                         }
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Page_Timeout && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Set_Event_Mask)
                                     {
-                                        Transfered = HCI_Write_Page_Scan_Activity();
+                                        if (buffer[5] == 0)
+                                        {
+                                            transfered = HCI_Write_Page_Timeout();
+                                        }
+                                        else
+                                        {
+                                            GlobalConfiguration.Instance.DisableSSP = true;
+                                            Log.Warn("-- Simple Pairing not supported on this device. [SSP Disabled]");
+
+                                            transfered = HCI_Write_Scan_Enable();
+                                        }
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Page_Scan_Activity && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Page_Timeout && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Page_Scan_Type();
+                                        transfered = HCI_Write_Page_Scan_Activity();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Page_Scan_Type && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Page_Scan_Activity && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Inquiry_Scan_Activity();
+                                        transfered = HCI_Write_Page_Scan_Type();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Inquiry_Scan_Activity && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Page_Scan_Type && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Inquiry_Scan_Type();
+                                        transfered = HCI_Write_Inquiry_Scan_Activity();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Inquiry_Scan_Type && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Inquiry_Scan_Activity && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Inquiry_Mode();
+                                        transfered = HCI_Write_Inquiry_Scan_Type();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Inquiry_Mode && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Inquiry_Scan_Type && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Class_of_Device();
+                                        transfered = HCI_Write_Inquiry_Mode();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Class_of_Device && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Inquiry_Mode && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Extended_Inquiry_Response();
+                                        transfered = HCI_Write_Class_of_Device();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Extended_Inquiry_Response && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Class_of_Device && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Local_Name();
+                                        transfered = HCI_Write_Extended_Inquiry_Response();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Local_Name && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Extended_Inquiry_Response && buffer[5] == 0)
                                     {
-                                        Transfered = HCI_Write_Scan_Enable();
+                                        transfered = HCI_Write_Local_Name();
                                     }
 
-                                    if (Command == HCI.Command.HCI_Write_Scan_Enable && Buffer[5] == 0)
+                                    if (command == HCI.Command.HCI_Write_Local_Name && buffer[5] == 0)
+                                    {
+                                        transfered = HCI_Write_Scan_Enable();
+                                    }
+
+                                    if (command == HCI.Command.HCI_Write_Scan_Enable && buffer[5] == 0)
                                     {
                                         Initialised = true;
                                     }
@@ -726,65 +725,65 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Connection_Request_EV:
 
-                                    for (var i = 0; i < 6; i++) BD_Addr[i] = Buffer[i + 2];
+                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
 
-                                    Transfered = HCI_Delete_Stored_Link_Key(BD_Addr);
-                                    Transfered = HCI_Remote_Name_Request(BD_Addr);
+                                    transfered = HCI_Delete_Stored_Link_Key(bdAddr);
+                                    transfered = HCI_Remote_Name_Request(bdAddr);
                                     break;
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
-                                    bd = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", Buffer[10],
-                                        Buffer[9], Buffer[8], Buffer[7], Buffer[6], Buffer[5]);
+                                    bd = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", buffer[10],
+                                        buffer[9], buffer[8], buffer[7], buffer[6], buffer[5]);
 
                                     if (!nameList.Any())
                                         break;
 
-                                    Connection = Add(Buffer[3], (byte)(Buffer[4] | 0x20), nameList[bd]);
+                                    connection = Add(buffer[3], (byte)(buffer[4] | 0x20), nameList[bd]);
 
                                     #region Fake DS3 workaround
 
                                     if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds && !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                     {
-                                        Connection.IsFake = true;
+                                        connection.IsFake = true;
                                         Log.Warn("-- Fake DualShock 3 found. Workaround applied");
                                     }
                                     else
                                     {
-                                        Connection.IsFake = false;
+                                        connection.IsFake = false;
                                         Log.Info("-- Genuine Sony DualShock 3 found");
                                     }
 
                                     #endregion
 
-                                    Connection.RemoteName = nameList[bd];
+                                    connection.RemoteName = nameList[bd];
                                     nameList.Remove(bd);
-                                    Connection.BdAddress = new[] { Buffer[10], Buffer[9], Buffer[8], Buffer[7], Buffer[6], Buffer[5] };
+                                    connection.BdAddress = new[] { buffer[10], buffer[9], buffer[8], buffer[7], buffer[6], buffer[5] };
                                     break;
 
                                 case HCI.Event.HCI_Disconnection_Complete_EV:
 
-                                    Remove(Buffer[3], (byte)(Buffer[4] | 0x20));
+                                    Remove(buffer[3], (byte)(buffer[4] | 0x20));
                                     break;
 
                                 case HCI.Event.HCI_Number_Of_Completed_Packets_EV:
 
-                                    for (byte Index = 0, Ptr = 3; Index < Buffer[2]; Index++, Ptr += 4)
+                                    for (byte Index = 0, Ptr = 3; Index < buffer[2]; Index++, Ptr += 4)
                                     {
-                                        OnCompletedCount(Buffer[Ptr], (byte)(Buffer[Ptr + 1] | 0x20),
-                                            (ushort)(Buffer[Ptr + 2] | Buffer[Ptr + 3] << 8));
+                                        OnCompletedCount(buffer[Ptr], (byte)(buffer[Ptr + 1] | 0x20),
+                                            (ushort)(buffer[Ptr + 2] | buffer[Ptr + 3] << 8));
                                     }
                                     break;
 
                                 case HCI.Event.HCI_Remote_Name_Request_Complete_EV:
 
-                                    bd = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", Buffer[8], Buffer[7],
-                                        Buffer[6], Buffer[5], Buffer[4], Buffer[3]);
+                                    bd = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", buffer[8], buffer[7],
+                                        buffer[6], buffer[5], buffer[4], buffer[3]);
                                     var nm = new StringBuilder();
 
-                                    for (var Index = 9; Index < Buffer.Length; Index++)
+                                    for (var Index = 9; Index < buffer.Length; Index++)
                                     {
-                                        if (Buffer[Index] > 0) nm.Append((char)Buffer[Index]);
+                                        if (buffer[Index] > 0) nm.Append((char)buffer[Index]);
                                         else break;
                                     }
 
@@ -792,52 +791,52 @@ namespace ScpControl.Bluetooth
 
                                     Log.InfoFormat("-- Remote Name : {0} - {1}", bd, Name);
 
-                                    for (var i = 0; i < 6; i++) BD_Addr[i] = Buffer[i + 3];
+                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 3];
 
                                     if (hci.SupportedNames.Any(n => Name.StartsWith(n))
                                         || hci.SupportedNames.Any(n => Name == n))
                                     {
                                         nameList.Add(bd, nm.ToString());
 
-                                        Transfered = HCI_Accept_Connection_Request(BD_Addr, 0x00);
+                                        transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);
                                     }
                                     else
                                     {
-                                        Transfered = HCI_Reject_Connection_Request(BD_Addr, 0x0F);
+                                        transfered = HCI_Reject_Connection_Request(bdAddr, 0x0F);
                                     }
                                     break;
 
                                 case HCI.Event.HCI_Link_Key_Request_EV:
 
-                                    for (var i = 0; i < 6; i++) BD_Addr[i] = Buffer[i + 2];
+                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
 
-                                    Transfered = HCI_Link_Key_Request_Reply(BD_Addr);
-                                    Transfered = HCI_Set_Connection_Encryption(Connection.HciHandle);
+                                    transfered = HCI_Link_Key_Request_Reply(bdAddr);
+                                    transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
                                     break;
 
                                 case HCI.Event.HCI_PIN_Code_Request_EV:
 
-                                    for (var i = 0; i < 6; i++) BD_Addr[i] = Buffer[i + 2];
+                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
 
-                                    Transfered = HCI_PIN_Code_Request_Negative_Reply(BD_Addr);
+                                    transfered = HCI_PIN_Code_Request_Negative_Reply(bdAddr);
                                     break;
 
                                 case HCI.Event.HCI_IO_Capability_Request_EV:
 
-                                    Transfered = HCI_IO_Capability_Request_Reply(BD_Addr);
+                                    transfered = HCI_IO_Capability_Request_Reply(bdAddr);
                                     break;
 
                                 case HCI.Event.HCI_User_Confirmation_Request_EV:
 
-                                    Transfered = HCI_User_Confirmation_Request_Reply(BD_Addr);
+                                    transfered = HCI_User_Confirmation_Request_Reply(bdAddr);
                                     break;
 
                                 case HCI.Event.HCI_Link_Key_Notification_EV:
 
-                                    for (var Index = 0; Index < 6; Index++) BD_Addr[Index] = Buffer[Index + 2];
-                                    for (var Index = 0; Index < 16; Index++) BD_Link[Index] = Buffer[Index + 8];
+                                    for (var Index = 0; Index < 6; Index++) bdAddr[Index] = buffer[Index + 2];
+                                    for (var Index = 0; Index < 16; Index++) bdLink[Index] = buffer[Index + 8];
 
-                                    Transfered = HCI_Set_Connection_Encryption(Connection.HciHandle);
+                                    transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
                                     break;
                             }
                         }
