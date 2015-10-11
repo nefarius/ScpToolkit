@@ -15,32 +15,6 @@ namespace ScpControl.Usb
     public partial class UsbDevice : ScpDevice, IDsDevice
     {
         private CancellationTokenSource _hidCancellationTokenSource = new CancellationTokenSource();
-        protected byte m_BatteryStatus = 0;
-        protected byte[] m_Buffer = new byte[64];
-        protected byte m_CableStatus = 0;
-        protected byte m_ControllerId;
-        protected string m_Instance = string.Empty, m_Mac = string.Empty;
-        protected bool m_IsDisconnect;
-        protected DateTime m_Last = DateTime.Now, m_Tick = DateTime.Now, m_Disconnect = DateTime.Now;
-        protected byte[] m_Local = new byte[6];
-        protected byte[] m_Master = new byte[6];
-        protected byte m_Model = 0;
-        protected uint m_Packet;
-        protected byte m_PlugStatus = 0;
-        protected bool m_Publish = false;
-        protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
-        protected DsState m_State = DsState.Disconnected;
-        protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
-
-        public event EventHandler<ReportEventArgs> HidReportReceived;
-
-        protected virtual void OnHidReportReceived()
-        {
-            m_ReportArgs.Report[0] = m_ControllerId;
-            m_ReportArgs.Report[1] = (byte) m_State;
-
-            if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
-        }
 
         public override string ToString()
         {
@@ -104,6 +78,41 @@ namespace ScpControl.Usb
                 Process(DateTime.Now);
             }
         }
+
+        #region Protected fields
+
+        protected byte m_BatteryStatus = 0;
+        protected byte[] m_Buffer = new byte[64];
+        protected byte m_CableStatus = 0;
+        protected byte m_ControllerId;
+        protected string m_Instance = string.Empty, m_Mac = string.Empty;
+        protected bool m_IsDisconnect;
+        protected DateTime m_Last = DateTime.Now, m_Tick = DateTime.Now, m_Disconnect = DateTime.Now;
+        protected byte[] m_Local = new byte[6];
+        protected byte[] m_Master = new byte[6];
+        protected byte m_Model = 0;
+        protected uint m_Packet;
+        protected byte m_PlugStatus = 0;
+        protected bool m_Publish = false;
+        protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
+        protected DsState m_State = DsState.Disconnected;
+        protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler<ReportEventArgs> HidReportReceived;
+
+        protected virtual void OnHidReportReceived()
+        {
+            m_ReportArgs.Report[0] = m_ControllerId;
+            m_ReportArgs.Report[1] = (byte) m_State;
+
+            if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
+        }
+
+        #endregion
 
         #region Ctors
 
@@ -220,7 +229,7 @@ namespace ScpControl.Usb
 
             if (SendTransfer(UsbHidRequestType.GetDescriptor, UsbHidRequest.GetDescriptor,
                 ToValue(UsbHidClassDescriptorType.Report),
-                buffer, ref transfered))
+                buffer, ref transfered) && transfered > 0)
             {
                 Log.DebugFormat("-- HID Report Descriptor: {0}", buffer.ToHexString(transfered));
 
