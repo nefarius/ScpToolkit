@@ -36,7 +36,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * For DS4s to be useable the minimal supported Bluetooth version is **2.1**!
 
 ## Installation How-To
-1. Connect your Dongle (only needed if you want to use it wirelessly) and controllers via USB and let Windows install it's default drivers.
+1. Connect your Dongle (only needed if you want to use it wirelessly) and controllers via USB and let Windows install it's default drivers. Leave them plugged in during the entire installation process.
 2. Download the [latest release of ScpServer](https://github.com/nefarius/ScpServer/releases/latest) to an arbitrary location on your PC.
 3. Right click on the archive and select `Properties` (depends on your native OS language).
 4. Click the `Unblock` button if it is displayed on the `General` tab.
