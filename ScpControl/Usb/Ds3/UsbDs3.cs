@@ -236,12 +236,11 @@ namespace ScpControl.Usb.Ds3
                     }
                 }
 
+                #region LED control
+
                 if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod && m_Packet > 0)
                 {
-                    var transfered = 0;
-
                     m_Last = now;
-
                     ledStatus = 0;
 
                     switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
@@ -290,22 +289,34 @@ namespace ScpControl.Usb.Ds3
                     }
 
                     _hidReport[9] = ledStatus;
-
-                    if (!IsFake)
-                    {
-                        SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
-                            ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
-                            _hidReport, ref transfered);
-                    }
-                    else
-                    {
-                        var buffer = new byte[_hidReport.Length + 1];
-                        Buffer.BlockCopy(_hidReport, 0, buffer, 1, _hidReport.Length);
-                        buffer[0] = 0x01;
-
-                        WriteIntPipe(buffer, buffer.Length, ref transfered);
-                    }
                 }
+
+                #endregion
+
+                #region send HID Output Report
+
+                var transfered = 0;
+
+                if (!IsFake)
+                {
+                    SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
+                        ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
+                        _hidReport, ref transfered);
+                }
+                else
+                {
+                    var outReport = ReportDescriptor.OutputReports.FirstOrDefault();
+                    if (outReport == null)
+                        return;
+
+                    var buffer = new byte[outReport.Length + 1];
+                    Buffer.BlockCopy(_hidReport, 0, buffer, 1, _hidReport.Length);
+                    buffer[0] = outReport.ID;
+
+                    WriteIntPipe(buffer, buffer.Length, ref transfered);
+                }
+
+                #endregion
             }
         }
 
