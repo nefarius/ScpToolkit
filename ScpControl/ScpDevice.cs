@@ -152,6 +152,11 @@ namespace ScpControl
             return BitConverter.ToUInt16(new[] { (byte)index, (byte)type }, 0);
         }
 
+        protected static ushort ToValue(UsbHidReportRequestType type)
+        {
+            return (ushort) ((byte) type << 8 | (byte) 0x00);
+        }
+
         protected static ushort ToValue(UsbHidReportRequestType type, UsbHidReportRequestId id)
         {
             return BitConverter.ToUInt16(new[] { (byte)id, (byte)type }, 0);
