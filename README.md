@@ -16,6 +16,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [Metro Light and Dark Themes for WPF](http://brianlagunas.com/free-metro-light-and-dark-themes-for-wpf-and-silverlight-microsoft-controls/)
  * [Fody/PropertyChanged](https://github.com/Fody/PropertyChanged)
  * `ScpCleanWipe` uses code from [DriverStore Explorer](https://driverstoreexplorer.codeplex.com/)
+ * [AutoDependencyProperty.Fody](http://blog.angeloflogic.com/2014/12/no-more-dependencyproperty-with.html)
  * [HIDSharp library](http://www.zer7.com/software/hidsharp)
 
 ## Installation requirements
