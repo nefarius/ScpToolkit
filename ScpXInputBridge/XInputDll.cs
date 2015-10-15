@@ -8,7 +8,7 @@ namespace ScpXInputBridge
 
     public partial class XInputDll
     {
-        #region Provate delegates
+        #region Private delegates
 
         private static XInputEnableFunction _originalXInputEnableFunction;
         private static XInputGetStateFunction _originalXInputGetStateFunction;
@@ -19,6 +19,8 @@ namespace ScpXInputBridge
         private static XInputGetKeystrokeFunction _originalXInputGetKeystrokeFunction;
 
         #endregion
+
+        #region Methods
 
         public void Dispose()
         {
@@ -58,6 +60,8 @@ namespace ScpXInputBridge
 
             _isInitialized = true;
         }
+
+        #endregion
 
         #region SCP extension function
 
