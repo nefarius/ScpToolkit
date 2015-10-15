@@ -80,8 +80,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Kernel32Natives.cs" />
     <Compile Include="XInputDll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XInputDll.Exports.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
