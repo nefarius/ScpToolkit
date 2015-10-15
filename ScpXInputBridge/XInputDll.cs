@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using RGiesecke.DllExport;
 
@@ -9,11 +8,15 @@ namespace ScpXInputBridge
 
     public partial class XInputDll
     {
-        #region Private fields
+        #region Provate delegates
 
-        private static readonly IList<Delegate> _xInputFunctions = new List<Delegate>();
-        private static IntPtr _dll = IntPtr.Zero;
-        private static volatile bool _isInitialized;
+        private static XInputEnableFunction _originalXInputEnableFunction;
+        private static XInputGetStateFunction _originalXInputGetStateFunction;
+        private static XInputSetStateFunction _originalXInputSetStateFunction;
+        private static XInputGetCapabilitiesFunction _originalXInputGetCapabilitiesFunction;
+        private static XInputGetDSoundAudioDeviceGuidsFunction _originalXInputGetDSoundAudioDeviceGuidsFunction;
+        private static XInputGetBatteryInformationFunction _originalXInputGetBatteryInformationFunction;
+        private static XInputGetKeystrokeFunction _originalXInputGetKeystrokeFunction;
 
         #endregion
 
@@ -37,14 +40,21 @@ namespace ScpXInputBridge
 
             _dll = Kernel32Natives.LoadLibrary(@"C:\WINDOWS\system32\xinput1_3.dll");
 
-            _xInputFunctions.Add(GetMethod<XInputEnableFunction>(_dll, "XInputEnable"));
-            _xInputFunctions.Add(GetMethod<XInputGetStateFunction>(_dll, "XInputGetState"));
-            _xInputFunctions.Add(GetMethod<XInputSetStateFunction>(_dll, "XInputSetState"));
-            _xInputFunctions.Add(GetMethod<XInputGetCapabilitiesFunction>(_dll, "XInputGetCapabilities"));
-            _xInputFunctions.Add(GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(_dll,
-                "XInputGetDSoundAudioDeviceGuids"));
-            _xInputFunctions.Add(GetMethod<XInputGetBatteryInformationFunction>(_dll, "XInputGetBatteryInformation"));
-            _xInputFunctions.Add(GetMethod<XInputGetKeystrokeFunction>(_dll, "XInputGetKeystroke"));
+            _originalXInputEnableFunction = (XInputEnableFunction) GetMethod<XInputEnableFunction>(_dll, "XInputEnable");
+            _originalXInputGetStateFunction =
+                (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(_dll, "XInputGetState");
+            _originalXInputSetStateFunction =
+                (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(_dll, "XInputSetState");
+            _originalXInputGetCapabilitiesFunction =
+                (XInputGetCapabilitiesFunction) GetMethod<XInputGetCapabilitiesFunction>(_dll, "XInputGetCapabilities");
+            _originalXInputGetDSoundAudioDeviceGuidsFunction =
+                (XInputGetDSoundAudioDeviceGuidsFunction) GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(_dll,
+                    "XInputGetDSoundAudioDeviceGuids");
+            _originalXInputGetBatteryInformationFunction =
+                (XInputGetBatteryInformationFunction)
+                    GetMethod<XInputGetBatteryInformationFunction>(_dll, "XInputGetBatteryInformation");
+            _originalXInputGetKeystrokeFunction =
+                (XInputGetKeystrokeFunction) GetMethod<XInputGetKeystrokeFunction>(_dll, "XInputGetKeystroke");
 
             _isInitialized = true;
         }
@@ -56,6 +66,13 @@ namespace ScpXInputBridge
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region Private fields
+
+        private static IntPtr _dll = IntPtr.Zero;
+        private static volatile bool _isInitialized;
 
         #endregion
 
