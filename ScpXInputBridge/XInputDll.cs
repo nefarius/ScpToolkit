@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace ScpXInputBridge
@@ -39,7 +40,7 @@ namespace ScpXInputBridge
             if (_isInitialized)
                 return;
 
-            _dll = Kernel32Natives.LoadLibrary(@"C:\WINDOWS\system32\xinput1_3.dll");
+            _dll = Kernel32Natives.LoadLibrary(Path.Combine(Environment.SystemDirectory, "xinput1_3.dll"));
 
             _originalXInputEnableFunction = (XInputEnableFunction) GetMethod<XInputEnableFunction>(_dll, "XInputEnable");
             _originalXInputGetStateFunction =
