@@ -10,18 +10,75 @@ namespace ScpXInputBridge
     {
         #region Private delegates
 
-        private static XInputEnableFunction _originalXInputEnableFunction;
-        private static XInputGetStateFunction _originalXInputGetStateFunction;
-        private static XInputSetStateFunction _originalXInputSetStateFunction;
-        private static XInputGetCapabilitiesFunction _originalXInputGetCapabilitiesFunction;
-        private static XInputGetDSoundAudioDeviceGuidsFunction _originalXInputGetDSoundAudioDeviceGuidsFunction;
-        private static XInputGetBatteryInformationFunction _originalXInputGetBatteryInformationFunction;
-        private static XInputGetKeystrokeFunction _originalXInputGetKeystrokeFunction;
+        private static readonly Lazy<XInputEnableFunction> OriginalXInputEnableFunction =
+            new Lazy<XInputEnableFunction>(() =>
+            {
+                Initialize();
+                return (XInputEnableFunction) GetMethod<XInputEnableFunction>(_dll, "XInputEnable");
+            });
+
+        private static readonly Lazy<XInputGetStateFunction> OriginalXInputGetStateFunction = new Lazy
+            <XInputGetStateFunction>(
+            () =>
+            {
+                Initialize();
+                return (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(_dll, "XInputGetState");
+            });
+
+        private static readonly Lazy<XInputSetStateFunction> OriginalXInputSetStateFunction = new Lazy
+            <XInputSetStateFunction>(
+            () =>
+            {
+                Initialize();
+                return (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(_dll, "XInputSetState");
+            });
+
+        private static readonly Lazy<XInputGetCapabilitiesFunction> OriginalXInputGetCapabilitiesFunction = new Lazy
+            <XInputGetCapabilitiesFunction>(
+            () =>
+            {
+                Initialize();
+                return
+                    (XInputGetCapabilitiesFunction)
+                        GetMethod<XInputGetCapabilitiesFunction>(_dll, "XInputGetCapabilities");
+            });
+
+        private static readonly Lazy<XInputGetDSoundAudioDeviceGuidsFunction>
+            OriginalXInputGetDSoundAudioDeviceGuidsFunction = new Lazy<XInputGetDSoundAudioDeviceGuidsFunction>(
+                () =>
+                {
+                    Initialize();
+                    return
+                        (XInputGetDSoundAudioDeviceGuidsFunction)
+                            GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(_dll,
+                                "XInputGetDSoundAudioDeviceGuids");
+                });
+
+        private static readonly Lazy<XInputGetBatteryInformationFunction> OriginalXInputGetBatteryInformationFunction = new Lazy
+            <XInputGetBatteryInformationFunction>(
+            () =>
+            {
+                Initialize();
+                return (XInputGetBatteryInformationFunction)
+                    GetMethod<XInputGetBatteryInformationFunction>(_dll, "XInputGetBatteryInformation");
+            });
+
+        private static readonly Lazy<XInputGetKeystrokeFunction> OriginalXInputGetKeystrokeFunction = new Lazy
+            <XInputGetKeystrokeFunction>(
+            () =>
+            {
+                Initialize();
+                return (XInputGetKeystrokeFunction) GetMethod<XInputGetKeystrokeFunction>(_dll, "XInputGetKeystroke");
+            });
 
         #endregion
 
         #region Methods
 
+        /// <summary>
+        ///     Free resources.
+        /// </summary>
+        /// TODO: does this even get called?
         public void Dispose()
         {
             if (_dll == IntPtr.Zero) return;
@@ -30,11 +87,21 @@ namespace ScpXInputBridge
             _isInitialized = false;
         }
 
+        /// <summary>
+        ///     Translates a native method into a managed delegate.
+        /// </summary>
+        /// <typeparam name="T">The type of the target delegate.</typeparam>
+        /// <param name="module">The module name to search the function in.</param>
+        /// <param name="methodName">The native finctions' name.</param>
+        /// <returns>Returns the managed delegate.</returns>
         private static Delegate GetMethod<T>(IntPtr module, string methodName)
         {
             return Marshal.GetDelegateForFunctionPointer(Kernel32Natives.GetProcAddress(module, methodName), typeof (T));
         }
 
+        /// <summary>
+        ///     Loads native dependencies.
+        /// </summary>
         private static void Initialize()
         {
             if (_isInitialized)
@@ -42,27 +109,12 @@ namespace ScpXInputBridge
 
             _dll = Kernel32Natives.LoadLibrary(Path.Combine(Environment.SystemDirectory, "xinput1_3.dll"));
 
-            _originalXInputEnableFunction = (XInputEnableFunction) GetMethod<XInputEnableFunction>(_dll, "XInputEnable");
-            _originalXInputGetStateFunction =
-                (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(_dll, "XInputGetState");
-            _originalXInputSetStateFunction =
-                (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(_dll, "XInputSetState");
-            _originalXInputGetCapabilitiesFunction =
-                (XInputGetCapabilitiesFunction) GetMethod<XInputGetCapabilitiesFunction>(_dll, "XInputGetCapabilities");
-            _originalXInputGetDSoundAudioDeviceGuidsFunction =
-                (XInputGetDSoundAudioDeviceGuidsFunction) GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(_dll,
-                    "XInputGetDSoundAudioDeviceGuids");
-            _originalXInputGetBatteryInformationFunction =
-                (XInputGetBatteryInformationFunction)
-                    GetMethod<XInputGetBatteryInformationFunction>(_dll, "XInputGetBatteryInformation");
-            _originalXInputGetKeystrokeFunction =
-                (XInputGetKeystrokeFunction) GetMethod<XInputGetKeystrokeFunction>(_dll, "XInputGetKeystroke");
-
-            _isInitialized = true;
+            if (_dll != IntPtr.Zero)
+                _isInitialized = true;
         }
 
         #endregion
-        
+
         #region Private fields
 
         private static IntPtr _dll = IntPtr.Zero;
