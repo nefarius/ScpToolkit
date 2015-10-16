@@ -6,7 +6,7 @@ namespace ScpXInputBridge
 {
     using DWORD = UInt32;
 
-    public partial class XInputDll : IDisposable
+    public partial class XInputDll
     {
         #region XInput proxy functions
 

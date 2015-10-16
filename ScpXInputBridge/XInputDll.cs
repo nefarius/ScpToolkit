@@ -6,7 +6,7 @@ namespace ScpXInputBridge
 {
     using DWORD = UInt32;
 
-    public partial class XInputDll
+    public partial class XInputDll : IDisposable
     {
         #region Private delegates
 
