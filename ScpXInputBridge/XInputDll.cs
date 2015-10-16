@@ -111,16 +111,20 @@ namespace ScpXInputBridge
 
             Debugger.Launch();
 
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            {
+                var asmName = new AssemblyName(args.Name).Name;
+
+                return Assembly.LoadFrom(Path.Combine(basePath, string.Format("{0}.dll", asmName)));
+            };
+
             _dll = Kernel32Natives.LoadLibrary(Path.Combine(Environment.SystemDirectory, "xinput1_3.dll"));
 
-            const string basePath = @"D:\Development\C#\ScpServer\bin\";
-
-            var scpControl = Assembly.LoadFile(Path.Combine(basePath, "ScpControl.dll"));
+            var scpControl = Assembly.LoadFrom(Path.Combine(basePath, "ScpControl.dll"));
             var scpProxyType = scpControl.GetType("ScpControl.ScpProxy");
 
             _scpProxy = Activator.CreateInstance(scpProxyType);
 
-            _scpProxy.Open();
             _scpProxy.Start();
 
             if (_dll != IntPtr.Zero)
@@ -134,6 +138,7 @@ namespace ScpXInputBridge
         private static IntPtr _dll = IntPtr.Zero;
         private static volatile bool _isInitialized;
         private static dynamic _scpProxy;
+        private static string basePath = @"D:\Development\C#\ScpServer\bin\";
 
         #endregion
 
