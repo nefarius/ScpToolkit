@@ -84,6 +84,7 @@
     <Compile Include="XInputDll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XInputDll.Exports.cs" />
+    <Compile Include="XInputDll.Extensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

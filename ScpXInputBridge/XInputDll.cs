@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using RGiesecke.DllExport;
 
 namespace ScpXInputBridge
 {
@@ -62,17 +61,7 @@ namespace ScpXInputBridge
         }
 
         #endregion
-
-        #region SCP extension function
-
-        [DllExport("XInputGetExtended", CallingConvention.StdCall)]
-        public static uint XInputGetExtended(uint dwUserIndex, ref SCP_EXTN pPressure)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
+        
         #region Private fields
 
         private static IntPtr _dll = IntPtr.Zero;
