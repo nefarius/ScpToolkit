@@ -732,13 +732,25 @@ namespace ScpControl.Bluetooth
                                     for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
 
                                     transfered = HCI_Delete_Stored_Link_Key(bdAddr);
-                                    transfered = HCI_Remote_Name_Request(bdAddr);
+                                    transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);  //do this first
+                                    //transfered = HCI_Remote_Name_Request(bdAddr);   //not now
                                     break;
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
                                     bd = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", buffer[10],
                                         buffer[9], buffer[8], buffer[7], buffer[6], buffer[5]);
+
+                                    if (buffer[2] == 00)  //buffer2 contains the status of connection_complete_ev. it's always 0 if succeed
+                                    {
+                                        Log.InfoFormat("-- HCI_Connection_Complete_EV OK, status: {0:X2}", buffer[2]);
+                                        transfered = HCI_Remote_Name_Request(bdAddr);  //only after connection completed with status 0 we request for controller's name.
+                                    }
+                                    else
+                                    {
+                                        Log.WarnFormat("-- HCI_Connection_Complete_EV failed with status: {0:X2}. Connection handle:0x{1:X2}{2:X2}", buffer[2], buffer[4], buffer[3]);
+                                        //you might want to add some other command here to break or retry.
+                                    }
 
                                     if (!nameList.Any())
                                         break;
@@ -802,7 +814,7 @@ namespace ScpControl.Bluetooth
                                     {
                                         nameList.Add(bd, nm.ToString());
 
-                                        transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);
+                                        // transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);  //already done
                                     }
                                     else
                                     {
