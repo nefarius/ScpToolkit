@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace ScpXInputBridge
@@ -107,7 +109,19 @@ namespace ScpXInputBridge
             if (_isInitialized)
                 return;
 
+            Debugger.Launch();
+
             _dll = Kernel32Natives.LoadLibrary(Path.Combine(Environment.SystemDirectory, "xinput1_3.dll"));
+
+            const string basePath = @"D:\Development\C#\ScpServer\bin\";
+
+            var scpControl = Assembly.LoadFile(Path.Combine(basePath, "ScpControl.dll"));
+            var scpProxyType = scpControl.GetType("ScpControl.ScpProxy");
+
+            _scpProxy = Activator.CreateInstance(scpProxyType);
+
+            _scpProxy.Open();
+            _scpProxy.Start();
 
             if (_dll != IntPtr.Zero)
                 _isInitialized = true;
@@ -119,6 +133,7 @@ namespace ScpXInputBridge
 
         private static IntPtr _dll = IntPtr.Zero;
         private static volatile bool _isInitialized;
+        private static dynamic _scpProxy;
 
         #endregion
 
