@@ -265,12 +265,17 @@ namespace ScpControl.Driver
                     // translate device info to managed object
                     var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
 
+                    int desc_size = 0;
+                    while (Marshal.ReadByte(info.desc, desc_size) != 0) ++desc_size;
+                    byte[] desc_bytes = new byte[desc_size];
+                    Marshal.Copy(info.desc, desc_bytes, 0, desc_size);
+
                     // put info in managed object
                     var wdiDevice = new WdiUsbDevice()
                     {
                         VendorId = info.vid,
                         ProductId = info.pid,
-                        Description = info.desc,
+                        Description = System.Text.Encoding.UTF8.GetString(desc_bytes),
                         DeviceId = info.device_id,
                         HardwareId = info.hardware_id,
                         CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
@@ -311,7 +316,7 @@ namespace ScpControl.Driver
             public readonly ushort pid;
             public readonly bool is_composite;
             public readonly char mi;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string desc;
+            public readonly IntPtr desc;
             public readonly IntPtr driver;
             [MarshalAs(UnmanagedType.LPStr)] public readonly string device_id;
             [MarshalAs(UnmanagedType.LPStr)] public readonly string hardware_id;
