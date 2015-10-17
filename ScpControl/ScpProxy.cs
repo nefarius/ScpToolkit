@@ -18,14 +18,22 @@ namespace ScpControl
 {
     public sealed partial class ScpProxy : Component
     {
+        #region Private fields
+
         private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedHost, Settings.Default.RootHubNativeFeedPort);
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        public bool IsActive { get; private set; }
+        
         private XmlDocument _xmlMap = new XmlDocument();
 
         private IScpCommandService _rootHub;
 
         private readonly XmlMapper _xmlMapper = new XmlMapper();
+
+        #endregion
+
+        #region Public properties
+
+        public bool IsActive { get; private set; }
 
         public XmlMapper Mapper
         {
@@ -56,6 +64,10 @@ namespace ScpControl
             }
         }
 
+        #endregion
+
+        #region WCF methods
+
         public void PromotePad(byte pad)
         {
             _rootHub.PromotePad(pad);
@@ -70,86 +82,6 @@ namespace ScpControl
         {
             _rootHub.SubmitConfiguration(config);
         }
-
-        #region Component actions
-
-        public bool Start()
-        {
-            try
-            {
-                if (!IsActive)
-                {
-                    #region WCF client
-
-                    var address = new EndpointAddress(new Uri("net.tcp://localhost:26760/ScpRootHubService"));
-                    var binding = new NetTcpBinding()
-                    {
-                        TransferMode = TransferMode.Streamed,
-                        Security = new NetTcpSecurity() { Mode = SecurityMode.None }
-                    };
-                    var factory = new ChannelFactory<IScpCommandService>(binding, address);
-
-                    _rootHub = factory.CreateChannel(address);
-
-                    #endregion
-
-                    #region Feed client
-
-                    var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
-                    rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(buffer =>
-                    {
-                        if (buffer.Length <= 0)
-                            return;
-
-                        var packet = new DsPacket();
-
-                        OnFeedPacketReceived(packet.Load(buffer));
-                    });
-
-                    _rxFeedClient.ConnectAsync();
-
-                    #endregion
-
-                    if (_rootHub != null)
-                    {
-                        _xmlMap.LoadXml(_rootHub.GetXml());
-                        _xmlMapper.Initialize(_xmlMap);
-                    }
-                    else
-                    {
-                        Log.Error("Couldn't initialize XML mapper");
-                    }
-
-                    IsActive = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return IsActive;
-        }
-
-        public bool Stop()
-        {
-            // TODO: refactor useless bits
-            try
-            {
-                if (IsActive)
-                {
-                    IsActive = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return !IsActive;
-        }
-
-        #endregion
 
         public bool Save()
         {
@@ -283,6 +215,88 @@ namespace ScpControl
             return set;
         }
 
+        #endregion
+
+        #region Component actions
+
+        public bool Start()
+        {
+            try
+            {
+                if (!IsActive)
+                {
+                    #region WCF client
+
+                    var address = new EndpointAddress(new Uri("net.tcp://localhost:26760/ScpRootHubService"));
+                    var binding = new NetTcpBinding()
+                    {
+                        TransferMode = TransferMode.Streamed,
+                        Security = new NetTcpSecurity() { Mode = SecurityMode.None }
+                    };
+                    var factory = new ChannelFactory<IScpCommandService>(binding, address);
+
+                    _rootHub = factory.CreateChannel(address);
+
+                    #endregion
+
+                    #region Feed client
+
+                    var rootHubFeedChannel = new ScpNativeFeedChannel(_rxFeedClient);
+                    rootHubFeedChannel.Receiver.SubscribeOn(TaskPoolScheduler.Default).Subscribe(buffer =>
+                    {
+                        if (buffer.Length <= 0)
+                            return;
+
+                        var packet = new DsPacket();
+
+                        OnFeedPacketReceived(packet.Load(buffer));
+                    });
+
+                    _rxFeedClient.ConnectAsync();
+
+                    #endregion
+
+                    if (_rootHub != null)
+                    {
+                        _xmlMap.LoadXml(_rootHub.GetXml());
+                        _xmlMapper.Initialize(_xmlMap);
+                    }
+                    else
+                    {
+                        Log.Error("Couldn't initialize XML mapper");
+                    }
+
+                    IsActive = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
+
+            return IsActive;
+        }
+
+        public bool Stop()
+        {
+            // TODO: refactor useless bits
+            try
+            {
+                if (IsActive)
+                {
+                    IsActive = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+            }
+
+            return !IsActive;
+        }
+
+        #endregion
+        
         #region Ctors
 
         public ScpProxy()
