@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using MadMilkman.Ini;
 
 namespace ScpXInputBridge
 {
@@ -107,26 +108,52 @@ namespace ScpXInputBridge
         {
             if (_isInitialized)
                 return;
-
-            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            
+            var iniOpts = new IniOptions
             {
-                var asmName = new AssemblyName(args.Name).Name;
-
-                return Assembly.LoadFrom(Path.Combine(basePath, string.Format("{0}.dll", asmName)));
+                CommentStarter = IniCommentStarter.Semicolon
             };
 
-            _dll = Kernel32Natives.LoadLibrary(Path.Combine(Environment.SystemDirectory, "xinput1_3.dll"));
+            var ini = new IniFile(iniOpts);
+            var fullPath = Path.Combine(WorkingDirectory, CfgFile);
+
+            if (!File.Exists(fullPath))
+                return;
 
             try
             {
-                var scpControl = Assembly.LoadFrom(Path.Combine(basePath, "ScpControl.dll"));
+                // parse data from INI
+                ini.Load(fullPath);
+
+                var basePath = ini.Sections["ScpControl"].Keys["BinPath"].Value;
+                var binName = ini.Sections["ScpControl"].Keys["BinName"].Value;
+
+                // load all assembly dependencies
+                AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+                {
+                    var asmName = new AssemblyName(args.Name).Name;
+
+                    return Assembly.LoadFrom(Path.Combine(basePath, string.Format("{0}.dll", asmName)));
+                };
+
+                var scpControl = Assembly.LoadFrom(Path.Combine(basePath, binName));
                 var scpProxyType = scpControl.GetType("ScpControl.ScpProxy");
 
                 _scpProxy = Activator.CreateInstance(scpProxyType);
 
                 _scpProxy.Start();
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                return;
+            }
+
+            // if no custom path specified by user, use DLL in system32 dir
+            var xinput13Path = ini.Sections["xinput1_3"].Keys.Contains("OriginalFilePath")
+                ? ini.Sections["xinput1_3"].Keys["OriginalFilePath"].Value
+                : Path.Combine(Environment.SystemDirectory, "xinput1_3.dll");
+
+            _dll = Kernel32Natives.LoadLibrary(xinput13Path);
 
             if (_dll != IntPtr.Zero)
                 _isInitialized = true;
@@ -139,7 +166,8 @@ namespace ScpXInputBridge
         private static IntPtr _dll = IntPtr.Zero;
         private static volatile bool _isInitialized;
         private static dynamic _scpProxy;
-        private static string basePath = @"D:\Development\C#\ScpServer\bin\";
+        private const string CfgFile = "ScpXInput.ini";
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
         #endregion
 
@@ -170,7 +198,7 @@ namespace ScpXInputBridge
             public uint wLeftMotorSpeed;
             public uint wRightMotorSpeed;
         }
-        
+
         [StructLayout(LayoutKind.Sequential)]
         public struct XINPUT_CAPABILITIES
         {

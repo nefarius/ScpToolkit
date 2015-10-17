@@ -68,6 +68,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MadMilkman.Ini">
+      <HintPath>..\packages\MadMilkman.Ini.1.0.5.0\lib\net20\MadMilkman.Ini.dll</HintPath>
+    </Reference>
     <Reference Include="RGiesecke.DllExport.Metadata">
       <HintPath>..\packages\UnmanagedExports.1.2.7\lib\net\RGiesecke.DllExport.Metadata.dll</HintPath>
       <Private>False</Private>
@@ -89,6 +92,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="ScpXInput.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ScpControl.Shared\ScpControl.Shared.csproj">
