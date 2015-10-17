@@ -98,5 +98,4 @@ namespace ScpControl.ScpCore
             return Native[(int)Offset];
         }
     }
-
 }
