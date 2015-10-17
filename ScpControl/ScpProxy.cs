@@ -20,9 +20,73 @@ namespace ScpControl
 {
     public sealed partial class ScpProxy : Component
     {
+        #region XInput extensions
+
+        /// <summary>
+        ///     Used by ScpXInputBridge to request pressure sensitive button information.
+        /// </summary>
+        /// <param name="dwUserIndex">The pad index to request data from (zero-based).</param>
+        /// <returns>The pressure sensitive button/axis information.</returns>
+        public SCP_EXTN GetExtended(uint dwUserIndex)
+        {
+            DsPacket packet;
+            var extended = default(SCP_EXTN);
+
+            try
+            {
+                packet = _packetCache[(DsPadId) dwUserIndex];
+            }
+            catch (KeyNotFoundException)
+            {
+                return extended;
+            }
+
+            var native = packet.Native;
+
+            switch (packet.Detail.Model)
+            {
+                case DsModel.None:
+                    break;
+                case DsModel.DS3:
+                    // translate and wrap button/axis information
+                    extended = new SCP_EXTN
+                    {
+                        SCP_UP = native.GetDpadUpAnalog().ToPressure(),
+                        SCP_RIGHT = native.GetDpadRightAnalog().ToPressure(),
+                        SCP_DOWN = native.GetDpadDownAnalog().ToPressure(),
+                        SCP_LEFT = native.GetDpadLeftAnalog().ToPressure(),
+                        SCP_LX = native.GetLeftAxisX(),
+                        SCP_LY = native.GetLeftAxisY(),
+                        SCP_L1 = native.GetLeftShoulderAnalog().ToPressure(),
+                        SCP_L2 = native.GetLeftTriggerAnalog().ToPressure(),
+                        SCP_L3 = native.GetLeftThumb() ? 1.0f : 0.0f,
+                        SCP_RX = native.GetRightAxisX(),
+                        SCP_RY = native.GetRightAxisY(),
+                        SCP_R1 = native.GetRightShoulderAnalog().ToPressure(),
+                        SCP_R2 = native.GetRightTriggerAnalog().ToPressure(),
+                        SCP_R3 = native.GetRightThumb() ? 1.0f : 0.0f,
+                        SCP_T = native.GetTriangleAnalog().ToPressure(),
+                        SCP_C = native.GetCircleAnalog().ToPressure(),
+                        SCP_X = native.GetCrossAnalog().ToPressure(),
+                        SCP_S = native.GetSquareAnalog().ToPressure(),
+                        SCP_SELECT = native.GetSelect() ? 1.0f : 0.0f,
+                        SCP_START = native.GetStart() ? 1.0f : 0.0f,
+                        SCP_PS = native.GetPs() ? 1.0f : 0.0f
+                    };
+                    break;
+                    // TODO: implement DS4 and Generic
+            }
+
+            return extended;
+        }
+
+        #endregion
+
         #region Private fields
 
-        private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedHost, Settings.Default.RootHubNativeFeedPort);
+        private readonly ReactiveClient _rxFeedClient = new ReactiveClient(Settings.Default.RootHubNativeFeedHost,
+            Settings.Default.RootHubNativeFeedPort);
+
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IDictionary<DsPadId, DsPacket> _packetCache = new Dictionary<DsPadId, DsPacket>();
@@ -62,10 +126,7 @@ namespace ScpControl
 
         public IList<string> StatusData
         {
-            get
-            {
-                return _rootHub.GetStatusData().ToList();
-            }
+            get { return _rootHub.GetStatusData().ToList(); }
         }
 
         #endregion
@@ -221,60 +282,6 @@ namespace ScpControl
 
         #endregion
 
-        #region Public methods
-
-        public SCP_EXTN GetExtended(uint dwUserIndex)
-        {
-            DsPacket packet;
-
-            try
-            {
-                packet = _packetCache[(DsPadId)dwUserIndex];
-            }
-            catch (KeyNotFoundException)
-            {
-                return default(SCP_EXTN);
-            }
-
-            var native = packet.Native;
-
-            var extended = new SCP_EXTN()
-            {
-                SCP_UP = native.GetDpadUpAnalog().ToPressure(),
-                SCP_RIGHT = native.GetDpadRightAnalog().ToPressure(),
-                SCP_DOWN = native.GetDpadDownAnalog().ToPressure(),
-                SCP_LEFT = native.GetDpadLeftAnalog().ToPressure(),
-
-                SCP_LX = native.GetLeftAxisX(),
-                SCP_LY = native.GetLeftAxisY(),
-
-                SCP_L1 = native.GetLeftShoulderAnalog().ToPressure(),
-                SCP_L2 = native.GetLeftTriggerAnalog().ToPressure(),
-                SCP_L3 = native.GetLeftThumb() ? 1.0f : 0.0f,
-
-                SCP_RX = native.GetRightAxisX(),
-                SCP_RY = native.GetRightAxisY(),
-
-                SCP_R1 = native.GetRightShoulderAnalog().ToPressure(),
-                SCP_R2 = native.GetRightTriggerAnalog().ToPressure(),
-                SCP_R3 = native.GetRightThumb() ? 1.0f : 0.0f,
-
-                SCP_T = native.GetTriangleAnalog().ToPressure(),
-                SCP_C = native.GetCircleAnalog().ToPressure(),
-                SCP_X = native.GetCrossAnalog().ToPressure(),
-                SCP_S = native.GetSquareAnalog().ToPressure(),
-
-                SCP_SELECT = native.GetSelect() ? 1.0f : 0.0f,
-                SCP_START = native.GetStart() ? 1.0f : 0.0f,
-
-                SCP_PS = native.GetPs() ? 1.0f : 0.0f
-            };
-
-            return extended;
-        }
-
-        #endregion
-
         #region Component actions
 
         public bool Start()
@@ -286,10 +293,10 @@ namespace ScpControl
                     #region WCF client
 
                     var address = new EndpointAddress(new Uri("net.tcp://localhost:26760/ScpRootHubService"));
-                    var binding = new NetTcpBinding()
+                    var binding = new NetTcpBinding
                     {
                         TransferMode = TransferMode.Streamed,
-                        Security = new NetTcpSecurity() { Mode = SecurityMode.None }
+                        Security = new NetTcpSecurity {Mode = SecurityMode.None}
                     };
                     var factory = new ChannelFactory<IScpCommandService>(binding, address);
 
@@ -354,7 +361,7 @@ namespace ScpControl
         }
 
         #endregion
-        
+
         #region Ctors
 
         public ScpProxy()
@@ -379,7 +386,7 @@ namespace ScpControl
         #endregion
 
         #region Event methods
-        
+
         private void OnFeedPacketReceived(DsPacket data)
         {
             _packetCache[data.Detail.Pad] = data;

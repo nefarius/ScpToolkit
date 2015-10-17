@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -108,8 +107,6 @@ namespace ScpXInputBridge
         {
             if (_isInitialized)
                 return;
-
-            //Debugger.Launch();
 
             AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
             {

@@ -2,6 +2,9 @@
 
 namespace ScpControl.Shared.XInput
 {
+    /// <summary>
+    ///     Struct containing button and axis information for the XInput extensions.
+    /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct SCP_EXTN
     {

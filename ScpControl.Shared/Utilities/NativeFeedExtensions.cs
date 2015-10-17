@@ -1,5 +1,8 @@
 ﻿namespace ScpControl.Shared.Utilities
 {
+    /// <summary>
+    ///     Utility class to extract button and axis information from a native byte stream.
+    /// </summary>
     public static class NativeFeedExtensions
     {
         public static byte GetDpadUpAnalog(this byte[] report)

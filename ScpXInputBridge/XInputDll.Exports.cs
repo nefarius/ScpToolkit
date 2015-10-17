@@ -4,8 +4,6 @@ using RGiesecke.DllExport;
 
 namespace ScpXInputBridge
 {
-    using DWORD = UInt32;
-
     public partial class XInputDll
     {
         #region XInput proxy functions
