@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using MadMilkman.Ini;
 using ScpControl;
 using ScpControl.ScpCore;
 
@@ -105,6 +106,20 @@ namespace ScpSettings
                 var lilypadOrig = Directory.GetFiles(pluginsDir, "*.dll").FirstOrDefault(f => f.Contains("lilypad"));
                 var lilypadMod = Path.Combine(_config.AppDirectory, "LilyPad", modFileName);
                 var xinputMod = Path.Combine(_config.AppDirectory, @"XInput\x86");
+                var xinputIni = Path.Combine(xinputMod, "ScpXInput.ini");
+
+                var iniOpts = new IniOptions
+                {
+                    CommentStarter = IniCommentStarter.Semicolon
+                };
+
+                var ini = new IniFile(iniOpts);
+
+                ini.Load(xinputIni);
+
+                ini.Sections["ScpControl"].Keys["BinPath"].Value = _config.AppDirectory;
+
+                ini.Save(xinputIni);
 
                 // copy modded XInput DLL and dependencies
                 foreach (var file in Directory.GetFiles(xinputMod))

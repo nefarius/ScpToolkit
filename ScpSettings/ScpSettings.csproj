@@ -47,6 +47,10 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MadMilkman.Ini, Version=1.0.5.0, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MadMilkman.Ini.1.0.5.0\lib\net20\MadMilkman.Ini.dll</HintPath>
+    </Reference>
     <Reference Include="Ookii.Dialogs.Wpf">
       <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
