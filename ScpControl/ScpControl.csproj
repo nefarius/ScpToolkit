@@ -196,6 +196,7 @@
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\FileDownloader.cs" />
     <Compile Include="Utilities\FileExtensions.cs" />
+    <Compile Include="Utilities\GenericGamepadConfig.cs" />
     <Compile Include="Utilities\MacAddressGenerator.cs" />
     <Compile Include="Utilities\OSVersionInfoClass.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />

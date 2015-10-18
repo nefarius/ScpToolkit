@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
         xmlns:utilities="clr-namespace:ScpDriverInstaller.Utilities"
+        xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
         Title="ScpToolkit Driver Installer" 
         Height="560" Width="1020" 
         MinHeight="560" MinWidth="1020"
@@ -28,16 +29,62 @@
                 </Grid.DataContext>
 
                 <!-- Installation options -->
-                <GroupBox Header="Installation options">
-                    <DockPanel>
-                        <StackPanel Margin="0,0,10,0">
-                            <CheckBox IsChecked="{Binding Path=InstallWindowsService}" ToolTip="Install Windows Service running in the background (recommended)">Install Windows Service</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallBluetoothDriver}" ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">Install Bluetooth driver</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallDualShock3Driver}" ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">Install DualShock 3 driver</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallDualShock4Driver}" ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">Install DualShock 4 driver</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=ForceDriverInstallation}" ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">Force Driver Installation</CheckBox>
-                        </StackPanel>
+                <controls:Accordion ExpandDirection="Right" Height="220" Width="780">
+                    <controls:AccordionItem Header="Drivers">
+                        <GroupBox Header="Installation options">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
 
+                                <CheckBox Grid.Row="0" Grid.Column="0" 
+                                          IsChecked="{Binding Path=InstallWindowsService}" 
+                                          ToolTip="Install Windows Service running in the background (recommended)">Install Windows Service</CheckBox>
+                                <CheckBox Grid.Row="1" Grid.Column="0"
+                                          VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=InstallBluetoothDriver}" 
+                                          ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">Install Bluetooth driver</CheckBox>
+                                <CheckBox Grid.Row="2" Grid.Column="0"
+                                          VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=InstallDualShock3Driver}" 
+                                          ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">Install DualShock 3 driver</CheckBox>
+                                <CheckBox Grid.Row="3" Grid.Column="0"
+                                          VerticalContentAlignment="Center"
+                                          IsChecked="{Binding Path=InstallDualShock4Driver}"
+                                          ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">Install DualShock 4 driver</CheckBox>
+                                <CheckBox Grid.Row="4" Grid.Column="0"
+                                          IsChecked="{Binding Path=ForceDriverInstallation}" 
+                                          ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">Force Driver Installation</CheckBox>
+                                
+                                <Expander Grid.Row="1" Grid.Column="1"
+                                          Margin="20,0,0,0"
+                                          Header="Advanced settings" >
+                                    <Label>Test</Label>
+                                </Expander>
+                                <Expander Grid.Row="2" Grid.Column="1"
+                                          Margin="20,0,0,0"
+                                          Header="Advanced settings">
+                                    <Label>Test</Label>
+                                </Expander>
+                                <Expander Grid.Row="3" Grid.Column="1"
+                                          Margin="20,0,0,0"
+                                          Header="Advanced settings">
+                                    <Label>Test</Label>
+                                </Expander>
+                            </Grid>
+                        </GroupBox>
+                    </controls:AccordionItem>
+                    
+                    <controls:AccordionItem Header="3rd party packages">
                         <!-- Runtime packages -->
                         <StackPanel>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2010Redist}">Download &amp; Install Microsoft Visual C++ 2010 Redistributable Package</CheckBox>
@@ -46,8 +93,8 @@
                             <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}" IsEnabled="{Binding Path=IsXbox360DriverNeeded}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
                             <TextBlock Margin="35,0,0,0">Note: ticking one or more of the boxes above requires an internet connection!</TextBlock>
                         </StackPanel>
-                    </DockPanel>
-                </GroupBox>
+                    </controls:AccordionItem>
+                </controls:Accordion>
 
                 <!-- Buttons -->
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
