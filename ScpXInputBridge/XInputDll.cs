@@ -2,6 +2,11 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using log4net;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Layout;
+using log4net.Repository.Hierarchy;
 using MadMilkman.Ini;
 
 namespace ScpXInputBridge
@@ -108,6 +113,22 @@ namespace ScpXInputBridge
         {
             if (_isInitialized)
                 return;
+
+            var hierarchy = (Hierarchy)LogManager.GetRepository();
+
+            var logFile = new FileAppender
+            {
+                AppendToFile = true,
+                File = string.Format("XInput1_3_{0}.log.xml", Environment.UserName),
+                Layout = new XmlLayoutSchemaLog4j(true)
+            };
+            logFile.ActivateOptions();
+            hierarchy.Root.AddAppender(logFile);
+
+            hierarchy.Root.Level = Level.Debug;
+            hierarchy.Configured = true;
+
+            Log.Info("Initializing library");
             
             var iniOpts = new IniOptions
             {
@@ -116,9 +137,13 @@ namespace ScpXInputBridge
 
             var ini = new IniFile(iniOpts);
             var fullPath = Path.Combine(WorkingDirectory, CfgFile);
+            Log.DebugFormat("INI-File path: {0}", fullPath);
 
             if (!File.Exists(fullPath))
+            {
+                Log.FatalFormat("Configuration file {0} not found", fullPath);
                 return;
+            }
 
             try
             {
@@ -126,12 +151,15 @@ namespace ScpXInputBridge
                 ini.Load(fullPath);
 
                 var basePath = ini.Sections["ScpControl"].Keys["BinPath"].Value;
+                Log.DebugFormat("ScpToolkit bin path: {0}", basePath);
                 var binName = ini.Sections["ScpControl"].Keys["BinName"].Value;
+                Log.DebugFormat("ScpControl bin path: {0}", binName);
 
                 // load all assembly dependencies
                 AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
                 {
                     var asmName = new AssemblyName(args.Name).Name;
+                    Log.DebugFormat("Loading assembly: {0}", asmName);
 
                     return Assembly.LoadFrom(Path.Combine(basePath, string.Format("{0}.dll", asmName)));
                 };
@@ -143,8 +171,9 @@ namespace ScpXInputBridge
 
                 _scpProxy.Start();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.FatalFormat("Error during library initialization: {0}", ex);
                 return;
             }
 
@@ -152,11 +181,14 @@ namespace ScpXInputBridge
             var xinput13Path = ini.Sections["xinput1_3"].Keys.Contains("OriginalFilePath")
                 ? ini.Sections["xinput1_3"].Keys["OriginalFilePath"].Value
                 : Path.Combine(Environment.SystemDirectory, "xinput1_3.dll");
+            Log.DebugFormat("Original XInput 1.3 DLL path: {0}", xinput13Path);
 
             _dll = Kernel32Natives.LoadLibrary(xinput13Path);
 
             if (_dll != IntPtr.Zero)
                 _isInitialized = true;
+
+            Log.Info("Library initialized");
         }
 
         #endregion
@@ -168,6 +200,7 @@ namespace ScpXInputBridge
         private static dynamic _scpProxy;
         private const string CfgFile = "ScpXInput.ini";
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
