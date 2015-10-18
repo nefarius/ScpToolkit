@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
@@ -127,6 +129,10 @@ namespace ScpXInputBridge
 
             hierarchy.Root.Level = Level.Debug;
             hierarchy.Configured = true;
+
+            Log.InfoFormat("Library loaded by process {0} [{1}]", 
+                Process.GetCurrentProcess().ProcessName,
+                Process.GetCurrentProcess().MainWindowTitle);
 
             Log.Info("Initializing library");
             
