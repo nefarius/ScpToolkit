@@ -248,10 +248,10 @@ namespace ScpControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Fastest")]
-        public global::ScpControl.Bluetooth.Ds4UpdateRate Ds4InputUpdateDelay {
+        [global::System.Configuration.DefaultSettingValueAttribute("128")]
+        public byte Ds4InputUpdateDelay {
             get {
-                return ((global::ScpControl.Bluetooth.Ds4UpdateRate)(this["Ds4InputUpdateDelay"]));
+                return ((byte)(this["Ds4InputUpdateDelay"]));
             }
             set {
                 this["Ds4InputUpdateDelay"] = value;
@@ -541,6 +541,32 @@ namespace ScpControl.Properties {
             }
             set {
                 this["IsBluetoothDisconnectSoundEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Pcsx2RootPath {
+            get {
+                return ((string)(this["Pcsx2RootPath"]));
+            }
+            set {
+                this["Pcsx2RootPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsPressureSensitivityModEnabled {
+            get {
+                return ((bool)(this["IsPressureSensitivityModEnabled"]));
+            }
+            set {
+                this["IsPressureSensitivityModEnabled"] = value;
             }
         }
     }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using ScpControl;
 using ScpControl.ScpCore;
@@ -47,7 +49,8 @@ namespace ScpSettings
             _config.IdleTimeout /= GlobalConfiguration.IdleTimeoutMultiplier;
             _config.Latency /= GlobalConfiguration.LatencyMultiplier;
 
-            MainAccordion.DataContext = _config;
+            DataContext = null;
+            DataContext = _config;
         }
 
         private void IdleTimoutSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -89,6 +92,62 @@ namespace ScpSettings
             var value = (int)e.NewValue;
 
             LEDsFlashingPeriodGroupBox.Header = string.Format("LEDs flashing period: {0} ms", value);
+        }
+
+        private void XInputModToggleButton_OnChecked(object sender, RoutedEventArgs e)
+        {
+            var rootDir = _config.Pcsx2RootPath;
+            var pluginsDir = Path.Combine(rootDir, "Plugins");
+            const string modFileName = "LilyPad-Scp-r5875.dll";
+
+            try
+            {
+                var lilypadOrig = Directory.GetFiles(pluginsDir, "*.dll").FirstOrDefault(f => f.Contains("lilypad"));
+                var lilypadMod = Path.Combine(_config.AppDirectory, "LilyPad", modFileName);
+                var xinputMod = Path.Combine(_config.AppDirectory, @"XInput\x86");
+
+                // copy modded XInput DLL and dependencies
+                foreach (var file in Directory.GetFiles(xinputMod))
+                {
+                    File.Copy(file, Path.Combine(rootDir, Path.GetFileName(file)), true);
+                }
+
+                // back up original plugin
+                if (!string.IsNullOrEmpty(lilypadOrig))
+                {
+                    File.Move(lilypadOrig, Path.ChangeExtension(lilypadOrig, ".orig"));
+                }
+
+                // copy modded lilypad plugin
+                File.Copy(lilypadMod, Path.Combine(pluginsDir, modFileName), true);
+
+                XInputModToggleButton.Content = "Disable";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Couldn't mod PCSX2!", "Mod install failed",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+        }
+
+        private void XInputModToggleButton_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var rootDir = _config.Pcsx2RootPath;
+            var pluginsDir = Path.Combine(rootDir, "Plugins");
+            const string modFileName = "LilyPad-Scp-r5875.dll";
+
+            File.Delete(Path.Combine(rootDir, "XInput1_3.dll"));
+            File.Delete(Path.Combine(pluginsDir, modFileName));
+
+            var lilypadOrig = Directory.GetFiles(pluginsDir, "*.orig").FirstOrDefault(f => f.Contains("lilypad"));
+
+            if (!string.IsNullOrEmpty(lilypadOrig))
+            {
+                File.Move(lilypadOrig, Path.ChangeExtension(lilypadOrig, ".dll"));
+            }
+
+            XInputModToggleButton.Content = "Enable";
         }
     }
 }

@@ -8,9 +8,9 @@ namespace ScpSettings.Controls
     /// <summary>
     ///     Interaction logic for FileBrowserControl.xaml
     /// </summary>
-    public partial class FileBrowserControl : UserControl
+    public partial class DirectoryBrowserControl : UserControl
     {
-        public FileBrowserControl()
+        public DirectoryBrowserControl()
         {
             InitializeComponent();
 
@@ -18,23 +18,23 @@ namespace ScpSettings.Controls
         }
 
         [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
-        public string FilePath { get; set; }
+        public string DirectoryPath { get; set; }
 
         [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
-        public bool IsSoundEnabled { get; set; }
+        public string Description { get; set; }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
-            var fileBrowser = new VistaOpenFileDialog
+            var folderBrowser = new VistaFolderBrowserDialog()
             {
-                CheckFileExists = true,
-                CheckPathExists = true,
-                Filter = Properties.Resources.SupportedAudioFilesFilter
+                ShowNewFolderButton = false,
+                Description = this.Description,
+                UseDescriptionForTitle = true
             };
 
-            if (fileBrowser.ShowDialog() != true) return;
+            if (folderBrowser.ShowDialog() != true) return;
 
-            FilePath = fileBrowser.FileName;
+            DirectoryPath = folderBrowser.SelectedPath;
         }
     }
 }

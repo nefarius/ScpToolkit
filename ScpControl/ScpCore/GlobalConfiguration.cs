@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms.VisualStyles;
 using PropertyChanged;
 using ScpControl.Bluetooth;
 using ScpControl.Properties;
@@ -79,6 +80,8 @@ namespace ScpControl.ScpCore
         }
 
         #region Public properties
+
+        public string AppDirectory { get { return WorkingDirectory; } }
 
         public bool FlipLX
         {
@@ -187,11 +190,11 @@ namespace ScpControl.ScpCore
 
         public Ds4UpdateRate Ds4InputUpdateDelay
         {
-            get { return Settings.Default.Ds4InputUpdateDelay; }
+            get { return (Ds4UpdateRate)Settings.Default.Ds4InputUpdateDelay; }
             set
             {
                 if (Enum.IsDefined(typeof(Ds4UpdateRate), value))
-                    Settings.Default.Ds4InputUpdateDelay = value;
+                    Settings.Default.Ds4InputUpdateDelay = (byte)value;
             }
         }
 
@@ -308,6 +311,8 @@ namespace ScpControl.ScpCore
 
         #endregion
 
+        #region DS3 LED settings
+
         public int Ds3LEDsPeriod
         {
             get { return Settings.Default.Ds3LEDsFlashingPeriod; }
@@ -350,10 +355,24 @@ namespace ScpControl.ScpCore
             set { Settings.Default.Ds3LEDsCustom4 = value; }
         }
 
+        #endregion
+
         public bool UseDs3CounterfeitWorkarounds
         {
             get { return Settings.Default.UseDs3CounterfeitWorkarounds; }
             set { Settings.Default.UseDs3CounterfeitWorkarounds = value; }
+        }
+
+        public string Pcsx2RootPath
+        {
+            get { return Settings.Default.Pcsx2RootPath; }
+            set { Settings.Default.Pcsx2RootPath = value; }
+        }
+
+        public bool? IsPressureSensitivityModEnabled
+        {
+            get { return Settings.Default.IsPressureSensitivityModEnabled; }
+            set { Settings.Default.IsPressureSensitivityModEnabled = (value == true); }
         }
 
         #endregion
