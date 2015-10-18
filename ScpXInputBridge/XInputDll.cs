@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
@@ -13,8 +12,6 @@ using MadMilkman.Ini;
 
 namespace ScpXInputBridge
 {
-    using DWORD = UInt32;
-
     public partial class XInputDll : IDisposable
     {
         #region Private delegates
@@ -116,6 +113,8 @@ namespace ScpXInputBridge
             if (_isInitialized)
                 return;
 
+            #region Prepare logger
+
             var hierarchy = (Hierarchy)LogManager.GetRepository();
 
             var logFile = new FileAppender
@@ -129,6 +128,8 @@ namespace ScpXInputBridge
 
             hierarchy.Root.Level = Level.Debug;
             hierarchy.Configured = true;
+
+            #endregion
 
             Log.InfoFormat("Library loaded by process {0} [{1}]", 
                 Process.GetCurrentProcess().ProcessName,
