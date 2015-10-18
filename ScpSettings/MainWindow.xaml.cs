@@ -14,13 +14,23 @@ namespace ScpSettings
     /// </summary>
     public partial class MainWindow : Window
     {
-        private GlobalConfiguration _config;
+        #region Private fields
+
         private readonly ScpProxy _proxy = new ScpProxy();
+        private GlobalConfiguration _config;
+
+        #endregion
+
+        #region Ctor
 
         public MainWindow()
         {
             InitializeComponent();
         }
+
+        #endregion
+
+        #region WPF event methods
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
@@ -77,20 +87,20 @@ namespace ScpSettings
             var value = e.NewValue;
 
             BrightnessGroupBox.Header = value == 0
-                ? string.Format("Light Bar Brightness: Disabled")
-                : string.Format("Light Bar Brightness: {0}%", (int)((value * 100) / 255));
+                ? "Light Bar Brightness: Disabled"
+                : string.Format("Light Bar Brightness: {0}%", (int) ((value*100)/255));
         }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var value = ((int)e.NewValue) << 4;
+            var value = ((int) e.NewValue) << 4;
 
             RumbleLatencyGroupBox.Header = string.Format("Rumble Latency: {0} ms", value);
         }
 
         private void Slider_LEDsPeriodChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var value = (int)e.NewValue;
+            var value = (int) e.NewValue;
 
             LEDsFlashingPeriodGroupBox.Header = string.Format("LEDs flashing period: {0} ms", value);
         }
@@ -163,5 +173,7 @@ namespace ScpSettings
 
             XInputModToggleButton.Content = "Enable";
         }
+
+        #endregion
     }
 }

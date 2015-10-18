@@ -414,6 +414,7 @@
                 </GroupBox>
             </controls:AccordionItem>
 
+            <!-- PCSX2 settings -->
             <controls:AccordionItem Header="PCSX2 settings">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -426,8 +427,8 @@
                             <TextBlock>
                                 Some PlayStation 2 games utilize the DualShock Model 2 and 3's pressure sensitive (analog) buttons. Common
                                 Windows APIs for Game Controllers like DirectInput and XInput do not support analog button states. Therefore
-                                the ScpToolkit comes with a customized XInput library and LilyPad mod which work around this limitation. 
-                                First set the path to your PCSX2 installation (the folder containing the pcsx2-XXXXX.exe), then hit Enable to 
+                                the ScpToolkit comes with a customized XInput library and LilyPad mod which work around this limitation.
+                                First set the path to your PCSX2 installation (the folder containing the pcsx2-XXXXX.exe), then hit Enable to
                                 automatically patch it.
                             </TextBlock>
                             <GroupBox Header="PCSX2 location">
@@ -440,14 +441,15 @@
                             <GroupBox Header="Mod actions">
                                 <DockPanel LastChildFill="True">
                                     <!-- Toggle button -->
-                                    <ToggleButton x:Name="XInputModToggleButton" 
+                                    <ToggleButton x:Name="XInputModToggleButton"
                                                   Checked="XInputModToggleButton_OnChecked"
-                                                  IsChecked="{Binding Path=IsPressureSensitivityModEnabled}" Unchecked="XInputModToggleButton_Unchecked">
+                                                  IsChecked="{Binding Path=IsPressureSensitivityModEnabled}"
+                                                  Unchecked="XInputModToggleButton_Unchecked">
                                         Enable
                                     </ToggleButton>
-                                    
+
                                     <!-- Description -->
-                                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" >Enable/disable LilyPad modification</TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0">Enable/disable LilyPad modification</TextBlock>
                                 </DockPanel>
                             </GroupBox>
                         </StackPanel>

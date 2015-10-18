@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace ScpXInputBridge
 {
+    /// <summary>
+    ///     Windows API function imports.
+    /// </summary>
     public static class Kernel32Natives
     {
         [DllImport("kernel32.dll")]

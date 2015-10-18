@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms.VisualStyles;
 using PropertyChanged;
 using ScpControl.Bluetooth;
 using ScpControl.Properties;
@@ -11,6 +10,8 @@ namespace ScpControl.ScpCore
     [ImplementPropertyChanged]
     public class GlobalConfiguration : ICloneable
     {
+        #region Private fields
+
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
         private static readonly Lazy<GlobalConfiguration> LazyInstance =
@@ -21,6 +22,8 @@ namespace ScpControl.ScpCore
             0x56, 0xE8, 0x81, 0x38, 0x08, 0x06, 0x51, 0x41, 0xC0, 0x7F, 0x12, 0xAA,
             0xD9, 0x66, 0x3C, 0xCE
         };
+
+        #endregion
 
         #region Singleton
 

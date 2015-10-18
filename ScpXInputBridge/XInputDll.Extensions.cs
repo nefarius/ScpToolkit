@@ -11,6 +11,7 @@ namespace ScpXInputBridge
         [DllExport("XInputGetExtended", CallingConvention.StdCall)]
         public static uint XInputGetExtended(uint dwUserIndex, ref SCP_EXTN pPressure)
         {
+            // TODO: add error handling
             pPressure = _scpProxy.GetExtended(dwUserIndex);
 
             return 0; // success

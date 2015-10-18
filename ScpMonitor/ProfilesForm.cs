@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using ScpControl;
 using ScpControl.ScpCore;
 using ScpMonitor.Properties;
 
