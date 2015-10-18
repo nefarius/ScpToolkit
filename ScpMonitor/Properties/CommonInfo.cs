@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("Scarlet.Crush Productions")]
 [assembly: AssemblyCopyright("Copyright © Scarlet.Crush Productions 2012-2014, Benjamin Höglinger 2015")]
 
-[assembly: AssemblyDescription("")]
+//[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
