@@ -44,7 +44,7 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-
+                                
                                 <CheckBox Grid.Row="0" Grid.Column="0"
                                           IsChecked="{Binding Path=InstallWindowsService}"
                                           ToolTip="Install Windows Service running in the background (recommended)">
@@ -77,21 +77,23 @@
                                 <Expander Grid.Row="1" Grid.Column="1"
                                           Margin="20,0,0,0"
                                           Header="Advanced settings">
-                                    <StackPanel>
-                                        <Label>Install driver on checked devices:</Label>
-                                        <CheckBox>Device 1</CheckBox>
-                                        <CheckBox>Device 2</CheckBox>
-                                    </StackPanel>
+                                    <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                        <StackPanel x:Name="BluetoothStackPanel"/>
+                                    </ScrollViewer>
                                 </Expander>
                                 <Expander Grid.Row="2" Grid.Column="1"
                                           Margin="20,0,0,0"
                                           Header="Advanced settings">
-                                    <Label>Test</Label>
+                                    <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                        <StackPanel x:Name="DualShock3StackPanel"/>
+                                    </ScrollViewer>
                                 </Expander>
                                 <Expander Grid.Row="3" Grid.Column="1"
                                           Margin="20,0,0,0"
                                           Header="Advanced settings">
-                                    <Label>Test</Label>
+                                    <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                        <StackPanel x:Name="DualShock4StackPanel"/>
+                                    </ScrollViewer>
                                 </Expander>
                             </Grid>
                         </GroupBox>

@@ -10,6 +10,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using log4net;
@@ -452,6 +453,25 @@ namespace ScpDriverInstaller
                 .Where(fInfo => fInfo.Unblock()))
             {
                 Log.InfoFormat("Unblocked file {0}", fInfo.Name);
+            }
+
+            // get all local USB devices
+            foreach (var usbDevice in WdiWrapper.Instance.UsbDeviceList)
+            {
+                BluetoothStackPanel.Children.Add(new CheckBox()
+                {
+                    Content = usbDevice
+                });
+
+                DualShock3StackPanel.Children.Add(new CheckBox()
+                {
+                    Content = usbDevice
+                });
+
+                DualShock4StackPanel.Children.Add(new CheckBox()
+                {
+                    Content = usbDevice
+                });
             }
         }
 
