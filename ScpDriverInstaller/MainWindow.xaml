@@ -4,17 +4,16 @@
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
         xmlns:utilities="clr-namespace:ScpDriverInstaller.Utilities"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
-        Title="ScpToolkit Driver Installer" 
-        Height="560" Width="1020" 
-        MinHeight="560" MinWidth="1020"
-        WindowStartupLocation="CenterScreen"
+        Title="ScpToolkit Driver Installer"
+        Width="1020" MinWidth="1020" WindowStartupLocation="CenterScreen" SizeToContent="Height"
+        ResizeMode="CanMinimize"
         Icon="Usb.ico" Initialized="Window_Initialized" Loaded="Window_Loaded">
     <Grid Background="#FF1B1B1B">
         <Grid Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Top control bar -->
@@ -25,50 +24,64 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid.DataContext>
-                    <viewModels:InstallationOptionsViewModel/>
+                    <viewModels:InstallationOptionsViewModel />
                 </Grid.DataContext>
 
                 <!-- Installation options -->
-                <controls:Accordion ExpandDirection="Right" Height="220" Width="780">
+                <controls:Accordion ExpandDirection="Right" MinHeight="220" Width="780">
                     <controls:AccordionItem Header="Drivers">
                         <GroupBox Header="Installation options">
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                
+
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <CheckBox Grid.Row="0" Grid.Column="0" 
-                                          IsChecked="{Binding Path=InstallWindowsService}" 
-                                          ToolTip="Install Windows Service running in the background (recommended)">Install Windows Service</CheckBox>
+                                <CheckBox Grid.Row="0" Grid.Column="0"
+                                          IsChecked="{Binding Path=InstallWindowsService}"
+                                          ToolTip="Install Windows Service running in the background (recommended)">
+                                    Install Windows Service
+                                </CheckBox>
                                 <CheckBox Grid.Row="1" Grid.Column="0"
                                           VerticalContentAlignment="Center"
-                                          IsChecked="{Binding Path=InstallBluetoothDriver}" 
-                                          ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">Install Bluetooth driver</CheckBox>
+                                          IsChecked="{Binding Path=InstallBluetoothDriver}"
+                                          ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">
+                                    Install Bluetooth driver
+                                </CheckBox>
                                 <CheckBox Grid.Row="2" Grid.Column="0"
                                           VerticalContentAlignment="Center"
-                                          IsChecked="{Binding Path=InstallDualShock3Driver}" 
-                                          ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">Install DualShock 3 driver</CheckBox>
+                                          IsChecked="{Binding Path=InstallDualShock3Driver}"
+                                          ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">
+                                    Install DualShock 3 driver
+                                </CheckBox>
                                 <CheckBox Grid.Row="3" Grid.Column="0"
                                           VerticalContentAlignment="Center"
                                           IsChecked="{Binding Path=InstallDualShock4Driver}"
-                                          ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">Install DualShock 4 driver</CheckBox>
+                                          ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">
+                                    Install DualShock 4 driver
+                                </CheckBox>
                                 <CheckBox Grid.Row="4" Grid.Column="0"
-                                          IsChecked="{Binding Path=ForceDriverInstallation}" 
-                                          ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">Force Driver Installation</CheckBox>
-                                
+                                          IsChecked="{Binding Path=ForceDriverInstallation}"
+                                          ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">
+                                    Force Driver Installation
+                                </CheckBox>
+
                                 <Expander Grid.Row="1" Grid.Column="1"
                                           Margin="20,0,0,0"
-                                          Header="Advanced settings" >
-                                    <Label>Test</Label>
+                                          Header="Advanced settings">
+                                    <StackPanel>
+                                        <Label>Install driver on checked devices:</Label>
+                                        <CheckBox>Device 1</CheckBox>
+                                        <CheckBox>Device 2</CheckBox>
+                                    </StackPanel>
                                 </Expander>
                                 <Expander Grid.Row="2" Grid.Column="1"
                                           Margin="20,0,0,0"
@@ -83,14 +96,17 @@
                             </Grid>
                         </GroupBox>
                     </controls:AccordionItem>
-                    
+
                     <controls:AccordionItem Header="3rd party packages">
                         <!-- Runtime packages -->
                         <StackPanel>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2010Redist}">Download &amp; Install Microsoft Visual C++ 2010 Redistributable Package</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2013Redist}">Download &amp; Install Visual C++ Redistributable Packages for Visual Studio 2013</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallDirectXRuntime}">Download &amp; Install DirectX End-User Runtime</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}" IsEnabled="{Binding Path=IsXbox360DriverNeeded}">Download &amp; Install Xbox 360 Controller Driver for Windows</CheckBox>
+                            <CheckBox IsChecked="{Binding Path=InstallXbox360Driver}"
+                                      IsEnabled="{Binding Path=IsXbox360DriverNeeded}">
+                                Download &amp; Install Xbox 360 Controller Driver for Windows
+                            </CheckBox>
                             <TextBlock Margin="35,0,0,0">Note: ticking one or more of the boxes above requires an internet connection!</TextBlock>
                         </StackPanel>
                     </controls:AccordionItem>
@@ -105,21 +121,27 @@
             </Grid>
 
             <!-- Progress bar -->
-            <ProgressBar x:Name="MainProgressBar" Grid.Row="1" Margin="0,10" Height="20"/>
+            <GroupBox Grid.Row="1" Margin="0,10"
+                      Header="Progress">
+                <ProgressBar x:Name="MainProgressBar" Height="20" />
+            </GroupBox>
 
-            <GroupBox Header="Log" 
-                      Grid.Row="2">
-                <ScrollViewer>
-                    <TextBlock Text="{Binding Notification}" 
+            <!-- Log section -->
+            <Expander Grid.Row="2" Header="Log"
+                      IsExpanded="False"
+                      ExpandDirection="Down"
+                      VerticalAlignment="Top">
+                <ScrollViewer Height="300">
+                    <TextBlock Text="{Binding Notification}"
                                x:Name="LogTextBlock"
                                FontFamily="Courier New"
                                TextWrapping="Wrap">
                         <TextBlock.DataContext>
-                            <utilities:NotifyAppender/>
+                            <utilities:NotifyAppender />
                         </TextBlock.DataContext>
                     </TextBlock>
                 </ScrollViewer>
-            </GroupBox>
+            </Expander>
         </Grid>
     </Grid>
 </Window>
