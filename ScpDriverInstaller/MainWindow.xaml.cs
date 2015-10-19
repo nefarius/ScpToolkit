@@ -194,14 +194,14 @@ namespace ScpDriverInstaller
                         return;
                     }
 
-                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception)instex.InnerException);
+                                (Win32Exception) instex.InnerException);
                             break;
                     }
                 }
@@ -245,6 +245,34 @@ namespace ScpDriverInstaller
 
         private async void ViewModelOnInstallButtonClicked(object sender, EventArgs eventArgs)
         {
+            #region Preparation
+
+            // get selected Bluetooth devices
+            var donglesToInstall =
+                BluetoothStackPanel.Children.Cast<CheckBox>()
+                    .Where(c => c.IsChecked == true)
+                    .Select(c => c.Content)
+                    .Cast<WdiUsbDevice>()
+                    .ToList();
+
+            // get selected DualShock 3 devices
+            var ds3SToInstall =
+                DualShock3StackPanel.Children.Cast<CheckBox>()
+                    .Where(c => c.IsChecked == true)
+                    .Select(c => c.Content)
+                    .Cast<WdiUsbDevice>()
+                    .ToList();
+
+            // get selected DualShock 4 devices
+            var ds4SToInstall =
+                DualShock4StackPanel.Children.Cast<CheckBox>()
+                    .Where(c => c.IsChecked == true)
+                    .Select(c => c.Content)
+                    .Cast<WdiUsbDevice>()
+                    .ToList();
+
+            #endregion
+
             #region Pre-Installation
 
             _saved = Cursor;
@@ -299,7 +327,7 @@ namespace ScpDriverInstaller
                     if (forceInstall)
                         flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
 
-                    bool rebootRequired = false;
+                    var rebootRequired = false;
                     var busInfPath = Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf");
 
                     if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
@@ -322,11 +350,12 @@ namespace ScpDriverInstaller
                         }
                         else
                         {
-                            Log.FatalFormat("Virtual Bus Driver pre-installation failed with error {0}", Marshal.GetLastWin32Error());
+                            Log.FatalFormat("Virtual Bus Driver pre-installation failed with error {0}",
+                                Marshal.GetLastWin32Error());
                             return;
                         }
                     }
-                    
+
                     // install Virtual Bus driver
                     result = _installer.Install(busInfPath, flags,
                         out rebootRequired);
@@ -336,7 +365,7 @@ namespace ScpDriverInstaller
 
                     if (_viewModel.InstallBluetoothDriver)
                     {
-                        result = DriverInstaller.InstallBluetoothDongles(force: forceInstall);
+                        result = DriverInstaller.InstallBluetoothDongles(donglesToInstall, force: forceInstall);
 
                         if (result > 0) _bthDriverConfigured = true;
                     }
@@ -458,17 +487,17 @@ namespace ScpDriverInstaller
             // get all local USB devices
             foreach (var usbDevice in WdiWrapper.Instance.UsbDeviceList)
             {
-                BluetoothStackPanel.Children.Add(new CheckBox()
+                BluetoothStackPanel.Children.Add(new CheckBox
                 {
                     Content = usbDevice
                 });
 
-                DualShock3StackPanel.Children.Add(new CheckBox()
+                DualShock3StackPanel.Children.Add(new CheckBox
                 {
                     Content = usbDevice
                 });
 
-                DualShock4StackPanel.Children.Add(new CheckBox()
+                DualShock4StackPanel.Children.Add(new CheckBox
                 {
                     Content = usbDevice
                 });
@@ -497,7 +526,7 @@ namespace ScpDriverInstaller
 
             _hWnd = new WindowInteropHelper(this).Handle;
         }
-        
+
         #endregion
 
         #region Windows Service Helpers
@@ -544,13 +573,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
                         break;
                 }
             }

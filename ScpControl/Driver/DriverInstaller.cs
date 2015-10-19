@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,6 +14,29 @@ namespace ScpControl.Driver
     public static class DriverInstaller
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string DriverDirectory = Path.Combine(WorkingDirectory, "Driver");
+
+        public static uint InstallBluetoothDongles(IEnumerable<WdiUsbDevice> usbDevices, IntPtr hWnd = default(IntPtr),
+            bool force = false)
+        {
+            // install compatible bluetooth dongles
+            var bthDrivers = IniConfig.Instance.BthDongleDriver;
+            uint installed = 0;
+
+            foreach (var usbDevice in from usbDevice in usbDevices
+                let result = WdiWrapper.Instance.InstallLibusbKDriver(usbDevice.HardwareId, bthDrivers.DeviceGuid,
+                    "Driver", string.Format("BthDongle_{0}.inf", Guid.NewGuid()), hWnd, force)
+                where result == WdiErrorCode.WDI_SUCCESS
+                select usbDevice)
+            {
+                installed++;
+                Log.InfoFormat("Installed driver for Bluetooth dongle {0}", usbDevice);
+            }
+
+            return installed;
+        }
 
         public static uint InstallBluetoothDongles(IntPtr hWnd = default(IntPtr), bool force = false)
         {
@@ -137,8 +161,5 @@ namespace ScpControl.Driver
 
             return uninstalled;
         }
-
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string DriverDirectory = Path.Combine(WorkingDirectory, "Driver");
     }
 }
