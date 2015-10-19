@@ -372,14 +372,14 @@ namespace ScpDriverInstaller
 
                     if (_viewModel.InstallDualShock3Driver)
                     {
-                        result = DriverInstaller.InstallDualShock3Controllers(force: forceInstall);
+                        result = DriverInstaller.InstallDualShock3Controllers(ds3SToInstall, force: forceInstall);
 
                         if (result > 0) _ds3DriverConfigured = true;
                     }
 
                     if (_viewModel.InstallDualShock4Driver)
                     {
-                        result = DriverInstaller.InstallDualShock4Controllers(force: forceInstall);
+                        result = DriverInstaller.InstallDualShock4Controllers(ds4SToInstall, force: forceInstall);
 
                         if (result > 0) _ds4DriverConfigured = true;
                     }

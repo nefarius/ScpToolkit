@@ -51,19 +51,16 @@
                                     Install Windows Service
                                 </CheckBox>
                                 <CheckBox Grid.Row="1" Grid.Column="0"
-                                          VerticalContentAlignment="Center"
                                           IsChecked="{Binding Path=InstallBluetoothDriver}"
                                           ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">
                                     Install Bluetooth driver
                                 </CheckBox>
                                 <CheckBox Grid.Row="2" Grid.Column="0"
-                                          VerticalContentAlignment="Center"
                                           IsChecked="{Binding Path=InstallDualShock3Driver}"
                                           ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">
                                     Install DualShock 3 driver
                                 </CheckBox>
                                 <CheckBox Grid.Row="3" Grid.Column="0"
-                                          VerticalContentAlignment="Center"
                                           IsChecked="{Binding Path=InstallDualShock4Driver}"
                                           ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">
                                     Install DualShock 4 driver
@@ -76,21 +73,21 @@
 
                                 <Expander Grid.Row="1" Grid.Column="1"
                                           Margin="20,0,0,0"
-                                          Header="Advanced settings">
+                                          Header="Chose Bluetooth dongles to install">
                                     <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
                                         <StackPanel x:Name="BluetoothStackPanel"/>
                                     </ScrollViewer>
                                 </Expander>
                                 <Expander Grid.Row="2" Grid.Column="1"
                                           Margin="20,0,0,0"
-                                          Header="Advanced settings">
+                                          Header="Chose DualShock 3 controllers to install">
                                     <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
                                         <StackPanel x:Name="DualShock3StackPanel"/>
                                     </ScrollViewer>
                                 </Expander>
                                 <Expander Grid.Row="3" Grid.Column="1"
                                           Margin="20,0,0,0"
-                                          Header="Advanced settings">
+                                          Header="Chose DualShock 4 controllers to install">
                                     <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
                                         <StackPanel x:Name="DualShock4StackPanel"/>
                                     </ScrollViewer>
@@ -130,7 +127,7 @@
 
             <!-- Log section -->
             <Expander Grid.Row="2" Header="Log"
-                      IsExpanded="False"
+                      IsExpanded="True"
                       ExpandDirection="Down"
                       VerticalAlignment="Top">
                 <ScrollViewer Height="300">

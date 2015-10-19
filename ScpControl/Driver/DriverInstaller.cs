@@ -80,6 +80,27 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
+        public static uint InstallDualShock3Controllers(IEnumerable<WdiUsbDevice> usbDevices,
+            IntPtr hWnd = default(IntPtr),
+            bool force = false)
+        {
+            // install compatible bluetooth dongles
+            var ds3Drivers = IniConfig.Instance.Ds3Driver;
+            uint installed = 0;
+
+            foreach (var usbDevice in from usbDevice in usbDevices
+                let result = WdiWrapper.Instance.InstallLibusbKDriver(usbDevice.HardwareId, ds3Drivers.DeviceGuid,
+                    "Driver", string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
+                where result == WdiErrorCode.WDI_SUCCESS
+                select usbDevice)
+            {
+                installed++;
+                Log.InfoFormat("Installed driver for DualShock 3 controller {0}", usbDevice);
+            }
+
+            return installed;
+        }
+
         public static uint InstallDualShock3Controllers(IntPtr hWnd = default(IntPtr), bool force = false)
         {
             // install compatible DS3 controllers
@@ -119,6 +140,27 @@ namespace ScpControl.Driver
             }
 
             return uninstalled;
+        }
+
+        public static uint InstallDualShock4Controllers(IEnumerable<WdiUsbDevice> usbDevices,
+            IntPtr hWnd = default(IntPtr),
+            bool force = false)
+        {
+            // install compatible bluetooth dongles
+            var ds4Drivers = IniConfig.Instance.Ds4Driver;
+            uint installed = 0;
+
+            foreach (var usbDevice in from usbDevice in usbDevices
+                let result = WdiWrapper.Instance.InstallLibusbKDriver(usbDevice.HardwareId, ds4Drivers.DeviceGuid,
+                    "Driver", string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
+                where result == WdiErrorCode.WDI_SUCCESS
+                select usbDevice)
+            {
+                installed++;
+                Log.InfoFormat("Installed driver for DualShock 4 controller {0}", usbDevice);
+            }
+
+            return installed;
         }
 
         public static uint InstallDualShock4Controllers(IntPtr hWnd = default(IntPtr), bool force = false)
