@@ -29,6 +29,7 @@
 
                 <!-- Installation options -->
                 <controls:Accordion ExpandDirection="Right" MinHeight="220" Width="780">
+                    <!-- Driver section -->
                     <controls:AccordionItem Header="Drivers">
                         <GroupBox Header="Installation options">
                             <Grid>
@@ -96,8 +97,8 @@
                         </GroupBox>
                     </controls:AccordionItem>
 
+                    <!-- Runtime packages -->
                     <controls:AccordionItem Header="3rd party packages">
-                        <!-- Runtime packages -->
                         <StackPanel>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2010Redist}">Download &amp; Install Microsoft Visual C++ 2010 Redistributable Package</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2013Redist}">Download &amp; Install Visual C++ Redistributable Packages for Visual Studio 2013</CheckBox>
