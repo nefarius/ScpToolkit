@@ -63,7 +63,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1 Debug|Win32'" Label="Configuration">
     <TargetVersion>WindowsV6.3</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -71,7 +71,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1 Release|Win32'" Label="Configuration">
     <TargetVersion>WindowsV6.3</TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8 Debug|Win32'" Label="Configuration">
     <TargetVersion>Windows8</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -87,7 +87,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8 Release|Win32'" Label="Configuration">
     <TargetVersion>Windows8</TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -95,7 +95,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7 Debug|Win32'" Label="Configuration">
     <TargetVersion>Windows7</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -103,7 +103,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7 Release|Win32'" Label="Configuration">
     <TargetVersion>Windows7</TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -111,7 +111,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1 Debug|x64'" Label="Configuration">
     <TargetVersion>WindowsV6.3</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -119,7 +119,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1 Release|x64'" Label="Configuration">
     <TargetVersion>WindowsV6.3</TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -127,7 +127,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8 Debug|x64'" Label="Configuration">
     <TargetVersion>Windows8</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -135,7 +135,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8 Release|x64'" Label="Configuration">
     <TargetVersion>Windows8</TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -143,7 +143,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7 Debug|x64'" Label="Configuration">
     <TargetVersion>Windows7</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
@@ -151,7 +151,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7 Release|x64'" Label="Configuration">
     <TargetVersion>Windows7</TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>WindowsKernelModeDriver8.1</PlatformToolset>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Utility</ConfigurationType>
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
