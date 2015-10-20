@@ -8,7 +8,6 @@ namespace ScpControl.Sound
 {
     public class AudioPlayer
     {
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly Lazy<AudioPlayer> LazyInstance = new Lazy<AudioPlayer>(() => new AudioPlayer());
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly dynamic _soundEngine;
@@ -19,7 +18,7 @@ namespace ScpControl.Sound
         private AudioPlayer()
         {
             // build path depending on process architecture
-            var irrKlangPath = Path.Combine(WorkingDirectory,
+            var irrKlangPath = Path.Combine(GlobalConfiguration.AppDirectory,
                 (Environment.Is64BitProcess)
                     ? @"irrKlang\amd64\irrKlang.NET4.dll"
                     : @"irrKlang\x86\irrKlang.NET4.dll");

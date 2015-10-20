@@ -20,7 +20,6 @@ namespace ScpService
 {
     public partial class Ds3Service : ServiceBase
     {
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IntPtr _mBthNotify = IntPtr.Zero;
         private ScpDevice.ServiceControlHandlerEx _mControlHandler;
@@ -48,8 +47,8 @@ namespace ScpService
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                     Assembly.GetExecutingAssembly().GetName().Version);
 
-            Log.InfoFormat("Setting working directory to {0}", WorkingDirectory);
-            Directory.SetCurrentDirectory(WorkingDirectory);
+            Log.InfoFormat("Setting working directory to {0}", GlobalConfiguration.AppDirectory);
+            Directory.SetCurrentDirectory(GlobalConfiguration.AppDirectory);
 
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);

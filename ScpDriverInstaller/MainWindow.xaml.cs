@@ -17,6 +17,7 @@ using System.Windows.Media;
 using log4net;
 using Mantin.Controls.Wpf.Notification;
 using ScpControl.Driver;
+using ScpControl.ScpCore;
 using ScpControl.Utilities;
 using ScpDriverInstaller.Properties;
 using ScpDriverInstaller.Utilities;
@@ -29,9 +30,12 @@ namespace ScpDriverInstaller
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Private static fields
+
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private readonly InstallationOptionsViewModel _viewModel = new InstallationOptionsViewModel();
+
+        #endregion
 
         #region Ctor
 
@@ -499,7 +503,7 @@ namespace ScpDriverInstaller
             _viewModel.InstallMsvc2013Redist = !OsInfoHelper.IsVc2013Installed;
 
             // unblock system files
-            foreach (var fInfo in Directory.GetFiles(WorkingDirectory, "*.*", SearchOption.AllDirectories)
+            foreach (var fInfo in Directory.GetFiles(GlobalConfiguration.AppDirectory, "*.*", SearchOption.AllDirectories)
                 .Where(s => s.EndsWith(".dll") || s.EndsWith(".inf") || s.EndsWith(".sys") || s.EndsWith(".cat"))
                 .Select(file => new FileInfo(file))
                 .Where(fInfo => fInfo.Unblock()))
@@ -616,6 +620,8 @@ namespace ScpDriverInstaller
 
         #endregion
 
+        #region Private methods
+
         private void ShowPopup(string title, string message, NotificationType type)
         {
             var popup = new ToastPopUp(title, message, type)
@@ -627,5 +633,7 @@ namespace ScpDriverInstaller
 
             popup.Show();
         }
+
+        #endregion
     }
 }

@@ -84,7 +84,7 @@ namespace ScpControl.ScpCore
 
         #region Public properties
 
-        public string AppDirectory { get { return WorkingDirectory; } }
+        public static string AppDirectory { get { return WorkingDirectory; } }
 
         public bool FlipLX
         {

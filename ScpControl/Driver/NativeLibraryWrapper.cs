@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Driver
 {
@@ -13,7 +14,6 @@ namespace ScpControl.Driver
     public abstract class NativeLibraryWrapper<T> where T : class
     {
         private static readonly Lazy<T> LazyInstance = new Lazy<T>(CreateInstanceOfT);
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace ScpControl.Driver
             {
                 Log.InfoFormat("Running as 64-Bit process");
 
-                var lib64 = Path.Combine(WorkingDirectory, amd64Path);
+                var lib64 = Path.Combine(GlobalConfiguration.AppDirectory, amd64Path);
                 Log.DebugFormat("{0} path: {1}", name, lib64);
 
                 Kernel32.LoadLibrary(lib64);
@@ -59,7 +59,7 @@ namespace ScpControl.Driver
             {
                 Log.InfoFormat("Running as 32-Bit process");
 
-                var lib32 = Path.Combine(WorkingDirectory, x86Path);
+                var lib32 = Path.Combine(GlobalConfiguration.AppDirectory, x86Path);
                 Log.DebugFormat("{0} path: {1}", name, lib32);
 
                 Kernel32.LoadLibrary(lib32);

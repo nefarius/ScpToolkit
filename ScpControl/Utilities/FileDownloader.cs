@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Utilities
 {
@@ -25,8 +26,6 @@ namespace ScpControl.Utilities
 
     public class FileDownloader : IDisposable
     {
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-
         private readonly WebClient _client = new WebClient();
 
         private readonly SemaphoreSlim _waitForDownloadFinished = new SemaphoreSlim(0, 1);
@@ -93,7 +92,7 @@ namespace ScpControl.Utilities
             // if path isn't absolute, create subdirectory in current folder to download file to
             if (!Path.IsPathRooted(targetPath))
             {
-                targetPath = Path.Combine(WorkingDirectory, "Downloads", dir);
+                targetPath = Path.Combine(GlobalConfiguration.AppDirectory, "Downloads", dir);
 
                 if (!Directory.Exists(targetPath))
                     Directory.CreateDirectory(targetPath);

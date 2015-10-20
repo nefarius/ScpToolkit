@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using log4net;
+using ScpControl.ScpCore;
 using ScpControl.Utilities;
 
 namespace ScpControl.Driver
@@ -15,8 +16,7 @@ namespace ScpControl.Driver
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string DriverDirectory = Path.Combine(WorkingDirectory, "Driver");
+        private static readonly string DriverDirectory = Path.Combine(GlobalConfiguration.AppDirectory, "Driver");
 
         public static uint InstallBluetoothDongles(IEnumerable<WdiUsbDevice> usbDevices, IntPtr hWnd = default(IntPtr),
             bool force = false)

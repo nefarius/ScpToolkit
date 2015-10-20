@@ -114,8 +114,8 @@ namespace ScpSettings
             try
             {
                 var lilypadOrig = Directory.GetFiles(pluginsDir, "*.dll").FirstOrDefault(f => f.Contains("lilypad"));
-                var lilypadMod = Path.Combine(_config.AppDirectory, "LilyPad", modFileName);
-                var xinputMod = Path.Combine(_config.AppDirectory, @"XInput\x86");
+                var lilypadMod = Path.Combine(GlobalConfiguration.AppDirectory, "LilyPad", modFileName);
+                var xinputMod = Path.Combine(GlobalConfiguration.AppDirectory, @"XInput\x86");
                 var xinputIni = Path.Combine(xinputMod, "ScpXInput.ini");
 
                 var iniOpts = new IniOptions
@@ -127,7 +127,7 @@ namespace ScpSettings
 
                 ini.Load(xinputIni);
 
-                ini.Sections["ScpControl"].Keys["BinPath"].Value = _config.AppDirectory;
+                ini.Sections["ScpControl"].Keys["BinPath"].Value = GlobalConfiguration.AppDirectory;
 
                 ini.Save(xinputIni);
 
