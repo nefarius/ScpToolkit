@@ -52,22 +52,22 @@
                             </CheckBox>
                             <CheckBox Grid.Row="1" Grid.Column="0"
                                       IsChecked="{Binding Path=InstallBluetoothDriver}"
-                                      ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">
+                                      ToolTip="Replace driver of selected Bluetooth dongle (not needed if controllers are only used wired)">
                                 Install Bluetooth driver
                             </CheckBox>
                             <CheckBox Grid.Row="2" Grid.Column="0"
                                       IsChecked="{Binding Path=InstallDualShock3Driver}"
-                                      ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">
+                                      ToolTip="Replace driver on all selected DualShock 3 USB controllers">
                                 Install DualShock 3 driver
                             </CheckBox>
                             <CheckBox Grid.Row="3" Grid.Column="0"
                                       IsChecked="{Binding Path=InstallDualShock4Driver}"
-                                      ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">
+                                      ToolTip="Replace driver on all selected DualShock 4 USB controllers">
                                 Install DualShock 4 driver
                             </CheckBox>
                             <CheckBox Grid.Row="4" Grid.Column="0"
                                       IsChecked="{Binding Path=ForceDriverInstallation}"
-                                      ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">
+                                      ToolTip="Forces the installation of all drivers even if they are fine (most of the time not needed)">
                                 Force Driver Installation
                             </CheckBox>
 
