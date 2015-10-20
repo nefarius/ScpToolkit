@@ -73,21 +73,24 @@
 
                             <Expander Grid.Row="1" Grid.Column="1"
                                       Margin="20,0,0,0"
-                                      Header="Chose Bluetooth dongles to install">
+                                      Header="Chose Bluetooth dongles to install"
+                                      IsEnabled="{Binding Path=InstallBluetoothDriver}">
                                 <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
                                     <StackPanel x:Name="BluetoothStackPanel" />
                                 </ScrollViewer>
                             </Expander>
                             <Expander Grid.Row="2" Grid.Column="1"
                                       Margin="20,0,0,0"
-                                      Header="Chose DualShock 3 controllers to install">
+                                      Header="Chose DualShock 3 controllers to install"
+                                      IsEnabled="{Binding Path=InstallDualShock3Driver}">
                                 <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
                                     <StackPanel x:Name="DualShock3StackPanel" />
                                 </ScrollViewer>
                             </Expander>
                             <Expander Grid.Row="3" Grid.Column="1"
                                       Margin="20,0,0,0"
-                                      Header="Chose DualShock 4 controllers to install">
+                                      Header="Chose DualShock 4 controllers to install"
+                                      IsEnabled="{Binding Path=InstallDualShock4Driver}">
                                 <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
                                     <StackPanel x:Name="DualShock4StackPanel" />
                                 </ScrollViewer>
