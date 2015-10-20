@@ -13,7 +13,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using log4net;
+using Mantin.Controls.Wpf.Notification;
 using ScpControl.Driver;
 using ScpControl.Utilities;
 using ScpDriverInstaller.Properties;
@@ -194,14 +196,14 @@ namespace ScpDriverInstaller
                         return;
                     }
 
-                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception) instex.InnerException);
+                                (Win32Exception)instex.InnerException);
                             break;
                     }
                 }
@@ -255,6 +257,13 @@ namespace ScpDriverInstaller
                     .Cast<WdiUsbDevice>()
                     .ToList();
 
+            if (_viewModel.InstallBluetoothDriver && !donglesToInstall.Any())
+            {
+                ShowPopup(Properties.Resources.BthListEmpty_Title,
+                     Properties.Resources.BthListEmpty_Text,
+                     NotificationType.Warning);
+            }
+
             // get selected DualShock 3 devices
             var ds3SToInstall =
                 DualShock3StackPanel.Children.Cast<CheckBox>()
@@ -263,6 +272,13 @@ namespace ScpDriverInstaller
                     .Cast<WdiUsbDevice>()
                     .ToList();
 
+            if (_viewModel.InstallDualShock3Driver && !ds3SToInstall.Any())
+            {
+                ShowPopup(Properties.Resources.Ds3ListEmpta_Title,
+                     Properties.Resources.Ds3ListEmpta_Text,
+                     NotificationType.Warning);
+            }
+
             // get selected DualShock 4 devices
             var ds4SToInstall =
                 DualShock4StackPanel.Children.Cast<CheckBox>()
@@ -270,6 +286,13 @@ namespace ScpDriverInstaller
                     .Select(c => c.Content)
                     .Cast<WdiUsbDevice>()
                     .ToList();
+
+            if (_viewModel.InstallDualShock4Driver && !ds4SToInstall.Any())
+            {
+                ShowPopup(Properties.Resources.Ds4ListEmpta_Title,
+                     Properties.Resources.Ds4ListEmpta_Text,
+                     NotificationType.Warning);
+            }
 
             #endregion
 
@@ -573,13 +596,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
                         break;
                 }
             }
@@ -592,5 +615,17 @@ namespace ScpDriverInstaller
         }
 
         #endregion
+
+        private void ShowPopup(string title, string message, NotificationType type)
+        {
+            var popup = new ToastPopUp(title, message, type)
+            {
+                Background = Background,
+                FontColor = Brushes.Bisque,
+                FontFamily = FontFamily
+            };
+
+            popup.Show();
+        }
     }
 }

@@ -114,4 +114,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="BthListEmpty_Title" xml:space="preserve">
+    <value>No Bluetooth devices selected</value>
+  </data>
+  <data name="BthListEmpty_Text" xml:space="preserve">
+    <value>You chose to install a Bluetooth dongle but have not selected one or more devices from the device list!</value>
+  </data>
+  <data name="Ds3ListEmpta_Title" xml:space="preserve">
+    <value>No DualShock 3 controllers selected</value>
+  </data>
+  <data name="Ds3ListEmpta_Text" xml:space="preserve">
+    <value>You chose to install the DualShock 3 drivers but you didn't select one or more devices from the device list!</value>
+  </data>
+  <data name="Ds4ListEmpta_Title" xml:space="preserve">
+    <value>No DualShock 4 controllers selected</value>
+  </data>
+  <data name="Ds4ListEmpta_Text" xml:space="preserve">
+    <value>You chose to install the DualShock 4 drivers but you didn't select one or more devices from the device list!</value>
+  </data>
 </root>
