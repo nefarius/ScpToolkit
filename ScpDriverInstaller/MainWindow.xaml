@@ -31,75 +31,73 @@
                 <controls:Accordion ExpandDirection="Right" MinHeight="220" Width="780">
                     <!-- Driver section -->
                     <controls:AccordionItem Header="Drivers">
-                        <GroupBox Header="Installation options">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                
-                                <CheckBox Grid.Row="0" Grid.Column="0"
-                                          IsChecked="{Binding Path=InstallWindowsService}"
-                                          ToolTip="Install Windows Service running in the background (recommended)">
-                                    Install Windows Service
-                                </CheckBox>
-                                <CheckBox Grid.Row="1" Grid.Column="0"
-                                          IsChecked="{Binding Path=InstallBluetoothDriver}"
-                                          ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">
-                                    Install Bluetooth driver
-                                </CheckBox>
-                                <CheckBox Grid.Row="2" Grid.Column="0"
-                                          IsChecked="{Binding Path=InstallDualShock3Driver}"
-                                          ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">
-                                    Install DualShock 3 driver
-                                </CheckBox>
-                                <CheckBox Grid.Row="3" Grid.Column="0"
-                                          IsChecked="{Binding Path=InstallDualShock4Driver}"
-                                          ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">
-                                    Install DualShock 4 driver
-                                </CheckBox>
-                                <CheckBox Grid.Row="4" Grid.Column="0"
-                                          IsChecked="{Binding Path=ForceDriverInstallation}"
-                                          ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">
-                                    Force Driver Installation
-                                </CheckBox>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                                <Expander Grid.Row="1" Grid.Column="1"
-                                          Margin="20,0,0,0"
-                                          Header="Chose Bluetooth dongles to install">
-                                    <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                        <StackPanel x:Name="BluetoothStackPanel"/>
-                                    </ScrollViewer>
-                                </Expander>
-                                <Expander Grid.Row="2" Grid.Column="1"
-                                          Margin="20,0,0,0"
-                                          Header="Chose DualShock 3 controllers to install">
-                                    <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                        <StackPanel x:Name="DualShock3StackPanel"/>
-                                    </ScrollViewer>
-                                </Expander>
-                                <Expander Grid.Row="3" Grid.Column="1"
-                                          Margin="20,0,0,0"
-                                          Header="Chose DualShock 4 controllers to install">
-                                    <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                        <StackPanel x:Name="DualShock4StackPanel"/>
-                                    </ScrollViewer>
-                                </Expander>
-                            </Grid>
-                        </GroupBox>
+                            <CheckBox Grid.Row="0" Grid.Column="0"
+                                      IsChecked="{Binding Path=InstallWindowsService}"
+                                      ToolTip="Install Windows Service running in the background (recommended)">
+                                Install Windows Service
+                            </CheckBox>
+                            <CheckBox Grid.Row="1" Grid.Column="0"
+                                      IsChecked="{Binding Path=InstallBluetoothDriver}"
+                                      ToolTip="Replace driver of plugged-in Bluetooth dongle (not needed if controllers are only used wired)">
+                                Install Bluetooth driver
+                            </CheckBox>
+                            <CheckBox Grid.Row="2" Grid.Column="0"
+                                      IsChecked="{Binding Path=InstallDualShock3Driver}"
+                                      ToolTip="Replace driver on all plugged-in DualShock 3 USB controllers">
+                                Install DualShock 3 driver
+                            </CheckBox>
+                            <CheckBox Grid.Row="3" Grid.Column="0"
+                                      IsChecked="{Binding Path=InstallDualShock4Driver}"
+                                      ToolTip="Replace driver on all plugged-in DualShock 4 USB controllers">
+                                Install DualShock 4 driver
+                            </CheckBox>
+                            <CheckBox Grid.Row="4" Grid.Column="0"
+                                      IsChecked="{Binding Path=ForceDriverInstallation}"
+                                      ToolTip="Forces the installation of all driver even if they are fine (most of the time not needed)">
+                                Force Driver Installation
+                            </CheckBox>
+
+                            <Expander Grid.Row="1" Grid.Column="1"
+                                      Margin="20,0,0,0"
+                                      Header="Chose Bluetooth dongles to install">
+                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel x:Name="BluetoothStackPanel" />
+                                </ScrollViewer>
+                            </Expander>
+                            <Expander Grid.Row="2" Grid.Column="1"
+                                      Margin="20,0,0,0"
+                                      Header="Chose DualShock 3 controllers to install">
+                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel x:Name="DualShock3StackPanel" />
+                                </ScrollViewer>
+                            </Expander>
+                            <Expander Grid.Row="3" Grid.Column="1"
+                                      Margin="20,0,0,0"
+                                      Header="Chose DualShock 4 controllers to install">
+                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel x:Name="DualShock4StackPanel" />
+                                </ScrollViewer>
+                            </Expander>
+                        </Grid>
                     </controls:AccordionItem>
 
                     <!-- Runtime packages -->
                     <controls:AccordionItem Header="3rd party packages">
-                        <StackPanel>
+                        <StackPanel Margin="0,10,0,0">
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2010Redist}">Download &amp; Install Microsoft Visual C++ 2010 Redistributable Package</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallMsvc2013Redist}">Download &amp; Install Visual C++ Redistributable Packages for Visual Studio 2013</CheckBox>
                             <CheckBox IsChecked="{Binding Path=InstallDirectXRuntime}">Download &amp; Install DirectX End-User Runtime</CheckBox>
@@ -113,7 +111,7 @@
                 </controls:Accordion>
 
                 <!-- Buttons -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <StackPanel Grid.Column="1" VerticalAlignment="Top">
                     <Button Margin="20,20,20,5" Command="{Binding InstallClickCommand}">Install</Button>
                     <Button Margin="20,5" Command="{Binding UninstallClickCommand}">Uninstall</Button>
                     <Button Margin="20,5,20,20" Command="{Binding ExitClickCommand}">Exit</Button>
