@@ -49,7 +49,18 @@ namespace ScpControl
 
         public short ProductId { get; private set; }
 
-        private void GetHardwareId(string devicePath)
+        protected void GetHardwareId(string devicePath)
+        {
+            short vid, pid;
+
+            GetHardwareId(devicePath, out vid, out pid);
+
+            // get values
+            VendorId = vid;
+            ProductId = pid;
+        }
+
+        protected static void GetHardwareId(string devicePath, out short vendorId, out short productId)
         {
             // regex to extract vendor ID and product ID from hardware ID string
             var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
@@ -58,11 +69,14 @@ namespace ScpControl
 
             // very basic check
             if (matches.Count < 3)
+            {
+                vendorId = productId = 0;
                 return;
+            }
 
             // get values
-            VendorId = short.Parse(matches[1].Value, NumberStyles.HexNumber);
-            ProductId = short.Parse(matches[2].Value, NumberStyles.HexNumber);
+            vendorId = short.Parse(matches[1].Value, NumberStyles.HexNumber);
+            productId = short.Parse(matches[2].Value, NumberStyles.HexNumber);
         }
 
         public virtual bool Open(int instance = 0)

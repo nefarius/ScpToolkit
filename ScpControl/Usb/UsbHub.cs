@@ -5,6 +5,7 @@ using ScpControl.ScpCore;
 using ScpControl.Sound;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;
+using ScpControl.Usb.Gamepads;
 
 namespace ScpControl.Usb
 {
@@ -189,6 +190,12 @@ namespace ScpControl.Usb
                     {
                         arrived = new UsbDs4();
                         Log.Debug("-- DualShock 4 Arrival Event");
+                    }
+
+                    if (classGuid == UsbGenericGamepad.DeviceClassGuid)
+                    {
+                        arrived = UsbGenericGamepad.DeviceFactory(path);
+                        Log.Debug("-- Generic Gamepad Arrival Event");
                     }
 
                     Log.InfoFormat("Arrival event for GUID {0} received", classGuid);

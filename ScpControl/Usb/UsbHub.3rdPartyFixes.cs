@@ -1,5 +1,5 @@
-﻿using ScpControl.Usb.Ds3.Replica;
-using ScpControl.Usb.Gamepads;
+﻿using ScpControl.Usb.Ds3;
+using ScpControl.Usb.Ds3.Replica;
 
 namespace ScpControl.Usb
 {
@@ -14,6 +14,9 @@ namespace ScpControl.Usb
         /// <returns></returns>
         private static bool Apply3RdPartyWorkaroundsForDs3(ref UsbDevice current, byte instance = 0x00, string path = default(string))
         {
+            if (!(current is UsbDs3))
+                return true;
+
             var padId = current.PadId;
 
             #region Afterglow AP.2 Wireless Controller for PS3 workaround
@@ -50,90 +53,6 @@ namespace ScpControl.Usb
                 current.Close();
                 // ...and create customized object
                 current = new UsbDs3QuadStick()
-                {
-                    PadId = padId
-                };
-
-                // open and continue plug-in procedure on success
-                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
-            }
-
-            #endregion
-
-            #region DragonRise Inc. USB Gamepad SNES
-
-            if (current.VendorId == 0x0079 && current.ProductId == 0x0011)
-            {
-                Log.InfoFormat(
-                    "DragonRise Inc. USB Gamepad SNES detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
-                    current.VendorId, current.ProductId);
-                // ...close device...
-                current.Close();
-                // ...and create customized object
-                current = new UsbSnesGamepad()
-                {
-                    PadId = padId
-                };
-
-                // open and continue plug-in procedure on success
-                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
-            }
-
-            #endregion
-
-            #region LSI Logic Gamepad
-
-            if (current.VendorId == 0x0079 && current.ProductId == 0x0006)
-            {
-                Log.InfoFormat(
-                    "LSI Logic Gamepad detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
-                    current.VendorId, current.ProductId);
-                // ...close device...
-                current.Close();
-                // ...and create customized object
-                current = new UsbLsiLogicGamepad()
-                {
-                    PadId = padId
-                };
-
-                // open and continue plug-in procedure on success
-                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
-            }
-
-            #endregion
-
-            #region ShanWan Wireless Gamepad
-
-            if (current.VendorId == 0x2563 && current.ProductId == 0x0523)
-            {
-                Log.InfoFormat(
-                    "ShanWan Wireless Gamepad detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
-                    current.VendorId, current.ProductId);
-                // ...close device...
-                current.Close();
-                // ...and create customized object
-                current = new UsbShanWanWirelessGamepad()
-                {
-                    PadId = padId
-                };
-
-                // open and continue plug-in procedure on success
-                return (!string.IsNullOrEmpty(path)) ? current.Open(path) : current.Open(instance);
-            }
-
-            #endregion
-
-            #region GameStop PC Advanced Controller
-
-            if (current.VendorId == 0x11FF && current.ProductId == 0x3331)
-            {
-                Log.InfoFormat(
-                    "GameStop PC Advanced Controller detected [VID: {0:X4}] [PID: {1:X4}], workaround applied",
-                    current.VendorId, current.ProductId);
-                // ...close device...
-                current.Close();
-                // ...and create customized object
-                current = new UsbGameStopPcAdvanced()
                 {
                     PadId = padId
                 };
