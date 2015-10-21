@@ -9,17 +9,6 @@ namespace ScpControl.Usb.Ds4
     /// </summary>
     public sealed partial class UsbDs4 : UsbDevice
     {
-        #region Private vars
-
-        private const int R = 6; // Led Offsets
-        private const int G = 7; // Led Offsets
-        private const int B = 8; // Led Offsets
-        public static string USB_CLASS_GUID = "{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}";
-        private byte _brightness = GlobalConfiguration.Instance.Brightness;
-        private bool _isLightBarDisabled;
-
-        #endregion
-
         #region HID Report
 
         private readonly byte[] _hidReport =
@@ -36,14 +25,25 @@ namespace ScpControl.Usb.Ds4
 
         #endregion
 
+        #region Private vars
+
+        private const int R = 6; // Led Offsets
+        private const int G = 7; // Led Offsets
+        private const int B = 8; // Led Offsets
+
+        private byte _brightness = GlobalConfiguration.Instance.Brightness;
+        private bool _isLightBarDisabled;
+
+        #endregion
+
         #region Ctors
 
-        public UsbDs4() : base(USB_CLASS_GUID)
+        public UsbDs4() : base(DeviceClassGuid)
         {
             InitializeComponent();
         }
 
-        public UsbDs4(IContainer container) : base(USB_CLASS_GUID)
+        public UsbDs4(IContainer container) : base(DeviceClassGuid)
         {
             container.Add(this);
 
@@ -53,6 +53,11 @@ namespace ScpControl.Usb.Ds4
         #endregion
 
         #region Properties
+
+        public static Guid DeviceClassGuid
+        {
+            get { return Guid.Parse("{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}"); }
+        }
 
         public override DsPadId PadId
         {
@@ -139,7 +144,8 @@ namespace ScpControl.Usb.Ds4
 
                 var transfered = 0;
 
-                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x0312, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x0312, m_Buffer,
+                    ref transfered))
                 {
                     m_Master = new[]
                     {m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10]};
@@ -167,7 +173,8 @@ namespace ScpControl.Usb.Ds4
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
-            Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
+            Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7,
+                GlobalConfiguration.Instance.BdLink.Length);
 
             if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {
@@ -209,7 +216,8 @@ namespace ScpControl.Usb.Ds4
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
-            Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7, GlobalConfiguration.Instance.BdLink.Length);
+            Buffer.BlockCopy(GlobalConfiguration.Instance.BdLink, 0, buffer, 7,
+                GlobalConfiguration.Instance.BdLink.Length);
 
             if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {

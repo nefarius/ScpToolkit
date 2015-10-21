@@ -7,7 +7,7 @@ namespace ScpControl
 {
     public sealed partial class BusDevice : ScpDevice
     {
-        private const string SCP_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
+        private static Guid DeviceClassGuid {get { return Guid.Parse("{F679F562-3164-42CE-A4DB-E7DDBE723909}"); }} 
         public const int ReportSize = 28;
         public const int RumbleSize = 8;
         private const int BusWidth = 4;
@@ -15,12 +15,12 @@ namespace ScpControl
         private int m_Offset;
         private DsState m_State = DsState.Disconnected;
 
-        public BusDevice() : base(SCP_BUS_CLASS_GUID)
+        public BusDevice() : base(DeviceClassGuid)
         {
             InitializeComponent();
         }
 
-        public BusDevice(IContainer container) : base(SCP_BUS_CLASS_GUID)
+        public BusDevice(IContainer container) : base(DeviceClassGuid)
         {
             container.Add(this);
 

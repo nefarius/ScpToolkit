@@ -116,7 +116,7 @@ namespace ScpControl.Usb
 
         #region Ctors
 
-        protected UsbDevice(string guid)
+        protected UsbDevice(Guid guid)
             : base(guid)
         {
             InitializeComponent();

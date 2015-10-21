@@ -12,20 +12,21 @@ using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.ScpCore;
-using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;
+using ScpControl.Usb.Gamepads;
 
 namespace ScpService
 {
     public partial class Ds3Service : ServiceBase
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private IntPtr _mBthNotify = IntPtr.Zero;
+        private IntPtr _bthNotify = IntPtr.Zero;
         private ScpDevice.ServiceControlHandlerEx _mControlHandler;
-        private IntPtr _mDs3Notify = IntPtr.Zero;
-        private IntPtr _mDs4Notify = IntPtr.Zero;
+        private IntPtr _ds3Notify = IntPtr.Zero;
+        private IntPtr _ds4Notify = IntPtr.Zero;
         private IntPtr _mServiceHandle = IntPtr.Zero;
+        private IntPtr _genericNotify = IntPtr.Zero;
         private readonly Timer _mTimer;
 
         public Ds3Service()
@@ -83,16 +84,18 @@ namespace ScpService
                 return;
             }
 
-            ScpDevice.RegisterNotify(_mServiceHandle, new Guid(UsbDs3.USB_CLASS_GUID), ref _mDs3Notify, false);
-            ScpDevice.RegisterNotify(_mServiceHandle, new Guid(UsbDs4.USB_CLASS_GUID), ref _mDs4Notify, false);
-            ScpDevice.RegisterNotify(_mServiceHandle, new Guid(BthDongle.BTH_CLASS_GUID), ref _mBthNotify, false);
+            ScpDevice.RegisterNotify(_mServiceHandle, UsbDs3.DeviceClassGuid, ref _ds3Notify, false);
+            ScpDevice.RegisterNotify(_mServiceHandle, UsbDs4.DeviceClassGuid, ref _ds4Notify, false);
+            ScpDevice.RegisterNotify(_mServiceHandle, BthDongle.DeviceClassGuid, ref _bthNotify, false);
+            ScpDevice.RegisterNotify(_mServiceHandle, UsbGenericGamepad.DeviceClassGuid, ref _genericNotify, false);
         }
 
         protected override void OnStop()
         {
-            if (_mDs3Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mDs3Notify);
-            if (_mDs4Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mDs4Notify);
-            if (_mBthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(_mBthNotify);
+            if (_ds3Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_ds3Notify);
+            if (_ds4Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(_ds4Notify);
+            if (_bthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(_bthNotify);
+            if (_genericNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(_genericNotify);
 
             rootHub.Stop();
             rootHub.Close();

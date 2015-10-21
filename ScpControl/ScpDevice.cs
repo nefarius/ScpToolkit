@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -34,11 +32,11 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        protected ScpDevice(string Class)
+        protected ScpDevice(Guid Class)
         {
             InitializeComponent();
 
-            this._class = new Guid(Class);
+            this._class = Class;
         }
 
         #endregion

@@ -171,25 +171,27 @@ namespace ScpControl.Usb
         {
             Log.InfoFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, path);
 
+            var classGuid = Guid.Parse(Class);
+
             switch (notification)
             {
                 case ScpDevice.Notified.Arrival:
                 {
                     var arrived = new UsbDevice();
 
-                    if (string.Equals(Class, UsbDs3.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
+                    if (classGuid == UsbDs3.DeviceClassGuid)
                     {
                         arrived = new UsbDs3();
-                        Log.Debug("-- DS3 Arrival Event");
+                        Log.Debug("-- DualShock 3 Arrival Event");
                     }
 
-                    if (string.Equals(Class, UsbDs4.USB_CLASS_GUID, StringComparison.CurrentCultureIgnoreCase))
+                    if (classGuid == UsbDs4.DeviceClassGuid)
                     {
                         arrived = new UsbDs4();
-                        Log.Debug("-- DS4 Arrival Event");
+                        Log.Debug("-- DualShock 4 Arrival Event");
                     }
 
-                    Log.InfoFormat("Arrival event for GUID {0} received", Class);
+                    Log.InfoFormat("Arrival event for GUID {0} received", classGuid);
 
                     if (arrived.Open(path))
                     {

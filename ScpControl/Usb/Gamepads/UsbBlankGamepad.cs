@@ -9,13 +9,17 @@ namespace ScpControl.Usb.Gamepads
     public class UsbBlankGamepad : UsbDevice
     {
         // randomly generated GUID so no other devices may be accidentally affected
-        public static readonly Guid DeviceClassGuid = Guid.Parse("433FA0C6-2BF1-4675-98C6-7F4FC99796FC");
+        public static Guid DeviceClassGuid
+        {
+            get { return Guid.Parse("433FA0C6-2BF1-4675-98C6-7F4FC99796FC"); }
+        }
+
         private readonly DumpHelper _dumper;
 
         #region Ctors
 
         public UsbBlankGamepad()
-            : base(DeviceClassGuid.ToString())
+            : base(DeviceClassGuid)
         {
         }
 

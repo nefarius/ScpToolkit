@@ -64,7 +64,7 @@ namespace ScpPair
 
             if (usbDevice.Open()) usbDevice.Start();
 
-            ScpDevice.RegisterNotify(Handle, new Guid(UsbDs3.USB_CLASS_GUID), ref m_UsbNotify);
+            ScpDevice.RegisterNotify(Handle, UsbDs3.DeviceClassGuid, ref m_UsbNotify);
         }
 
         private void Form_Close(object sender, FormClosingEventArgs e) 

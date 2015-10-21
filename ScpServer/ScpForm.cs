@@ -13,6 +13,7 @@ using ScpControl.Sound;
 using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;
+using ScpControl.Usb.Gamepads;
 using ScpControl.Utilities;
 using ScpServer.Properties;
 
@@ -25,6 +26,7 @@ namespace ScpServer
         private IntPtr m_BthNotify = IntPtr.Zero;
         private IntPtr m_Ds3Notify = IntPtr.Zero;
         private IntPtr m_Ds4Notify = IntPtr.Zero;
+        private IntPtr _genericNotify = IntPtr.Zero;
 
         public ScpForm()
         {
@@ -47,9 +49,10 @@ namespace ScpServer
         {
             Icon = Resources.Scp_All;
 
-            ScpDevice.RegisterNotify(Handle, new Guid(UsbDs3.USB_CLASS_GUID), ref m_Ds3Notify);
-            ScpDevice.RegisterNotify(Handle, new Guid(UsbDs4.USB_CLASS_GUID), ref m_Ds4Notify);
-            ScpDevice.RegisterNotify(Handle, new Guid(BthDongle.BTH_CLASS_GUID), ref m_BthNotify);
+            ScpDevice.RegisterNotify(Handle, UsbDs3.DeviceClassGuid, ref m_Ds3Notify);
+            ScpDevice.RegisterNotify(Handle, UsbDs4.DeviceClassGuid, ref m_Ds4Notify);
+            ScpDevice.RegisterNotify(Handle, BthDongle.DeviceClassGuid, ref m_BthNotify);
+            ScpDevice.RegisterNotify(Handle, UsbGenericGamepad.DeviceClassGuid, ref _genericNotify);
 
             Log.DebugFormat("++ {0} [{1}]", Assembly.GetExecutingAssembly().Location,
                 Assembly.GetExecutingAssembly().GetName().Version);
@@ -65,6 +68,7 @@ namespace ScpServer
             if (m_Ds3Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_Ds3Notify);
             if (m_Ds4Notify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_Ds4Notify);
             if (m_BthNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(m_BthNotify);
+            if (_genericNotify != IntPtr.Zero) ScpDevice.UnregisterNotify(_genericNotify);
         }
 
         private void btnStart_Click(object sender, EventArgs e)

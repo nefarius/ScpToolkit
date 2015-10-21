@@ -13,7 +13,8 @@ namespace ScpControl.Bluetooth
     /// </summary>
     public sealed partial class BthDongle : ScpDevice, IBthDevice
     {
-        public const string BTH_CLASS_GUID = "{2F87C733-60E0-4355-8515-95D6978418B2}";
+        #region Private fields
+
         private CancellationTokenSource _hciCancellationTokenSource = new CancellationTokenSource();
         private CancellationTokenSource _l2CapCancellationTokenSource = new CancellationTokenSource();
         private string _hciVersion = string.Empty;
@@ -23,17 +24,19 @@ namespace ScpControl.Bluetooth
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
 
+        #endregion
+
         #region Ctors
 
         public BthDongle()
-            : base(BTH_CLASS_GUID)
+            : base(DeviceClassGuid)
         {
             Initialised = false;
             InitializeComponent();
         }
 
         public BthDongle(IContainer container)
-            : base(BTH_CLASS_GUID)
+            : base(DeviceClassGuid)
         {
             Initialised = false;
             container.Add(this);
@@ -44,6 +47,11 @@ namespace ScpControl.Bluetooth
         #endregion
 
         #region Properties
+
+        public static Guid DeviceClassGuid
+        {
+            get { return Guid.Parse("{2F87C733-60E0-4355-8515-95D6978418B2}"); }
+        }
 
         public string Local
         {
@@ -98,9 +106,6 @@ namespace ScpControl.Bluetooth
         }
 
         #endregion
-
-        public event EventHandler<ArrivalEventArgs> DeviceArrived;
-        public event EventHandler<ReportEventArgs> HidReportReceived;
 
         #region Actions
 
@@ -250,6 +255,9 @@ namespace ScpControl.Bluetooth
         }
 
         #region Events
+
+        public event EventHandler<ArrivalEventArgs> DeviceArrived;
+        public event EventHandler<ReportEventArgs> HidReportReceived;
 
         private bool OnDeviceArrival(IDsDevice arrived)
         {

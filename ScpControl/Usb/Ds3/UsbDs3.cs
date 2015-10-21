@@ -11,8 +11,6 @@ namespace ScpControl.Usb.Ds3
     /// </summary>
     public partial class UsbDs3 : UsbDevice
     {
-        public static string USB_CLASS_GUID = "{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}";
-
         #region HID Reports
 
         private readonly byte[] _hidCommandEnable = { 0x42, 0x0C, 0x00, 0x00 };
@@ -37,13 +35,13 @@ namespace ScpControl.Usb.Ds3
         #region Ctors
 
         public UsbDs3()
-            : base(USB_CLASS_GUID)
+            : base(DeviceClassGuid)
         {
             InitializeComponent();
         }
 
         public UsbDs3(IContainer container)
-            : base(USB_CLASS_GUID)
+            : base(DeviceClassGuid)
         {
             container.Add(this);
 
@@ -61,8 +59,13 @@ namespace ScpControl.Usb.Ds3
 
         #region Properties
 
+        public static Guid DeviceClassGuid
+        {
+            get { return Guid.Parse("{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}"); }
+        }
+
         private bool IsFake { get; set; }
-        
+
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }

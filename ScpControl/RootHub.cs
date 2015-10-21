@@ -16,6 +16,7 @@ using ScpControl.Sound;
 using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;
+using ScpControl.Usb.Gamepads;
 using ScpControl.Utilities;
 using ScpControl.Wcf;
 
@@ -173,20 +174,28 @@ namespace ScpControl
         {
             if (_mSuspended) return DsPadId.None;
 
+            var classGuid = Guid.Parse(Class);
+
             // forward message for wired DS4 to usb hub
-            if (Class == UsbDs4.USB_CLASS_GUID)
+            if (classGuid == UsbDs4.DeviceClassGuid)
             {
                 return _usbHub.Notify(notification, Class, path);
             }
 
             // forward message for wired DS3 to usb hub
-            if (Class == UsbDs3.USB_CLASS_GUID)
+            if (classGuid == UsbDs3.DeviceClassGuid)
+            {
+                return _usbHub.Notify(notification, Class, path);
+            }
+
+            // forward message for wired Generic Gamepad to usb hub
+            if (classGuid == UsbGenericGamepad.DeviceClassGuid)
             {
                 return _usbHub.Notify(notification, Class, path);
             }
 
             // forward message for any wireless device to bluetooth hub
-            if (Class == BthDongle.BTH_CLASS_GUID)
+            if (classGuid == BthDongle.DeviceClassGuid)
             {
                 _bthHub.Notify(notification, Class, path);
             }
