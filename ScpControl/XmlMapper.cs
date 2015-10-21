@@ -183,6 +183,17 @@ namespace ScpControl
                         }
                     }
 
+                    foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS3/ButtonAnalogDirection"))
+                    {
+                        foreach (XmlNode Item in Mapping.ChildNodes)
+                        {
+                            var Target = (Ds3Button)Enum.Parse(typeof(Ds3Button), Item.ParentNode.Name);
+                            var Mapped = (Ds3AnalogDirection)Enum.Parse(typeof(Ds3AnalogDirection), Item.Value);
+
+                            Profile.Ds3ButtonAnalogDirection[Target] = Mapped;
+                        }
+                    }
+
                     foreach (XmlNode Mapping in ProfileNode.SelectSingleNode("DS4/Button"))
                     {
                         foreach (XmlNode Item in Mapping.ChildNodes)
@@ -284,6 +295,16 @@ namespace ScpControl
                                         }
                                     }
                                     Ds3.AppendChild(Axis);
+
+                                    var ButtonAxis = Doc.CreateNode(XmlNodeType.Element, "ButtonAnalogDirection", null);
+                                    {
+                                        foreach (var Ds3Button in Item.Ds3ButtonAnalogDirection.Keys)
+                                        {
+                                            CreateTextNode(Doc, Axis, Ds3Button.ToString(),
+                                                Item.Ds3ButtonAnalogDirection[Ds3Button].ToString());
+                                        }
+                                    }
+                                    Ds3.AppendChild(ButtonAxis);
                                 }
                                 Profile.AppendChild(Ds3);
 
@@ -400,6 +421,16 @@ namespace ScpControl
                 {
                     output[(uint) profile.Ds3Axis[item]] = input[(uint) item];
                 }
+
+                // Map analog direction
+                foreach (var item in profile.Ds3ButtonAnalogDirection.Keys.Where(item => (Out[0] & item) != Ds3Button.None))
+                    Out[0] ^= item;
+
+                foreach (var item in profile.Ds3ButtonAnalogDirection.Values)
+                    output[Math.Abs((int)item)] = 127;
+
+                foreach (var item in profile.Ds3ButtonAnalogDirection.Keys.Where(item => (In & item) != Ds3Button.None))
+                    output[Math.Abs((int)profile.Ds3ButtonAnalogDirection[item])] += (byte)(Math.Sign((int)profile.Ds3ButtonAnalogDirection[item]) * 127);
 
                 // Fix up Button-Axis Relations
                 foreach (var key in Ds3ButtonAxis.Keys.Where(key => (Out[0] & key) != Ds3Button.None && output[(uint) Ds3ButtonAxis[key]] == 0))

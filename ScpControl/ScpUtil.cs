@@ -23,6 +23,10 @@ namespace ScpControl
     {
     }
 
+    public class Ds3ButtonAnalogDirectionMap : SortedDictionary<Ds3Button, Ds3AnalogDirection>
+    {
+    }
+
     public class Ds4ButtonMap : SortedDictionary<Ds4Button, Ds4Button>
     {
     }

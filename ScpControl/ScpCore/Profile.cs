@@ -13,6 +13,7 @@ namespace ScpControl.ScpCore
     {
         private readonly Ds3AxisMap _ds3AxisMap = new Ds3AxisMap();
         private readonly Ds3ButtonMap _ds3ButtonMap = new Ds3ButtonMap();
+        private readonly Ds3ButtonAnalogDirectionMap _ds3ButtonAnalogDirectionMap = new Ds3ButtonAnalogDirectionMap();
         private readonly Ds4AxisMap _ds4AxisMap = new Ds4AxisMap();
         private readonly Ds4ButtonMap _ds4ButtonMap = new Ds4ButtonMap();
         private readonly DsMatch _match = DsMatch.Global;
@@ -82,6 +83,11 @@ namespace ScpControl.ScpCore
         public Ds3AxisMap Ds3Axis
         {
             get { return _ds3AxisMap; }
+        }
+
+        public Ds3ButtonAnalogDirectionMap Ds3ButtonAnalogDirection
+        {
+            get { return _ds3ButtonAnalogDirectionMap; }
         }
 
         public Ds4ButtonMap Ds4Button
