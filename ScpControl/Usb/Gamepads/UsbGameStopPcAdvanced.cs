@@ -7,9 +7,15 @@ namespace ScpControl.Usb.Gamepads
     /// </summary>
     public class UsbGameStopPcAdvanced : UsbGenericGamepad
     {
+        public UsbGameStopPcAdvanced()
+        {
+            VendorId = 0x11FF;
+            ProductId = 0x3331;
+        }
+
         protected override void ParseHidReport(byte[] report)
         {
-            if (report[7] != 0xC0 && report[7] != 0x40) return;
+            if (report[8] != 0xC0 && report[8] != 0x40) return;
 
             if (m_Packet++ + 1 < m_Packet)
             {
@@ -30,31 +36,31 @@ namespace ScpControl.Usb.Gamepads
             m_ReportArgs.ZeroShoulderButtonsState();
 
             // buttons equaly reported in both modes
-            m_ReportArgs.SetCircleDigital(report[5] >> 5);
-            m_ReportArgs.SetCrossDigital(report[5] >> 6);
-            m_ReportArgs.SetTriangleDigital(report[5] >> 4);
-            m_ReportArgs.SetSquareDigital(report[5] >> 7);
+            m_ReportArgs.SetCircleDigital(report[6] >> 5);
+            m_ReportArgs.SetCrossDigital(report[6] >> 6);
+            m_ReportArgs.SetTriangleDigital(report[6] >> 4);
+            m_ReportArgs.SetSquareDigital(report[6] >> 7);
 
-            m_ReportArgs.SetSelect(report[6] >> 4);
-            m_ReportArgs.SetStart(report[6] >> 5);
+            m_ReportArgs.SetSelect(report[7] >> 4);
+            m_ReportArgs.SetStart(report[7] >> 5);
 
-            m_ReportArgs.SetLeftShoulderDigital(report[6] >> 0);
-            m_ReportArgs.SetRightShoulderDigital(report[6] >> 1);
-            m_ReportArgs.SetLeftTriggerDigital(report[6] >> 2);
-            m_ReportArgs.SetRightTriggerDigital(report[6] >> 3);
+            m_ReportArgs.SetLeftShoulderDigital(report[7] >> 0);
+            m_ReportArgs.SetRightShoulderDigital(report[7] >> 1);
+            m_ReportArgs.SetLeftTriggerDigital(report[7] >> 2);
+            m_ReportArgs.SetRightTriggerDigital(report[7] >> 3);
 
-            m_ReportArgs.SetLeftThumb(report[6] >> 6);
-            m_ReportArgs.SetRightThumb(report[6] >> 7);
+            m_ReportArgs.SetLeftThumb(report[7] >> 6);
+            m_ReportArgs.SetRightThumb(report[7] >> 7);
 
             // detect mode it's running in
-            switch (report[7])
+            switch (report[8])
             {
                 case 0xC0: // mode 1
                 {
-                    m_ReportArgs.SetDpadUpDigital(report[1] == 0x00);
-                    m_ReportArgs.SetDpadRightDigital(report[0] == 0xFF);
-                    m_ReportArgs.SetDpadDownDigital(report[1] == 0xFF);
-                    m_ReportArgs.SetDpadLeftDigital(report[0] == 0x00);
+                    m_ReportArgs.SetDpadUpDigital(report[2] == 0x00);
+                    m_ReportArgs.SetDpadRightDigital(report[1] == 0xFF);
+                    m_ReportArgs.SetDpadDownDigital(report[2] == 0xFF);
+                    m_ReportArgs.SetDpadLeftDigital(report[1] == 0x00);
 
                     // mode 1 doesn't report the thumb sticks
                     m_ReportArgs.SetLeftAxisX(0x80);
@@ -65,7 +71,7 @@ namespace ScpControl.Usb.Gamepads
                     break;
                 case 0x40: // mode 2
                 {
-                    var dPad = (byte) (report[5] & ~0xF0);
+                    var dPad = (byte) (report[6] & ~0xF0);
 
                     switch (dPad)
                     {
@@ -99,11 +105,11 @@ namespace ScpControl.Usb.Gamepads
                             break;
                     }
 
-                    m_ReportArgs.SetLeftAxisX(report[0]);
-                    m_ReportArgs.SetLeftAxisY(report[1]);
+                    m_ReportArgs.SetLeftAxisX(report[1]);
+                    m_ReportArgs.SetLeftAxisY(report[2]);
 
-                    m_ReportArgs.SetRightAxisX(report[3]);
-                    m_ReportArgs.SetRightAxisY(report[4]);
+                    m_ReportArgs.SetRightAxisX(report[4]);
+                    m_ReportArgs.SetRightAxisY(report[5]);
                 }
                     break;
             }

@@ -200,6 +200,12 @@ namespace ScpControl.Usb
 
                     Log.InfoFormat("Arrival event for GUID {0} received", classGuid);
 
+                    if (arrived == null)
+                    {
+                        Log.ErrorFormat("Couldn't get device type of {0}", path);
+                        break;
+                    }
+
                     if (arrived.Open(path))
                     {
                         Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);

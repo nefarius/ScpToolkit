@@ -1,11 +1,36 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using HidSharp;
 using ScpControl.ScpCore;
+using ScpControl.Sound;
 using ScpControl.Utilities;
 
 namespace ScpControl.Usb.Gamepads
 {
     public class UsbGenericGamepad : UsbDevice
     {
+        #region Private fields
+
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private HidDevice _currentHidDevice;
+        private HidStream _currentHidStream;
+
+        #endregion
+
+        #region Ctor
+
+        protected UsbGenericGamepad()
+        {
+            // TODO: Generic isn't currently supported by bus driver
+            m_Model = (byte) DsModel.DS3;
+        }
+
+        #endregion
+
+        #region Properties
+
         /// <summary>
         ///     GUID_DEVINTERFACE_HID
         /// </summary>
@@ -14,6 +39,10 @@ namespace ScpControl.Usb.Gamepads
             // https://msdn.microsoft.com/en-us/library/windows/hardware/ff545860(v=vs.85).aspx
             get { return Guid.Parse("{4D1E55B2-F16F-11CF-88CB-001111000030}"); }
         }
+
+        #endregion
+
+        #region Object factory
 
         public static UsbDevice DeviceFactory(string devicePath)
         {
@@ -28,7 +57,7 @@ namespace ScpControl.Usb.Gamepads
                 Log.InfoFormat(
                     "DragonRise Inc. USB Gamepad SNES detected [VID: {0:X4}] [PID: {1:X4}]",
                     vid, pid);
-                
+
                 return new UsbSnesGamepad();
             }
 
@@ -41,7 +70,7 @@ namespace ScpControl.Usb.Gamepads
                 Log.InfoFormat(
                     "LSI Logic Gamepad detected [VID: {0:X4}] [PID: {1:X4}]",
                     vid, pid);
-                
+
                 return new UsbLsiLogicGamepad();
             }
 
@@ -54,7 +83,7 @@ namespace ScpControl.Usb.Gamepads
                 Log.InfoFormat(
                     "ShanWan Wireless Gamepad detected [VID: {0:X4}] [PID: {1:X4}]",
                     vid, pid);
-                
+
                 return new UsbShanWanWirelessGamepad();
             }
 
@@ -67,7 +96,7 @@ namespace ScpControl.Usb.Gamepads
                 Log.InfoFormat(
                     "GameStop PC Advanced Controller detected [VID: {0:X4}] [PID: {1:X4}]",
                     vid, pid);
-                
+
                 return new UsbGameStopPcAdvanced();
             }
 
@@ -76,25 +105,97 @@ namespace ScpControl.Usb.Gamepads
             return null;
         }
 
+        #endregion
+
+        #region Actions
+
         public override bool Open(string devicePath)
         {
-            var retval = base.Open(devicePath);
+            var loader = new HidDeviceLoader();
+
+            // search for HID
+            _currentHidDevice = loader.GetDevices(VendorId, ProductId).FirstOrDefault();
+
+            if (_currentHidDevice == null)
+            {
+                Log.ErrorFormat("Couldn't find device with VID: {0}, PID: {1}",
+                    VendorId, ProductId);
+                return false;
+            }
+
+            // open HID
+            if (!_currentHidDevice.TryOpen(out _currentHidStream))
+            {
+                Log.ErrorFormat("Couldn't open device {0}", _currentHidDevice);
+                return false;
+            }
 
             // since these devices have no MAC address, generate one
             m_Mac = MacAddressGenerator.NewMacAddress;
 
-            return retval;
+            IsActive = true;
+            Path = devicePath;
+
+            return IsActive;
         }
+
+        public override bool Start()
+        {
+            // TODO: remove duplicate code
+            if (!IsActive) return State == DsState.Connected;
+
+            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
+
+            m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
+            m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
+
+            m_State = DsState.Connected;
+            m_Packet = 0;
+
+            Task.Factory.StartNew(MainHidInputReader, _cancellationTokenSource.Token);
+
+            // connection sound
+            if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
+                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbConnectSoundFile);
+
+            return State == DsState.Connected;
+        }
+
 
         public override bool Stop()
         {
-            var retval = base.Stop();
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
 
             // pad reservation not supported
             m_State = DsState.Disconnected;
 
-            return retval;
+            return true;
         }
+
+        #endregion
+
+        #region Main worker
+
+        private void MainHidInputReader(object o)
+        {
+            var token = (CancellationToken) o;
+            var buffer = new byte[_currentHidDevice.MaxInputReportLength];
+
+            while (!token.IsCancellationRequested)
+            {
+                var count = _currentHidStream.Read(buffer, 0, buffer.Length);
+
+                if (count > 0)
+                {
+                    ParseHidReport(buffer);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Unused methods
 
         protected override void Process(DateTime now)
         {
@@ -110,5 +211,7 @@ namespace ScpControl.Usb.Gamepads
         {
             return false; // ignore
         }
+
+        #endregion
     }
 }

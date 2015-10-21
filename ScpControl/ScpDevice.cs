@@ -45,9 +45,9 @@ namespace ScpControl
 
         public string Path { get; protected set; }
 
-        public short VendorId { get; private set; }
+        public short VendorId { get; protected set; }
 
-        public short ProductId { get; private set; }
+        public short ProductId { get; protected set; }
 
         protected void GetHardwareId(string devicePath)
         {
