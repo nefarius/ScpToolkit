@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using HidSharp;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 using ScpControl.Usb.Ds3;
@@ -22,12 +23,12 @@ namespace ScpControl.Usb
         {
             for (byte pad = 0; pad < _devices.Length; pad++)
             {
-                _devices[pad] = new UsbDevice {PadId = (DsPadId) pad};
+                _devices[pad] = new UsbDevice { PadId = (DsPadId)pad };
             }
 
             return base.Open();
         }
-        
+
         public override bool Start()
         {
             m_Started = true;
@@ -40,7 +41,7 @@ namespace ScpControl.Usb
                 try
                 {
                     UsbDevice current = new UsbDs4();
-                    current.PadId = (DsPadId) index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
@@ -67,7 +68,7 @@ namespace ScpControl.Usb
                 try
                 {
                     UsbDevice current = new UsbDs3();
-                    current.PadId = (DsPadId) index;
+                    current.PadId = (DsPadId)index;
 
                     if (current.Open(instance))
                     {
@@ -82,6 +83,42 @@ namespace ScpControl.Usb
                             _devices[index++] = current;
                         }
                         else current.Close();
+                    }
+                    else current.Close();
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Unexpected error: {0}", ex);
+                    break;
+                }
+            }
+
+            var hidDevices = new HidDeviceLoader().GetDevices().ToList();
+        
+            // enumerate generic devices
+            for (byte instance = 0; instance < hidDevices.Count && index < _devices.Length; instance++)
+            {
+                try
+                {
+                    // try to create supported gamepad
+                    var current = UsbGenericGamepad.DeviceFactory(hidDevices[instance].DevicePath);
+
+                    // try next on fail
+                    if (current == null) continue;
+
+                    // try next if opening failed
+                    if (!current.Open(hidDevices[instance].DevicePath)) continue;
+
+                    current.PadId = (DsPadId) index;
+
+                    // notify bus of new device
+                    if (LogArrival(current))
+                    {
+                        // listen for HID reports
+                        current.HidReportReceived += OnHidReportReceived;
+                        current.Start();
+
+                        _devices[index++] = current;
                     }
                     else current.Close();
                 }
@@ -177,79 +214,79 @@ namespace ScpControl.Usb
             switch (notification)
             {
                 case ScpDevice.Notified.Arrival:
-                {
-                    var arrived = new UsbDevice();
-
-                    if (classGuid == UsbDs3.DeviceClassGuid)
                     {
-                        arrived = new UsbDs3();
-                        Log.Debug("-- DualShock 3 Arrival Event");
-                    }
+                        var arrived = new UsbDevice();
 
-                    if (classGuid == UsbDs4.DeviceClassGuid)
-                    {
-                        arrived = new UsbDs4();
-                        Log.Debug("-- DualShock 4 Arrival Event");
-                    }
-
-                    if (classGuid == UsbGenericGamepad.DeviceClassGuid)
-                    {
-                        arrived = UsbGenericGamepad.DeviceFactory(path);
-                        Log.Debug("-- Generic Gamepad Arrival Event");
-                    }
-
-                    Log.InfoFormat("Arrival event for GUID {0} received", classGuid);
-
-                    if (arrived == null)
-                    {
-                        Log.ErrorFormat("Couldn't get device type of {0}", path);
-                        break;
-                    }
-
-                    if (arrived.Open(path))
-                    {
-                        Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
-
-                        if (!Apply3RdPartyWorkaroundsForDs3(ref arrived, path: path)) break;
-
-                        if (LogArrival(arrived))
+                        if (classGuid == UsbDs3.DeviceClassGuid)
                         {
-                            if (_devices[(byte) arrived.PadId].IsShutdown)
+                            arrived = new UsbDs3();
+                            Log.Debug("-- DualShock 3 Arrival Event");
+                        }
+
+                        if (classGuid == UsbDs4.DeviceClassGuid)
+                        {
+                            arrived = new UsbDs4();
+                            Log.Debug("-- DualShock 4 Arrival Event");
+                        }
+
+                        if (classGuid == UsbGenericGamepad.DeviceClassGuid)
+                        {
+                            arrived = UsbGenericGamepad.DeviceFactory(path);
+                            Log.Debug("-- Generic Gamepad Arrival Event");
+                        }
+
+                        Log.InfoFormat("Arrival event for GUID {0} received", classGuid);
+
+                        if (arrived == null)
+                        {
+                            Log.ErrorFormat("Couldn't get device type of {0}", path);
+                            break;
+                        }
+
+                        if (arrived.Open(path))
+                        {
+                            Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
+
+                            if (!Apply3RdPartyWorkaroundsForDs3(ref arrived, path: path)) break;
+
+                            if (LogArrival(arrived))
                             {
-                                _devices[(byte) arrived.PadId].IsShutdown = false;
+                                if (_devices[(byte)arrived.PadId].IsShutdown)
+                                {
+                                    _devices[(byte)arrived.PadId].IsShutdown = false;
 
-                                _devices[(byte) arrived.PadId].Close();
-                                _devices[(byte) arrived.PadId] = arrived;
+                                    _devices[(byte)arrived.PadId].Close();
+                                    _devices[(byte)arrived.PadId] = arrived;
 
+                                    return arrived.PadId;
+                                }
+                                arrived.HidReportReceived += OnHidReportReceived;
+
+                                _devices[(byte)arrived.PadId].Close();
+                                _devices[(byte)arrived.PadId] = arrived;
+
+                                if (m_Started) arrived.Start();
                                 return arrived.PadId;
                             }
-                            arrived.HidReportReceived += OnHidReportReceived;
-
-                            _devices[(byte) arrived.PadId].Close();
-                            _devices[(byte) arrived.PadId] = arrived;
-
-                            if (m_Started) arrived.Start();
-                            return arrived.PadId;
                         }
-                    }
 
-                    arrived.Close();
-                }
+                        arrived.Close();
+                    }
                     break;
 
                 case ScpDevice.Notified.Removal:
-                {
-                    foreach (var t in _devices.Where(t => t.State == DsState.Connected && path == t.Path))
                     {
-                        Log.InfoFormat("-- Device Removal [{0}]", t.Local);
+                        foreach (var t in _devices.Where(t => t.State == DsState.Connected && path == t.Path))
+                        {
+                            Log.InfoFormat("-- Device Removal [{0}]", t.Local);
 
-                        // play disconnect sound
-                        if (GlobalConfiguration.Instance.IsUsbDisconnectSoundEnabled)
-                            AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
+                            // play disconnect sound
+                            if (GlobalConfiguration.Instance.IsUsbDisconnectSoundEnabled)
+                                AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.UsbDisconnectSoundFile);
 
-                        t.Stop();
+                            t.Stop();
+                        }
                     }
-                }
                     break;
             }
 

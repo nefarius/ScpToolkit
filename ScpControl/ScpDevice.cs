@@ -438,7 +438,7 @@ namespace ScpControl
 
         #region Protected Methods
 
-        protected virtual bool FindDevice(Guid target, ref string path, int instance = 0)
+        protected static bool FindDevice(Guid target, ref string path, int instance = 0)
         {
             var detailDataBuffer = IntPtr.Zero;
             var deviceInfoSet = IntPtr.Zero;
