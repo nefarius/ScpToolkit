@@ -85,6 +85,20 @@ namespace ScpGamepadAnalyzer
 
         private void OpenDeviceButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (SelectedHidDevice == null)
+            {
+                new TaskDialog
+                {
+                    Buttons = { new TaskDialogButton(ButtonType.Ok) },
+                    WindowTitle = "Hey!",
+                    Content =
+                        "Please select a device first :)",
+                    MainIcon = TaskDialogIcon.Error
+                }.ShowDialog(this);
+
+                return;
+            }
+
             _device = new UsbBlankGamepad(SelectedHidDevice, SelectedHidDevice.DevicePath,
                 string.Format("{0}_hid-report.dump.txt", SelectedHidDevice.ProductName));
 
