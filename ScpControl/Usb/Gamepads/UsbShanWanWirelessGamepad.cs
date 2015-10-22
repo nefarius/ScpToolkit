@@ -9,7 +9,7 @@ namespace ScpControl.Usb.Gamepads
     {
         protected override void ParseHidReport(byte[] report)
         {
-            if (report[6] != 0x00) return;
+            if (report[7] != 0x00) return;
 
             if (m_Packet++ + 1 < m_Packet)
             {
@@ -29,13 +29,13 @@ namespace ScpControl.Usb.Gamepads
             m_ReportArgs.ZeroSelectStartButtonsState();
             m_ReportArgs.ZeroShoulderButtonsState();
 
-            m_ReportArgs.SetCircleDigital(report[4] >> 5);
-            m_ReportArgs.SetCrossDigital(report[4] >> 6);
+            m_ReportArgs.SetCircleDigital(report[5] >> 5);
+            m_ReportArgs.SetCrossDigital(report[5] >> 6);
 
-            m_ReportArgs.SetSelect(report[5] >> 4);
-            m_ReportArgs.SetStart(report[5] >> 5);
+            m_ReportArgs.SetSelect(report[6] >> 4);
+            m_ReportArgs.SetStart(report[6] >> 5);
 
-            var dPad = (byte)(report[4] & ~0xF0);
+            var dPad = (byte)(report[5] & ~0xF0);
 
             switch (dPad)
             {
@@ -69,23 +69,23 @@ namespace ScpControl.Usb.Gamepads
                     break;
             }
 
-            m_ReportArgs.SetTriangleDigital(report[4] >> 4);
-            m_ReportArgs.SetSquareDigital(report[4] >> 7);
+            m_ReportArgs.SetTriangleDigital(report[5] >> 4);
+            m_ReportArgs.SetSquareDigital(report[5] >> 7);
 
-            m_ReportArgs.SetLeftShoulderDigital(report[5] >> 0);
-            m_ReportArgs.SetRightShoulderDigital(report[5] >> 1);
+            m_ReportArgs.SetLeftShoulderDigital(report[6] >> 0);
+            m_ReportArgs.SetRightShoulderDigital(report[6] >> 1);
 
-            m_ReportArgs.SetLeftTriggerDigital(report[5] >> 2);
-            m_ReportArgs.SetRightTriggerDigital(report[5] >> 3);
+            m_ReportArgs.SetLeftTriggerDigital(report[6] >> 2);
+            m_ReportArgs.SetRightTriggerDigital(report[6] >> 3);
 
-            m_ReportArgs.SetLeftThumb(report[5] >> 6);
-            m_ReportArgs.SetRightThumb(report[5] >> 7);
+            m_ReportArgs.SetLeftThumb(report[6] >> 6);
+            m_ReportArgs.SetRightThumb(report[6] >> 7);
 
-            m_ReportArgs.SetLeftAxisX(report[2]);
-            m_ReportArgs.SetLeftAxisY(report[3]);
+            m_ReportArgs.SetLeftAxisX(report[3]);
+            m_ReportArgs.SetLeftAxisY(report[4]);
 
-            m_ReportArgs.SetRightAxisX(report[0]);
-            m_ReportArgs.SetRightAxisY(report[1]);
+            m_ReportArgs.SetRightAxisX(report[1]);
+            m_ReportArgs.SetRightAxisY(report[2]);
 
             #endregion
 
