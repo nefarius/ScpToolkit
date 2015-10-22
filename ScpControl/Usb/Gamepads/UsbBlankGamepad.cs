@@ -1,4 +1,4 @@
-﻿using System;
+﻿using HidSharp;
 using ScpControl.Utilities;
 
 namespace ScpControl.Usb.Gamepads
@@ -6,29 +6,9 @@ namespace ScpControl.Usb.Gamepads
     /// <summary>
     ///     This Gamepad is used only by the Analyzer to receive incoming HID Reports.
     /// </summary>
-    public class UsbBlankGamepad : UsbDevice
+    public class UsbBlankGamepad : UsbGenericGamepad
     {
-        // randomly generated GUID so no other devices may be accidentally affected
-        public static Guid DeviceClassGuid
-        {
-            get { return Guid.Parse("433FA0C6-2BF1-4675-98C6-7F4FC99796FC"); }
-        }
-
         private readonly DumpHelper _dumper;
-
-        #region Ctors
-
-        public UsbBlankGamepad()
-            : base(DeviceClassGuid)
-        {
-        }
-
-        public UsbBlankGamepad(string header, string dumpFileName) : this()
-        {
-            _dumper = new DumpHelper(header, dumpFileName);
-        }
-
-        #endregion
 
         public CaptureType Capture { private get; set; }
 
@@ -40,6 +20,22 @@ namespace ScpControl.Usb.Gamepads
                 Capture = CaptureType.Default;
             }
         }
+
+        #region Ctors
+
+        public UsbBlankGamepad()
+        {
+        }
+
+        public UsbBlankGamepad(HidDevice device, string header, string dumpFileName)
+        {
+            VendorId = (short) device.VendorID;
+            ProductId = (short) device.ProductID;
+
+            _dumper = new DumpHelper(header, dumpFileName);
+        }
+
+        #endregion
     }
 
     public enum CaptureType

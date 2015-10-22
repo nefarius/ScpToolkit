@@ -93,7 +93,7 @@ namespace ScpControl.Usb
                 }
             }
 
-            var hidDevices = new HidDeviceLoader().GetDevices().ToList();
+            var hidDevices = UsbGenericGamepad.LocalHidDevices;
         
             // enumerate generic devices
             for (byte instance = 0; instance < hidDevices.Count && index < _devices.Length; instance++)

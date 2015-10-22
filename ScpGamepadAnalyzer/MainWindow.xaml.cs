@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
-using System.Windows.Interop;
+using System.Windows.Navigation;
+using HidSharp;
 using Ookii.Dialogs.Wpf;
-using ScpControl.Driver;
-using ScpControl.Usb;
 using ScpControl.Usb.Gamepads;
 
 namespace ScpGamepadAnalyzer
@@ -17,12 +16,16 @@ namespace ScpGamepadAnalyzer
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Private fields
+
         private readonly SortedList<CaptureType, TaskDialog> _interpreterDiags =
             new SortedList<CaptureType, TaskDialog>();
 
         private UsbBlankGamepad _device;
-        private IntPtr _hwnd;
-        private WdiUsbDevice _wdiCurrent;
+
+        #endregion
+
+        #region Ctor
 
         public MainWindow()
         {
@@ -31,13 +34,22 @@ namespace ScpGamepadAnalyzer
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 // don't look! =D
+                Close();
             };
         }
 
+        #endregion
+
+        #region Properties
+
+        public HidDevice SelectedHidDevice { get; set; }
+
+        #endregion
+
+        #region Window events
+
         private void Window_Initialized(object sender, EventArgs e)
         {
-            _hwnd = new WindowInteropHelper(this).Handle;
-
             const string messageTitle = "Press button or engage axis";
             const string messageTemplate = "Please press and hold {0} now and click Capture";
 
@@ -71,75 +83,21 @@ namespace ScpGamepadAnalyzer
             }
         }
 
-        private void InstallButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var selectedDevice = DevicesComboBox.SelectedItem as WdiUsbDevice;
-
-            if (selectedDevice == null)
-                return;
-
-            var msgBox = new TaskDialog
-            {
-                Buttons = {new TaskDialogButton(ButtonType.Yes), new TaskDialogButton(ButtonType.No)},
-                WindowTitle = "I'm about to change the device driver!",
-                Content = string.Format("You selected the device {1}{0}{0}Want me to change the driver now?",
-                    Environment.NewLine,
-                    selectedDevice),
-                MainIcon = TaskDialogIcon.Information
-            };
-
-            var msgResult = msgBox.ShowDialog(this);
-
-            var tmpPath = Path.Combine(Path.GetTempPath(), "ScpGamepadAnalyzer");
-
-            if (msgResult.ButtonType != ButtonType.Yes) return;
-
-            var result = WdiWrapper.Instance.InstallLibusbKDriver(selectedDevice.HardwareId,
-                UsbBlankGamepad.DeviceClassGuid, tmpPath,
-                string.Format("{0}.inf", selectedDevice.Description),
-                _hwnd, true);
-
-            if (result == WdiErrorCode.WDI_SUCCESS)
-            {
-                _wdiCurrent = selectedDevice;
-                OpenDeviceButton.IsEnabled = true;
-
-                new TaskDialog
-                {
-                    Buttons = {new TaskDialogButton(ButtonType.Ok)},
-                    WindowTitle = "Yay!",
-                    Content = "Driver changed successfully, proceed with the next step now.",
-                    MainIcon = TaskDialogIcon.Information
-                }.ShowDialog(this);
-            }
-            else
-            {
-                new TaskDialog
-                {
-                    Buttons = {new TaskDialogButton(ButtonType.Ok)},
-                    WindowTitle = "Ohnoes!",
-                    Content =
-                        "It didn't work! What a shame :( Please reboot your machine, cross your fingers and try again.",
-                    MainIcon = TaskDialogIcon.Error
-                }.ShowDialog(this);
-            }
-        }
-
         private void OpenDeviceButton_OnClick(object sender, RoutedEventArgs e)
         {
-            _device = new UsbBlankGamepad(_wdiCurrent.HardwareId,
-                string.Format("{0}_hid-report.dump.txt", _wdiCurrent.Description));
+            _device = new UsbBlankGamepad(SelectedHidDevice, SelectedHidDevice.DevicePath,
+                string.Format("{0}_hid-report.dump.txt", SelectedHidDevice.ProductName));
 
-            if (_device.Open() && _device.Start())
+            if (_device.Open(SelectedHidDevice.DevicePath) && _device.Start())
             {
                 InterpretButton.IsEnabled = true;
-                RevertButton.IsEnabled = true;
+                CloseButton.IsEnabled = true;
 
                 new TaskDialog
                 {
                     Buttons = {new TaskDialogButton(ButtonType.Ok)},
-                    WindowTitle = "Yay!",
-                    Content = "Device opened successfully, proceed with the next step now.",
+                    WindowTitle = "Well that worked!",
+                    Content = "All fine, proceed with the next step now.",
                     MainIcon = TaskDialogIcon.Information
                 }.ShowDialog(this);
             }
@@ -166,7 +124,7 @@ namespace ScpGamepadAnalyzer
             }
         }
 
-        private void RevertDriverButton_OnClick(object sender, RoutedEventArgs e)
+        private void CloseDeviceButton_OnClick(object sender, RoutedEventArgs e)
         {
             if (_device != null)
             {
@@ -178,27 +136,24 @@ namespace ScpGamepadAnalyzer
                 return;
             }
 
-            if (Devcon.Remove(UsbBlankGamepad.DeviceClassGuid, _device.Path, null))
+            InterpretButton.IsEnabled = false;
+            CloseButton.IsEnabled = false;
+
+            new TaskDialog
             {
-                new TaskDialog
-                {
-                    Buttons = {new TaskDialogButton(ButtonType.Ok)},
-                    WindowTitle = "Yay!",
-                    Content = "Device driver reverted successfully, have a nice day!",
-                    MainIcon = TaskDialogIcon.Information
-                }.ShowDialog(this);
-            }
-            else
-            {
-                new TaskDialog
-                {
-                    Buttons = {new TaskDialogButton(ButtonType.Ok)},
-                    WindowTitle = "Ohnoes!",
-                    Content =
-                        "It didn't work! What a shame :( Please manually revert the driver in Windows Device Manager.",
-                    MainIcon = TaskDialogIcon.Error
-                }.ShowDialog(this);
-            }
+                Buttons = {new TaskDialogButton(ButtonType.Ok)},
+                WindowTitle = "Yay!",
+                Content = "Device free'd, have a nice day!",
+                MainIcon = TaskDialogIcon.Information
+            }.ShowDialog(this);
         }
+
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+        #endregion
     }
 }

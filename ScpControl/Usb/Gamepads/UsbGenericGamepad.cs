@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using HidSharp;
@@ -39,6 +39,11 @@ namespace ScpControl.Usb.Gamepads
         {
             // https://msdn.microsoft.com/en-us/library/windows/hardware/ff545860(v=vs.85).aspx
             get { return Guid.Parse("{4D1E55B2-F16F-11CF-88CB-001111000030}"); }
+        }
+
+        public static IList<HidDevice> LocalHidDevices
+        {
+            get { return new HidDeviceLoader().GetDevices().ToList(); }
         }
 
         #endregion
