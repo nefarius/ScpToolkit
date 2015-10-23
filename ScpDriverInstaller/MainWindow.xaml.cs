@@ -388,8 +388,10 @@ namespace ScpDriverInstaller
                     var rebootRequired = false;
                     var busInfPath = Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf");
 
+                    // check for existance of Scp VBus
                     if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
                     {
+                        // if not detected, install Inf-file in Windows Driver Store
                         if (Devcon.Install(busInfPath, ref rebootRequired))
                         {
                             Log.Info("Virtual Bus Driver pre-installed in Windows Driver Store successfully");
@@ -408,7 +410,7 @@ namespace ScpDriverInstaller
                         }
                         else
                         {
-                            Log.FatalFormat("Virtual Bus Driver pre-installation failed with error {0}",
+                            Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
                                 Marshal.GetLastWin32Error());
                             return;
                         }
@@ -446,7 +448,7 @@ namespace ScpDriverInstaller
                     {
                         IDictionary state = new Hashtable();
                         var service =
-                            new AssemblyInstaller(Directory.GetCurrentDirectory() + @"\ScpService.exe", null);
+                            new AssemblyInstaller(Path.Combine(GlobalConfiguration.AppDirectory, "ScpService.exe"), null);
 
                         state.Clear();
                         service.UseNewContext = true;
@@ -494,7 +496,6 @@ namespace ScpDriverInstaller
             if (_reboot)
                 Log.InfoFormat("[Reboot Required]");
 
-            Log.Info("-- Install Summary --");
             if (_scpServiceConfigured)
                 Log.Info("SCP DSx Service installed");
 
