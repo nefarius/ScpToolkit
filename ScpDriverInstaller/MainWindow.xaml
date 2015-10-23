@@ -4,12 +4,11 @@
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
         xmlns:utilities="clr-namespace:ScpDriverInstaller.Utilities"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
-        xmlns:notification="clr-namespace:Mantin.Controls.Wpf.Notification;assembly=Mantin.Controls.Wpf.Notification"
         Title="ScpToolkit Driver Installer"
         Width="1020" MinWidth="1020" WindowStartupLocation="CenterScreen" SizeToContent="Height"
         ResizeMode="CanMinimize"
         Background="#FF1B1B1B"
-        Icon="Usb.ico" Initialized="Window_Initialized" Loaded="Window_Loaded">
+        Icon="Usb.ico" Initialized="Window_Initialized" Loaded="Window_Loaded" Closing="MainWindow_OnClosing">
     <Grid>
         <Grid Margin="10">
             <Grid.RowDefinitions>

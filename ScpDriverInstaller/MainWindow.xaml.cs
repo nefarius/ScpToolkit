@@ -14,7 +14,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using log4net;
+using log4net.Appender;
+using log4net.Core;
 using Mantin.Controls.Wpf.Notification;
 using ScpControl.Driver;
 using ScpControl.ScpCore;
@@ -28,7 +31,7 @@ namespace ScpDriverInstaller
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IAppender
     {
         #region Private static fields
 
@@ -65,12 +68,40 @@ namespace ScpDriverInstaller
                     Log.Error(description);
                     break;
                 case DifxLog.DIFXAPI_INFO:
+                    Log.Debug(description);
+                    break;
                 case DifxLog.DIFXAPI_SUCCESS:
                     Log.Info(description);
                     break;
                 case DifxLog.DIFXAPI_WARNING:
                     Log.Warn(description);
                     break;
+            }
+        }
+
+        public void DoAppend(LoggingEvent loggingEvent)
+        {
+            if (!IsInitialized)
+                return;
+
+            var level = loggingEvent.Level;
+
+            if (level == Level.Info)
+            {
+                Dispatcher.Invoke(
+                    () => ShowPopup("Information", loggingEvent.RenderedMessage, NotificationType.Information));
+            }
+
+            if (level == Level.Warn)
+            {
+                Dispatcher.Invoke(
+                    () => ShowPopup("Warning", loggingEvent.RenderedMessage, NotificationType.Warning));
+            }
+
+            if (level == Level.Error)
+            {
+                Dispatcher.Invoke(
+                    () => ShowPopup("Error", loggingEvent.RenderedMessage, NotificationType.Error));
             }
         }
 
@@ -278,8 +309,8 @@ namespace ScpDriverInstaller
 
             if (_viewModel.InstallDualShock3Driver && !ds3SToInstall.Any())
             {
-                ShowPopup(Properties.Resources.Ds3ListEmpta_Title,
-                     Properties.Resources.Ds3ListEmpta_Text,
+                ShowPopup(Properties.Resources.Ds3ListEmpty_Title,
+                     Properties.Resources.Ds3ListEmpty_Text,
                      NotificationType.Warning);
             }
 
@@ -293,8 +324,8 @@ namespace ScpDriverInstaller
 
             if (_viewModel.InstallDualShock4Driver && !ds4SToInstall.Any())
             {
-                ShowPopup(Properties.Resources.Ds4ListEmpta_Title,
-                     Properties.Resources.Ds4ListEmpta_Text,
+                ShowPopup(Properties.Resources.Ds4ListEmpty_Title,
+                     Properties.Resources.Ds4ListEmpty_Text,
                      NotificationType.Warning);
             }
 
@@ -442,6 +473,10 @@ namespace ScpDriverInstaller
                             break;
                     }
                 }
+                catch (InvalidOperationException iopex)
+                {
+                    Log.ErrorFormat("Error during installation: {0}", iopex.Message);
+                }
                 catch (Exception ex)
                 {
                     Log.ErrorFormat("Error during installation: {0}", ex);
@@ -533,6 +568,12 @@ namespace ScpDriverInstaller
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // add popup-appender to all loggers
+            foreach (var currentLogger in LogManager.GetCurrentLoggers())
+            {
+                ((log4net.Repository.Hierarchy.Logger)currentLogger.Logger).AddAppender(this);
+            }
+
             // link download progress to progress bar
             RedistPackageInstaller.Instance.ProgressChanged +=
                 (o, args) => { Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage); };
@@ -544,6 +585,15 @@ namespace ScpDriverInstaller
                         .SelectMany(log => log.Logger.Repository.GetAppenders().OfType<NotifyAppender>()))
             {
                 LogTextBlock.DataContext = appender;
+            }
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            // remove popup-appender from all loggers
+            foreach (var currentLogger in LogManager.GetCurrentLoggers())
+            {
+                ((log4net.Repository.Hierarchy.Logger)currentLogger.Logger).RemoveAppender(this);
             }
         }
 

@@ -81,36 +81,36 @@ namespace ScpDriverInstaller.Properties {
         /// <summary>
         ///   Looks up a localized string similar to You chose to install the DualShock 3 drivers but you didn&apos;t select one or more devices from the device list!.
         /// </summary>
-        internal static string Ds3ListEmpta_Text {
+        internal static string Ds3ListEmpty_Text {
             get {
-                return ResourceManager.GetString("Ds3ListEmpta_Text", resourceCulture);
+                return ResourceManager.GetString("Ds3ListEmpty_Text", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No DualShock 3 controllers selected.
         /// </summary>
-        internal static string Ds3ListEmpta_Title {
+        internal static string Ds3ListEmpty_Title {
             get {
-                return ResourceManager.GetString("Ds3ListEmpta_Title", resourceCulture);
+                return ResourceManager.GetString("Ds3ListEmpty_Title", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to You chose to install the DualShock 4 drivers but you didn&apos;t select one or more devices from the device list!.
         /// </summary>
-        internal static string Ds4ListEmpta_Text {
+        internal static string Ds4ListEmpty_Text {
             get {
-                return ResourceManager.GetString("Ds4ListEmpta_Text", resourceCulture);
+                return ResourceManager.GetString("Ds4ListEmpty_Text", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No DualShock 4 controllers selected.
         /// </summary>
-        internal static string Ds4ListEmpta_Title {
+        internal static string Ds4ListEmpty_Title {
             get {
-                return ResourceManager.GetString("Ds4ListEmpta_Title", resourceCulture);
+                return ResourceManager.GetString("Ds4ListEmpty_Title", resourceCulture);
             }
         }
     }
