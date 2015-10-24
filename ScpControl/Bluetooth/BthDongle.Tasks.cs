@@ -420,6 +420,7 @@ namespace ScpControl.Bluetooth
             var buffer = new byte[512];
             var bdAddr = new byte[6];
             var bdLink = new byte[16];
+            var bdHandle = new byte[2];
 
             var transfered = 0;
             var command = HCI.Command.HCI_Null;
@@ -732,37 +733,24 @@ namespace ScpControl.Bluetooth
                                     for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
 
                                     transfered = HCI_Delete_Stored_Link_Key(bdAddr);
-                                    transfered = HCI_Remote_Name_Request(bdAddr);
+                                    transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);
                                     break;
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
-                                    bd = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", buffer[10],
-                                        buffer[9], buffer[8], buffer[7], buffer[6], buffer[5]);
-
-                                    if (!nameList.Any())
-                                        break;
-
-                                    connection = Add(buffer[3], (byte)(buffer[4] | 0x20), nameList[bd]);
-
-                                    #region Fake DS3 workaround
-
-                                    if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds && !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
+                                    if (buffer[2] == 00)  //buffer2 contains the status of connection_complete_ev. it's always 0 if succeed
                                     {
-                                        connection.IsFake = true;
-                                        Log.Warn("-- Fake DualShock 3 found. Workaround applied");
+                                        Log.InfoFormat("-- HCI_Connection_Complete_EV OK, status: {0:X2}", buffer[2]);
+                                        bdHandle[0] = buffer[3];  //saving the handle for later usage
+                                        bdHandle[1] = buffer[4];
+                                        transfered = HCI_Remote_Name_Request(bdAddr);  //only after connection completed with status 0 we request for controller's name.
                                     }
                                     else
                                     {
-                                        connection.IsFake = false;
-                                        Log.Info("-- Genuine Sony DualShock 3 found");
+                                        Log.WarnFormat("-- HCI_Connection_Complete_EV failed with status: {0:X2}. Connection handle:0x{1:X2}{2:X2}", buffer[2], buffer[4], buffer[3]);
+                                        //you might want to add some other command here to break or retry.
                                     }
 
-                                    #endregion
-
-                                    connection.RemoteName = nameList[bd];
-                                    nameList.Remove(bd);
-                                    connection.BdAddress = new[] { buffer[10], buffer[9], buffer[8], buffer[7], buffer[6], buffer[5] };
                                     break;
 
                                 case HCI.Event.HCI_Disconnection_Complete_EV:
@@ -802,7 +790,32 @@ namespace ScpControl.Bluetooth
                                     {
                                         nameList.Add(bd, nm.ToString());
 
-                                        transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);
+                                        // the code below is just cut-paste from "case HCI.Event.HCI_Connection_Complete_EV"
+                                        // just some adjustments made in the buffer variables
+
+                                        if (!nameList.Any())
+                                            break;
+
+                                        connection = Add(bdHandle[0], (byte)(bdHandle[1] | 0x20), nameList[bd]);  //using there the handles saved earlier
+
+                                        #region Fake DS3 workaround
+
+                                        if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds && !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
+                                        {
+                                            connection.IsFake = true;
+                                            Log.Warn("-- Fake DualShock 3 found. Workaround applied");
+                                        }
+                                        else
+                                        {
+                                            connection.IsFake = false;
+                                            Log.Info("-- Genuine Sony DualShock 3 found");
+                                        }
+
+                                        #endregion
+
+                                        connection.RemoteName = nameList[bd];
+                                        nameList.Remove(bd);
+                                        connection.BdAddress = new[] { buffer[8], buffer[7], buffer[6], buffer[5], buffer[4], buffer[3] };
                                     }
                                     else
                                     {
