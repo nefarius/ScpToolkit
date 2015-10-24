@@ -74,7 +74,7 @@ namespace ScpControl.Bluetooth
         }
 
         /// <summary>
-        ///     Gets or sets the current connections Destination Channel Identifier.
+        ///     Gets or sets the global Destination Channel Identifier.
         /// </summary>
         public static ushort Dcid
         {
