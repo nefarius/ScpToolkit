@@ -392,6 +392,8 @@ namespace ScpControl
 
                 foreach (var item in profile.Ds3Button.Keys.Where(item => (Out[0] & item) != Ds3Button.None))
                     Out[0] ^= item;
+                foreach (var item in profile.Ds3ButtonAnalogDirection.Keys.Where(item => (Out[0] & item) != Ds3Button.None))
+                    Out[0] ^= item;
                 Out[0] = profile.Ds3Button.Keys.Where(item => (In & item) != Ds3Button.None).Aggregate(Out[0], (current, item) => current | profile.Ds3Button[item]);
 
                 output[10] = (byte) ((uint) Out[0] >> 0 & 0xFF);
@@ -423,9 +425,6 @@ namespace ScpControl
                 }
 
                 // Map analog direction
-                foreach (var item in profile.Ds3ButtonAnalogDirection.Keys.Where(item => (Out[0] & item) != Ds3Button.None))
-                    Out[0] ^= item;
-
                 foreach (var item in profile.Ds3ButtonAnalogDirection.Values)
                     output[Math.Abs((int)item)] = 127;
 
