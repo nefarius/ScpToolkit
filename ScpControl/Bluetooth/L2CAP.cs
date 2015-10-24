@@ -30,5 +30,32 @@
             HID_Command = 0x11,
             HID_Interrupt = 0x13
         }
+
+        /// <summary>
+        ///     Possible values of Result field in CONNECTION RESPONSE (CODE 0x03)
+        /// </summary>
+        public enum ConnectionResponseResult
+        {
+            /// <summary>
+            ///     Connection successful.
+            /// </summary>
+            ConnectionSuccessful = 0x0000,
+            /// <summary>
+            ///     Connection pending.
+            /// </summary>
+            ConnectionPending = 0x0001,
+            /// <summary>
+            ///     Connection refused – PSM not supported.
+            /// </summary>
+            ConnectionRefusedPsmNotNupported = 0x0002,
+            /// <summary>
+            ///     Connection refused – security block.
+            /// </summary>
+            ConnectionRefusedSecurityBlock = 0x0003,
+            /// <summary>
+            ///     Connection refused – no resources available.
+            /// </summary>
+            ConnectionRefusedNoResourcesAvailable = 0x0004
+        }
     }
 }

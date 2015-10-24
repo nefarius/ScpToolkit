@@ -302,6 +302,11 @@ namespace ScpControl.Bluetooth
                                     L2CAP.Code.L2CAP_Configuration_Request,
                                     (byte) L2CAP.Code.L2CAP_Configuration_Request);
                             }
+                            else
+                            {
+                                // TODO: refine
+                                Log.ErrorFormat("L2CAP_Connection_Response failed: {0:X2}", buffer[16]);
+                            }
                             break;
 
                         #endregion
