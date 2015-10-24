@@ -19,7 +19,7 @@
   <Class Name="ScpControl.Bluetooth.BthDongle" Collapsed="true">
     <Position X="1.75" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AALEEAKUDCCAYQGcqSGi3TIGUIJAADIYICCKhDCIDAA=</HashCode>
+      <HashCode>AALEEAKVDCCAYQGcqSWi3TIGUIJAADIYICCKhDCIDAA=</HashCode>
       <FileName>Bluetooth\BthDongle.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -56,7 +56,7 @@
   <Class Name="ScpControl.BusDevice" Collapsed="true">
     <Position X="4" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ABAgAAAAACSBIAAIAAKkAAACAAAAKCQAIAAQBAiABAA=</HashCode>
+      <HashCode>AAAgAAAAACSBIAAIAAakAAACAAAAKCQAIAAQBAiABAA=</HashCode>
       <FileName>BusDevice.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -368,18 +368,18 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="ScpControl.ScpCore.HCI" Collapsed="true">
+  <Class Name="ScpControl.Bluetooth.HCI" Collapsed="true">
     <Position X="36.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpCore\HCI.cs</FileName>
+      <FileName>Bluetooth\HCI.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ScpControl.ScpCore.L2CAP" Collapsed="true">
+  <Class Name="ScpControl.Bluetooth.L2CAP" Collapsed="true">
     <Position X="31.5" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpCore\L2CAP.cs</FileName>
+      <FileName>Bluetooth\L2CAP.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ScpControl.ScpCore.ProfileCollection" Collapsed="true">
@@ -420,14 +420,14 @@
   <Class Name="ScpControl.Usb.Ds3.UsbDs3" Collapsed="true">
     <Position X="11.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACEACgAYAAQAgCAEAgGAAAAAAAAAEAAQAIAAAA=</HashCode>
+      <HashCode>AAAAAAAEACgAYAAQAgSAEAgGAAAAAAAAAEAAQAIAAAA=</HashCode>
       <FileName>Usb\Ds3\UsbDs3.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ScpControl.Usb.Ds4.UsbDs4" Collapsed="true">
     <Position X="19.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAACAACgAIAAAAgCAEAgGAAAAAAAKAAAACAMAAQA=</HashCode>
+      <HashCode>AAAAAAAAACgAIAAAAgSAEAgGAAAAAAAKAAAACAMAAQA=</HashCode>
       <FileName>Usb\Ds4\UsbDs4.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -441,7 +441,7 @@
   <Class Name="ScpControl.Usb.Gamepads.UsbBlankGamepad" Collapsed="true">
     <Position X="22" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAQABAgAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAgAAAAAAAAAABAAAAAAAAA=</HashCode>
       <FileName>Usb\Gamepads\UsbBlankGamepad.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -455,7 +455,7 @@
   <Class Name="ScpControl.Usb.Gamepads.UsbGenericGamepad" Collapsed="true">
     <Position X="10.75" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAgAIAAAAgAAAAAAAAAAAAAAIAAAAAIAAAA=</HashCode>
+      <HashCode>AAAAAIAAACgAIAAQAhQAABAAAIAQAAAAIAAAAAIAAAA=</HashCode>
       <FileName>Usb\Gamepads\UsbGenericGamepad.cs</FileName>
     </TypeIdentifier>
   </Class>

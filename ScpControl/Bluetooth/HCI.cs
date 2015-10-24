@@ -1,4 +1,4 @@
-﻿namespace ScpControl.ScpCore
+﻿namespace ScpControl.Bluetooth
 {
     /// <summary>
     ///     (Bluetooth) Host Controller Interface (HCI)

@@ -1,4 +1,4 @@
-﻿namespace ScpControl.ScpCore
+﻿namespace ScpControl.Bluetooth
 {
     /// <summary>
     ///     Logical link control and adaptation protocol (L2CAP)
