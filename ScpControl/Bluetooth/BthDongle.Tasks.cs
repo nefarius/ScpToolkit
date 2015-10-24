@@ -249,9 +249,9 @@ namespace ScpControl.Bluetooth
 
             if (packet.IsControlChannel) // Control Channel
             {
-                if (Enum.IsDefined(typeof (L2CAP.Code), buffer[8]))
+                if (packet.IsValidSignallingCommandCode)
                 {
-                    var Event = (L2CAP.Code) buffer[8];
+                    var Event = packet.SignallingCommandCode;
 
                     switch (Event)
                     {
