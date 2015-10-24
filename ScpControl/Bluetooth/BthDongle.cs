@@ -23,6 +23,7 @@ namespace ScpControl.Bluetooth
         private byte[] _localMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
+        private readonly ManualResetEvent _waitForConnectionComplete = new ManualResetEvent(false);
 
         #endregion
 
