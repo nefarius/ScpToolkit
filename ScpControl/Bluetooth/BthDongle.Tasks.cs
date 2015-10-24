@@ -280,13 +280,13 @@ namespace ScpControl.Bluetooth
                             if (buffer[16] == 0) // Success
                             {
                                 L2_SCID = new byte[2] { buffer[12], buffer[13] };
-                                Log.DebugFormat("L2_SCID = [{0:X2}, {1:X2}]", L2_SCID[0], L2_SCID[1]);
+                                Log.DebugFormat("-- L2_SCID = [{0:X2}, {1:X2}]", L2_SCID[0], L2_SCID[1]);
 
                                 L2_DCID = new byte[2] { buffer[14], buffer[15] };
-                                Log.DebugFormat("L2_DCID = [{0:X2}, {1:X2}]", L2_DCID[0], L2_DCID[1]);
+                                Log.DebugFormat("-- L2_DCID = [{0:X2}, {1:X2}]", L2_DCID[0], L2_DCID[1]);
 
                                 var DCID = (ushort)(buffer[15] << 8 | buffer[14]);
-                                Log.DebugFormat("DCID (shifted) = {0:X2}", DCID);
+                                Log.DebugFormat("-- DCID (shifted) = {0:X2}", DCID);
 
                                 connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
 
@@ -487,6 +487,7 @@ namespace ScpControl.Bluetooth
                                     if (command == HCI.Command.HCI_Reset && buffer[5] == 0 && !bStarted)
                                     {
                                         bStarted = true;
+                                        // TODO: do we really need this?
                                         Thread.Sleep(250);
 
                                         transfered = HCI_Read_BD_Addr();
@@ -730,7 +731,7 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Connection_Request_EV:
 
-                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
+                                    Buffer.BlockCopy(buffer, 2, bdAddr, 0, 6);
 
                                     transfered = HCI_Delete_Stored_Link_Key(bdAddr);
                                     transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);
@@ -760,10 +761,10 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Number_Of_Completed_Packets_EV:
 
-                                    for (byte Index = 0, Ptr = 3; Index < buffer[2]; Index++, Ptr += 4)
+                                    for (byte index = 0, ptr = 3; index < buffer[2]; index++, ptr += 4)
                                     {
-                                        OnCompletedCount(buffer[Ptr], (byte)(buffer[Ptr + 1] | 0x20),
-                                            (ushort)(buffer[Ptr + 2] | buffer[Ptr + 3] << 8));
+                                        OnCompletedCount(buffer[ptr], (byte)(buffer[ptr + 1] | 0x20),
+                                            (ushort)(buffer[ptr + 2] | buffer[ptr + 3] << 8));
                                     }
                                     break;
 
@@ -773,20 +774,22 @@ namespace ScpControl.Bluetooth
                                         buffer[6], buffer[5], buffer[4], buffer[3]);
                                     var nm = new StringBuilder();
 
-                                    for (var Index = 9; Index < buffer.Length; Index++)
+                                    // extract product name
+                                    for (var index = 9; index < buffer.Length; index++)
                                     {
-                                        if (buffer[Index] > 0) nm.Append((char)buffer[Index]);
+                                        if (buffer[index] > 0) nm.Append((char)buffer[index]);
                                         else break;
                                     }
 
-                                    var Name = nm.ToString();
+                                    var name = nm.ToString();
 
-                                    Log.InfoFormat("-- Remote Name : {0} - {1}", bd, Name);
+                                    Log.InfoFormat("-- Remote Name : {0} - {1}", bd, name);
 
-                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 3];
+                                    // extract MAC address
+                                    Buffer.BlockCopy(buffer, 3, bdAddr, 0, 6);
 
-                                    if (hci.SupportedNames.Any(n => Name.StartsWith(n))
-                                        || hci.SupportedNames.Any(n => Name == n))
+                                    if (hci.SupportedNames.Any(n => name.StartsWith(n))
+                                        || hci.SupportedNames.Any(n => name == n))
                                     {
                                         nameList.Add(bd, nm.ToString());
 
@@ -825,7 +828,7 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Link_Key_Request_EV:
 
-                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
+                                    Buffer.BlockCopy(buffer, 2, bdAddr, 0, 6);
 
                                     transfered = HCI_Link_Key_Request_Reply(bdAddr);
                                     transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
@@ -833,7 +836,7 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_PIN_Code_Request_EV:
 
-                                    for (var i = 0; i < 6; i++) bdAddr[i] = buffer[i + 2];
+                                    Buffer.BlockCopy(buffer, 2, bdAddr, 0, 6);
 
                                     transfered = HCI_PIN_Code_Request_Negative_Reply(bdAddr);
                                     break;
@@ -850,8 +853,8 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Link_Key_Notification_EV:
 
-                                    for (var Index = 0; Index < 6; Index++) bdAddr[Index] = buffer[Index + 2];
-                                    for (var Index = 0; Index < 16; Index++) bdLink[Index] = buffer[Index + 8];
+                                    Buffer.BlockCopy(buffer, 2, bdAddr, 0, 6);
+                                    Buffer.BlockCopy(buffer, 8, bdLink, 0, 16);
 
                                     transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
                                     break;
