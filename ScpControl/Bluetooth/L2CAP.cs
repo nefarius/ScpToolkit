@@ -58,5 +58,28 @@
             /// </summary>
             ConnectionRefusedNoResourcesAvailable = 0x0004
         }
+
+        /// <summary>
+        ///     Configuration Response Result codes
+        /// </summary>
+        public enum ConfigurationResponseResult : byte
+        {
+            /// <summary>
+            ///     Success
+            /// </summary>
+            Success = 0x0000,
+            /// <summary>
+            ///     Failure – unacceptable parameters
+            /// </summary>
+            FailureUnacceptableParameters = 0x0001,
+            /// <summary>
+            ///     Failure – rejected (no reason provided)
+            /// </summary>
+            FailureRejected = 0x0002,
+            /// <summary>
+            ///     Failure – unknown options
+            /// </summary>
+            FailureUnknownOptions = 0x0003
+        }
     }
 }
