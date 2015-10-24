@@ -4,14 +4,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using ScpControl.Properties;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
-
 
 namespace ScpControl.Bluetooth
 {
@@ -21,7 +18,7 @@ namespace ScpControl.Bluetooth
 
         private void L2CapWorker(object o)
         {
-            var token = (CancellationToken)o;
+            var token = (CancellationToken) o;
             var buffer = new byte[512];
 
             var transfered = 0;
@@ -72,7 +69,7 @@ namespace ScpControl.Bluetooth
 
 #if HID_REPORT_DUMP
 
-                        // for diagnostics only; dumps every received report to a file
+    // for diagnostics only; dumps every received report to a file
                         if (Settings.Default.DumpHidReports)
                             dumper.DumpArray(buffer, transfered);
 
@@ -119,9 +116,9 @@ namespace ScpControl.Bluetooth
 
             if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
             {
-                if (Enum.IsDefined(typeof(L2CAP.Code), buffer[8]))
+                if (Enum.IsDefined(typeof (L2CAP.Code), buffer[8]))
                 {
-                    var Event = (L2CAP.Code)buffer[8];
+                    var Event = (L2CAP.Code) buffer[8];
 
                     switch (Event)
                     {
@@ -134,21 +131,21 @@ namespace ScpControl.Bluetooth
 
                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
 
-                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
-                            L2_DCID = connection.SetConnectionType((L2CAP.PSM)buffer[12], L2_SCID);
+                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
+                            L2_DCID = connection.SetConnectionType((L2CAP.PSM) buffer[12], L2_SCID);
 
-                            if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM)buffer[12])
+                            if (L2CAP.PSM.HID_Interrupt == (L2CAP.PSM) buffer[12])
                             {
                                 connection.IsStarted = true;
                             }
 
                             L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID, L2_DCID, 0x00);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
-                                (byte)L2CAP.Code.L2CAP_Connection_Response);
+                                (byte) L2CAP.Code.L2CAP_Connection_Response);
 
                             L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                (byte)L2CAP.Code.L2CAP_Configuration_Request);
+                                (byte) L2CAP.Code.L2CAP_Configuration_Request);
                             break;
 
                         case L2CAP.Code.L2CAP_Connection_Response:
@@ -164,7 +161,7 @@ namespace ScpControl.Bluetooth
 
                             L2CAP_Configuration_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
-                                (byte)L2CAP.Code.L2CAP_Configuration_Response);
+                                (byte) L2CAP.Code.L2CAP_Configuration_Response);
 
                             if (connection.IsServiceStarted)
                             {
@@ -187,11 +184,11 @@ namespace ScpControl.Bluetooth
                             Log.DebugFormat(">> {0} [{1:X2}] Handle [{2:X2}{3:X2}]", Event, buffer[8], buffer[15],
                                 buffer[14]);
 
-                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
+                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
 
                             L2CAP_Disconnection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID, L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Response,
-                                (byte)L2CAP.Code.L2CAP_Disconnection_Response);
+                                (byte) L2CAP.Code.L2CAP_Disconnection_Response);
                             break;
 
                         case L2CAP.Code.L2CAP_Disconnection_Response:
@@ -245,9 +242,9 @@ namespace ScpControl.Bluetooth
 
             if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
             {
-                if (Enum.IsDefined(typeof(L2CAP.Code), buffer[8]))
+                if (Enum.IsDefined(typeof (L2CAP.Code), buffer[8]))
                 {
-                    var Event = (L2CAP.Code)buffer[8];
+                    var Event = (L2CAP.Code) buffer[8];
 
                     switch (Event)
                     {
@@ -260,17 +257,17 @@ namespace ScpControl.Bluetooth
 
                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
 
-                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
-                            L2_DCID = connection.SetConnectionType((L2CAP.PSM)buffer[12], L2_SCID);
+                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
+                            L2_DCID = connection.SetConnectionType((L2CAP.PSM) buffer[12], L2_SCID);
 
                             L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
                                 L2_DCID, 0x00);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
-                                (byte)L2CAP.Code.L2CAP_Connection_Response);
+                                (byte) L2CAP.Code.L2CAP_Connection_Response);
 
                             L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                (byte)L2CAP.Code.L2CAP_Configuration_Request);
+                                (byte) L2CAP.Code.L2CAP_Configuration_Request);
                             break;
 
                         case L2CAP.Code.L2CAP_Connection_Response:
@@ -279,13 +276,13 @@ namespace ScpControl.Bluetooth
 
                             if (buffer[16] == 0) // Success
                             {
-                                L2_SCID = new byte[2] { buffer[12], buffer[13] };
+                                L2_SCID = new byte[2] {buffer[12], buffer[13]};
                                 Log.DebugFormat("-- L2_SCID = [{0:X2}, {1:X2}]", L2_SCID[0], L2_SCID[1]);
 
-                                L2_DCID = new byte[2] { buffer[14], buffer[15] };
+                                L2_DCID = new byte[2] {buffer[14], buffer[15]};
                                 Log.DebugFormat("-- L2_DCID = [{0:X2}, {1:X2}]", L2_DCID[0], L2_DCID[1]);
 
-                                var DCID = (ushort)(buffer[15] << 8 | buffer[14]);
+                                var DCID = (ushort) (buffer[15] << 8 | buffer[14]);
                                 Log.DebugFormat("-- DCID (shifted) = {0:X2}", DCID);
 
                                 connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
@@ -293,7 +290,7 @@ namespace ScpControl.Bluetooth
                                 L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
                                 Log.DebugFormat("<< {0} [{1:X2}]",
                                     L2CAP.Code.L2CAP_Configuration_Request,
-                                    (byte)L2CAP.Code.L2CAP_Configuration_Request);
+                                    (byte) L2CAP.Code.L2CAP_Configuration_Request);
                             }
                             break;
 
@@ -305,7 +302,7 @@ namespace ScpControl.Bluetooth
 
                             L2CAP_Configuration_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Response,
-                                (byte)L2CAP.Code.L2CAP_Configuration_Response);
+                                (byte) L2CAP.Code.L2CAP_Configuration_Response);
 
                             if (connection.IsServiceStarted)
                             {
@@ -320,16 +317,17 @@ namespace ScpControl.Bluetooth
 
                             if (connection.CanStartService)
                             {
-                                UInt16 DCID = BthConnection.Dcid++;
-                                L2_DCID = new Byte[2] { (Byte)((DCID >> 0) & 0xFF), (Byte)((DCID >> 8) & 0xFF) };
+                                var DCID = BthConnection.Dcid++;
+                                L2_DCID = new byte[2] {(byte) ((DCID >> 0) & 0xFF), (byte) ((DCID >> 8) & 0xFF)};
 
                                 if (!connection.IsFake)
                                 {
-                                    L2CAP_Connection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_DCID, L2CAP.PSM.HID_Service);
+                                    L2CAP_Connection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_DCID,
+                                        L2CAP.PSM.HID_Service);
                                     Log.DebugFormat("<< {0} [{1:X2}] PSM [{2:X2}]",
                                         L2CAP.Code.L2CAP_Connection_Request,
-                                        (Byte)L2CAP.Code.L2CAP_Connection_Request,
-                                        (Byte)L2CAP.PSM.HID_Service);
+                                        (byte) L2CAP.Code.L2CAP_Connection_Request,
+                                        (byte) L2CAP.PSM.HID_Service);
                                 }
                                 else
                                 {
@@ -345,12 +343,12 @@ namespace ScpControl.Bluetooth
                             Log.DebugFormat(">> {0} [{1:X2}] Handle [{2:X2}{3:X2}]", Event, buffer[8],
                                 buffer[15], buffer[14]);
 
-                            L2_SCID = new byte[2] { buffer[14], buffer[15] };
+                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
 
                             L2CAP_Disconnection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
                                 L2_SCID);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Response,
-                                (byte)L2CAP.Code.L2CAP_Disconnection_Response);
+                                (byte) L2CAP.Code.L2CAP_Disconnection_Response);
                             break;
 
                         case L2CAP.Code.L2CAP_Disconnection_Response:
@@ -400,7 +398,7 @@ namespace ScpControl.Bluetooth
 
                 L2CAP_Disconnection_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID, L2_DCID);
                 Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Disconnection_Request,
-                    (byte)L2CAP.Code.L2CAP_Disconnection_Request);
+                    (byte) L2CAP.Code.L2CAP_Disconnection_Request);
             }
         }
 
@@ -410,7 +408,7 @@ namespace ScpControl.Bluetooth
         /// <param name="o">The cancellation token to request task abortion.</param>
         private void HicWorker(object o)
         {
-            var token = (CancellationToken)o;
+            var token = (CancellationToken) o;
             var nameList = new SortedDictionary<string, string>();
             var hci = IniConfig.Instance.Hci;
 
@@ -436,22 +434,22 @@ namespace ScpControl.Bluetooth
                 {
                     if (ReadIntPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
-                        if (Enum.IsDefined(typeof(HCI.Event), buffer[0]))
+                        if (Enum.IsDefined(typeof (HCI.Event), buffer[0]))
                         {
-                            var Event = (HCI.Event)buffer[0];
+                            var Event = (HCI.Event) buffer[0];
 
                             switch (Event)
                             {
                                 case HCI.Event.HCI_Command_Complete_EV:
 
-                                    command = (HCI.Command)(ushort)(buffer[3] | buffer[4] << 8);
+                                    command = (HCI.Command) (ushort) (buffer[3] | buffer[4] << 8);
                                     Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, buffer[0], buffer[5],
                                         command);
                                     break;
 
                                 case HCI.Event.HCI_Command_Status_EV:
 
-                                    command = (HCI.Command)(ushort)(buffer[4] | buffer[5] << 8);
+                                    command = (HCI.Command) (ushort) (buffer[4] | buffer[5] << 8);
                                     Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}] [{3}]", Event, buffer[0], buffer[2],
                                         command);
 
@@ -495,7 +493,8 @@ namespace ScpControl.Bluetooth
 
                                     if (command == HCI.Command.HCI_Read_BD_ADDR && buffer[5] == 0)
                                     {
-                                        _localMac = new[] { buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11] };
+                                        _localMac = new[]
+                                        {buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11]};
 
                                         transfered = HCI_Read_Buffer_Size();
                                     }
@@ -507,6 +506,8 @@ namespace ScpControl.Bluetooth
 
                                         transfered = HCI_Read_Local_Version_Info();
                                     }
+
+                                    #region Host version
 
                                     // incoming HCI firmware version information
                                     if (command == HCI.Command.HCI_Read_Local_Version_Info && buffer[5] == 0)
@@ -600,23 +601,26 @@ namespace ScpControl.Bluetooth
                                         // Bluetooth v2.0 + EDR
                                         if (hciMajor >= 3 && lmpMajor >= 3)
                                         {
-                                            Log.InfoFormat("Bluetooth host supports communication with DualShock 3 controllers");
+                                            Log.InfoFormat(
+                                                "Bluetooth host supports communication with DualShock 3 controllers");
                                         }
 
                                         // Bluetooth v2.1 + EDR
                                         if (hciMajor >= 4 && lmpMajor >= 4)
                                         {
-                                            Log.InfoFormat("Bluetooth host supports communication with DualShock 4 controllers");
+                                            Log.InfoFormat(
+                                                "Bluetooth host supports communication with DualShock 4 controllers");
                                         }
 
                                         // dongle effectively too old/unsupported 
                                         if (hciMajor < 3 || lmpMajor < 3)
                                         {
-                                            Log.FatalFormat("Unsupported Bluetooth Specification, aborting communication");
+                                            Log.FatalFormat(
+                                                "Unsupported Bluetooth Specification, aborting communication");
                                             transfered = HCI_Reset();
                                             break;
                                         }
-
+                                        
                                         // use simple pairing?
                                         if (GlobalConfiguration.Instance.DisableSSP)
                                         {
@@ -627,6 +631,8 @@ namespace ScpControl.Bluetooth
                                             transfered = HCI_Write_Simple_Pairing_Mode();
                                         }
                                     }
+                                    
+                                    #endregion
 
                                     if (command == HCI.Command.HCI_Write_Simple_Pairing_Mode)
                                     {
@@ -739,16 +745,20 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
-                                    if (buffer[2] == 0x00)  //buffer[2] contains the status of connection_complete_ev. it's always 0 if succeed
+                                    if (buffer[2] == 0x00)
+                                        //buffer[2] contains the status of connection_complete_ev. it's always 0 if succeed
                                     {
                                         Log.InfoFormat("-- HCI_Connection_Complete_EV OK, status: {0:X2}", buffer[2]);
-                                        bdHandle[0] = buffer[3];  //saving the handle for later usage
+                                        bdHandle[0] = buffer[3]; //saving the handle for later usage
                                         bdHandle[1] = buffer[4];
-                                        transfered = HCI_Remote_Name_Request(bdAddr);  //only after connection completed with status 0 we request for controller's name.
+                                        transfered = HCI_Remote_Name_Request(bdAddr);
+                                            //only after connection completed with status 0 we request for controller's name.
                                     }
                                     else
                                     {
-                                        Log.WarnFormat("-- HCI_Connection_Complete_EV failed with status: {0:X2}. Connection handle:0x{1:X2}{2:X2}", buffer[2], buffer[4], buffer[3]);
+                                        Log.WarnFormat(
+                                            "-- HCI_Connection_Complete_EV failed with status: {0:X2}. Connection handle:0x{1:X2}{2:X2}",
+                                            buffer[2], buffer[4], buffer[3]);
                                         // TODO: you might want to add some other command here to break or retry.
                                     }
 
@@ -756,15 +766,15 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Disconnection_Complete_EV:
 
-                                    Remove(buffer[3], (byte)(buffer[4] | 0x20));
+                                    Remove(buffer[3], (byte) (buffer[4] | 0x20));
                                     break;
 
                                 case HCI.Event.HCI_Number_Of_Completed_Packets_EV:
 
                                     for (byte index = 0, ptr = 3; index < buffer[2]; index++, ptr += 4)
                                     {
-                                        OnCompletedCount(buffer[ptr], (byte)(buffer[ptr + 1] | 0x20),
-                                            (ushort)(buffer[ptr + 2] | buffer[ptr + 3] << 8));
+                                        OnCompletedCount(buffer[ptr], (byte) (buffer[ptr + 1] | 0x20),
+                                            (ushort) (buffer[ptr + 2] | buffer[ptr + 3] << 8));
                                     }
                                     break;
 
@@ -777,7 +787,7 @@ namespace ScpControl.Bluetooth
                                     // extract product name
                                     for (var index = 9; index < buffer.Length; index++)
                                     {
-                                        if (buffer[index] > 0) nm.Append((char)buffer[index]);
+                                        if (buffer[index] > 0) nm.Append((char) buffer[index]);
                                         else break;
                                     }
 
@@ -799,11 +809,13 @@ namespace ScpControl.Bluetooth
                                         if (!nameList.Any())
                                             break;
 
-                                        connection = Add(bdHandle[0], (byte)(bdHandle[1] | 0x20), nameList[bd]);  //using there the handles saved earlier
+                                        connection = Add(bdHandle[0], (byte) (bdHandle[1] | 0x20), nameList[bd]);
+                                            //using there the handles saved earlier
 
                                         #region Fake DS3 workaround
 
-                                        if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds && !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
+                                        if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds &&
+                                            !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                         {
                                             connection.IsFake = true;
                                             Log.Warn("-- Fake DualShock 3 found. Workaround applied");
@@ -818,7 +830,8 @@ namespace ScpControl.Bluetooth
 
                                         connection.RemoteName = nameList[bd];
                                         nameList.Remove(bd);
-                                        connection.BdAddress = new[] { buffer[8], buffer[7], buffer[6], buffer[5], buffer[4], buffer[3] };
+                                        connection.BdAddress = new[]
+                                        {buffer[8], buffer[7], buffer[6], buffer[5], buffer[4], buffer[3]};
                                     }
                                     else
                                     {
