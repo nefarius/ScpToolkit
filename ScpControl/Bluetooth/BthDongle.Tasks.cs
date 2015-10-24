@@ -39,7 +39,7 @@ namespace ScpControl.Bluetooth
 
                         var packet = new L2CapDataPacket(buffer);
 
-                        var connection = GetConnection(buffer[0], buffer[1]);
+                        var connection = GetConnection(packet);
 
                         if (connection == null)
                         {
@@ -268,7 +268,7 @@ namespace ScpControl.Bluetooth
 
                         case L2CAP.Code.L2CAP_Connection_Request:
 
-                            Log.DebugFormat(">> {0} PSM [{1}]", Event, packet.ProtocolServiceMultiplexer);
+                            Log.DebugFormat(">> {0} with PSM [{1}]", Event, packet.ProtocolServiceMultiplexer);
 
                             L2_SCID = packet.SourceChannelIdentifier;
 
@@ -386,7 +386,7 @@ namespace ScpControl.Bluetooth
                                 {
                                     L2CAP_Connection_Request(connection.HciHandle.Bytes, _l2CapDataIdentifier++, L2_DCID,
                                         L2CAP.PSM.HID_Service);
-                                    Log.DebugFormat("<< {0} PSM [{1}]",
+                                    Log.DebugFormat("<< {0} with PSM [{1}]",
                                         L2CAP.Code.L2CAP_Connection_Request,
                                         L2CAP.PSM.HID_Service);
                                 }
