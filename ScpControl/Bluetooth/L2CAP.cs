@@ -163,7 +163,7 @@ namespace ScpControl.Bluetooth
                     case L2CAP.Code.L2CAP_Connection_Request:
                         return (L2CAP.PSM)RawBytes[12];
                     default:
-                        return default(byte);
+                        throw new NotSupportedException();
                 }
             }
         }
@@ -181,7 +181,7 @@ namespace ScpControl.Bluetooth
                     case L2CAP.Code.L2CAP_Configuration_Request:
                         return new byte[2] { RawBytes[12], RawBytes[13] };
                     default:
-                        return default(byte[]);
+                        throw new NotSupportedException();
                 }
             }
         }
@@ -195,7 +195,7 @@ namespace ScpControl.Bluetooth
                     case L2CAP.Code.L2CAP_Connection_Response:
                         return new byte[2] { RawBytes[14], RawBytes[15] };
                     default:
-                        return default(byte[]);
+                        throw new NotSupportedException();
                 }
             }
         }
@@ -214,7 +214,7 @@ namespace ScpControl.Bluetooth
                     case L2CAP.Code.L2CAP_Connection_Request:
                         return RawBytes[9];
                     default:
-                        return default(byte);
+                        throw new NotSupportedException();
                 }
             }
         }
@@ -228,7 +228,7 @@ namespace ScpControl.Bluetooth
                     case L2CAP.Code.L2CAP_Connection_Response:
                         return RawBytes[16];
                     default:
-                        return default(byte);
+                        throw new NotSupportedException();
                 }
             }
         }

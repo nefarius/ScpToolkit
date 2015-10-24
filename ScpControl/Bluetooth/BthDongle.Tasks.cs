@@ -268,25 +268,24 @@ namespace ScpControl.Bluetooth
 
                         case L2CAP.Code.L2CAP_Connection_Request:
 
-                            Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
+                            Log.DebugFormat(">> {0} PSM [{1}]", Event, packet.ProtocolServiceMultiplexer);
 
-                            L2_SCID = new byte[2] {buffer[14], buffer[15]};
+                            L2_SCID = packet.SourceChannelIdentifier;
 
                             // set HID command channel for current connection
-                            L2_DCID = connection.SetConnectionType((L2CAP.PSM) buffer[12], L2_SCID);
+                            L2_DCID = connection.SetConnectionType(packet.ProtocolServiceMultiplexer, L2_SCID);
 
                             // send connection response
-                            L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
-                                L2_DCID, L2CAP.ConnectionResponseResult.ConnectionSuccessful);
+                            L2CAP_Connection_Response(connection.HciHandle.Bytes,
+                                packet.PacketIdentifier, L2_SCID, L2_DCID,
+                                L2CAP.ConnectionResponseResult.ConnectionSuccessful);
 
-                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
-                                (byte) L2CAP.Code.L2CAP_Connection_Response);
+                            Log.DebugFormat("<< {0}", L2CAP.Code.L2CAP_Connection_Response);
 
                             // send configuration request
                             L2CAP_Configuration_Request(connection.HciHandle.Bytes, _l2CapDataIdentifier++, L2_SCID);
 
-                            Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
-                                (byte) L2CAP.Code.L2CAP_Configuration_Request);
+                            Log.DebugFormat("<< {0}", L2CAP.Code.L2CAP_Configuration_Request);
                             break;
 
                             #endregion
