@@ -480,6 +480,8 @@ namespace ScpControl.Bluetooth
 
                             switch (Event)
                             {
+                                #region HCI_Command_Complete_EV
+
                                 case HCI.Event.HCI_Command_Complete_EV:
 
                                     if (command == HCI.Command.HCI_Reset && buffer[5] == 0 && !bStarted)
@@ -735,6 +737,10 @@ namespace ScpControl.Bluetooth
                                     }
                                     break;
 
+                                #endregion
+
+                                #region HCI_Connection_Request_EV
+
                                 case HCI.Event.HCI_Connection_Request_EV:
 
                                     Buffer.BlockCopy(buffer, 2, bdAddr, 0, 6);
@@ -742,6 +748,10 @@ namespace ScpControl.Bluetooth
                                     transfered = HCI_Delete_Stored_Link_Key(bdAddr);
                                     transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);
                                     break;
+
+                                #endregion
+
+                                #region HCI_Connection_Complete_EV
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
@@ -764,10 +774,18 @@ namespace ScpControl.Bluetooth
 
                                     break;
 
+                                #endregion
+
+                                #region HCI_Disconnection_Complete_EV
+
                                 case HCI.Event.HCI_Disconnection_Complete_EV:
 
                                     Remove(buffer[3], (byte) (buffer[4] | 0x20));
                                     break;
+
+                                #endregion
+
+                                #region HCI_Number_Of_Completed_Packets_EV
 
                                 case HCI.Event.HCI_Number_Of_Completed_Packets_EV:
 
@@ -777,6 +795,8 @@ namespace ScpControl.Bluetooth
                                             (ushort) (buffer[ptr + 2] | buffer[ptr + 3] << 8));
                                     }
                                     break;
+
+                                #endregion
 
                                 case HCI.Event.HCI_Remote_Name_Request_Complete_EV:
 
@@ -839,6 +859,8 @@ namespace ScpControl.Bluetooth
                                     }
                                     break;
 
+                                #region HCI_Link_Key_Request_EV
+
                                 case HCI.Event.HCI_Link_Key_Request_EV:
 
                                     Buffer.BlockCopy(buffer, 2, bdAddr, 0, 6);
@@ -847,6 +869,10 @@ namespace ScpControl.Bluetooth
                                     transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
                                     break;
 
+                                #endregion
+
+                                #region HCI_PIN_Code_Request_EV
+
                                 case HCI.Event.HCI_PIN_Code_Request_EV:
 
                                     Buffer.BlockCopy(buffer, 2, bdAddr, 0, 6);
@@ -854,15 +880,27 @@ namespace ScpControl.Bluetooth
                                     transfered = HCI_PIN_Code_Request_Negative_Reply(bdAddr);
                                     break;
 
+                                #endregion
+
+                                #region HCI_IO_Capability_Request_EV
+
                                 case HCI.Event.HCI_IO_Capability_Request_EV:
 
                                     transfered = HCI_IO_Capability_Request_Reply(bdAddr);
                                     break;
 
+                                #endregion
+
+                                #region HCI_User_Confirmation_Request_EV
+
                                 case HCI.Event.HCI_User_Confirmation_Request_EV:
 
                                     transfered = HCI_User_Confirmation_Request_Reply(bdAddr);
                                     break;
+
+                                #endregion
+
+                                #region HCI_Link_Key_Notification_EV
 
                                 case HCI.Event.HCI_Link_Key_Notification_EV:
 
@@ -871,6 +909,8 @@ namespace ScpControl.Bluetooth
 
                                     transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
                                     break;
+
+                                #endregion
                             }
                         }
                     }
