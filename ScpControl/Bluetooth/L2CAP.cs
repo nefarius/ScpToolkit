@@ -1,4 +1,5 @@
-﻿namespace ScpControl.Bluetooth
+﻿using System;
+namespace ScpControl.Bluetooth
 {
     /// <summary>
     ///     Logical link control and adaptation protocol (L2CAP)
@@ -121,6 +122,115 @@
             HID_Service = 0x01,
             HID_Command = 0x11,
             HID_Interrupt = 0x13
+        }
+    }
+
+    public class L2CapDataPacket
+    {
+        public byte[] RawBytes { get; private set; }
+
+        public L2CapDataPacket(byte[] buffer)
+        {
+            RawBytes = buffer;
+        }
+
+        public bool IsControlChannel
+        {
+            get { return (RawBytes[6] == 0x01 && RawBytes[7] == 0x00); }
+        }
+
+        public bool IsValidSignallingCommandCode
+        {
+            get { return Enum.IsDefined(typeof(L2CAP.Code), RawBytes[8]); }
+        }
+
+        public bool IsHidInputReport
+        {
+            get { return (RawBytes[8] == 0xA1 && RawBytes[9] == 0x01); }
+        }
+
+        public L2CAP.Code SignallingCommandCode
+        {
+            get { return (L2CAP.Code)RawBytes[8]; }
+        }
+
+        public L2CAP.PSM ProtocolServiceMultiplexer
+        {
+            get
+            {
+                switch (SignallingCommandCode)
+                {
+                    case L2CAP.Code.L2CAP_Connection_Request:
+                        return (L2CAP.PSM)RawBytes[12];
+                    default:
+                        return default(byte);
+                }
+            }
+        }
+
+        public byte[] SourceChannelIdentifier
+        {
+            get
+            {
+                switch (SignallingCommandCode)
+                {
+                    case L2CAP.Code.L2CAP_Connection_Request:
+                    case L2CAP.Code.L2CAP_Disconnection_Request:
+                        return new byte[2] { RawBytes[14], RawBytes[15] };
+                    case L2CAP.Code.L2CAP_Connection_Response:
+                    case L2CAP.Code.L2CAP_Configuration_Request:
+                        return new byte[2] { RawBytes[12], RawBytes[13] };
+                    default:
+                        return default(byte[]);
+                }
+            }
+        }
+
+        public byte[] DestinationChannelIdentifier
+        {
+            get
+            {
+                switch (SignallingCommandCode)
+                {
+                    case L2CAP.Code.L2CAP_Connection_Response:
+                        return new byte[2] { RawBytes[14], RawBytes[15] };
+                    default:
+                        return default(byte[]);
+                }
+            }
+        }
+
+        public ushort DestinationChannelIdentifierUInt16
+        {
+            get { return (ushort)(DestinationChannelIdentifier[1] << 8 | DestinationChannelIdentifier[0]); }
+        }
+
+        public byte PacketIdentifier
+        {
+            get
+            {
+                switch (SignallingCommandCode)
+                {
+                    case L2CAP.Code.L2CAP_Connection_Request:
+                        return RawBytes[9];
+                    default:
+                        return default(byte);
+                }
+            }
+        }
+
+        public byte Result
+        {
+            get
+            {
+                switch (SignallingCommandCode)
+                {
+                    case L2CAP.Code.L2CAP_Connection_Response:
+                        return RawBytes[16];
+                    default:
+                        return default(byte);
+                }
+            }
         }
     }
 }

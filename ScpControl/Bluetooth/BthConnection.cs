@@ -199,10 +199,10 @@ namespace ScpControl.Bluetooth
         ///     Used in the L2CAP layer to indicate the channel endpoint on the device sending the L2CAP message. It is a
         ///     device local name only.
         /// </remarks>
-        /// <param name="lsb"></param>
-        /// <param name="msb"></param>
+        /// <param name="lsb">Least significant byte.</param>
+        /// <param name="msb">Most significant byte.</param>
         /// <returns></returns>
-        public virtual byte[] Get_SCID(byte lsb, byte msb)
+        public byte[] Get_SCID(byte lsb, byte msb)
         {
             if (_l2CapCommandHandle[1] != null && _l2CapCommandHandle[1].Equals(lsb, msb))
             {
@@ -231,7 +231,7 @@ namespace ScpControl.Bluetooth
         /// </remarks>
         /// <param name="connectionType"></param>
         /// <returns>Source Channel Identifier.</returns>
-        public virtual byte[] Get_SCID(L2CAP.PSM connectionType)
+        public byte[] Get_SCID(L2CAP.PSM connectionType)
         {
             switch (connectionType)
             {

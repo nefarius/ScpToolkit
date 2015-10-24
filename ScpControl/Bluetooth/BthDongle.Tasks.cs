@@ -245,7 +245,9 @@ namespace ScpControl.Bluetooth
             byte[] L2_DCID;
             byte[] L2_SCID;
 
-            if (buffer[6] == 0x01 && buffer[7] == 0x00) // Control Channel
+            var packet = new L2CapDataPacket(buffer);
+
+            if (packet.IsControlChannel) // Control Channel
             {
                 if (Enum.IsDefined(typeof (L2CAP.Code), buffer[8]))
                 {
@@ -474,7 +476,7 @@ namespace ScpControl.Bluetooth
                     }
                 }
             }
-            else if (buffer[8] == 0xA1 && buffer[9] == 0x01 && transfered == 58)
+            else if (packet.IsHidInputReport)
             {
                 // HID report received, parse content and extract gamepad data
                 connection.ParseHidReport(buffer);

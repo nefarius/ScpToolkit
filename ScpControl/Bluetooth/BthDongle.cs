@@ -240,6 +240,13 @@ namespace ScpControl.Bluetooth
             return (!_connected.Any() | !_connected.ContainsKey(hande)) ? null : _connected[hande];
         }
 
+        private BthDevice GetConnection(L2CapDataPacket packet)
+        {
+            var raw = packet.RawBytes;
+
+            return GetConnection(raw[0], raw[1]);
+        }
+
         private void Remove(byte lsb, byte msb)
         {
             var connection = new BthHandle(lsb, msb);
