@@ -53,7 +53,7 @@ namespace ScpControl.Bluetooth
                         }
                         else
                         {
-                            ParseBufferDs3(connection, packet, transfered);
+                            ParseBufferDs3(connection, packet);
                         }
                     }
                 }
@@ -240,9 +240,8 @@ namespace ScpControl.Bluetooth
         ///     Parses an incoming DualShock 3 HID report.
         /// </summary>
         /// <param name="connection">The device handle the input buffer was received for.</param>
-        /// <param name="buffer">The HID report in bytes.</param>
-        /// <param name="transfered">The transfered bytes count.</param>
-        private void ParseBufferDs3(BthDevice connection, L2CapDataPacket packet, int transfered)
+        /// <param name="packet">The L2CAP data packet.</param>
+        private void ParseBufferDs3(BthDevice connection, L2CapDataPacket packet)
         {
             byte[] L2_DCID;
             byte[] L2_SCID;
