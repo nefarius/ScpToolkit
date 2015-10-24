@@ -5,6 +5,9 @@
     /// </summary>
     public static class L2CAP
     {
+        /// <summary>
+        ///     Signalling Command Codes
+        /// </summary>
         public enum Code : byte
         {
             L2CAP_Reserved = 0x00,
