@@ -30,7 +30,7 @@ namespace ScpControl.Bluetooth
                     if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
                     {
                         // this prevents a race condition where the connection could be null
-                        // TODO: causes a short hickup on all connection, improve
+                        // TODO: causes a short hickup on all connections, improve
                         _waitForConnectionComplete.WaitOne();
 
                         var connection = GetConnection(buffer[0], buffer[1]);
