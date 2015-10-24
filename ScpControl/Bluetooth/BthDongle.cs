@@ -18,7 +18,7 @@ namespace ScpControl.Bluetooth
         private CancellationTokenSource _hciCancellationTokenSource = new CancellationTokenSource();
         private CancellationTokenSource _l2CapCancellationTokenSource = new CancellationTokenSource();
         private string _hciVersion = string.Empty;
-        private byte _hidReportId = 0x01;
+        private byte _l2CapDataIdentifier = 0x01;
         private string _lmpVersion = string.Empty;
         private byte[] _localMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         private DsState _state = DsState.Disconnected;
