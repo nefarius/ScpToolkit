@@ -8,10 +8,25 @@
         public enum Command : ushort
         {
             HCI_Null = 0x0000,
+            /// <summary>
+            ///     Command to accept a new connection request.
+            /// </summary>
             HCI_Accept_Connection_Request = 0x0409,
+            /// <summary>
+            ///     Command to reject a new connection request.
+            /// </summary>
             HCI_Reject_Connection_Request = 0x040A,
+            /// <summary>
+            ///     Command to determine the user friendly name of the connected device.
+            /// </summary>
             HCI_Remote_Name_Request = 0x0419,
+            /// <summary>
+            ///     Command to reset the host controller, link manager and the radio module.
+            /// </summary>
             HCI_Reset = 0x0C03,
+            /// <summary>
+            ///     Command to set the status of the Scan_Enable configuration.
+            /// </summary>
             HCI_Write_Scan_Enable = 0x0C1A,
             HCI_Read_Buffer_Size = 0x1005,
             HCI_Read_BD_ADDR = 0x1009,
