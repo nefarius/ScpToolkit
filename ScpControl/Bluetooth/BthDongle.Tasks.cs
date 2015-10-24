@@ -738,7 +738,7 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
-                                    if (buffer[2] == 00)  //buffer2 contains the status of connection_complete_ev. it's always 0 if succeed
+                                    if (buffer[2] == 0x00)  //buffer[2] contains the status of connection_complete_ev. it's always 0 if succeed
                                     {
                                         Log.InfoFormat("-- HCI_Connection_Complete_EV OK, status: {0:X2}", buffer[2]);
                                         bdHandle[0] = buffer[3];  //saving the handle for later usage
@@ -748,7 +748,7 @@ namespace ScpControl.Bluetooth
                                     else
                                     {
                                         Log.WarnFormat("-- HCI_Connection_Complete_EV failed with status: {0:X2}. Connection handle:0x{1:X2}{2:X2}", buffer[2], buffer[4], buffer[3]);
-                                        //you might want to add some other command here to break or retry.
+                                        // TODO: you might want to add some other command here to break or retry.
                                     }
 
                                     break;

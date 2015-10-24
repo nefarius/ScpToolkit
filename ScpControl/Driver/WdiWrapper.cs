@@ -265,17 +265,18 @@ namespace ScpControl.Driver
                     // translate device info to managed object
                     var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
 
-                    int desc_size = 0;
-                    while (Marshal.ReadByte(info.desc, desc_size) != 0) ++desc_size;
-                    byte[] desc_bytes = new byte[desc_size];
-                    Marshal.Copy(info.desc, desc_bytes, 0, desc_size);
+                    // get raw bytes from description pointer
+                    var descSize = 0;
+                    while (Marshal.ReadByte(info.desc, descSize) != 0) ++descSize;
+                    var descBytes = new byte[descSize];
+                    Marshal.Copy(info.desc, descBytes, 0, descSize);
 
                     // put info in managed object
                     var wdiDevice = new WdiUsbDevice()
                     {
                         VendorId = info.vid,
                         ProductId = info.pid,
-                        Description = System.Text.Encoding.UTF8.GetString(desc_bytes),
+                        Description = System.Text.Encoding.UTF8.GetString(descBytes),
                         DeviceId = info.device_id,
                         HardwareId = info.hardware_id,
                         CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
