@@ -222,6 +222,11 @@ namespace ScpControl.Bluetooth
             throw new Exception("L2CAP SCID Not Found");
         }
 
+        public byte[] Get_SCID(byte[] buffer)
+        {
+            return Get_SCID(buffer[0], buffer[1]);
+        }
+
         /// <summary>
         ///     Source Channel Identifier.
         /// </summary>

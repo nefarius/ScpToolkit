@@ -125,8 +125,14 @@ namespace ScpControl.Bluetooth
         }
     }
 
+    /// <summary>
+    ///     Wrapper class for L2CAP packets.
+    /// </summary>
     public class L2CapDataPacket
     {
+        /// <summary>
+        ///     Native (raw) byte buffer.
+        /// </summary>
         public byte[] RawBytes { get; private set; }
 
         public L2CapDataPacket(byte[] buffer)
@@ -134,26 +140,41 @@ namespace ScpControl.Bluetooth
             RawBytes = buffer;
         }
 
+        /// <summary>
+        ///     True if this packet is for the control channel, false otherwise.
+        /// </summary>
         public bool IsControlChannel
         {
             get { return (RawBytes[6] == 0x01 && RawBytes[7] == 0x00); }
         }
 
+        /// <summary>
+        ///     True if the current <see cref="SignallingCommandCode">SignallingCommandCode</see> is implemented, false otherwise.
+        /// </summary>
         public bool IsValidSignallingCommandCode
         {
             get { return Enum.IsDefined(typeof(L2CAP.Code), RawBytes[8]); }
         }
 
+        /// <summary>
+        ///     True if the current packet resembles a HID Input Report, false otherwise.
+        /// </summary>
         public bool IsHidInputReport
         {
             get { return (RawBytes[8] == 0xA1 && RawBytes[9] == 0x01); }
         }
 
+        /// <summary>
+        ///     The current packets Signalling Command Code.
+        /// </summary>
         public L2CAP.Code SignallingCommandCode
         {
             get { return (L2CAP.Code)RawBytes[8]; }
         }
 
+        /// <summary>
+        ///     The current packets Protocol Service Multiplexer.
+        /// </summary>
         public L2CAP.PSM ProtocolServiceMultiplexer
         {
             get
@@ -168,6 +189,9 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        /// <summary>
+        ///     The current packets Source Channel Identifier.
+        /// </summary>
         public byte[] SourceChannelIdentifier
         {
             get
@@ -186,6 +210,9 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        /// <summary>
+        ///     The current packets Destination Channel Identifier.
+        /// </summary>
         public byte[] DestinationChannelIdentifier
         {
             get
@@ -200,11 +227,17 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        /// <summary>
+        ///     The current packets Destination Channel Identifier as an unsigned 16-bit integer.
+        /// </summary>
         public ushort DestinationChannelIdentifierUInt16
         {
             get { return (ushort)(DestinationChannelIdentifier[1] << 8 | DestinationChannelIdentifier[0]); }
         }
 
+        /// <summary>
+        ///     The current packets reference identifier.
+        /// </summary>
         public byte PacketIdentifier
         {
             get
@@ -212,6 +245,7 @@ namespace ScpControl.Bluetooth
                 switch (SignallingCommandCode)
                 {
                     case L2CAP.Code.L2CAP_Connection_Request:
+                    case L2CAP.Code.L2CAP_Configuration_Request:
                         return RawBytes[9];
                     default:
                         throw new NotSupportedException();
@@ -219,6 +253,9 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        /// <summary>
+        ///     The current commands result.
+        /// </summary>
         public byte Result
         {
             get
@@ -231,6 +268,16 @@ namespace ScpControl.Bluetooth
                         throw new NotSupportedException();
                 }
             }
+        }
+
+        /// <summary>
+        ///     Converts an unsigned 16-bit integer to a byte array.
+        /// </summary>
+        /// <param name="source">The 16-bit integer.</param>
+        /// <returns>The byte array.</returns>
+        public static byte[] UInt16ToBytes(ushort source)
+        {
+            return new byte[2] { (byte)((source >> 0) & 0xFF), (byte)((source >> 8) & 0xFF) };
         }
     }
 }
