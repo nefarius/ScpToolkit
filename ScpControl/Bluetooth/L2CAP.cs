@@ -245,7 +245,9 @@ namespace ScpControl.Bluetooth
                 switch (SignallingCommandCode)
                 {
                     case L2CAP.Code.L2CAP_Connection_Request:
+                    case L2CAP.Code.L2CAP_Connection_Response:
                     case L2CAP.Code.L2CAP_Configuration_Request:
+                    case L2CAP.Code.L2CAP_Configuration_Response:
                         return RawBytes[9];
                     default:
                         throw new NotSupportedException();
