@@ -12,6 +12,10 @@ namespace ScpControl.Bluetooth
     {
         #region Worker Threads
 
+        /// <summary>
+        ///     Main task listening for incoming L2CAP data on the bulk pipe.
+        /// </summary>
+        /// <param name="o">Cancellation token to abort the tasks inner loop.</param>
         private void L2CapWorker(object o)
         {
             var token = (CancellationToken) o;
@@ -78,16 +82,16 @@ namespace ScpControl.Bluetooth
 
                     switch (Event)
                     {
-                        #region L2CAP_Command_Reject
+                            #region L2CAP_Command_Reject
 
                         case L2CAP.Code.L2CAP_Command_Reject:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Connection_Request
+                            #region L2CAP_Connection_Request
 
                         case L2CAP.Code.L2CAP_Connection_Request:
 
@@ -101,7 +105,8 @@ namespace ScpControl.Bluetooth
                                 connection.IsStarted = true;
                             }
 
-                            L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID, L2_DCID, 0x00);
+                            L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID, L2_DCID,
+                                L2CAP.ConnectionResponseResult.ConnectionSuccessful);
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
                                 (byte) L2CAP.Code.L2CAP_Connection_Response);
 
@@ -110,18 +115,18 @@ namespace ScpControl.Bluetooth
                                 (byte) L2CAP.Code.L2CAP_Configuration_Request);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Connection_Response
+                            #region L2CAP_Connection_Response
 
                         case L2CAP.Code.L2CAP_Connection_Response:
 
                             Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}]", Event, buffer[8], buffer[16]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Configuration_Request
+                            #region L2CAP_Configuration_Request
 
                         case L2CAP.Code.L2CAP_Configuration_Request:
 
@@ -139,9 +144,9 @@ namespace ScpControl.Bluetooth
                             }
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Configuration_Response
+                            #region L2CAP_Configuration_Response
 
                         case L2CAP.Code.L2CAP_Configuration_Response:
 
@@ -153,9 +158,9 @@ namespace ScpControl.Bluetooth
                             }
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Disconnection_Request
+                            #region L2CAP_Disconnection_Request
 
                         case L2CAP.Code.L2CAP_Disconnection_Request:
 
@@ -169,52 +174,52 @@ namespace ScpControl.Bluetooth
                                 (byte) L2CAP.Code.L2CAP_Disconnection_Response);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Disconnection_Response
+                            #region L2CAP_Disconnection_Response
 
                         case L2CAP.Code.L2CAP_Disconnection_Response:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Echo_Request
+                            #region L2CAP_Echo_Request
 
                         case L2CAP.Code.L2CAP_Echo_Request:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Echo_Response
+                            #region L2CAP_Echo_Response
 
                         case L2CAP.Code.L2CAP_Echo_Response:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Information_Request
+                            #region L2CAP_Information_Request
 
                         case L2CAP.Code.L2CAP_Information_Request:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Information_Response
+                            #region L2CAP_Information_Response
 
                         case L2CAP.Code.L2CAP_Information_Response:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
                     }
                 }
             }
@@ -248,70 +253,106 @@ namespace ScpControl.Bluetooth
 
                     switch (Event)
                     {
-                        #region L2CAP_Command_Reject
+                            #region L2CAP_Command_Reject
 
                         case L2CAP.Code.L2CAP_Command_Reject:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Connection_Request
+                            #region L2CAP_Connection_Request
 
                         case L2CAP.Code.L2CAP_Connection_Request:
 
                             Log.DebugFormat(">> {0} [{1:X2}] PSM [{2:X2}]", Event, buffer[8], buffer[12]);
 
                             L2_SCID = new byte[2] {buffer[14], buffer[15]};
+
+                            // set HID command channel for current connection
                             L2_DCID = connection.SetConnectionType((L2CAP.PSM) buffer[12], L2_SCID);
 
+                            // send connection response
                             L2CAP_Connection_Response(connection.HciHandle.Bytes, buffer[9], L2_SCID,
-                                L2_DCID, 0x00);
+                                L2_DCID, L2CAP.ConnectionResponseResult.ConnectionSuccessful);
+
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Connection_Response,
                                 (byte) L2CAP.Code.L2CAP_Connection_Response);
 
+                            // send configuration request
                             L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
+
                             Log.DebugFormat("<< {0} [{1:X2}]", L2CAP.Code.L2CAP_Configuration_Request,
                                 (byte) L2CAP.Code.L2CAP_Configuration_Request);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Connection_Response
+                            #region L2CAP_Connection_Response
 
                         case L2CAP.Code.L2CAP_Connection_Response:
 
                             Log.DebugFormat(">> {0} [{1:X2}] [{2:X2}]", Event, buffer[8], buffer[16]);
 
-                            if (buffer[16] == 0) // Success
+                            var result = (L2CAP.ConnectionResponseResult) buffer[16];
+
+                            L2_SCID = new byte[2] {buffer[12], buffer[13]};
+                            Log.DebugFormat("-- L2_SCID = [{0:X2}, {1:X2}]", L2_SCID[0], L2_SCID[1]);
+
+                            L2_DCID = new byte[2] {buffer[14], buffer[15]};
+                            Log.DebugFormat("-- L2_DCID = [{0:X2}, {1:X2}]", L2_DCID[0], L2_DCID[1]);
+
+                            // interpret result
+                            switch (result)
                             {
-                                L2_SCID = new byte[2] {buffer[12], buffer[13]};
-                                Log.DebugFormat("-- L2_SCID = [{0:X2}, {1:X2}]", L2_SCID[0], L2_SCID[1]);
+                                case L2CAP.ConnectionResponseResult.ConnectionSuccessful:
 
-                                L2_DCID = new byte[2] {buffer[14], buffer[15]};
-                                Log.DebugFormat("-- L2_DCID = [{0:X2}, {1:X2}]", L2_DCID[0], L2_DCID[1]);
+                                    // destination channel identifier
+                                    var DCID = (ushort) (buffer[15] << 8 | buffer[14]);
+                                    Log.DebugFormat("-- DCID (shifted) = {0:X2}", DCID);
 
-                                var DCID = (ushort) (buffer[15] << 8 | buffer[14]);
-                                Log.DebugFormat("-- DCID (shifted) = {0:X2}", DCID);
+                                    // set HID service channel for current connection
+                                    connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
 
-                                connection.SetConnectionType(L2CAP.PSM.HID_Service, L2_SCID[0], L2_SCID[1], DCID);
+                                    // send configuration request
+                                    L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
 
-                                L2CAP_Configuration_Request(connection.HciHandle.Bytes, _hidReportId++, L2_SCID);
-                                Log.DebugFormat("<< {0} [{1:X2}]",
-                                    L2CAP.Code.L2CAP_Configuration_Request,
-                                    (byte) L2CAP.Code.L2CAP_Configuration_Request);
+                                    Log.DebugFormat("<< {0} [{1:X2}]",
+                                        L2CAP.Code.L2CAP_Configuration_Request,
+                                        (byte) L2CAP.Code.L2CAP_Configuration_Request);
+                                    break;
+                                case L2CAP.ConnectionResponseResult.ConnectionPending:
+
+                                    Log.InfoFormat("-- Connection pending for pad {0}", connection.PadId.ToString().ToLower());
+                                    break;
+                                case L2CAP.ConnectionResponseResult.ConnectionRefusedPsmNotNupported:
+
+                                    Log.ErrorFormat(
+                                        "Requested Protocol Service Multiplexer not supported on device {0}",
+                                        connection.Remote);
+                                    break;
+                                case L2CAP.ConnectionResponseResult.ConnectionRefusedSecurityBlock:
+
+                                    Log.ErrorFormat("Connection refused for security reasons on device {0}",
+                                        connection.Remote);
+                                    break;
+                                case L2CAP.ConnectionResponseResult.ConnectionRefusedNoResourcesAvailable:
+
+                                    Log.ErrorFormat("Connection failed for device {0}: no resources available",
+                                        connection.Remote);
+                                    break;
+
+                                default:
+                                    Log.WarnFormat("Unknown result: {0}", result);
+                                    break;
                             }
-                            else
-                            {
-                                // TODO: refine
-                                Log.ErrorFormat("L2CAP_Connection_Response failed: {0:X2}", buffer[16]);
-                            }
+
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Configuration_Request
+                            #region L2CAP_Configuration_Request
 
                         case L2CAP.Code.L2CAP_Configuration_Request:
 
@@ -330,9 +371,9 @@ namespace ScpControl.Bluetooth
                             }
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Configuration_Response
+                            #region L2CAP_Configuration_Response
 
                         case L2CAP.Code.L2CAP_Configuration_Response:
 
@@ -361,9 +402,9 @@ namespace ScpControl.Bluetooth
                             }
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Disconnection_Request
+                            #region L2CAP_Disconnection_Request
 
                         case L2CAP.Code.L2CAP_Disconnection_Request:
 
@@ -378,9 +419,9 @@ namespace ScpControl.Bluetooth
                                 (byte) L2CAP.Code.L2CAP_Disconnection_Response);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Disconnection_Response
+                            #region L2CAP_Disconnection_Response
 
                         case L2CAP.Code.L2CAP_Disconnection_Response:
 
@@ -393,43 +434,43 @@ namespace ScpControl.Bluetooth
                             }
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Echo_Request
+                            #region L2CAP_Echo_Request
 
                         case L2CAP.Code.L2CAP_Echo_Request:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Echo_Response
+                            #region L2CAP_Echo_Response
 
                         case L2CAP.Code.L2CAP_Echo_Response:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Information_Request
+                            #region L2CAP_Information_Request
 
                         case L2CAP.Code.L2CAP_Information_Request:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
 
-                        #region L2CAP_Information_Response
+                            #region L2CAP_Information_Response
 
                         case L2CAP.Code.L2CAP_Information_Response:
 
                             Log.DebugFormat(">> {0} [{1:X2}]", Event, buffer[8]);
                             break;
 
-                        #endregion
+                            #endregion
                     }
                 }
             }
@@ -530,7 +571,7 @@ namespace ScpControl.Bluetooth
 
                             switch (Event)
                             {
-                                #region HCI_Command_Complete_EV
+                                    #region HCI_Command_Complete_EV
 
                                 case HCI.Event.HCI_Command_Complete_EV:
 
@@ -672,7 +713,7 @@ namespace ScpControl.Bluetooth
                                             transfered = HCI_Reset();
                                             break;
                                         }
-                                        
+
                                         // use simple pairing?
                                         if (GlobalConfiguration.Instance.DisableSSP)
                                         {
@@ -683,7 +724,7 @@ namespace ScpControl.Bluetooth
                                             transfered = HCI_Write_Simple_Pairing_Mode();
                                         }
                                     }
-                                    
+
                                     #endregion
 
                                     if (command == HCI.Command.HCI_Write_Simple_Pairing_Mode)
@@ -787,9 +828,9 @@ namespace ScpControl.Bluetooth
                                     }
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_Connection_Request_EV
+                                    #region HCI_Connection_Request_EV
 
                                 case HCI.Event.HCI_Connection_Request_EV:
 
@@ -801,9 +842,9 @@ namespace ScpControl.Bluetooth
                                     _waitForConnectionComplete.Reset();
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_Connection_Complete_EV
+                                    #region HCI_Connection_Complete_EV
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
@@ -814,7 +855,7 @@ namespace ScpControl.Bluetooth
                                         bdHandle[0] = buffer[3]; //saving the handle for later usage
                                         bdHandle[1] = buffer[4];
                                         transfered = HCI_Remote_Name_Request(bdAddr);
-                                            //only after connection completed with status 0 we request for controller's name.
+                                        //only after connection completed with status 0 we request for controller's name.
                                     }
                                     else
                                     {
@@ -826,18 +867,18 @@ namespace ScpControl.Bluetooth
 
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_Disconnection_Complete_EV
+                                    #region HCI_Disconnection_Complete_EV
 
                                 case HCI.Event.HCI_Disconnection_Complete_EV:
 
                                     Remove(buffer[3], (byte) (buffer[4] | 0x20));
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_Number_Of_Completed_Packets_EV
+                                    #region HCI_Number_Of_Completed_Packets_EV
 
                                 case HCI.Event.HCI_Number_Of_Completed_Packets_EV:
 
@@ -848,7 +889,7 @@ namespace ScpControl.Bluetooth
                                     }
                                     break;
 
-                                #endregion
+                                    #endregion
 
                                 case HCI.Event.HCI_Remote_Name_Request_Complete_EV:
 
@@ -882,7 +923,7 @@ namespace ScpControl.Bluetooth
                                             break;
 
                                         connection = Add(bdHandle[0], (byte) (bdHandle[1] | 0x20), nameList[bd]);
-                                            //using there the handles saved earlier
+                                        //using there the handles saved earlier
 
                                         // signal L2CAP task to continue
                                         _waitForConnectionComplete.Set();
@@ -914,7 +955,7 @@ namespace ScpControl.Bluetooth
                                     }
                                     break;
 
-                                #region HCI_Link_Key_Request_EV
+                                    #region HCI_Link_Key_Request_EV
 
                                 case HCI.Event.HCI_Link_Key_Request_EV:
 
@@ -924,9 +965,9 @@ namespace ScpControl.Bluetooth
                                     transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_PIN_Code_Request_EV
+                                    #region HCI_PIN_Code_Request_EV
 
                                 case HCI.Event.HCI_PIN_Code_Request_EV:
 
@@ -935,27 +976,27 @@ namespace ScpControl.Bluetooth
                                     transfered = HCI_PIN_Code_Request_Negative_Reply(bdAddr);
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_IO_Capability_Request_EV
+                                    #region HCI_IO_Capability_Request_EV
 
                                 case HCI.Event.HCI_IO_Capability_Request_EV:
 
                                     transfered = HCI_IO_Capability_Request_Reply(bdAddr);
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_User_Confirmation_Request_EV
+                                    #region HCI_User_Confirmation_Request_EV
 
                                 case HCI.Event.HCI_User_Confirmation_Request_EV:
 
                                     transfered = HCI_User_Confirmation_Request_Reply(bdAddr);
                                     break;
 
-                                #endregion
+                                    #endregion
 
-                                #region HCI_Link_Key_Notification_EV
+                                    #region HCI_Link_Key_Notification_EV
 
                                 case HCI.Event.HCI_Link_Key_Notification_EV:
 
@@ -965,7 +1006,7 @@ namespace ScpControl.Bluetooth
                                     transfered = HCI_Set_Connection_Encryption(connection.HciHandle);
                                     break;
 
-                                #endregion
+                                    #endregion
                             }
                         }
                     }

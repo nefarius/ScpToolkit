@@ -34,7 +34,8 @@
         /// <summary>
         ///     Possible values of Result field in CONNECTION RESPONSE (CODE 0x03)
         /// </summary>
-        public enum ConnectionResponseResult
+        /// <remarks>According to the specification, this should be a 2-byte value but currently only the LSB is used.</remarks>
+        public enum ConnectionResponseResult : byte
         {
             /// <summary>
             ///     Connection successful.

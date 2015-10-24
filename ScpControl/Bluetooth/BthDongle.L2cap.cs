@@ -53,7 +53,7 @@ namespace ScpControl.Bluetooth
             return L2CAP_Command(handle, buffer);
         }
 
-        private int L2CAP_Connection_Response(byte[] handle, byte id, byte[] dcid, byte[] scid, byte result)
+        private int L2CAP_Connection_Response(byte[] handle, byte id, byte[] dcid, byte[] scid, L2CAP.ConnectionResponseResult result)
         {
             var buffer = new byte[12];
 
@@ -65,7 +65,7 @@ namespace ScpControl.Bluetooth
             buffer[5] = scid[1];
             buffer[6] = dcid[0];
             buffer[7] = dcid[1];
-            buffer[8] = result;
+            buffer[8] = (byte)result;
             buffer[9] = 0x00;
             buffer[10] = 0x00;
             buffer[11] = 0x00;
