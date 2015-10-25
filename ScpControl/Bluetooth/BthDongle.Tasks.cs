@@ -848,14 +848,17 @@ namespace ScpControl.Bluetooth
 
                                 case HCI.Event.HCI_Connection_Complete_EV:
 
+                                    //buffer[2] contains the status of connection_complete_ev. it's always 0 if succeed
                                     if (buffer[2] == 0x00)
-                                        //buffer[2] contains the status of connection_complete_ev. it's always 0 if succeed
                                     {
                                         Log.InfoFormat("-- HCI_Connection_Complete_EV OK, status: {0:X2}", buffer[2]);
-                                        bdHandle[0] = buffer[3]; //saving the handle for later usage
+
+                                        //saving the handle for later usage
+                                        bdHandle[0] = buffer[3];
                                         bdHandle[1] = buffer[4];
-                                        transfered = HCI_Remote_Name_Request(bdAddr);
+
                                         //only after connection completed with status 0 we request for controller's name.
+                                        transfered = HCI_Remote_Name_Request(bdAddr);
                                     }
                                     else
                                     {
