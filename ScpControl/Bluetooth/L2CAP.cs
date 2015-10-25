@@ -299,7 +299,13 @@ namespace ScpControl.Bluetooth
             return new byte[2] { (byte)((source >> 0) & 0xFF), (byte)((source >> 8) & 0xFF) };
         }
 
-        public static ushort ToShort(byte lsb, byte msb)
+        /// <summary>
+        ///     Converts two bytes to an unsigned 16-bit integer.
+        /// </summary>
+        /// <param name="lsb">The Least Significant Byte.</param>
+        /// <param name="msb">The Most Significant Byte.</param>
+        /// <returns>The resulting value.</returns>
+        private static ushort ToShort(byte lsb, byte msb)
         {
             return (ushort) ((msb << 8) | lsb);
         }
