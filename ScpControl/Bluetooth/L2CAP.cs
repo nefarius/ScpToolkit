@@ -273,6 +273,23 @@ namespace ScpControl.Bluetooth
         }
 
         /// <summary>
+        ///     Maximum Transmission Unit for each packet.
+        /// </summary>
+        public ushort MaximumTransmissionUnit
+        {
+            get
+            {
+                if (SignallingCommandCode == L2CAP.Code.L2CAP_Configuration_Response
+                    && RawBytes[18] == 0x01 && RawBytes[19] == 0x02)
+                {
+                    return ToShort(RawBytes[20], RawBytes[21]);
+                }
+                
+                return default(ushort);
+            }
+        }
+
+        /// <summary>
         ///     Converts an unsigned 16-bit integer to a byte array.
         /// </summary>
         /// <param name="source">The 16-bit integer.</param>
@@ -280,6 +297,11 @@ namespace ScpControl.Bluetooth
         public static byte[] UInt16ToBytes(ushort source)
         {
             return new byte[2] { (byte)((source >> 0) & 0xFF), (byte)((source >> 8) & 0xFF) };
+        }
+
+        public static ushort ToShort(byte lsb, byte msb)
+        {
+            return (ushort) ((msb << 8) | lsb);
         }
     }
 }

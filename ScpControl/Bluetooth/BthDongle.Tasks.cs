@@ -382,6 +382,8 @@ namespace ScpControl.Bluetooth
 
                             Log.DebugFormat(">> {0} [Packet: {1}]", Event, packet.PacketIdentifier);
 
+                            Log.DebugFormat("-- MTU = {0}", packet.MaximumTransmissionUnit);
+
                             if (connection.CanStartService)
                             {
                                 L2_DCID = L2CapDataPacket.UInt16ToBytes(BthConnection.Dcid++);
