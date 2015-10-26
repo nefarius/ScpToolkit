@@ -36,6 +36,15 @@ namespace ScpControl.Bluetooth
             return transfered;
         }
 
+        /// <summary>
+        ///     Connection request packets are sent to create a channel between two devices.
+        /// </summary>
+        /// <remarks>BLUETOOTH SPECIFICATION Version 1.0 A page 278</remarks>
+        /// <param name="handle">The HCI handle.</param>
+        /// <param name="id">The packet id.</param>
+        /// <param name="dcid">The Destination Channel Identifier.</param>
+        /// <param name="psm">The Protocol and Service Multiplexer to request.</param>
+        /// <returns>The byte count sent to the Bluetooth host.</returns>
         private int L2CAP_Connection_Request(byte[] handle, byte id, byte[] dcid, L2CAP.PSM psm)
         {
             var buffer = new byte[8];
@@ -52,6 +61,17 @@ namespace ScpControl.Bluetooth
             return L2CAP_Command(handle, buffer);
         }
 
+        /// <summary>
+        ///     When a unit receives a Connection Request packet, it must send a Connection Response packet.
+        /// </summary>
+        /// <remarks>BLUETOOTH SPECIFICATION Version 1.0 A page 279</remarks>
+        /// <remarks>BLUETOOTH SPECIFICATION Version 1.0 A page 278</remarks>
+        /// <param name="handle">The HCI handle.</param>
+        /// <param name="id">The packet id.</param>
+        /// <param name="dcid">The Destination Channel Identifier.</param>
+        /// <param name="scid">The Source Channel Identifier.</param>
+        /// <param name="result">The result of the connection request.</param>
+        /// <returns>The byte count sent to the Bluetooth host.</returns>
         private int L2CAP_Connection_Response(byte[] handle, byte id, byte[] dcid, byte[] scid, L2CAP.ConnectionResponseResult result)
         {
             var buffer = new byte[12];
