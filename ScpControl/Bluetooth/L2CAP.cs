@@ -238,7 +238,7 @@ namespace ScpControl.Bluetooth
         /// <summary>
         ///     The current packets reference identifier.
         /// </summary>
-        public byte PacketIdentifier
+        public byte ChannelId
         {
             get
             {

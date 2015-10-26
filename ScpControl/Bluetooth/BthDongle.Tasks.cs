@@ -267,7 +267,9 @@ namespace ScpControl.Bluetooth
 
                         case L2CAP.Code.L2CAP_Connection_Request:
 
-                            Log.DebugFormat(">> {0} with PSM [{1}]", Event, packet.ProtocolServiceMultiplexer);
+                            Log.DebugFormat(">> {0} with PSM [{1}] [CID: {2}]", Event, 
+                                packet.ProtocolServiceMultiplexer,
+                                packet.ChannelId);
 
                             L2_SCID = packet.SourceChannelIdentifier;
 
@@ -276,15 +278,17 @@ namespace ScpControl.Bluetooth
 
                             // send connection response
                             L2CAP_Connection_Response(connection.HciHandle.Bytes,
-                                packet.PacketIdentifier, L2_SCID, L2_DCID,
+                                packet.ChannelId, L2_SCID, L2_DCID,
                                 L2CAP.ConnectionResponseResult.ConnectionSuccessful);
 
-                            Log.DebugFormat("<< {0}", L2CAP.Code.L2CAP_Connection_Response);
+                            Log.DebugFormat("<< {0} [CID: {1}]", L2CAP.Code.L2CAP_Connection_Response,
+                                packet.ChannelId);
 
                             // send configuration request
                             L2CAP_Configuration_Request(connection.HciHandle.Bytes, _l2CapDataIdentifier++, L2_SCID);
 
-                            Log.DebugFormat("<< {0}", L2CAP.Code.L2CAP_Configuration_Request);
+                            Log.DebugFormat("<< {0} [CID: {1}]", L2CAP.Code.L2CAP_Configuration_Request,
+                                _l2CapDataIdentifier - 1);
                             break;
 
                             #endregion
@@ -293,7 +297,7 @@ namespace ScpControl.Bluetooth
 
                         case L2CAP.Code.L2CAP_Connection_Response:
 
-                            Log.DebugFormat(">> {0} [Result: {1}]", Event, packet.Result);
+                            Log.DebugFormat(">> {0} [Result: {1}] [CID: {2}]", Event, packet.Result, packet.ChannelId);
 
                             var result = packet.Result;
 
@@ -319,9 +323,9 @@ namespace ScpControl.Bluetooth
                                     L2CAP_Configuration_Request(connection.HciHandle.Bytes, _l2CapDataIdentifier++,
                                         L2_SCID);
 
-                                    Log.DebugFormat("<< {0} [Packet: {1}]",
+                                    Log.DebugFormat("<< {0} [CID: {1}]",
                                         L2CAP.Code.L2CAP_Configuration_Request,
-                                        packet.PacketIdentifier);
+                                        packet.ChannelId);
                                     break;
                                 case L2CAP.ConnectionResponseResult.ConnectionPending:
 
@@ -358,14 +362,14 @@ namespace ScpControl.Bluetooth
 
                         case L2CAP.Code.L2CAP_Configuration_Request:
 
-                            Log.DebugFormat(">> {0} [Packet: {1}]", Event, packet.PacketIdentifier);
+                            Log.DebugFormat(">> {0} [CID: {1}]", Event, packet.ChannelId);
 
                             L2_SCID = connection.Get_SCID(packet.SourceChannelIdentifier);
 
                             L2CAP_Configuration_Response(connection.HciHandle.Bytes,
-                                packet.PacketIdentifier, L2_SCID);
-                            Log.DebugFormat("<< {0} [Packet: {1}]", L2CAP.Code.L2CAP_Configuration_Response,
-                                packet.PacketIdentifier);
+                                packet.ChannelId, L2_SCID);
+                            Log.DebugFormat("<< {0} [CID: {1}]", L2CAP.Code.L2CAP_Configuration_Response,
+                                packet.ChannelId);
 
                             if (connection.IsServiceStarted)
                             {
@@ -380,7 +384,7 @@ namespace ScpControl.Bluetooth
 
                         case L2CAP.Code.L2CAP_Configuration_Response:
 
-                            Log.DebugFormat(">> {0} [Packet: {1}]", Event, packet.PacketIdentifier);
+                            Log.DebugFormat(">> {0} [CID: {1}]", Event, packet.ChannelId);
 
                             Log.DebugFormat("-- MTU = {0}", packet.MaximumTransmissionUnit);
 
@@ -392,9 +396,10 @@ namespace ScpControl.Bluetooth
                                 {
                                     L2CAP_Connection_Request(connection.HciHandle.Bytes, _l2CapDataIdentifier++, L2_DCID,
                                         L2CAP.PSM.HID_Service);
-                                    Log.DebugFormat("<< {0} with PSM [{1}]",
+                                    Log.DebugFormat("<< {0} with PSM [{1}]  [CID: {2}]",
                                         L2CAP.Code.L2CAP_Connection_Request,
-                                        L2CAP.PSM.HID_Service);
+                                        L2CAP.PSM.HID_Service,
+                                        _l2CapDataIdentifier - 1);
                                 }
                                 else
                                 {
@@ -416,7 +421,7 @@ namespace ScpControl.Bluetooth
                             L2_SCID = packet.SourceChannelIdentifier;
 
                             L2CAP_Disconnection_Response(connection.HciHandle.Bytes,
-                                packet.PacketIdentifier, L2_SCID, L2_SCID);
+                                packet.ChannelId, L2_SCID, L2_SCID);
 
                             Log.DebugFormat("<< {0}", L2CAP.Code.L2CAP_Disconnection_Response);
                             break;
