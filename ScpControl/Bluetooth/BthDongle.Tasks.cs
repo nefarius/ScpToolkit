@@ -396,7 +396,7 @@ namespace ScpControl.Bluetooth
                                 {
                                     L2CAP_Connection_Request(connection.HciHandle.Bytes, _l2CapDataIdentifier++, L2_DCID,
                                         L2CAP.PSM.HID_Service);
-                                    Log.DebugFormat("<< {0} with PSM [{1}]  [CID: {2}]",
+                                    Log.DebugFormat("<< {0} with PSM [{1}] [CID: {2}]",
                                         L2CAP.Code.L2CAP_Connection_Request,
                                         L2CAP.PSM.HID_Service,
                                         _l2CapDataIdentifier - 1);
