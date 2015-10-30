@@ -1,0 +1,477 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="cmp8B6B824170531DA4ACCB267F3B3F8FF6" Guid="*">
+                <File Id="fil2BAF226DFAE1DC393DCE2619AB133832" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\HidSharp.dll" />
+            </Component>
+            <Component Id="cmpDF49FF1BBFC4DBBA940443AA48F221E9" Guid="*">
+                <File Id="fil8738EA1292C337E2EF06897AFF9E2FFC" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\HidSharp.pdb" />
+            </Component>
+            <Component Id="cmpFF6D1C8E5163AC2C1EC549C5356DD1FB" Guid="*">
+                <File Id="fil6AC272D906B0BB2A3C178A0627BEA8BB" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\HidSharp.xml" />
+            </Component>
+            <Component Id="cmpFA7ABB7E5BBAAFF97F8727110A9ABDA3" Guid="*">
+                <File Id="filF619EA25FA62D636F3C7805159D80543" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Libarius.dll" />
+            </Component>
+            <Component Id="cmpB78CDDC8B98216998C47CC4F150AC6D5" Guid="*">
+                <File Id="fil27540812CECDDDE54E0000DCC4189B7B" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Libarius.pdb" />
+            </Component>
+            <Component Id="cmp13D58469BCB864EB53214ED46E622188" Guid="*">
+                <File Id="fil28F7A9478894C77C5F6C2A95DAA4B459" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\log4net.dll" />
+            </Component>
+            <Component Id="cmp742785C9A7B88BE6B2E81C2322E3D2EE" Guid="*">
+                <File Id="filA307C00D897BECB908C510DE71A3AD29" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\log4net.xml" />
+            </Component>
+            <Component Id="cmpC15A2221D1A05D645DDD4F2D43291826" Guid="*">
+                <File Id="filB6BE10BA74778CB840F90E23636CE163" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\MadMilkman.Ini.dll" />
+            </Component>
+            <Component Id="cmp06434F432A0A7A54D188D8A0AFF30187" Guid="*">
+                <File Id="fil9F07DA129C1564A9773EF6D3B207313D" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\MadMilkman.Ini.xml" />
+            </Component>
+            <Component Id="cmp7CDD5F5D6063A59C8A26ECBE5E6C26DA" Guid="*">
+                <File Id="filDDB821F0D5C400AE58E753D406F8B464" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Mantin.Controls.Wpf.Notification.dll" />
+            </Component>
+            <Component Id="cmp78F19E335F35811ADBF9609ACF2EAFAD" Guid="*">
+                <File Id="fil4F0EC186575043D95896EF31216B61EF" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Mantin.Controls.Wpf.Notification.pdb" />
+            </Component>
+            <Component Id="cmp03D7B650F8B878E4777A46EDB795761F" Guid="*">
+                <File Id="fil25E0BE43AC66696960DD057BF437E6CE" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Ookii.Dialogs.Wpf.dll" />
+            </Component>
+            <Component Id="cmpF60B541498C2C1F0D7F62448823FFBE0" Guid="*">
+                <File Id="fil2F97A3358170EDEE913778FB996A5D99" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Ookii.Dialogs.Wpf.xml" />
+            </Component>
+            <Component Id="cmp3B9DCEA5CDE661FBD1324C4B1C3F1B5E" Guid="*">
+                <File Id="fil0133D39BB5213B1A59DE971796D1DC7B" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ReactiveSockets.dll" />
+            </Component>
+            <Component Id="cmp8084301F5C265A4E1823331766E70326" Guid="*">
+                <File Id="filFE524C91030B9A1DFBF321AB371EB3C6" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ReactiveSockets.xml" />
+            </Component>
+            <Component Id="cmp331203D8FEF1C9F4D21272731E2ACE18" Guid="*">
+                <File Id="fil5BD306089CE692A39922E0F3F29AE11B" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpCleanWipe.exe" />
+            </Component>
+            <Component Id="cmp559BEEEDA64A38418D5C7522B230107F" Guid="*">
+                <File Id="fil2735BD0F615F0CB0E34B173BD4909031" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpCleanWipe.exe.config" />
+            </Component>
+            <Component Id="cmpBDA1666757D0630C9A16FE08F58FD0FB" Guid="*">
+                <File Id="filE3005A829AD7516F27D49A1060F84F12" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpCleanWipe.pdb" />
+            </Component>
+            <Component Id="cmpA290011E0C6F2EF9955CB13361112F6C" Guid="*">
+                <File Id="fil37BD76C9FB847D5609D3F0AF148E18D9" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpControl.dll" />
+            </Component>
+            <Component Id="cmpDB7C26D0C9BEAC2DF8AEA2BA9A3BB025" Guid="*">
+                <File Id="fil46B936A805ADDAB8CD44BFC9810BE35F" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpControl.dll.config" />
+            </Component>
+            <Component Id="cmp8277B9F5E8ED55BE7A23573368B7566E" Guid="*">
+                <File Id="filED471133C9EAE9AAC144CE487D2544FB" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpControl.ini" />
+            </Component>
+            <Component Id="cmp730661B939506AD5A2F6AAA7255C07B3" Guid="*">
+                <File Id="fil683313253E9BE3CA45BADFE3A31D79E0" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpControl.pdb" />
+            </Component>
+            <Component Id="cmp9934AE76448582A7F18829FDE2F375F9" Guid="*">
+                <File Id="filF2A6E0898DC2327347049A6B847AC098" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpControl.Shared.dll" />
+            </Component>
+            <Component Id="cmp9B03E15666546B9253747F4E113D7677" Guid="*">
+                <File Id="fil641BA00F2F15E3BFBFCE1CCD2B1C3229" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpControl.Shared.pdb" />
+            </Component>
+            <Component Id="cmp083BC780AFAEFFD69A75ABD757652B3E" Guid="*">
+                <File Id="fil585CBC5F45D83787C28A64D94D26E081" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpDriverInstaller.exe" />
+            </Component>
+            <Component Id="cmpEAF859858C2E5413BF8C67CDB8728AF2" Guid="*">
+                <File Id="filB454ED503B0C2D5F807918A8AA60FC05" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpDriverInstaller.exe.config" />
+            </Component>
+            <Component Id="cmpF3D2C04A0E7F6FCA69882E5B0647F466" Guid="*">
+                <File Id="fil113EE4AD832089EEFA0037862B8CE91A" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpDriverInstaller.pdb" />
+            </Component>
+            <Component Id="cmp57341D8CD0A98E55F52250F9F4ACF103" Guid="*">
+                <File Id="filFEB02E496ADD5810B7B9E20D3ECC56F1" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpGamepadAnalyzer.exe" />
+            </Component>
+            <Component Id="cmp4CBD7F859B85106A0605F3A6BC59F645" Guid="*">
+                <File Id="filD935B6CF57501D5B7D5E6DEEDBB9F05B" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpGamepadAnalyzer.exe.config" />
+            </Component>
+            <Component Id="cmp5F4DC9B84D4873B73E2B2141B58CBBDF" Guid="*">
+                <File Id="fil9DEA40A1349C866969A557965A757BAD" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpGamepadAnalyzer.pdb" />
+            </Component>
+            <Component Id="cmpA43CB2F2861D90BB554C8A61C3A5BC52" Guid="*">
+                <File Id="filB57584C6AF4AA4812938C2533856977E" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpMapper.xml" />
+            </Component>
+            <Component Id="cmpCA0424ADD4514CD545549C477B377D39" Guid="*">
+                <File Id="fil83103E41E733EE0B7EABFA9B39A7CEDC" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpMonitor.exe" />
+            </Component>
+            <Component Id="cmpED7361B8C37A10EC01F1EE2326FC755E" Guid="*">
+                <File Id="filFDDA2CF9B42235A73E70C46FA1BC6E1E" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpMonitor.exe.config" />
+            </Component>
+            <Component Id="cmpB308ABCB6844355CBDFB03C054E092DC" Guid="*">
+                <File Id="fil11E2FC03BA4B67EE498CD3DB295DD0C6" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpMonitor.pdb" />
+            </Component>
+            <Component Id="cmp456FC6FCFF6E914F68210CF040C18DAC" Guid="*">
+                <File Id="fil259B5C7D254A5D5FD7CC4340AD9C611E" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpPair.exe" />
+            </Component>
+            <Component Id="cmpE8B46CA65B4337363F99753EA328E9CA" Guid="*">
+                <File Id="fil3863F5CC8B7002F3E0847112D12F1C43" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpPair.exe.config" />
+            </Component>
+            <Component Id="cmpC0AA607440CDAF0A1F4689B16696A4B0" Guid="*">
+                <File Id="fil0E19707561C33DA645418B0716B9C9E0" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpPair.pdb" />
+            </Component>
+            <Component Id="cmp51451A02D01C0097E5B9D3BB28E45033" Guid="*">
+                <File Id="fil69CB0E0A8E4265A4A780CE006D545A43" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpServer.exe" />
+            </Component>
+            <Component Id="cmp67624F3D2AE538B7E700CBE7453F058A" Guid="*">
+                <File Id="filEA82E7288604EA843F7018B28CFB5257" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpServer.exe.config" />
+            </Component>
+            <Component Id="cmp157842E9678C06053C1B6F495D36ACCD" Guid="*">
+                <File Id="fil32EC8F51934255007D3B32A130FB152E" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpServer.pdb" />
+            </Component>
+            <Component Id="cmp52F1109A0093882B0E967B0C1FB6128B" Guid="*">
+                <File Id="filD450025FDE20B740A907F0115F4C76D0" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpService.exe" />
+            </Component>
+            <Component Id="cmpFD1DE1DF6EF246CDA87127EC6CCE8111" Guid="*">
+                <File Id="filBD2A230D05154F16CD6CCCFD141DAF95" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpService.exe.config" />
+            </Component>
+            <Component Id="cmpB14DFF3D1B13BC787F5862C3A5AC97C7" Guid="*">
+                <File Id="fil82F6AAFA20932C43A7460EE78B63B366" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpService.pdb" />
+            </Component>
+            <Component Id="cmp3C8C04F5C395144B4EFDF44C8A92F9F5" Guid="*">
+                <File Id="fil959DF2448BBA9743D98A8D98589C9993" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpSettings.exe" />
+            </Component>
+            <Component Id="cmp2CCC039DE140FAABCAF3F1521E2ABAE9" Guid="*">
+                <File Id="fil45967EE3AF669983513B3735435A162A" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpSettings.exe.config" />
+            </Component>
+            <Component Id="cmp3E67BBF72C8CF91C23A4AE6472A99A15" Guid="*">
+                <File Id="filB0F2A01354DFA5BB5D3DF66271CF7B48" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\ScpSettings.pdb" />
+            </Component>
+            <Component Id="cmp33A2E0CDCB2457FD07A5EB7CD43D89DA" Guid="*">
+                <File Id="fil846A953AFF86FEE17DA23C0C138E1A63" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.Core.dll" />
+            </Component>
+            <Component Id="cmp658FF4AFD87816984B60B23176838707" Guid="*">
+                <File Id="filBFD9F16646CC705968A1EADF0D6EF5D3" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.Core.xml" />
+            </Component>
+            <Component Id="cmpE39668959EEE73724DCF95607C11909E" Guid="*">
+                <File Id="fil089FEF1B09CE2D4674666B7E9AF34C95" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.Interfaces.dll" />
+            </Component>
+            <Component Id="cmpFD0F2B89F46954E97B5CAE900E0E7970" Guid="*">
+                <File Id="fil8B7049F5D719FE5E381569DB12CFA271" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.Interfaces.xml" />
+            </Component>
+            <Component Id="cmpCBA72DF99C219D453FAFC3E749DA1F01" Guid="*">
+                <File Id="fil95A058622AFC42820C25EF2E63A647E8" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.Linq.dll" />
+            </Component>
+            <Component Id="cmpC79022383BA180BE267D30BFF993D878" Guid="*">
+                <File Id="fil240B9A058EAA1D783F64F2597CE83EDD" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.Linq.xml" />
+            </Component>
+            <Component Id="cmp1BC932B8353CD8372E8E42D3CA6CBB11" Guid="*">
+                <File Id="fil6E825004F8F872DFE6F7A33919E147A0" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.PlatformServices.dll" />
+            </Component>
+            <Component Id="cmp310738C5DD47548F0B834F8343BC44E5" Guid="*">
+                <File Id="filCF758A33CFDB2E9A03775DD7D33D67C0" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Reactive.PlatformServices.xml" />
+            </Component>
+            <Component Id="cmp400A7B87F0B444250D3E49AF093B08C4" Guid="*">
+                <File Id="fil303EE03E117EBBE8A3F2B75E00379454" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Windows.Controls.Input.Toolkit.dll" />
+            </Component>
+            <Component Id="cmp897CE2AA257C56309C6D8A727FCF6AA3" Guid="*">
+                <File Id="filE154239EB611CA1BA2593C7649630762" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System.Windows.Controls.Layout.Toolkit.dll" />
+            </Component>
+            <Component Id="cmp8E150AB13A77101C826EB2CDE4AA7FBF" Guid="*">
+                <File Id="filB74F99AA3344CB7097552AF2AB319F62" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Trinet.Core.IO.Ntfs.dll" />
+            </Component>
+            <Component Id="cmpAC46313809B0313CFFF2109DA6BD83B8" Guid="*">
+                <File Id="filCC6A305D2AC5F4C6ED0F696619400650" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Trinet.Core.IO.Ntfs.xml" />
+            </Component>
+            <Component Id="cmp857620CC4DB65C0A86EBD4CB93EBEE9D" Guid="*">
+                <File Id="fil5024AF5A167D4723391ACD93B7C4F615" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\WPFToolkit.dll" />
+            </Component>
+            <Directory Id="dirEC4F4546D393190C760C6F972A4E47E3" Name="DIFxAPI">
+                <Directory Id="dir671F7AA3967743B3567211165E2E4195" Name="amd64">
+                    <Component Id="cmp7A568D4E68B5809CF8467D16E5A8CD88" Guid="*">
+                        <File Id="fil94C2433D22E373AB602BD277E14654C2" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\DIFxAPI\amd64\DIFxAPI.dll" />
+                    </Component>
+                </Directory>
+                <Directory Id="dir673E270F3281A5CFBA2D3FCB22D29DE3" Name="x86">
+                    <Component Id="cmp193FCA37700E6A3428F9895C2A23A686" Guid="*">
+                        <File Id="fil574B15551EE2CE5BC2399436DDB437AA" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\DIFxAPI\x86\DIFxAPI.dll" />
+                    </Component>
+                </Directory>
+            </Directory>
+            <Directory Id="dir0CA0D5B48C48CE60200D589AD43EE095" Name="irrKlang">
+                <Directory Id="dirA5D76B38E9DB34008C7D2F66F0C23852" Name="amd64">
+                    <Component Id="cmp36BDF18BF026F6394AFA6C4EF0F682FC" Guid="*">
+                        <File Id="filE3494494259604E6E0DE25F4EBB234CE" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\irrKlang\amd64\ikpFlac.dll" />
+                    </Component>
+                    <Component Id="cmpAA3FD626178150680A0036B60FBD97CE" Guid="*">
+                        <File Id="fil06BA9FC81BCCDD2C0A539FCB19E74723" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\irrKlang\amd64\ikpMP3.dll" />
+                    </Component>
+                    <Component Id="cmp61E68393294C8572F3BB8977F322F4EC" Guid="*">
+                        <File Id="filFAEE9BC1206CADD2061EE4848681E418" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\irrKlang\amd64\irrKlang.NET4.dll" />
+                    </Component>
+                </Directory>
+                <Directory Id="dir81A70D92A0F4764CAC6D0A8E377FC562" Name="x86">
+                    <Component Id="cmpEB54CACB6DE09EC1CF43F37C75631514" Guid="*">
+                        <File Id="filB4792064D515BE82526E16F61A22748C" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\irrKlang\x86\ikpFlac.dll" />
+                    </Component>
+                    <Component Id="cmp4FB7F814906E97EDEF1530E9B097A7E0" Guid="*">
+                        <File Id="fil816F1CD15798833E2CC4125382AF9986" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\irrKlang\x86\ikpMP3.dll" />
+                    </Component>
+                    <Component Id="cmp854A609B84020604BF4FB6A4559CDC49" Guid="*">
+                        <File Id="fil9AFA811FCA23B502D5A380D0DB2C628E" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\irrKlang\x86\irrKlang.NET4.dll" />
+                    </Component>
+                </Directory>
+            </Directory>
+            <Directory Id="dir60811FB73F890FCD1D9C9ACA5C7AB105" Name="libusbK">
+                <Directory Id="dirCABF32801CE24779F9B0D37B22B9773A" Name="amd64">
+                    <Component Id="cmp1578E5F1445725325DD4FD6A7294EEFB" Guid="*">
+                        <File Id="fil1604650D13ACE63DDAAB4A8C698F40B7" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\libusbK\amd64\libusb0.dll" />
+                    </Component>
+                    <Component Id="cmp03DE5A971231AA905BBFDD0B6ABC5C18" Guid="*">
+                        <File Id="filB41DE807F640082A0A2C3CB025D5FADD" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\libusbK\amd64\libusbK.dll" />
+                    </Component>
+                </Directory>
+                <Directory Id="dirA81CB5EA0DD69C5F7DCF5A648D7E516A" Name="x86">
+                    <Component Id="cmpEBE4D0705C9D78E7137804B8EBC96F9B" Guid="*">
+                        <File Id="filE66FF4847A110266515F5E752AFDFC80" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\libusbK\x86\libusb0.dll" />
+                    </Component>
+                    <Component Id="cmp37B309D405D1957746F54E415C0C9B71" Guid="*">
+                        <File Id="fil93E105731914C09C5BA5021FAD7ACA8F" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\libusbK\x86\libusbK.dll" />
+                    </Component>
+                </Directory>
+            </Directory>
+            <Directory Id="dir50B9145C0CE494D0698B4D8433102DA4" Name="libwdi">
+                <Directory Id="dirDB2161D30BB5FF79CC9AD1D6805F41E5" Name="amd64">
+                    <Component Id="cmpFEE394A6C77C17A7F9910CB9534FB5CE" Guid="*">
+                        <File Id="filBC10A44DBA2696B7A46AD0D858D5C917" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\libwdi\amd64\libwdi.dll" />
+                    </Component>
+                </Directory>
+                <Directory Id="dirA78D17AFCA97FCE395EB4CE926DCD8EC" Name="x86">
+                    <Component Id="cmp9EBE965801AA0E9DDAECF1D2AD18B42E" Guid="*">
+                        <File Id="filAC492BDAEEB9230BD3A7DE6B59A8C933" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\libwdi\x86\libwdi.dll" />
+                    </Component>
+                </Directory>
+            </Directory>
+            <Directory Id="dir455AEAEF87C4D6542EE14AF25E7CF7B2" Name="LilyPad">
+                <Component Id="cmpB393A502913966003C36AA711F981BEC" Guid="*">
+                    <File Id="fil4F8DFAABD8919DBCA761CCA5D9E35FF5" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\LilyPad\LilyPad-Scp-r5875.dll" />
+                </Component>
+            </Directory>
+            <Directory Id="dir2BFF4002F71F7B70F9526EFB02F6BD6B" Name="Media">
+                <Component Id="cmp75222CD35326C0FF2DD9068B49196438" Guid="*">
+                    <File Id="fil2D18C474F9E11D9F2711AF7E9751376C" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Media\connect.wav" />
+                </Component>
+                <Component Id="cmpB6029BC3D1E380F0A5931ADD80D534D3" Guid="*">
+                    <File Id="fil50E584D597E09E4AB1B14791C6780A50" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Media\disconnect.flac" />
+                </Component>
+                <Component Id="cmpF8DD14E15E497FEA03E738F5BF61A4BA" Guid="*">
+                    <File Id="fil7BDAF02A5BDEDE656535DF6778F2102F" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Media\startup.ogg" />
+                </Component>
+            </Directory>
+            <Directory Id="dir73915B60307763CE3AB5B1C0A1A72017" Name="System">
+                <Component Id="cmp088EF61ABB924A06463E5A3726676DE3" Guid="*">
+                    <File Id="fil8F4BE4E58BA9C0DF5803B285EBD492EC" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System\ScpVBus.cat" />
+                </Component>
+                <Component Id="cmp2DAF351B2E4816569FF19DAA6886DCFB" Guid="*">
+                    <File Id="fil9B49109771615B06EFBB1B31AA986965" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System\ScpVBus.inf" />
+                </Component>
+                <Directory Id="dir5A20185EDA6780DBE337076DDA130066" Name="amd64">
+                    <Component Id="cmpAD7F3DD3BD2BDFC5A77637C1038721A5" Guid="*">
+                        <File Id="filC7E833CC74F4F2A98CB3F6D338C89349" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System\amd64\ScpVBus.sys" />
+                    </Component>
+                </Directory>
+                <Directory Id="dir52A35F498C88D40541F4430561F3A2D8" Name="x86">
+                    <Component Id="cmp6147D867483142CDA908C5BF25B3BCDE" Guid="*">
+                        <File Id="fil1947E40C9CCFDA5D5E243031EE33FDBB" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\System\x86\ScpVBus.sys" />
+                    </Component>
+                </Directory>
+            </Directory>
+            <Directory Id="dir20D1417BF87A7AA292AAA53CE7A31E1D" Name="Xbox360">
+                <Directory Id="dir955AF48A6317BD957997EAEA848F81F9" Name="driver">
+                    <Directory Id="dirC7E722ACB38A544080B7117685D880C2" Name="vista_xp">
+                        <Component Id="cmp3E1089C8A0D0F1DF1D59C7984922A338" Guid="*">
+                            <File Id="filC7683E2E75F38F160C5F0A6721734D1D" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\vista_xp\xusb21.cat" />
+                        </Component>
+                        <Component Id="cmpA5A4E88DDF5F964629856DD1383C7B29" Guid="*">
+                            <File Id="fil371E9D31586DECBA2DF2E1982ADE1DDB" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\vista_xp\xusb21.inf" />
+                        </Component>
+                        <Directory Id="dir13C041E3E5F2AB6226DACE17326F8DDB" Name="x64">
+                            <Component Id="cmp1053763F63815F181CCB020658F01DC6" Guid="*">
+                                <File Id="fil956BA617EC69A4B85817C0EAD075B518" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\vista_xp\x64\wdfcoinstaller01007.dll" />
+                            </Component>
+                            <Component Id="cmp8710003F27B6D1FF7E9B71950579F02E" Guid="*">
+                                <File Id="fil247ECF64F27E70228D74EFE690CF2867" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\vista_xp\x64\xusb21.sys" />
+                            </Component>
+                        </Directory>
+                        <Directory Id="dirE3155868C9F8FDEF156BF092C1B29C0B" Name="x86">
+                            <Component Id="cmp057625BF5F16C1912B6B4A502411954F" Guid="*">
+                                <File Id="fil57C1D0C674CC93EB9506B9D43F65A02A" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\vista_xp\x86\wdfcoinstaller01007.dll" />
+                            </Component>
+                            <Component Id="cmp42CEB17171FE6A7234262095400166A3" Guid="*">
+                                <File Id="fil923C36F34E6C65EC091236AF191233D0" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\vista_xp\x86\xusb21.sys" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+                    <Directory Id="dir8B1CE3E653A8D439DEBE5856252D43AE" Name="win7">
+                        <Component Id="cmp7C6F7AC410A163B8DDD5276941FD4C94" Guid="*">
+                            <File Id="fil2B06ECF8C878BEABF342F7D6B994BF42" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\win7\xusb21.cat" />
+                        </Component>
+                        <Component Id="cmp6E8F3590A7C53DBE70BD485EDA588B4F" Guid="*">
+                            <File Id="filBCC44BF840019352D24989370C0D8BC0" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\win7\xusb21.inf" />
+                        </Component>
+                        <Directory Id="dir0D5E2CEDE6158E6F0740D917A35F5E85" Name="x64">
+                            <Component Id="cmpA59B6E6CAC49BB4CDF0E7A87C6B6892A" Guid="*">
+                                <File Id="filECD5091330BAD62F8FB9F4874A9B7D5F" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\win7\x64\wdfcoinstaller01009.dll" />
+                            </Component>
+                            <Component Id="cmpE92CDCE46A7634550BE38135C85796AA" Guid="*">
+                                <File Id="filDDD0B79006974C8D063AB3A7DE2D1FB3" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\win7\x64\xusb21.sys" />
+                            </Component>
+                        </Directory>
+                        <Directory Id="dir5B59BAAEAE09CF3AE0B2A9D7EB075A61" Name="x86">
+                            <Component Id="cmpC85D2559C5E207471A55560D40AD7F9B" Guid="*">
+                                <File Id="fil7DC52E6822F1698C6879EDCE9DF65710" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\win7\x86\wdfcoinstaller01009.dll" />
+                            </Component>
+                            <Component Id="cmp8CE2009A2262C74EF7DE971CF2B2EB7B" Guid="*">
+                                <File Id="fil71BA9C4A4AC0E2AD643B5BF1A798ACFD" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\Xbox360\driver\win7\x86\xusb21.sys" />
+                            </Component>
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+            <Directory Id="dir281024731FC1BC6B5257AD1E3B1F1EF8" Name="XInput">
+                <Directory Id="dir3CF54A6450A74BA3593E0C362CE4B101" Name="x86">
+                    <Component Id="cmp8E9F1B220CD1A266F844794C2B741319" Guid="*">
+                        <File Id="filA903453F5E695A651167FD29337A4F14" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\log4net.dll" />
+                    </Component>
+                    <Component Id="cmp340CC4B3C0E6819E7A41A6E3AB602804" Guid="*">
+                        <File Id="fil82EFCC14A9674ED5279671E5787A2E3C" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\log4net.xml" />
+                    </Component>
+                    <Component Id="cmpCDD66A1CA7B0BC3B498A9EBE27892568" Guid="*">
+                        <File Id="fil65B85336D967D3D240B8B4BFD6800D98" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\MadMilkman.Ini.dll" />
+                    </Component>
+                    <Component Id="cmp5D745B336C8938CA92216DDC248173C1" Guid="*">
+                        <File Id="fil8B953C550ADB15856B9D6F98DBCA8EE6" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\MadMilkman.Ini.xml" />
+                    </Component>
+                    <Component Id="cmp74C264EBC6FC59399DBC71322DA5E8C3" Guid="*">
+                        <File Id="fil23AB9C790DACD754F30699FAE3C9E3CD" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\ScpControl.Shared.dll" />
+                    </Component>
+                    <Component Id="cmp85238F66C5708F627614554CA43918B4" Guid="*">
+                        <File Id="fil7C87CFFDE70CFE8DBDF1FC4B401BD8F2" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\ScpControl.Shared.pdb" />
+                    </Component>
+                    <Component Id="cmp7465C59A3C6E0FF99FEBF57EDAF530E3" Guid="*">
+                        <File Id="filA1DB5117F18E8334A6AAADA6C885A924" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\ScpXInput.ini" />
+                    </Component>
+                    <Component Id="cmp17430C5113A1137CDA2DABBA31A8A429" Guid="*">
+                        <File Id="fil7ABDF4C1587F84794457652383B39623" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\XInput1_3.dll" />
+                    </Component>
+                    <Component Id="cmp9D17EB00571E00DE91120AB7AF3B592C" Guid="*">
+                        <File Id="fil126AC360397BA2E0CEE8BA1459AC6D79" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\XInput1_3.exp" />
+                    </Component>
+                    <Component Id="cmp71F7455AA0772B4DFB7C10036F60DCED" Guid="*">
+                        <File Id="filA0E057018DF14DE96BC52EA8D63F9A04" KeyPath="yes" Source="$(var.ScpControl.TargetDir)\XInput\x86\XInput1_3.lib" />
+                    </Component>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="ScpToolkitFiles">
+            <ComponentRef Id="cmp8B6B824170531DA4ACCB267F3B3F8FF6" />
+            <ComponentRef Id="cmpDF49FF1BBFC4DBBA940443AA48F221E9" />
+            <ComponentRef Id="cmpFF6D1C8E5163AC2C1EC549C5356DD1FB" />
+            <ComponentRef Id="cmpFA7ABB7E5BBAAFF97F8727110A9ABDA3" />
+            <ComponentRef Id="cmpB78CDDC8B98216998C47CC4F150AC6D5" />
+            <ComponentRef Id="cmp13D58469BCB864EB53214ED46E622188" />
+            <ComponentRef Id="cmp742785C9A7B88BE6B2E81C2322E3D2EE" />
+            <ComponentRef Id="cmpC15A2221D1A05D645DDD4F2D43291826" />
+            <ComponentRef Id="cmp06434F432A0A7A54D188D8A0AFF30187" />
+            <ComponentRef Id="cmp7CDD5F5D6063A59C8A26ECBE5E6C26DA" />
+            <ComponentRef Id="cmp78F19E335F35811ADBF9609ACF2EAFAD" />
+            <ComponentRef Id="cmp03D7B650F8B878E4777A46EDB795761F" />
+            <ComponentRef Id="cmpF60B541498C2C1F0D7F62448823FFBE0" />
+            <ComponentRef Id="cmp3B9DCEA5CDE661FBD1324C4B1C3F1B5E" />
+            <ComponentRef Id="cmp8084301F5C265A4E1823331766E70326" />
+            <ComponentRef Id="cmp331203D8FEF1C9F4D21272731E2ACE18" />
+            <ComponentRef Id="cmp559BEEEDA64A38418D5C7522B230107F" />
+            <ComponentRef Id="cmpBDA1666757D0630C9A16FE08F58FD0FB" />
+            <ComponentRef Id="cmpA290011E0C6F2EF9955CB13361112F6C" />
+            <ComponentRef Id="cmpDB7C26D0C9BEAC2DF8AEA2BA9A3BB025" />
+            <ComponentRef Id="cmp8277B9F5E8ED55BE7A23573368B7566E" />
+            <ComponentRef Id="cmp730661B939506AD5A2F6AAA7255C07B3" />
+            <ComponentRef Id="cmp9934AE76448582A7F18829FDE2F375F9" />
+            <ComponentRef Id="cmp9B03E15666546B9253747F4E113D7677" />
+            <ComponentRef Id="cmp083BC780AFAEFFD69A75ABD757652B3E" />
+            <ComponentRef Id="cmpEAF859858C2E5413BF8C67CDB8728AF2" />
+            <ComponentRef Id="cmpF3D2C04A0E7F6FCA69882E5B0647F466" />
+            <ComponentRef Id="cmp57341D8CD0A98E55F52250F9F4ACF103" />
+            <ComponentRef Id="cmp4CBD7F859B85106A0605F3A6BC59F645" />
+            <ComponentRef Id="cmp5F4DC9B84D4873B73E2B2141B58CBBDF" />
+            <ComponentRef Id="cmpA43CB2F2861D90BB554C8A61C3A5BC52" />
+            <ComponentRef Id="cmpCA0424ADD4514CD545549C477B377D39" />
+            <ComponentRef Id="cmpED7361B8C37A10EC01F1EE2326FC755E" />
+            <ComponentRef Id="cmpB308ABCB6844355CBDFB03C054E092DC" />
+            <ComponentRef Id="cmp456FC6FCFF6E914F68210CF040C18DAC" />
+            <ComponentRef Id="cmpE8B46CA65B4337363F99753EA328E9CA" />
+            <ComponentRef Id="cmpC0AA607440CDAF0A1F4689B16696A4B0" />
+            <ComponentRef Id="cmp51451A02D01C0097E5B9D3BB28E45033" />
+            <ComponentRef Id="cmp67624F3D2AE538B7E700CBE7453F058A" />
+            <ComponentRef Id="cmp157842E9678C06053C1B6F495D36ACCD" />
+            <ComponentRef Id="cmp52F1109A0093882B0E967B0C1FB6128B" />
+            <ComponentRef Id="cmpFD1DE1DF6EF246CDA87127EC6CCE8111" />
+            <ComponentRef Id="cmpB14DFF3D1B13BC787F5862C3A5AC97C7" />
+            <ComponentRef Id="cmp3C8C04F5C395144B4EFDF44C8A92F9F5" />
+            <ComponentRef Id="cmp2CCC039DE140FAABCAF3F1521E2ABAE9" />
+            <ComponentRef Id="cmp3E67BBF72C8CF91C23A4AE6472A99A15" />
+            <ComponentRef Id="cmp33A2E0CDCB2457FD07A5EB7CD43D89DA" />
+            <ComponentRef Id="cmp658FF4AFD87816984B60B23176838707" />
+            <ComponentRef Id="cmpE39668959EEE73724DCF95607C11909E" />
+            <ComponentRef Id="cmpFD0F2B89F46954E97B5CAE900E0E7970" />
+            <ComponentRef Id="cmpCBA72DF99C219D453FAFC3E749DA1F01" />
+            <ComponentRef Id="cmpC79022383BA180BE267D30BFF993D878" />
+            <ComponentRef Id="cmp1BC932B8353CD8372E8E42D3CA6CBB11" />
+            <ComponentRef Id="cmp310738C5DD47548F0B834F8343BC44E5" />
+            <ComponentRef Id="cmp400A7B87F0B444250D3E49AF093B08C4" />
+            <ComponentRef Id="cmp897CE2AA257C56309C6D8A727FCF6AA3" />
+            <ComponentRef Id="cmp8E150AB13A77101C826EB2CDE4AA7FBF" />
+            <ComponentRef Id="cmpAC46313809B0313CFFF2109DA6BD83B8" />
+            <ComponentRef Id="cmp857620CC4DB65C0A86EBD4CB93EBEE9D" />
+            <ComponentRef Id="cmp7A568D4E68B5809CF8467D16E5A8CD88" />
+            <ComponentRef Id="cmp193FCA37700E6A3428F9895C2A23A686" />
+            <ComponentRef Id="cmp36BDF18BF026F6394AFA6C4EF0F682FC" />
+            <ComponentRef Id="cmpAA3FD626178150680A0036B60FBD97CE" />
+            <ComponentRef Id="cmp61E68393294C8572F3BB8977F322F4EC" />
+            <ComponentRef Id="cmpEB54CACB6DE09EC1CF43F37C75631514" />
+            <ComponentRef Id="cmp4FB7F814906E97EDEF1530E9B097A7E0" />
+            <ComponentRef Id="cmp854A609B84020604BF4FB6A4559CDC49" />
+            <ComponentRef Id="cmp1578E5F1445725325DD4FD6A7294EEFB" />
+            <ComponentRef Id="cmp03DE5A971231AA905BBFDD0B6ABC5C18" />
+            <ComponentRef Id="cmpEBE4D0705C9D78E7137804B8EBC96F9B" />
+            <ComponentRef Id="cmp37B309D405D1957746F54E415C0C9B71" />
+            <ComponentRef Id="cmpFEE394A6C77C17A7F9910CB9534FB5CE" />
+            <ComponentRef Id="cmp9EBE965801AA0E9DDAECF1D2AD18B42E" />
+            <ComponentRef Id="cmpB393A502913966003C36AA711F981BEC" />
+            <ComponentRef Id="cmp75222CD35326C0FF2DD9068B49196438" />
+            <ComponentRef Id="cmpB6029BC3D1E380F0A5931ADD80D534D3" />
+            <ComponentRef Id="cmpF8DD14E15E497FEA03E738F5BF61A4BA" />
+            <ComponentRef Id="cmp088EF61ABB924A06463E5A3726676DE3" />
+            <ComponentRef Id="cmp2DAF351B2E4816569FF19DAA6886DCFB" />
+            <ComponentRef Id="cmpAD7F3DD3BD2BDFC5A77637C1038721A5" />
+            <ComponentRef Id="cmp6147D867483142CDA908C5BF25B3BCDE" />
+            <ComponentRef Id="cmp3E1089C8A0D0F1DF1D59C7984922A338" />
+            <ComponentRef Id="cmpA5A4E88DDF5F964629856DD1383C7B29" />
+            <ComponentRef Id="cmp1053763F63815F181CCB020658F01DC6" />
+            <ComponentRef Id="cmp8710003F27B6D1FF7E9B71950579F02E" />
+            <ComponentRef Id="cmp057625BF5F16C1912B6B4A502411954F" />
+            <ComponentRef Id="cmp42CEB17171FE6A7234262095400166A3" />
+            <ComponentRef Id="cmp7C6F7AC410A163B8DDD5276941FD4C94" />
+            <ComponentRef Id="cmp6E8F3590A7C53DBE70BD485EDA588B4F" />
+            <ComponentRef Id="cmpA59B6E6CAC49BB4CDF0E7A87C6B6892A" />
+            <ComponentRef Id="cmpE92CDCE46A7634550BE38135C85796AA" />
+            <ComponentRef Id="cmpC85D2559C5E207471A55560D40AD7F9B" />
+            <ComponentRef Id="cmp8CE2009A2262C74EF7DE971CF2B2EB7B" />
+            <ComponentRef Id="cmp8E9F1B220CD1A266F844794C2B741319" />
+            <ComponentRef Id="cmp340CC4B3C0E6819E7A41A6E3AB602804" />
+            <ComponentRef Id="cmpCDD66A1CA7B0BC3B498A9EBE27892568" />
+            <ComponentRef Id="cmp5D745B336C8938CA92216DDC248173C1" />
+            <ComponentRef Id="cmp74C264EBC6FC59399DBC71322DA5E8C3" />
+            <ComponentRef Id="cmp85238F66C5708F627614554CA43918B4" />
+            <ComponentRef Id="cmp7465C59A3C6E0FF99FEBF57EDAF530E3" />
+            <ComponentRef Id="cmp17430C5113A1137CDA2DABBA31A8A429" />
+            <ComponentRef Id="cmp9D17EB00571E00DE91120AB7AF3B592C" />
+            <ComponentRef Id="cmp71F7455AA0772B4DFB7C10036F60DCED" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>
