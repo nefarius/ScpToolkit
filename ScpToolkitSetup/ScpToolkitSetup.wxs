@@ -29,6 +29,7 @@
     <Upgrade Id="2c3b0c81-5f32-4af5-8042-631f22ccf46a">
       <UpgradeVersion
         Minimum="1.5.0.0"
+        Maximum="99.0.0.0"
         Property="PREVIOUSVERSIONSINSTALLED"
         IncludeMinimum="yes" IncludeMaximum="no" />
     </Upgrade>
