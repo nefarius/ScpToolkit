@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
   <!-- Preprocessor variables -->
   <?define VERSION = "!(bind.FileVersion.fil37BD76C9FB847D5609D3F0AF148E18D9)" ?>
@@ -19,7 +20,7 @@
     <Icon Id="Setup.ico" SourceFile="Setup.ico" />
     <Property Id="ARPPRODUCTICON" Value="Setup.ico" />
     <Property Id='ARPURLINFOABOUT' Value='https://github.com/nefarius/ScpServer' />
-    
+
     <!-- kill and restart processes using locked files -->
     <Property Id='MSIDISABLERMRESTART' Value='0' />
     <Property Id='MSIRMSHUTDOWN' Value='1' />
@@ -54,7 +55,7 @@
     <Feature Id="ProductFeature" Title="ScpToolkitSetup" Level="1">
       <!-- Files to install -->
       <ComponentGroupRef Id="ScpToolkitFiles" />
-      
+
       <!-- Shortcuts to create -->
       <ComponentRef Id="DriverInstallerDesktopShortcut" />
       <ComponentRef Id="SettingsManagerDesktopShortcut" />
@@ -62,6 +63,9 @@
       <ComponentRef Id="CleanWipeDesktopShortcut" />
       <ComponentRef Id="ServerDesktopShortcut" />
       <ComponentRef Id="MonitorDesktopShortcut" />
+
+      <!-- Set write permissions for all Users in Logs sub-folder -->
+      <ComponentRef Id="LOGS_Permissions" />
     </Feature>
   </Product>
 
@@ -70,7 +74,17 @@
       <!-- Program Files folder -->
       <Directory Id="ProgramFilesFolder">
         <!-- Product name folder -->
-        <Directory Id="INSTALLFOLDER" Name="ScpToolkit" />
+        <Directory Id="INSTALLFOLDER" Name="ScpToolkit">
+          <!-- Create sub-directory for log files -->
+          <Directory Id="LOGS" Name="Logs">
+            <!-- Set write permissions for log folder -->
+            <Component Id="LOGS_Permissions" Guid="6302FD9C-D04F-4A9C-BFFF-6B9BC49AE8C5">
+              <CreateFolder>
+                <util:PermissionEx User="Users" GenericAll="yes"/>
+              </CreateFolder>
+            </Component>
+          </Directory>
+        </Directory>
       </Directory>
 
       <!-- Desktop folder for placing shortcuts -->
