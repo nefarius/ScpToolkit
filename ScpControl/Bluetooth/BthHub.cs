@@ -125,7 +125,7 @@ namespace ScpControl.Bluetooth
         {
             m_Started = false;
 
-            if (_device.State == DsState.Connected)
+            if (_device != null && _device.State == DsState.Connected)
             {
                 _device.Stop();
             }

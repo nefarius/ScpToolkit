@@ -153,7 +153,7 @@ namespace ScpControl.Usb
 
             try
             {
-                foreach (var t in _devices.Where(t => t.State == DsState.Connected))
+                foreach (var t in _devices.Where(t => t != null && t.State == DsState.Connected))
                 {
                     t.Stop();
                 }
