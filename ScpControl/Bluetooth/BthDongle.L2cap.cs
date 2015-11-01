@@ -71,8 +71,11 @@ namespace ScpControl.Bluetooth
         /// <param name="dcid">The Destination Channel Identifier.</param>
         /// <param name="scid">The Source Channel Identifier.</param>
         /// <param name="result">The result of the connection request.</param>
+        /// <param name="status">Only defined for Result = Pending. Indicates the status of the connection.</param>
         /// <returns>The byte count sent to the Bluetooth host.</returns>
-        private int L2CAP_Connection_Response(byte[] handle, byte id, byte[] dcid, byte[] scid, L2CAP.ConnectionResponseResult result)
+        private int L2CAP_Connection_Response(byte[] handle, byte id, byte[] dcid, byte[] scid,
+            L2CAP.ConnectionResponseResult result,
+            L2CAP.ConnectionResponseStatus status = L2CAP.ConnectionResponseStatus.NoFurtherInformationAvailable)
         {
             var buffer = new byte[12];
 
@@ -84,10 +87,19 @@ namespace ScpControl.Bluetooth
             buffer[5] = scid[1];
             buffer[6] = dcid[0];
             buffer[7] = dcid[1];
-            buffer[8] = (byte)result;
+            buffer[8] = (byte) result;
             buffer[9] = 0x00;
-            buffer[10] = 0x00;
-            buffer[11] = 0x00;
+
+            if (result == L2CAP.ConnectionResponseResult.ConnectionPending)
+            {
+                buffer[10] = (byte) status;
+                buffer[11] = 0x00;
+            }
+            else
+            {
+                buffer[10] = 0x00;
+                buffer[11] = 0x00;
+            }
 
             return L2CAP_Command(handle, buffer);
         }

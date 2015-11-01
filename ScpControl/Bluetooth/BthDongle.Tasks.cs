@@ -276,7 +276,16 @@ namespace ScpControl.Bluetooth
                             // set HID command channel for current connection
                             L2_DCID = connection.SetConnectionType(packet.ProtocolServiceMultiplexer, L2_SCID);
 
-                            // send connection response
+                            // send response with connection pending
+                            L2CAP_Connection_Response(connection.HciHandle.Bytes,
+                                packet.ChannelId, L2_SCID, L2_DCID,
+                                L2CAP.ConnectionResponseResult.ConnectionPending,
+                                L2CAP.ConnectionResponseStatus.AuthorisationPending);
+
+                            Log.DebugFormat("<< {0} [CID: {1}]", L2CAP.Code.L2CAP_Connection_Response,
+                                packet.ChannelId);
+
+                            // send response with connection successful
                             L2CAP_Connection_Response(connection.HciHandle.Bytes,
                                 packet.ChannelId, L2_SCID, L2_DCID,
                                 L2CAP.ConnectionResponseResult.ConnectionSuccessful);

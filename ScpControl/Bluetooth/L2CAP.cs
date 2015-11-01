@@ -115,6 +115,26 @@ namespace ScpControl.Bluetooth
         }
 
         /// <summary>
+        ///     Only defined for Result = Pending. Indicates the status of the connection.
+        /// </summary>
+        /// <remarks>According to the specification, this should be a 2-byte value but currently only the LSB is used.</remarks>
+        public enum ConnectionResponseStatus : byte
+        {
+            /// <summary>
+            ///     No further information available.
+            /// </summary>
+            NoFurtherInformationAvailable = 0x0000,
+            /// <summary>
+            ///     Authentication pending.
+            /// </summary>
+            AuthenticationPending = 0x0001,
+            /// <summary>
+            ///     Authorisation pending.
+            /// </summary>
+            AuthorisationPending = 0x0002
+        }
+
+        /// <summary>
         ///     Protocol Service Multiplexer
         /// </summary>
         public enum PSM

@@ -19,7 +19,7 @@
   <Class Name="ScpControl.Bluetooth.BthDongle" Collapsed="true">
     <Position X="1.75" Y="2" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AALEEAKVDCCAYQGcqSWi3TIGUIJAADIYICCKhDCIDAA=</HashCode>
+      <HashCode>AALEEAKVDCCAYQGcqSWi3TIGUIJAALIYICAKhDCIDAA=</HashCode>
       <FileName>Bluetooth\BthDongle.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
