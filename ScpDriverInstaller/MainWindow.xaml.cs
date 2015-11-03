@@ -167,7 +167,7 @@ namespace ScpDriverInstaller
                         state.Clear();
                         service.UseNewContext = true;
 
-                        if (Stop(Settings.Default.ScpServiceName))
+                        if (StopService(Settings.Default.ScpServiceName))
                         {
                             Logger(DifxLog.DIFXAPI_INFO, 0, Settings.Default.ScpServiceName + " Stopped.");
                         }
@@ -386,7 +386,9 @@ namespace ScpDriverInstaller
                         flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
 
                     var rebootRequired = false;
-                    var busInfPath = Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf");
+                    var busInfPath = Path.Combine(GlobalConfiguration.AppDirectory,
+                        "System", "ScpVBus.inf");
+                    Log.DebugFormat("ScpVBus.inf path: {0}", busInfPath);
 
                     // check for existance of Scp VBus
                     if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
@@ -456,7 +458,7 @@ namespace ScpDriverInstaller
                         service.Install(state);
                         service.Commit(state);
 
-                        if (Start(Settings.Default.ScpServiceName))
+                        if (StartService(Settings.Default.ScpServiceName))
                             Logger(DifxLog.DIFXAPI_INFO, 0, Settings.Default.ScpServiceName + " Started.");
                         else _reboot = true;
 
@@ -468,7 +470,9 @@ namespace ScpDriverInstaller
                     switch (w32Ex.NativeErrorCode)
                     {
                         case 1073: // ERROR_SERVICE_EXISTS
-                            Log.WarnFormat("Service already exists, skipping installation...");
+                            Log.Info("Service already exists, attempting to restart...");
+                            StopService(Settings.Default.ScpServiceName);
+                            StartService(Settings.Default.ScpServiceName);
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during installation: {0}", w32Ex);
@@ -609,7 +613,7 @@ namespace ScpDriverInstaller
 
         #region Windows Service Helpers
 
-        private static bool Start(string service)
+        private static bool StartService(string service)
         {
             try
             {
@@ -618,6 +622,7 @@ namespace ScpDriverInstaller
                 if (sc.Status == ServiceControllerStatus.Stopped)
                 {
                     sc.Start();
+                    // TODO: improve this!
                     Thread.Sleep(1000);
                     return true;
                 }
@@ -630,7 +635,7 @@ namespace ScpDriverInstaller
             return false;
         }
 
-        private static bool Stop(string service)
+        private static bool StopService(string service)
         {
             try
             {
@@ -639,6 +644,7 @@ namespace ScpDriverInstaller
                 if (sc.Status == ServiceControllerStatus.Running)
                 {
                     sc.Stop();
+                    // TODO: improve this!
                     Thread.Sleep(1000);
                     return true;
                 }
