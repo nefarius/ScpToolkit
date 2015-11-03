@@ -470,8 +470,12 @@ namespace ScpDriverInstaller
                     {
                         case 1073: // ERROR_SERVICE_EXISTS
                             Log.Info("Service already exists, attempting to restart...");
+                            
                             StopService(Settings.Default.ScpServiceName);
+                            Log.Info("Service stopped successfully");
+
                             StartService(Settings.Default.ScpServiceName);
+                            Log.Info("Service started successfully");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during installation: {0}", w32Ex);
