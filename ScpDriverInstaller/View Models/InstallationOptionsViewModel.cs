@@ -22,12 +22,6 @@ namespace ScpDriverInstaller.View_Models
 
         public bool InstallDualShock4Driver { get; set; }
 
-        public bool InstallMsvc2010Redist { get; set; }
-
-        public bool InstallMsvc2013Redist { get; set; }
-
-        public bool InstallDirectXRuntime { get; set; }
-
         public bool InstallXbox360Driver { get; set; }
 
         public bool IsXbox360DriverNeeded

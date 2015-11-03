@@ -338,36 +338,6 @@ namespace ScpDriverInstaller
 
             #endregion
 
-            #region 3rd Party Package Installation
-
-            if (_viewModel.InstallMsvc2010Redist)
-            {
-                Log.Info("Installing Microsoft Visual C++ 2010 Redistributable Package");
-                await RedistPackageInstaller.Instance.DownloadAndInstallMsvc2010Async();
-            }
-
-            if (_viewModel.InstallMsvc2013Redist)
-            {
-                Log.Info("Installing Visual C++ Redistributable Packages für Visual Studio 2013");
-                await RedistPackageInstaller.Instance.DownloadAndInstallMsvc2013Async();
-            }
-
-            if (_viewModel.InstallDirectXRuntime)
-            {
-                Log.Info("Installing DirectX Runtime");
-                await RedistPackageInstaller.Instance.DownloadAndInstallDirectXRedistAsync();
-            }
-
-            if (_viewModel.InstallXbox360Driver)
-            {
-                Log.Info("Installing Xbox 360 Controller Driver for Windows");
-                await RedistPackageInstaller.Instance.DownloadAndInstallXbox360DriverAsync();
-            }
-
-            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
-
-            #endregion
-
             #region Driver Installation
 
             await Task.Run(() =>
@@ -540,19 +510,6 @@ namespace ScpDriverInstaller
             _valid = OsInfoHelper.OsParse(info);
 
             Log.InfoFormat("{0} detected", info);
-
-            // is MSVC already installed?
-            _viewModel.InstallMsvc2010Redist = !OsInfoHelper.IsVc2010Installed;
-            _viewModel.InstallMsvc2013Redist = !OsInfoHelper.IsVc2013Installed;
-
-            // unblock system files
-            foreach (var fInfo in Directory.GetFiles(GlobalConfiguration.AppDirectory, "*.*", SearchOption.AllDirectories)
-                .Where(s => s.EndsWith(".dll") || s.EndsWith(".inf") || s.EndsWith(".sys") || s.EndsWith(".cat"))
-                .Select(file => new FileInfo(file))
-                .Where(fInfo => fInfo.Unblock()))
-            {
-                Log.InfoFormat("Unblocked file {0}", fInfo.Name);
-            }
 
             // get all local USB devices
             foreach (var usbDevice in WdiWrapper.Instance.UsbDeviceList)
