@@ -13,6 +13,73 @@ namespace ScpControl.Bluetooth
     /// </summary>
     public sealed partial class BthDongle : ScpDevice, IBthDevice
     {
+        #region HIDP Commands
+
+        public int HID_Command(byte[] handle, byte[] channel, byte[] data)
+        {
+            var transfered = 0;
+            var buffer = new byte[data.Length + 8];
+
+            buffer[0] = handle[0];
+            buffer[1] = handle[1];
+            buffer[2] = (byte) ((data.Length + 4)%256);
+            buffer[3] = (byte) ((data.Length + 4)/256);
+            buffer[4] = (byte) (data.Length%256);
+            buffer[5] = (byte) (data.Length/256);
+            buffer[6] = channel[0];
+            buffer[7] = channel[1];
+
+            for (var i = 0; i < data.Length; i++) buffer[i + 8] = data[i];
+
+            WriteBulkPipe(buffer, data.Length + 8, ref transfered);
+            return transfered;
+        }
+
+        #endregion
+
+        #region Overridden methods
+
+        public override string ToString()
+        {
+            switch (State)
+            {
+                case DsState.Reserved:
+                    if (Initialised)
+                    {
+                        return
+                            string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}\n\nReserved",
+                                Local,
+                                _hciVersion,
+                                _lmpVersion
+                                );
+                    }
+                    return "Host Address : <Error>";
+
+                case DsState.Connected:
+                    if (Initialised)
+                    {
+                        return string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}",
+                            Local,
+                            _hciVersion,
+                            _lmpVersion
+                            );
+                    }
+                    return "Host Address : <Error>";
+            }
+
+            return "Host Address : Disconnected";
+        }
+
+        #endregion
+
+        #region Connection list
+
+        private class ConnectionList : SortedDictionary<BthHandle, BthDevice>
+        {
+        }
+
+        #endregion
+
         #region Private fields
 
         private CancellationTokenSource _hciCancellationTokenSource = new CancellationTokenSource();
@@ -20,7 +87,7 @@ namespace ScpControl.Bluetooth
         private string _hciVersion = string.Empty;
         private byte _l2CapDataIdentifier = 0x01;
         private string _lmpVersion = string.Empty;
-        private byte[] _localMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        private byte[] _localMac = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
         private readonly ManualResetEvent _waitForConnectionComplete = new ManualResetEvent(false);
@@ -58,7 +125,8 @@ namespace ScpControl.Bluetooth
         {
             get
             {
-                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", _localMac[5], _localMac[4], _localMac[3],
+                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", _localMac[5], _localMac[4],
+                    _localMac[3],
                     _localMac[2], _localMac[1], _localMac[0]);
             }
         }
@@ -81,30 +149,6 @@ namespace ScpControl.Bluetooth
         }
 
         public bool Initialised { get; private set; }
-
-        #endregion
-
-        #region HIDP Commands
-
-        public int HID_Command(byte[] handle, byte[] channel, byte[] data)
-        {
-            var transfered = 0;
-            var buffer = new byte[data.Length + 8];
-
-            buffer[0] = handle[0];
-            buffer[1] = handle[1];
-            buffer[2] = (byte)((data.Length + 4) % 256);
-            buffer[3] = (byte)((data.Length + 4) / 256);
-            buffer[4] = (byte)(data.Length % 256);
-            buffer[5] = (byte)(data.Length / 256);
-            buffer[6] = channel[0];
-            buffer[7] = channel[1];
-
-            for (var i = 0; i < data.Length; i++) buffer[i + 8] = data[i];
-
-            WriteBulkPipe(buffer, data.Length + 8, ref transfered);
-            return transfered;
-        }
 
         #endregion
 
@@ -178,36 +222,7 @@ namespace ScpControl.Bluetooth
 
         #endregion
 
-        public override string ToString()
-        {
-            switch (State)
-            {
-                case DsState.Reserved:
-                    if (Initialised)
-                    {
-                        return
-                            string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}\n\nReserved",
-                                Local,
-                                _hciVersion,
-                                _lmpVersion
-                                );
-                    }
-                    return "Host Address : <Error>";
-
-                case DsState.Connected:
-                    if (Initialised)
-                    {
-                        return string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}",
-                            Local,
-                            _hciVersion,
-                            _lmpVersion
-                            );
-                    }
-                    return "Host Address : <Error>";
-            }
-
-            return "Host Address : Disconnected";
-        }
+        #region Device management methods
 
         private BthDevice Add(byte lsb, byte msb, string name)
         {
@@ -258,9 +273,7 @@ namespace ScpControl.Bluetooth
             _connected.Remove(connection);
         }
 
-        private class ConnectionList : SortedDictionary<BthHandle, BthDevice>
-        {
-        }
+        #endregion
 
         #region Events
 
