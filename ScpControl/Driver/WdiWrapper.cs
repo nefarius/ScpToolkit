@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using ScpControl.Utilities;
 
 namespace ScpControl.Driver
 {
+    #region Public enums
+
     public enum WdiErrorCode
     {
         WDI_SUCCESS = 0,
@@ -41,26 +44,14 @@ namespace ScpControl.Driver
         WDI_LOG_LEVEL_NONE
     }
 
+    #endregion
+
     /// <summary>
     ///     Managed wrapper class for <see href="https://github.com/pbatard/libwdi">libwdi</see>.
     /// </summary>
     public class WdiWrapper : NativeLibraryWrapper<WdiWrapper>
     {
-        public static uint WmLibwdiLogger { get { return 0x0400 + 1; } }
-
-        /// <summary>
-        ///     The USB driver solution to install.
-        /// </summary>
-        private enum WdiDriverType
-        {
-            [Description("WinUSB")]
-            WDI_WINUSB,
-            WDI_LIBUSB0,
-            [Description("libusbK")]
-            WDI_LIBUSBK,
-            WDI_USER,
-            WDI_NB_DRIVERS
-        }
+        #region Ctor
 
         /// <summary>
         ///     Automatically loads the correct native library.
@@ -75,11 +66,81 @@ namespace ScpControl.Driver
             wdi_set_log_level(WdiLogLevel.WDI_LOG_LEVEL_INFO);
 #endif
         }
-        
+
+        #endregion
+
+        #region Public properties
+
+        public static uint WmLibwdiLogger
+        {
+            get { return 0x0400 + 1; }
+        }
+
         public int WdfVersion
         {
             get { return wdi_get_wdf_version(); }
         }
+
+        public IEnumerable<WdiUsbDevice> UsbDeviceList
+        {
+            get
+            {
+                var wdiDevices = new List<WdiUsbDevice>();
+
+                // pointer to write device list to
+                var pList = IntPtr.Zero;
+                // list all USB devices, not only driverless ones
+                var listOpts = new wdi_options_create_list
+                {
+                    list_all = true,
+                    list_hubs = false,
+                    trim_whitespaces = false
+                };
+
+                // receive USB device list
+                wdi_create_list(ref pList, ref listOpts);
+                // save original pointer to free list
+                var devices = pList;
+
+                // loop through linked list until last element
+                while (pList != IntPtr.Zero)
+                {
+                    // translate device info to managed object
+                    var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
+
+                    // get raw bytes from description pointer
+                    var descSize = 0;
+                    while (Marshal.ReadByte(info.desc, descSize) != 0) ++descSize;
+                    var descBytes = new byte[descSize];
+                    Marshal.Copy(info.desc, descBytes, 0, descSize);
+
+                    // put info in managed object
+                    var wdiDevice = new WdiUsbDevice
+                    {
+                        VendorId = info.vid,
+                        ProductId = info.pid,
+                        Description = Encoding.UTF8.GetString(descBytes),
+                        DeviceId = info.device_id,
+                        HardwareId = info.hardware_id,
+                        CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
+                    };
+
+                    wdiDevices.Add(wdiDevice);
+
+                    // continue with next device
+                    pList = info.next;
+                }
+
+                // free used memory
+                wdi_destroy_list(devices);
+
+                return wdiDevices;
+            }
+        }
+
+        #endregion
+
+        #region Public methods
 
         /// <summary>
         ///     Replaces the device driver of given device with WinUSB.
@@ -94,7 +155,8 @@ namespace ScpControl.Driver
         public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
-            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force, WdiDriverType.WDI_WINUSB);
+            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force,
+                WdiDriverType.WDI_WINUSB);
         }
 
         /// <summary>
@@ -110,7 +172,8 @@ namespace ScpControl.Driver
         public WdiErrorCode InstallLibusbKDriver(string hardwareId, Guid deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
-            return InstallDeviceDriver(hardwareId, deviceGuid.ToString("B"), driverPath, infName, hwnd, force, WdiDriverType.WDI_LIBUSBK);
+            return InstallDeviceDriver(hardwareId, deviceGuid.ToString("B"), driverPath, infName, hwnd, force,
+                WdiDriverType.WDI_LIBUSBK);
         }
 
         /// <summary>
@@ -126,10 +189,28 @@ namespace ScpControl.Driver
         public WdiErrorCode InstallLibusbKDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
-            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force, WdiDriverType.WDI_LIBUSBK);
+            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force,
+                WdiDriverType.WDI_LIBUSBK);
         }
 
-        private static WdiErrorCode InstallDeviceDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
+        public string GetErrorMessage(WdiErrorCode errcode)
+        {
+            var msgPtr = wdi_strerror((int) errcode);
+            return Marshal.PtrToStringAnsi(msgPtr);
+        }
+
+        public string GetVendorName(ushort vendorId)
+        {
+            var namePtr = wdi_get_vendor_name(vendorId);
+            return Marshal.PtrToStringAnsi(namePtr);
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private static WdiErrorCode InstallDeviceDriver(string hardwareId, string deviceGuid, string driverPath,
+            string infName,
             IntPtr hwnd, bool force, WdiDriverType driverType)
         {
             // regex to extract vendor ID and product ID from hardware ID string
@@ -213,7 +294,8 @@ namespace ScpControl.Driver
                         // install/replace the current devices driver
                         result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
 
-                        var resultLog = string.Format("Installation result: {0}", Enum.GetName(typeof (WdiErrorCode), result));
+                        var resultLog = string.Format("Installation result: {0}",
+                            Enum.GetName(typeof (WdiErrorCode), result));
 
                         if (result == WdiErrorCode.WDI_SUCCESS)
                         {
@@ -238,74 +320,23 @@ namespace ScpControl.Driver
             return result;
         }
 
-        public IEnumerable<WdiUsbDevice> UsbDeviceList
+        #endregion
+
+        #region Enums
+
+        /// <summary>
+        ///     The USB driver solution to install.
+        /// </summary>
+        private enum WdiDriverType
         {
-            get
-            {
-                var wdiDevices = new List<WdiUsbDevice>();
-
-                // pointer to write device list to
-                var pList = IntPtr.Zero;
-                // list all USB devices, not only driverless ones
-                var listOpts = new wdi_options_create_list
-                {
-                    list_all = true,
-                    list_hubs = false,
-                    trim_whitespaces = false
-                };
-
-                // receive USB device list
-                wdi_create_list(ref pList, ref listOpts);
-                // save original pointer to free list
-                var devices = pList;
-
-                // loop through linked list until last element
-                while (pList != IntPtr.Zero)
-                {
-                    // translate device info to managed object
-                    var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
-
-                    // get raw bytes from description pointer
-                    var descSize = 0;
-                    while (Marshal.ReadByte(info.desc, descSize) != 0) ++descSize;
-                    var descBytes = new byte[descSize];
-                    Marshal.Copy(info.desc, descBytes, 0, descSize);
-
-                    // put info in managed object
-                    var wdiDevice = new WdiUsbDevice()
-                    {
-                        VendorId = info.vid,
-                        ProductId = info.pid,
-                        Description = System.Text.Encoding.UTF8.GetString(descBytes),
-                        DeviceId = info.device_id,
-                        HardwareId = info.hardware_id,
-                        CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
-                    };
-
-                    wdiDevices.Add(wdiDevice);
-
-                    // continue with next device
-                    pList = info.next;
-                }
-
-                // free used memory
-                wdi_destroy_list(devices);
-
-                return wdiDevices;
-            }
+            [Description("WinUSB")] WDI_WINUSB,
+            WDI_LIBUSB0,
+            [Description("libusbK")] WDI_LIBUSBK,
+            WDI_USER,
+            WDI_NB_DRIVERS
         }
 
-        public string GetErrorMessage(WdiErrorCode errcode)
-        {
-            var msgPtr = wdi_strerror((int) errcode);
-            return Marshal.PtrToStringAnsi(msgPtr);
-        }
-
-        public string GetVendorName(ushort vendorId)
-        {
-            var namePtr = wdi_get_vendor_name(vendorId);
-            return Marshal.PtrToStringAnsi(namePtr);
-        }
+        #endregion
 
         #region Structs
 
@@ -323,7 +354,7 @@ namespace ScpControl.Driver
             [MarshalAs(UnmanagedType.LPStr)] public readonly string hardware_id;
             [MarshalAs(UnmanagedType.LPStr)] public readonly string compatible_id;
             [MarshalAs(UnmanagedType.LPStr)] public readonly string upper_filter;
-            public readonly UInt64 driver_version;
+            public readonly ulong driver_version;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -340,10 +371,10 @@ namespace ScpControl.Driver
             [MarshalAs(UnmanagedType.I4)] public WdiDriverType driver_type;
             [MarshalAs(UnmanagedType.LPStr)] public string vendor_name;
             [MarshalAs(UnmanagedType.LPStr)] public string device_guid;
-            public bool disable_cat;
-            public bool disable_signing;
-            [MarshalAs(UnmanagedType.LPStr)] public string cert_subject;
-            public bool use_wcid_driver;
+            public readonly bool disable_cat;
+            public readonly bool disable_signing;
+            [MarshalAs(UnmanagedType.LPStr)] public readonly string cert_subject;
+            public readonly bool use_wcid_driver;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -351,7 +382,7 @@ namespace ScpControl.Driver
         {
             public IntPtr hWnd;
             public readonly bool install_filter_driver;
-            public readonly UInt32 pending_install_timeout;
+            public readonly uint pending_install_timeout;
         }
 
         #endregion
@@ -390,11 +421,11 @@ namespace ScpControl.Driver
         private static extern int wdi_set_log_level(WdiLogLevel level);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_register_logger", ExactSpelling = false)]
-        private static extern int wdi_register_logger(IntPtr hWnd, UInt32 message, UInt32 buffsize);
+        private static extern int wdi_register_logger(IntPtr hWnd, uint message, uint buffsize);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_read_logger", ExactSpelling = false)]
-        private static extern int wdi_read_logger(IntPtr buffer, UInt32 buffer_size,
-            ref UInt32 message_size);
+        private static extern int wdi_read_logger(IntPtr buffer, uint buffer_size,
+            ref uint message_size);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_unregister_logger", ExactSpelling = false)]
         private static extern int wdi_unregister_logger(IntPtr hWnd);
@@ -402,6 +433,9 @@ namespace ScpControl.Driver
         #endregion
     }
 
+    /// <summary>
+    ///     Managed wrapper for USB device properties.
+    /// </summary>
     public class WdiUsbDevice
     {
         public ushort VendorId { get; set; }
