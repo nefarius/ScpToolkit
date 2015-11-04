@@ -8,6 +8,73 @@ namespace ScpControl.Bluetooth
 {
     public partial class BthConnection : Component, IEquatable<BthConnection>, IComparable<BthConnection>
     {
+        #region IComparable<ScpBthConnection> Members
+
+        public virtual int CompareTo(BthConnection other)
+        {
+            return HciHandle.CompareTo(other.HciHandle);
+        }
+
+        #endregion
+
+        #region Public methods
+
+        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte lsb, byte msb, ushort dcid = 0)
+        {
+            switch (connectionType)
+            {
+                case L2CAP.PSM.HID_Command:
+
+                    _l2CapCommandHandle[0] = new BthHandle(lsb, msb);
+                    _l2CapCommandHandle[1] = new BthHandle(Dcid++);
+
+                    return _l2CapCommandHandle[1].Bytes;
+
+                case L2CAP.PSM.HID_Interrupt:
+
+                    CanStartService = true;
+
+                    _l2CapInterruptHandle[0] = new BthHandle(lsb, msb);
+                    _l2CapInterruptHandle[1] = new BthHandle(Dcid++);
+
+                    return _l2CapInterruptHandle[1].Bytes;
+
+                case L2CAP.PSM.HID_Service:
+
+                    IsServiceStarted = true;
+                    CanStartService = false;
+
+                    _l2CapServiceHandle[0] = new BthHandle(lsb, msb);
+                    _l2CapServiceHandle[1] = new BthHandle(dcid);
+
+                    return _l2CapServiceHandle[1].Bytes;
+            }
+
+            throw new Exception("Invalid L2CAP Connection Type");
+        }
+
+        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte[] handle)
+        {
+            return SetConnectionType(connectionType, handle[0], handle[1]);
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2} - {6}",
+                LocalMac[5],
+                LocalMac[4],
+                LocalMac[3],
+                LocalMac[2],
+                LocalMac[1],
+                LocalMac[0],
+                _remoteName
+                );
+        }
+
+        #endregion
+
+        #region Private/protected fields
+
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static ushort _dcid = 0x40;
         private readonly BthHandle[] _l2CapCommandHandle = new BthHandle[2];
@@ -15,8 +82,12 @@ namespace ScpControl.Bluetooth
         private readonly BthHandle[] _l2CapServiceHandle = new BthHandle[2];
         private DsModel _model = DsModel.DS3;
         private string _remoteName = string.Empty;
-        protected byte[] LocalMac = new byte[6] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        protected byte[] LocalMac = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         protected string MacDisplayName = string.Empty;
+
+        #endregion
+
+        #region Ctors
 
         public BthConnection()
         {
@@ -36,6 +107,10 @@ namespace ScpControl.Bluetooth
 
             HciHandle = hciHandle;
         }
+
+        #endregion
+
+        #region Public properties
 
         public BthHandle HciHandle { get; private set; }
 
@@ -79,59 +154,12 @@ namespace ScpControl.Bluetooth
         public static ushort Dcid
         {
             get { return _dcid; }
-            set
-            {
-                _dcid = (ushort)(value < 0xFFFF ? value : 0x40);
-            }
-        }
-
-        #region IComparable<ScpBthConnection> Members
-
-        public virtual int CompareTo(BthConnection other)
-        {
-            return HciHandle.CompareTo(other.HciHandle);
+            set { _dcid = (ushort) (value < 0xFFFF ? value : 0x40); }
         }
 
         #endregion
 
-        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte lsb, byte msb, ushort dcid = 0)
-        {
-            switch (connectionType)
-            {
-                case L2CAP.PSM.HID_Command:
-
-                    _l2CapCommandHandle[0] = new BthHandle(lsb, msb);
-                    _l2CapCommandHandle[1] = new BthHandle(Dcid++);
-
-                    return _l2CapCommandHandle[1].Bytes;
-
-                case L2CAP.PSM.HID_Interrupt:
-
-                    CanStartService = true;
-
-                    _l2CapInterruptHandle[0] = new BthHandle(lsb, msb);
-                    _l2CapInterruptHandle[1] = new BthHandle(Dcid++);
-
-                    return _l2CapInterruptHandle[1].Bytes;
-
-                case L2CAP.PSM.HID_Service:
-
-                    IsServiceStarted = true;
-                    CanStartService = false;
-
-                    _l2CapServiceHandle[0] = new BthHandle(lsb, msb);
-                    _l2CapServiceHandle[1] = new BthHandle(dcid);
-
-                    return _l2CapServiceHandle[1].Bytes;
-            }
-
-            throw new Exception("Invalid L2CAP Connection Type");
-        }
-
-        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte[] handle)
-        {
-            return SetConnectionType(connectionType, handle[0], handle[1]);
-        }
+        #region Channel identifier helper methods
 
         /// <summary>
         ///     Destination Channel Identifier.
@@ -256,18 +284,7 @@ namespace ScpControl.Bluetooth
             throw new Exception("Invalid L2CAP Connection Type");
         }
 
-        public override string ToString()
-        {
-            return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2} - {6}",
-                LocalMac[5],
-                LocalMac[4],
-                LocalMac[3],
-                LocalMac[2],
-                LocalMac[1],
-                LocalMac[0],
-                _remoteName
-                );
-        }
+        #endregion
 
         #region IEquatable<ScpBthConnection> Members
 
