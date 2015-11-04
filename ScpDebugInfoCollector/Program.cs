@@ -115,6 +115,8 @@ namespace ScpDebugInfoCollector
                 Console.WriteLine("Data collection finished, an archive named {0} was created on your Desktop",
                     Path.GetFileName(targetArchive));
                 Console.WriteLine("Please submit this file to the forums with a description of your issues.");
+
+                Directory.Delete(WorkingDirectory, true);
             }
             catch (Exception ex)
             {
