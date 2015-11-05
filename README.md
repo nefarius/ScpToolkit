@@ -43,18 +43,17 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
 ## Installation How-To
 1. Connect your Dongle (only needed if you want to use it wirelessly) and controllers via USB and let Windows install it's default drivers. Leave them plugged in during the entire installation process.
-2. Download the [latest release of ScpServer](https://github.com/nefarius/ScpServer/releases/latest) to an arbitrary location on your PC.
-3. Right click on the archive and select `Properties` (depends on your native OS language).
-4. Click the `Unblock` button if it is displayed on the `General` tab.
- - **Don't skip this step!** The driver setup may fail because Windows won't install driver files tagged as "unsafe" (e.g. downloaded from the big bad Internet).
-5. Extract the archive to a location of your choice.
-6. Create a directory where you want the Service to run from. (e.g `C:\Program Files\Scarlet.Crush Productions`)
-7. Copy the contents of the `bin` directory to the location you created.
-8. Run `ScpDriverInstaller.exe`. You may be propted to permit execution as administrator. Please accept or the installation will fail.
-9. The next step depends on your operating system:
+2. Download the [latest release of the ScpToolkit Setup](https://github.com/nefarius/ScpServer/releases/latest) to an arbitrary location on your PC.
+3. Run the Setup and follow it's instructions. Should be fairly straight-forward.
+4. Wait for the Setup to finish.
+  * If you're performing a fresh installation, run the Driver Installer afterwards.
+  * If you're upgrading from an older installation you may skip the Driver Installer.
+5. When running the Driver Installer, chose your Bluetooth and controller devices you like to use with ScpToolkit.
+6. The next step depends on your operating system:
  - Vista: check the Force Install option.
- - Win 7/8/8.1: leave it unchecked.
-10. Click Install.
+ - Win 7/8/8.1/10: leave it unchecked (or check if you're facing installation troubles, might help).
+7. Click Install.
+8. You're done!
 
 ![Install Screenshot](http://nefarius.at/wp-content/uploads/2013/12/31-10-_2015_13-27-55.png "Install Screenshot")
 
