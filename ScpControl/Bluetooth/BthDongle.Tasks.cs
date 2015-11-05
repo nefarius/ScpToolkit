@@ -935,7 +935,7 @@ namespace ScpControl.Bluetooth
                                     if (hci.SupportedNames.Any(n => name.StartsWith(n))
                                         || hci.SupportedNames.Any(n => name == n))
                                     {
-                                        nameList.Add(bd, nm.ToString());
+                                        nameList.Add(bd, name);
 
                                         // the code below is just cut-paste from "case HCI.Event.HCI_Connection_Complete_EV"
                                         // just some adjustments made in the buffer variables
@@ -951,16 +951,25 @@ namespace ScpControl.Bluetooth
 
                                         #region Fake DS3 workaround
 
-                                        if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds &&
-                                            !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
+                                        // TODO: refactor hard-coded string values
+                                        // skip fake check for version 4 controllers
+                                        if (!name.Equals("Wireless Controller", StringComparison.OrdinalIgnoreCase))
                                         {
-                                            connection.IsFake = true;
-                                            Log.Warn("-- Fake DualShock 3 found. Workaround applied");
+                                            if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds &&
+                                                !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
+                                            {
+                                                connection.IsFake = true;
+                                                Log.Warn("-- Fake DualShock 3 found. Workaround applied");
+                                            }
+                                            else
+                                            {
+                                                connection.IsFake = false;
+                                                Log.Info("-- Genuine Sony DualShock 3 found");
+                                            }
                                         }
                                         else
                                         {
-                                            connection.IsFake = false;
-                                            Log.Info("-- Genuine Sony DualShock 3 found");
+                                            Log.Info("-- Sony DualShock 4 found");
                                         }
 
                                         #endregion
