@@ -24,25 +24,32 @@ namespace ScpControl.Sound
                     : @"irrKlang\x86\irrKlang.NET4.dll");
             Log.DebugFormat("Loading irrKlang engine from {0}", irrKlangPath);
 
-            var currentDir = Directory.GetCurrentDirectory();
-            var ikPluginPath = Path.GetDirectoryName(irrKlangPath);
+            try
+            {
+                var currentDir = Directory.GetCurrentDirectory();
+                var ikPluginPath = Path.GetDirectoryName(irrKlangPath);
 
-            /* irrKlang looks for plugins in the host EXE´s directory by default,
-             * so we need to change it temporarly while instantiating the sound engine.
-             * */
-            Directory.SetCurrentDirectory(ikPluginPath ?? currentDir);
+                /* irrKlang looks for plugins in the host EXE´s directory by default,
+                * so we need to change it temporarly while instantiating the sound engine.
+                * */
+                Directory.SetCurrentDirectory(ikPluginPath ?? currentDir);
 
-            // load assembly
-            var irrKlangAssembly = Assembly.LoadFile(irrKlangPath);
+                // load assembly
+                var irrKlangAssembly = Assembly.LoadFile(irrKlangPath);
 
-            // get type of ISoundEngine class
-            var soundEngineType = irrKlangAssembly.GetType("IrrKlang.ISoundEngine");
+                // get type of ISoundEngine class
+                var soundEngineType = irrKlangAssembly.GetType("IrrKlang.ISoundEngine");
 
-            // instantiate  ISoundEngine
-            _soundEngine = Activator.CreateInstance(soundEngineType);
+                // instantiate  ISoundEngine
+                _soundEngine = Activator.CreateInstance(soundEngineType);
 
-            // restore original working directory
-            Directory.SetCurrentDirectory(currentDir);
+                // restore original working directory
+                Directory.SetCurrentDirectory(currentDir);
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Couldn't initialize sound engine: {0}", ex);
+            }
         }
 
         public static AudioPlayer Instance
@@ -52,7 +59,8 @@ namespace ScpControl.Sound
 
         public void PlayCustomFile(string path)
         {
-            if (!GlobalConfiguration.Instance.SoundsEnabled 
+            if (_soundEngine == null
+                || !GlobalConfiguration.Instance.SoundsEnabled
                 || string.IsNullOrEmpty(path)
                 || !File.Exists(path))
                 return;
