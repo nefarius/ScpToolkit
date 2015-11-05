@@ -93,6 +93,7 @@
     <Compile Include="Controls\PadEntryControl.xaml.cs">
       <DependentUpon>PadEntryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="View Models\PadStatsViewModel.cs" />
     <Page Include="Controls\PadEntryCollectionControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -190,8 +191,7 @@
     <Error Condition="!Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>Copy /Y /B $(SolutionDir)\Common\Properties\Info.cs $(ProjectDir)\Properties\CommonInfo.cs &gt; nul:
-</PreBuildEvent>
+    <PreBuildEvent>Copy /Y /B $(SolutionDir)\ScpControl\Properties\CommonInfo.cs $(ProjectDir)\Properties\CommonInfo.cs &gt; nul:</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
