@@ -18,12 +18,12 @@
     <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
     <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
     <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
-    <AssemblyVersionSettings>None.None.DateStamp.Increment</AssemblyVersionSettings>
-    <AssemblyFileVersionSettings>None.None.DateStamp.Increment</AssemblyFileVersionSettings>
+    <AssemblyVersionSettings>None.None.Increment.DateStamp</AssemblyVersionSettings>
+    <AssemblyFileVersionSettings>None.None.Increment.DateStamp</AssemblyFileVersionSettings>
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.15309.5</AssemblyVersion>
+    <AssemblyVersion>1.6.2.15309</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

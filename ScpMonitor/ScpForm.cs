@@ -119,7 +119,14 @@ namespace ScpMonitor
         {
             Icon = niTray.Icon = Resources.Scp_All;
 
-            scpProxy.Start();
+            if (!scpProxy.Start())
+            {
+                MessageBox.Show("Couldn't connect to server, please check if the service is running!",
+                    "Fatal error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+                return;
+            }
 
             tmrUpdate.Enabled = !tmrUpdate.Enabled;
         }
