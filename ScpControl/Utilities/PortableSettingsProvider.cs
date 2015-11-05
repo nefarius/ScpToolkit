@@ -34,11 +34,13 @@ namespace ScpControl.Utilities
             get
             {
                 XmlNode settingsNode = GetSettingsNode(_localSettingsNodeName);
-                XmlNode machineNode = settingsNode.SelectSingleNode(Environment.MachineName.ToLowerInvariant());
+                // works around parsing problems caused by computer names starting with numerical values
+                XmlNode machineNode = settingsNode.SelectSingleNode(string.Format("Host-{0}", Environment.MachineName.ToLowerInvariant()));
 
                 if (machineNode == null)
                 {
-                    machineNode = _rootDocument.CreateElement(Environment.MachineName.ToLowerInvariant());
+                    // works around parsing problems caused by computer names starting with numerical values
+                    machineNode = _rootDocument.CreateElement(string.Format("Host-{0}", Environment.MachineName.ToLowerInvariant()));
                     settingsNode.AppendChild(machineNode);
                 }
 

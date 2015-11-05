@@ -335,6 +335,7 @@ namespace ScpDriverInstaller
             _saved = Cursor;
             Cursor = Cursors.Wait;
             InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
+            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
 
             #endregion
 
