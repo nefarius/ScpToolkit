@@ -10,6 +10,9 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Driver
 {
+    /// <summary>
+    ///     Stores information about installed ScpDevices in an XML file.
+    /// </summary>
     [DataContract]
     public class ScpDeviceCollection : SingletonBase<ScpDeviceCollection>
     {

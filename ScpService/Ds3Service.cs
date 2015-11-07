@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
@@ -57,13 +58,16 @@ namespace ScpService
             var installTask = Task.Factory.StartNew(() =>
             {
                 if (GlobalConfiguration.Instance.ForceBluetoothDriverReinstallation)
-                    DriverInstaller.InstallBluetoothDongles();
+                    DriverInstaller.InstallBluetoothDongles(
+                        ScpDeviceCollection.Instance.Devices.Where(d => d.DeviceType == WdiUsbDeviceType.BluetoothHost));
 
                 if (GlobalConfiguration.Instance.ForceDs3DriverReinstallation)
-                    DriverInstaller.InstallDualShock3Controllers();
+                    DriverInstaller.InstallDualShock3Controllers(
+                        ScpDeviceCollection.Instance.Devices.Where(d => d.DeviceType == WdiUsbDeviceType.DualShock3));
 
                 if (GlobalConfiguration.Instance.ForceDs4DriverReinstallation)
-                    DriverInstaller.InstallDualShock4Controllers();
+                    DriverInstaller.InstallDualShock4Controllers(
+                        ScpDeviceCollection.Instance.Devices.Where(d => d.DeviceType == WdiUsbDeviceType.DualSHock4));
             });
 
             installTask.ContinueWith(task =>

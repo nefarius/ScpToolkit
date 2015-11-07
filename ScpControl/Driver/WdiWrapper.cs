@@ -444,10 +444,18 @@ namespace ScpControl.Driver
         public string DeviceId { get; set; }
         public string HardwareId { get; set; }
         public string CurrentDriver { get; set; }
+        public WdiUsbDeviceType DeviceType { get; set; }
 
         public override string ToString()
         {
             return string.Format("{0} (VID: {1:X4}, PID: {2:X4})", Description, VendorId, ProductId);
         }
+    }
+
+    public enum WdiUsbDeviceType
+    {
+        BluetoothHost,
+        DualShock3,
+        DualSHock4
     }
 }

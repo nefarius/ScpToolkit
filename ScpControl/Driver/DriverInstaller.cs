@@ -31,6 +31,9 @@ namespace ScpControl.Driver
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
+                usbDevice.DeviceType = WdiUsbDeviceType.BluetoothHost;
+                ScpDeviceCollection.Instance.Devices.Add(usbDevice);
+
                 installed++;
                 Log.InfoFormat("Installed driver for Bluetooth dongle {0}", usbDevice);
             }
@@ -94,6 +97,9 @@ namespace ScpControl.Driver
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
+                usbDevice.DeviceType = WdiUsbDeviceType.DualShock3;
+                ScpDeviceCollection.Instance.Devices.Add(usbDevice);
+
                 installed++;
                 Log.InfoFormat("Installed driver for DualShock 3 controller {0}", usbDevice);
             }
@@ -156,6 +162,9 @@ namespace ScpControl.Driver
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
+                usbDevice.DeviceType = WdiUsbDeviceType.DualSHock4;
+                ScpDeviceCollection.Instance.Devices.Add(usbDevice);
+
                 installed++;
                 Log.InfoFormat("Installed driver for DualShock 4 controller {0}", usbDevice);
             }
