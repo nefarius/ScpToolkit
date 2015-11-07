@@ -951,9 +951,8 @@ namespace ScpControl.Bluetooth
 
                                         #region Fake DS3 workaround
 
-                                        // TODO: refactor hard-coded string values
                                         // skip fake check for version 4 controllers
-                                        if (!name.Equals("Wireless Controller", StringComparison.OrdinalIgnoreCase))
+                                        if (!name.Equals(BthDs4.GenuineProductName, StringComparison.OrdinalIgnoreCase))
                                         {
                                             if (!hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                             {

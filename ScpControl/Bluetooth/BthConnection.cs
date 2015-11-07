@@ -132,7 +132,7 @@ namespace ScpControl.Bluetooth
             set
             {
                 _remoteName = value;
-                if (!string.IsNullOrEmpty(_remoteName) && _remoteName.Equals("Wireless Controller"))
+                if (!string.IsNullOrEmpty(_remoteName) && _remoteName.Equals(BthDs4.GenuineProductName))
                     _model = DsModel.DS4;
             }
         }

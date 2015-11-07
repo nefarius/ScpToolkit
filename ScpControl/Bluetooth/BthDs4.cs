@@ -201,6 +201,8 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        public static string GenuineProductName { get { return "Wireless Controller"; } }
+
         public override DsPadId PadId
         {
             get { return (DsPadId)m_ControllerId; }

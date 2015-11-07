@@ -231,7 +231,7 @@ namespace ScpControl.Bluetooth
             if (_connected.Count < 4)
             {
                 // TODO: weak check, maybe improve in future
-                if (name == "Wireless Controller")
+                if (name.Equals(BthDs4.GenuineProductName, StringComparison.OrdinalIgnoreCase))
                     connection = new BthDs4(this, _localMac, lsb, msb);
                 else
                     connection = new BthDs3(this, _localMac, lsb, msb);
