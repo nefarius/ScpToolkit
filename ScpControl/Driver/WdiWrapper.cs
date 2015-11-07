@@ -454,6 +454,7 @@ namespace ScpControl.Driver
 
     public enum WdiUsbDeviceType
     {
+        Unknown,
         BluetoothHost,
         DualShock3,
         DualSHock4
