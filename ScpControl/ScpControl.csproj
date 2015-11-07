@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.12.15311</AssemblyVersion>
+    <AssemblyVersion>1.6.34.15311</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -151,6 +151,7 @@
     <Compile Include="Driver\PNPUtilLib\DriverStoreEntry.cs" />
     <Compile Include="Driver\PNPUtilLib\IDriverStore.cs" />
     <Compile Include="Driver\PNPUtilLib\PNPUtil.cs" />
+    <Compile Include="Driver\ScpDeviceCollection.cs" />
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="ScpCore\DsPacket.cs" />
     <Compile Include="ScpCore\GamePadEnums.cs" />
     <Compile Include="ScpCore\Profile.cs" />
+    <Compile Include="ScpCore\SingletonBase.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />
     <Compile Include="Usb\Gamepads\UsbBadBigBenGamepad.cs">
       <SubType>Component</SubType>
@@ -470,7 +472,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
-</PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
