@@ -281,13 +281,6 @@
                                 </CheckBox>
                             </Grid>
                         </GroupBox>
-
-                        <!-- Hacks & Workarounds -->
-                        <GroupBox Header="Hacks &amp; Workarounds" Grid.Row="3">
-                            <StackPanel>
-                                <CheckBox IsChecked="{Binding Path=UseDs3CounterfeitWorkarounds}">Enable support for counterfeit controllers</CheckBox>
-                            </StackPanel>
-                        </GroupBox>
                     </Grid>
                 </ScrollViewer>
             </controls:AccordionItem>

@@ -955,8 +955,7 @@ namespace ScpControl.Bluetooth
                                         // skip fake check for version 4 controllers
                                         if (!name.Equals("Wireless Controller", StringComparison.OrdinalIgnoreCase))
                                         {
-                                            if (GlobalConfiguration.Instance.UseDs3CounterfeitWorkarounds &&
-                                                !hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
+                                            if (!hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                             {
                                                 connection.IsFake = true;
                                                 Log.Warn("-- Fake DualShock 3 found. Workaround applied");

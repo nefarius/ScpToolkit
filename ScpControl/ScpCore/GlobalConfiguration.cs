@@ -360,12 +360,6 @@ namespace ScpControl.ScpCore
 
         #endregion
 
-        public bool UseDs3CounterfeitWorkarounds
-        {
-            get { return Settings.Default.UseDs3CounterfeitWorkarounds; }
-            set { Settings.Default.UseDs3CounterfeitWorkarounds = value; }
-        }
-
         public string Pcsx2RootPath
         {
             get { return Settings.Default.Pcsx2RootPath; }
