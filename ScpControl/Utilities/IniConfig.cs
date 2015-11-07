@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using log4net;
 using MadMilkman.Ini;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Utilities
 {
@@ -12,7 +13,6 @@ namespace ScpControl.Utilities
     {
         private const string CfgFile = "ScpControl.ini";
         private static readonly Lazy<IniConfig> LazyIinstance = new Lazy<IniConfig>(() => new IniConfig());
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace ScpControl.Utilities
             };
 
             var ini = new IniFile(iniOpts);
-            var fullPath = Path.Combine(WorkingDirectory, CfgFile);
+            var fullPath = Path.Combine(GlobalConfiguration.AppDirectory, CfgFile);
 
             if (!File.Exists(fullPath))
             {
