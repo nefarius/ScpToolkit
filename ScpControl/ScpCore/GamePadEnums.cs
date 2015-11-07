@@ -182,6 +182,19 @@ namespace ScpControl.ScpCore
         Square = 33
     }
 
+    public enum Ds3AnalogDirection
+    {
+        LUp = -15,
+        LRight = 14,
+        LDown = 15,
+        LLeft = -14,
+
+        RUp = -17,
+        RRight = 16,
+        RDown = 17,
+        RLeft = -16
+    }
+
     [Flags]
     public enum Ds4Button : uint
     {

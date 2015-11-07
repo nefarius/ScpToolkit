@@ -12,6 +12,7 @@
       <DS3>
         <Button />
         <Axis />
+        <ButtonAnalogDirection />
       </DS3>
       <DS4>
         <Button />
@@ -28,6 +29,7 @@
           <L2>None</L2>
           <R2>None</R2>
         </Axis>
+        <ButtonAnalogDirection />
       </DS3>
       <DS4>
         <Button />
@@ -56,6 +58,7 @@
           <L1>R1</L1>
           <R1>L1</R1>
         </Axis>
+        <ButtonAnalogDirection />
       </DS3>
       <DS4>
         <Button>
@@ -87,6 +90,7 @@
           <L2>None</L2>
           <R2>None</R2>
         </Axis>
+        <ButtonAnalogDirection />
       </DS3>
       <DS4>
         <Button>
@@ -118,6 +122,7 @@
           <L1>None</L1>
           <R1>None</R1>
         </Axis>
+        <ButtonAnalogDirection />
       </DS3>
       <DS4>
         <Button>
