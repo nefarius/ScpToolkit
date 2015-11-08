@@ -129,6 +129,7 @@ namespace ScpControl.ScpCore
         RY_Hi = 21
     }
 
+    [Obsolete]
     [Flags]
     public enum Ds3Button : uint
     {
@@ -157,6 +158,7 @@ namespace ScpControl.ScpCore
         PS = 1 << 16
     }
 
+    [Obsolete]
     public enum Ds3Axis
     {
         None = 0,
@@ -182,6 +184,7 @@ namespace ScpControl.ScpCore
         Square = 33
     }
 
+    [Obsolete]
     [Flags]
     public enum Ds4Button : uint
     {
@@ -211,6 +214,7 @@ namespace ScpControl.ScpCore
         TouchPad = 1 << 17
     }
 
+    [Obsolete]
     public enum Ds4Axis
     {
         None = 0,

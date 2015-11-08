@@ -9,6 +9,7 @@ using ScpControl.ScpCore;
 
 namespace ScpControl
 {
+    [Obsolete]
     public sealed partial class ScpMapper : Component
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

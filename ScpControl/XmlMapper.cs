@@ -8,6 +8,7 @@ using ScpControl.ScpCore;
 
 namespace ScpControl
 {
+    [Obsolete]
     public partial class XmlMapper : Component
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
