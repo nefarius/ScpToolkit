@@ -150,10 +150,10 @@ namespace ScpControl.Usb.Gamepads
             // TODO: remove duplicate code
             if (!IsActive) return State == DsState.Connected;
 
-            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.RawBytes, (int) DsOffset.Address, m_Local.Length);
+            Buffer.BlockCopy(m_Local, 0, InputReport.RawBytes, (int) DsOffset.Address, m_Local.Length);
 
-            m_ReportArgs.ConnectionType = Connection;
-            m_ReportArgs.Model = Model;
+            InputReport.ConnectionType = Connection;
+            InputReport.Model = Model;
 
             m_State = DsState.Connected;
             m_Packet = 0;

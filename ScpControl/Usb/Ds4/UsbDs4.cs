@@ -71,7 +71,7 @@ namespace ScpControl.Usb.Ds4
                 }
 
                 m_ControllerId = (byte) value;
-                m_ReportArgs.PadId = PadId;
+                InputReport.PadId = PadId;
 
                 switch (value)
                 {
@@ -244,9 +244,9 @@ namespace ScpControl.Usb.Ds4
 
             m_Packet++;
 
-            m_BatteryStatus = m_ReportArgs.SetBatteryStatus((DsBattery) MapBattery(report[30]));
+            m_BatteryStatus = InputReport.SetBatteryStatus((DsBattery) MapBattery(report[30]));
 
-            m_ReportArgs.SetPacketCounter(m_Packet);
+            InputReport.SetPacketCounter(m_Packet);
 
             var buttons = (Ds4Button) ((report[5] << 0) | (report[6] << 8) | (report[7] << 16));
 
@@ -284,7 +284,7 @@ namespace ScpControl.Usb.Ds4
 
             for (var index = 8; index < 72; index++)
             {
-                m_ReportArgs.RawBytes[index] = report[index - 8];
+                InputReport.RawBytes[index] = report[index - 8];
             }
 
             OnHidReportReceived();

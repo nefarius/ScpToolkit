@@ -95,7 +95,7 @@ namespace ScpControl.Usb
         protected uint m_Packet;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
-        protected NativeInputReport m_ReportArgs = new NativeInputReport();
+        protected readonly NativeInputReport InputReport = new NativeInputReport();
         protected DsState m_State = DsState.Disconnected;
         protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
 
@@ -107,10 +107,10 @@ namespace ScpControl.Usb
 
         protected virtual void OnHidReportReceived()
         {
-            m_ReportArgs.PadId = (DsPadId)m_ControllerId;
-            m_ReportArgs.PadState = m_State;
+            InputReport.PadId = (DsPadId)m_ControllerId;
+            InputReport.PadState = m_State;
 
-            if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
+            if (HidReportReceived != null) HidReportReceived(this, InputReport);
         }
 
         #endregion
@@ -157,7 +157,7 @@ namespace ScpControl.Usb
             {
                 m_ControllerId = (byte) value;
 
-                m_ReportArgs.PadId = PadId;
+                InputReport.PadId = PadId;
             }
         }
 
@@ -203,10 +203,10 @@ namespace ScpControl.Usb
         {
             if (!IsActive) return State == DsState.Connected;
 
-            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.RawBytes, (int) DsOffset.Address, m_Local.Length);
+            Buffer.BlockCopy(m_Local, 0, InputReport.RawBytes, (int) DsOffset.Address, m_Local.Length);
 
-            m_ReportArgs.ConnectionType = Connection;
-            m_ReportArgs.Model = Model;
+            InputReport.ConnectionType = Connection;
+            InputReport.Model = Model;
 
             m_State = DsState.Connected;
             m_Packet = 0;

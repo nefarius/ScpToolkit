@@ -17,31 +17,31 @@ namespace ScpControl.Usb.Gamepads
             #region HID Report translation
 
             // no battery state since the Gamepad is USB-powered
-            m_BatteryStatus = m_ReportArgs.SetBatteryStatus(DsBattery.None);
+            m_BatteryStatus = InputReport.SetBatteryStatus(DsBattery.None);
 
             // packet counter
-            m_ReportArgs.SetPacketCounter(m_Packet);
+            InputReport.SetPacketCounter(m_Packet);
 
-            m_ReportArgs.SetCircleDigital(report[6] >> 5);
-            m_ReportArgs.SetCrossDigital(report[6] >> 6);
-            m_ReportArgs.SetTriangleDigital(report[6] >> 4);
-            m_ReportArgs.SetSquareDigital(report[6] >> 7);
+            InputReport.SetCircleDigital(report[6] >> 5);
+            InputReport.SetCrossDigital(report[6] >> 6);
+            InputReport.SetTriangleDigital(report[6] >> 4);
+            InputReport.SetSquareDigital(report[6] >> 7);
 
-            m_ReportArgs.SetSelect(report[7] >> 4);
-            m_ReportArgs.SetStart(report[7] >> 5);
+            InputReport.SetSelect(report[7] >> 4);
+            InputReport.SetStart(report[7] >> 5);
 
-            m_ReportArgs.SetDpadUpDigital(report[4] == 0x00);
-            m_ReportArgs.SetDpadRightDigital(report[3] == 0xFF);
-            m_ReportArgs.SetDpadDownDigital(report[4] == 0xFF);
-            m_ReportArgs.SetDpadLeftDigital(report[3] == 0x00);
+            InputReport.SetDpadUpDigital(report[4] == 0x00);
+            InputReport.SetDpadRightDigital(report[3] == 0xFF);
+            InputReport.SetDpadDownDigital(report[4] == 0xFF);
+            InputReport.SetDpadLeftDigital(report[3] == 0x00);
 
-            m_ReportArgs.SetLeftShoulderDigital(report[7] >> 0);
-            m_ReportArgs.SetRightShoulderDigital(report[7] >> 1);
-            m_ReportArgs.SetLeftTriggerDigital(report[7] >> 2);
-            m_ReportArgs.SetRightTriggerDigital(report[7] >> 3);
+            InputReport.SetLeftShoulderDigital(report[7] >> 0);
+            InputReport.SetRightShoulderDigital(report[7] >> 1);
+            InputReport.SetLeftTriggerDigital(report[7] >> 2);
+            InputReport.SetRightTriggerDigital(report[7] >> 3);
 
-            m_ReportArgs.SetLeftThumb(report[7] >> 6);
-            m_ReportArgs.SetRightThumb(report[7] >> 7);
+            InputReport.SetLeftThumb(report[7] >> 6);
+            InputReport.SetRightThumb(report[7] >> 7);
             
             // TODO: dafuq?!
             // http://forums.pcsx2.net/attachment.php?aid=57420
