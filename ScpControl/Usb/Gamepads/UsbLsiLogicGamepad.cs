@@ -26,7 +26,7 @@ namespace ScpControl.Usb.Gamepads
             InputReport.SetPacketCounter(m_Packet);
 
             // null button states
-            InputReport.ZeroPsButtonsState();
+            InputReport.ZeroPsButtonState();
             InputReport.ZeroSelectStartButtonsState();
             InputReport.ZeroShoulderButtonsState();
 

@@ -68,7 +68,7 @@ namespace ScpControl.Profiler
             RawBytes[10] = 0x00;
         }
 
-        public void ZeroPsButtonsState()
+        public void ZeroPsButtonState()
         {
             RawBytes[12] = 0x00;
         }
