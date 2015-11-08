@@ -1,8 +1,9 @@
-﻿using ScpControl.ScpCore;
+﻿using System;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Profiler
 {
-    public class NativeInputReport
+    public class NativeInputReport : EventArgs
     {
         public NativeInputReport(byte[] report)
         {
@@ -14,6 +15,11 @@ namespace ScpControl.Profiler
         public DsModel Model
         {
             get { return (DsModel) RawBytes[(int) DsOffset.Model]; }
+        }
+
+        public int PadId
+        {
+            get { return RawBytes[(int) DsOffset.Pad]; }
         }
 
         /// <summary>
