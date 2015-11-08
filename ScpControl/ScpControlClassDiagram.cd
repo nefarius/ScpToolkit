@@ -34,7 +34,7 @@
   <Class Name="ScpControl.Bluetooth.BthDs4" Collapsed="true">
     <Position X="13" Y="10.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAIACAgEAAAAgCAEAgGAAAQAAAgAAAACAMABQA=</HashCode>
+      <HashCode>AAAAAAAIACAgEAAAAgCAEAgGAAAQAAggAAAACAMABQA=</HashCode>
       <FileName>Bluetooth\BthDs4.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -106,7 +106,7 @@
   <Class Name="ScpControl.ScpTimer" Collapsed="true">
     <Position X="36.75" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAgAIkAAIKAAAACIAAACAQAIQAAAAAAQAA=</HashCode>
+      <HashCode>AAAAAACAACAgAIAAAICAAAACAAAACAASIAAAAAAAQAE=</HashCode>
       <FileName>ScpTimer.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -240,7 +240,7 @@
   <Class Name="ScpControl.Driver.WdiUsbDevice" Collapsed="true">
     <Position X="29.75" Y="7.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAECAAAAQIAAA=</HashCode>
+      <HashCode>MAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAECAAAAQIAAA=</HashCode>
       <FileName>Driver\WdiWrapper.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -280,50 +280,6 @@
       <FileName>Profiler\DualShockProfile.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ScpControl.Profiler.DsButton" Collapsed="true">
-    <Position X="8" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>ABAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ScpControl.Profiler.Ds3Button" Collapsed="true">
-    <Position X="6.75" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AACAACIAACAAAAABAABAABAAACggAAgACACgQAEAAAI=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Profiler.Ds4Button" Collapsed="true">
-    <Position X="9" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AICQACIAAAAAAAABAABAABAAACggAAgACACgAAFAAAI=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Profiler.DsAxis" Collapsed="true">
-    <Position X="2" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>ABAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="ScpControl.Profiler.Ds3Axis" Collapsed="true">
-    <Position X="0.75" Y="4.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAABAIBACAACAABAABAABAAAAggAAgACACgAAEAAAI=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Profiler.Ds4Axis" Collapsed="true">
-    <Position X="3" Y="4.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAABAABACAACAAAAABAABAAAAAAAAAAAAAAAAEAAAA=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="ScpControl.Profiler.DualShockProfile" Collapsed="true">
     <Position X="31.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
@@ -334,7 +290,7 @@
   <Class Name="ScpControl.Properties.Settings" Collapsed="true">
     <Position X="24.5" Y="7.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAIAJAhkEQAEAYmEEAAoAAOBBATFoQBqAAAAAAEiQA=</HashCode>
+      <HashCode>AQAIAJAhkEQAEAYmEEAAoAAOBBATBoQBqAAAAAAEiQA=</HashCode>
       <FileName>Properties\Settings.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -363,7 +319,7 @@
   <Class Name="ScpControl.ScpCore.GlobalConfiguration" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="35" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QQIIgtAgkAQAAAIiEEAAAGgKADASkJBBaKgAAwYMoZA=</HashCode>
+      <HashCode>QQIIgtAgkAQAAAIiEEAAAGgKADASgJBBaKgAAwYMoZA=</HashCode>
       <FileName>ScpCore\GlobalConfiguration.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
@@ -604,7 +560,7 @@
   <Class Name="ScpControl.Utilities.IniConfig" Collapsed="true">
     <Position X="26.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAkAAAAAAAAAAAAgAAAAAQAAAAAQAIgE=</HashCode>
+      <HashCode>AAAAAAAAAAAAAkAAAAAAAAAAAAgAAAAAQAAAAAAAIgE=</HashCode>
       <FileName>Utilities\IniConfig.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -682,6 +638,50 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
+  <Class Name="ScpControl.Profiler.DsButton" Collapsed="true">
+    <Position X="8" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Profiler\DualShockButtons.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ScpControl.Profiler.Ds3Button" Collapsed="true">
+    <Position X="6.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAACIAACAAAAABAABAABAAACggAAgACACgQAEAAAI=</HashCode>
+      <FileName>Profiler\DualShockButtons.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Profiler.Ds4Button" Collapsed="true">
+    <Position X="9" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AICQACIAAAAAAAABAABAABAAACggAAgACACgAAFAAAI=</HashCode>
+      <FileName>Profiler\DualShockButtons.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Profiler.DsAxis" Collapsed="true">
+    <Position X="2" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Profiler\DualShockAxes.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ScpControl.Profiler.Ds3Axis" Collapsed="true">
+    <Position X="0.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAIBACAACAABAABAABAAAAggAAgACACgAAEAAAI=</HashCode>
+      <FileName>Profiler\DualShockAxes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.Profiler.Ds4Axis" Collapsed="true">
+    <Position X="3" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAABACAACAAAAABAABAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Profiler\DualShockAxes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Struct Name="ScpControl.Driver.KISO_PACKET" Collapsed="true">
     <Position X="28" Y="8.75" Width="1.5" />
     <TypeIdentifier>
@@ -752,20 +752,6 @@
       <FileName>Profiler\DualShockProfile.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="ScpControl.Profiler.IDsButton" Collapsed="true">
-    <Position X="31.5" Y="10" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>ABAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="ScpControl.Profiler.IDsAxis" Collapsed="true">
-    <Position X="29.75" Y="10" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>ABAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Profiler\DualShockProfile.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="ScpControl.Rx.IChannel&lt;T&gt;" Collapsed="true">
     <Position X="26.25" Y="10" Width="1.5" />
     <TypeIdentifier>
@@ -778,6 +764,20 @@
     <TypeIdentifier>
       <HashCode>AgAAAACAAAEAgAAAEgAAAAEAAAAAAAAIAAEAAAIgAAg=</HashCode>
       <FileName>Wcf\IScpCommandService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ScpControl.Profiler.IDsButton" Collapsed="true">
+    <Position X="31.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Profiler\DualShockButtons.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ScpControl.Profiler.IDsAxis" Collapsed="true">
+    <Position X="29.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Profiler\DualShockAxes.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="ScpControl.Bluetooth.Ds4UpdateRate" Collapsed="true">

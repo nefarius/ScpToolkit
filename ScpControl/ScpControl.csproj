@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.41.15312</AssemblyVersion>
+    <AssemblyVersion>1.6.42.15312</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -165,6 +165,8 @@
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
+    <Compile Include="Profiler\DualShockAxes.cs" />
+    <Compile Include="Profiler\DualShockButtons.cs" />
     <Compile Include="Profiler\NativeInputReport.cs" />
     <Compile Include="Profiler\DualShockProfile.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
