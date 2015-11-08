@@ -546,6 +546,40 @@ namespace ScpControl.Profiler
         #endregion
     }
 
+    public interface IDsButtonState
+    {
+        bool IsPressed { get; set; }
+        byte Value { get; set; }
+    }
+
+    public class DsButtonState : IDsButtonState
+    {
+
+        public bool IsPressed
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
+        public byte Value
+        {
+            get
+            {
+                throw new System.NotImplementedException();
+            }
+            set
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+    }
+
     public interface IDsAxis
     {
         uint RawValue { get; }
@@ -892,10 +926,7 @@ namespace ScpControl.Profiler
 
         #endregion
     }
-
-
-
-
+    
     public class DualShockProfile
     {
         public DualShockProfile()

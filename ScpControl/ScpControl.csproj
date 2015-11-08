@@ -165,6 +165,7 @@
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
+    <Compile Include="Profiler\NativeInputReport.cs" />
     <Compile Include="Profiler\DualShockProfile.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
