@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using HidSharp.ReportDescriptors.Parser;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 using ScpControl.Utilities;
@@ -94,7 +95,7 @@ namespace ScpControl.Usb
         protected uint m_Packet;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
-        protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
+        protected NativeInputReport m_ReportArgs = new NativeInputReport();
         protected DsState m_State = DsState.Disconnected;
         protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
 
@@ -102,12 +103,12 @@ namespace ScpControl.Usb
 
         #region Events
 
-        public event EventHandler<ReportEventArgs> HidReportReceived;
+        public event EventHandler<NativeInputReport> HidReportReceived;
 
         protected virtual void OnHidReportReceived()
         {
-            m_ReportArgs.Report[0] = m_ControllerId;
-            m_ReportArgs.Report[1] = (byte) m_State;
+            m_ReportArgs.PadId = (DsPadId)m_ControllerId;
+            m_ReportArgs.PadState = m_State;
 
             if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
         }
@@ -156,7 +157,7 @@ namespace ScpControl.Usb
             {
                 m_ControllerId = (byte) value;
 
-                m_ReportArgs.Pad = PadId;
+                m_ReportArgs.PadId = PadId;
             }
         }
 
@@ -202,10 +203,10 @@ namespace ScpControl.Usb
         {
             if (!IsActive) return State == DsState.Connected;
 
-            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.Report, (int) DsOffset.Address, m_Local.Length);
+            Buffer.BlockCopy(m_Local, 0, m_ReportArgs.RawBytes, (int) DsOffset.Address, m_Local.Length);
 
-            m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
-            m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
+            m_ReportArgs.ConnectionType = Connection;
+            m_ReportArgs.Model = Model;
 
             m_State = DsState.Connected;
             m_Packet = 0;

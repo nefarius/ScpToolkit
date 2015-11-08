@@ -153,29 +153,6 @@ namespace ScpControl
         public bool Handled { get; set; }
     }
 
-    public class ReportEventArgs : EventArgs
-    {
-        public const int Length = 96;
-        private volatile byte[] _report = new byte[Length];
-
-        public ReportEventArgs()
-        {
-            Pad = DsPadId.None;
-        }
-
-        public ReportEventArgs(DsPadId pad)
-        {
-            this.Pad = pad;
-        }
-
-        public DsPadId Pad { get; set; }
-
-        public byte[] Report
-        {
-            get { return _report; }
-        }
-    }
-
     [Obsolete]
     public class RegistryProvider : SettingsProvider
     {

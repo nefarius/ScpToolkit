@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using log4net;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 
 namespace ScpControl
@@ -30,7 +31,7 @@ namespace ScpControl
         }
 
         public event EventHandler<ArrivalEventArgs> Arrival;
-        public event EventHandler<ReportEventArgs> Report;
+        public event EventHandler<NativeInputReport> Report;
 
         protected virtual bool LogArrival(IDsDevice Arrived)
         {
@@ -92,7 +93,7 @@ namespace ScpControl
             if (Arrival != null) Arrival(this, e);
         }
 
-        protected virtual void OnHidReportReceived(object sender, ReportEventArgs e)
+        protected virtual void OnHidReportReceived(object sender, NativeInputReport e)
         {
             if (Report != null) Report(sender, e);
         }

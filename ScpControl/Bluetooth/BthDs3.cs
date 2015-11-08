@@ -96,7 +96,7 @@ namespace ScpControl.Bluetooth
             set
             {
                 m_ControllerId = (byte)value;
-                m_ReportArgs.Pad = PadId;
+                InputReport.PadId = PadId;
 
                 _hidReport[11] = ledStatus;
             }
@@ -130,13 +130,10 @@ namespace ScpControl.Bluetooth
             if (m_Packet == 0) Rumble(0, 0);
             m_Packet++;
 
-            m_ReportArgs.Report[2] = m_BatteryStatus;
+            InputReport.BatteryStatus = m_BatteryStatus;
 
-            m_ReportArgs.Report[4] = (byte)(m_Packet >> 0 & 0xFF);
-            m_ReportArgs.Report[5] = (byte)(m_Packet >> 8 & 0xFF);
-            m_ReportArgs.Report[6] = (byte)(m_Packet >> 16 & 0xFF);
-            m_ReportArgs.Report[7] = (byte)(m_Packet >> 24 & 0xFF);
-
+            InputReport.SetPacketCounter(m_Packet);
+            
             var buttons = (Ds3Button)((report[11] << 0) | (report[12] << 8) | (report[13] << 16) | (report[14] << 24));
             bool trigger = false, active = false;
 
@@ -152,7 +149,7 @@ namespace ScpControl.Bluetooth
 
             for (var index = 8; index < 57; index++)
             {
-                m_ReportArgs.Report[index] = report[index + 1];
+                InputReport.RawBytes[index] = report[index + 1];
             }
 
             // Buttons

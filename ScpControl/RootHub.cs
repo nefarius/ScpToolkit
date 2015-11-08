@@ -9,6 +9,7 @@ using Libarius.System;
 using ReactiveSockets;
 using ScpControl.Bluetooth;
 using ScpControl.Exceptions;
+using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
@@ -207,7 +208,7 @@ namespace ScpControl
 
         private class Cache
         {
-            private readonly byte[] m_Mapped = new byte[ReportEventArgs.Length];
+            private readonly byte[] m_Mapped = new byte[NativeInputReport.Length];
             private readonly byte[] m_Report = new byte[BusDevice.ReportSize];
             private readonly byte[] m_Rumble = new byte[BusDevice.RumbleSize];
 
@@ -551,25 +552,25 @@ namespace ScpControl
             e.Handled = bFound;
         }
 
-        protected override void OnHidReportReceived(object sender, ReportEventArgs e)
+        protected override void OnHidReportReceived(object sender, NativeInputReport e)
         {
-            int serial = e.Report[(int)DsOffset.Pad];
-            var model = (DsModel)e.Report[(int)DsOffset.Model];
+            int serial = (int)e.PadId;
+            var model = e.Model;
 
             var report = _mCache[serial].Report;
             var rumble = _mCache[serial].Rumble;
             var mapped = _mCache[serial].Mapped;
 
-            if (scpMap.Remap(model, serial, _mPad[serial].Local, e.Report, mapped))
+            if (scpMap.Remap(model, serial, _mPad[serial].Local, e.RawBytes, mapped))
             {
                 _scpBus.Parse(mapped, report, model);
             }
             else
             {
-                _scpBus.Parse(e.Report, report, model);
+                _scpBus.Parse(e.RawBytes, report, model);
             }
 
-            if (_scpBus.Report(report, rumble) && (DsState)e.Report[1] == DsState.Connected)
+            if (_scpBus.Report(report, rumble) && (DsState)e.RawBytes[1] == DsState.Connected)
             {
                 var large = rumble[3];
                 var small = rumble[4];
@@ -583,7 +584,7 @@ namespace ScpControl
                 }
             }
 
-            if ((DsState)e.Report[1] != DsState.Connected)
+            if ((DsState)e.RawBytes[1] != DsState.Connected)
             {
                 _mXInput[serial][0] = _mXInput[serial][1] = 0;
                 _mNative[serial][0] = _mNative[serial][1] = 0;
@@ -601,7 +602,7 @@ namespace ScpControl
                 {
                     try
                     {
-                        channel.SendAsync(e.Report);
+                        channel.SendAsync(e.RawBytes);
                     }
                     catch (AggregateException)
                     {

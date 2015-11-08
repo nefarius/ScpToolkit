@@ -209,7 +209,7 @@ namespace ScpControl.Bluetooth
             set
             {
                 m_ControllerId = (byte)value;
-                m_ReportArgs.Pad = PadId;
+                InputReport.PadId = PadId;
 
                 switch (value)
                 {
@@ -270,12 +270,9 @@ namespace ScpControl.Bluetooth
         {
             m_Packet++;
 
-            m_ReportArgs.Report[2] = m_BatteryStatus = (byte)((report[41] + 2) / 2);
+            InputReport.BatteryStatus = m_BatteryStatus = (byte)((report[41] + 2) / 2);
 
-            m_ReportArgs.Report[4] = (byte)(m_Packet >> 0 & 0xFF);
-            m_ReportArgs.Report[5] = (byte)(m_Packet >> 8 & 0xFF);
-            m_ReportArgs.Report[6] = (byte)(m_Packet >> 16 & 0xFF);
-            m_ReportArgs.Report[7] = (byte)(m_Packet >> 24 & 0xFF);
+            InputReport.SetPacketCounter(m_Packet);
 
             var buttons = (Ds4Button)((report[16] << 0) | (report[17] << 8) | (report[18] << 16));
             bool trigger = false, active = false;
@@ -324,10 +321,10 @@ namespace ScpControl.Bluetooth
 
             for (var index = 8; index < 84; index++)
             {
-                m_ReportArgs.Report[index] = report[index + 3];
+                InputReport.RawBytes[index] = report[index + 3];
             }
 
-            m_ReportArgs.Report[8] = report[9];
+            InputReport.RawBytes[8] = report[9];
 
             // Buttons
             for (var index = 16; index < 18 && !active; index++)

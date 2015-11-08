@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 
 namespace ScpControl.Bluetooth
@@ -278,7 +279,7 @@ namespace ScpControl.Bluetooth
         #region Events
 
         public event EventHandler<ArrivalEventArgs> DeviceArrived;
-        public event EventHandler<ReportEventArgs> HidReportReceived;
+        public event EventHandler<NativeInputReport> HidReportReceived;
 
         private bool OnDeviceArrival(IDsDevice arrived)
         {
@@ -306,7 +307,7 @@ namespace ScpControl.Bluetooth
             if (count > 0) _connected[new BthHandle(lsb, msb)].Completed();
         }
 
-        private void OnHidReportReceived(object sender, ReportEventArgs e)
+        private void OnHidReportReceived(object sender, NativeInputReport e)
         {
             if (HidReportReceived != null) HidReportReceived(sender, e);
         }

@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.46.15312</AssemblyVersion>
+    <AssemblyVersion>1.6.84.15312</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -190,7 +190,6 @@
     <Compile Include="Usb\Gamepads\UsbGenericGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Usb\ReportEventArgsExtensions.cs" />
     <Compile Include="Usb\Ds3\Replica\UsbDs3Afterglow.cs">
       <SubType>Component</SubType>
     </Compile>

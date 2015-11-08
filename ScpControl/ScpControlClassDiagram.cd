@@ -167,13 +167,6 @@
       <FileName>ScpUtil.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ScpControl.ReportEventArgs" Collapsed="true">
-    <Position X="36.75" Y="5.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAgAAAAAAAABAAAAAAAAAAAAAAAAABAA=</HashCode>
-      <FileName>ScpUtil.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="ScpControl.RegistryProvider" Collapsed="true">
     <Position X="35" Y="5.5" Width="1.5" />
     <TypeIdentifier>
@@ -434,13 +427,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Usb\Gamepads\UsbSnesGamepad.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Usb.ReportEventArgsExtensions" Collapsed="true">
-    <Position X="24.5" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>BBAIAEQAIAMAAgAEAAIoACAEAAgIoAMAAEIAEAIgIiA=</HashCode>
-      <FileName>Usb\ReportEventArgsExtensions.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ScpControl.Usb.UsbDevice" Collapsed="true">

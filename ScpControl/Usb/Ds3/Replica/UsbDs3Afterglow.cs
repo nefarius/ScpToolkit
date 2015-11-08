@@ -15,10 +15,10 @@
             #region HID Report translation
 
             // overwrite Report ID
-            m_ReportArgs.Report[0] = 0x01;
+            m_ReportArgs.ReportId = 0x01;
 
             // battery
-            m_BatteryStatus = m_ReportArgs.SetBatteryStatus(report);
+            m_BatteryStatus = m_ReportArgs.BatteryStatus = report[30];
 
             // packet counter
             m_ReportArgs.SetPacketCounter(m_Packet);

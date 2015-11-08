@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 
@@ -26,7 +27,7 @@ namespace ScpControl.Bluetooth
         protected byte m_PlugStatus = 0;
         private bool m_Publish;
         protected uint m_Queued = 0;
-        protected ReportEventArgs m_ReportArgs = new ReportEventArgs();
+        protected readonly NativeInputReport InputReport = new NativeInputReport();
         protected DsState m_State = DsState.Disconnected;
         private readonly byte[] m_Master = new byte[6];
 
@@ -67,10 +68,10 @@ namespace ScpControl.Bluetooth
 
         public virtual bool Start()
         {
-            Buffer.BlockCopy(LocalMac, 0, m_ReportArgs.Report, (int) DsOffset.Address, LocalMac.Length);
+            Buffer.BlockCopy(LocalMac, 0, InputReport.RawBytes, (int) DsOffset.Address, LocalMac.Length);
 
-            m_ReportArgs.Report[(int) DsOffset.Connection] = (byte) Connection;
-            m_ReportArgs.Report[(int) DsOffset.Model] = (byte) Model;
+            InputReport.ConnectionType = Connection;
+            InputReport.Model = Model;
 
             tmUpdate.Enabled = true;
 
@@ -97,14 +98,14 @@ namespace ScpControl.Bluetooth
             return m_Device.HCI_Disconnect(HciHandle) > 0;
         }
 
-        public event EventHandler<ReportEventArgs> HidReportReceived;
+        public event EventHandler<NativeInputReport> HidReportReceived;
 
         protected virtual void OnHidReportReceived()
         {
-            m_ReportArgs.Report[0] = m_ControllerId;
-            m_ReportArgs.Report[1] = (byte) m_State;
+            InputReport.PadId = (DsPadId)m_ControllerId;
+            InputReport.PadState = m_State;
 
-            if (HidReportReceived != null) HidReportReceived(this, m_ReportArgs);
+            if (HidReportReceived != null) HidReportReceived(this, InputReport);
         }
 
         public virtual bool Stop()

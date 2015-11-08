@@ -72,7 +72,7 @@ namespace ScpControl.Usb.Ds3
             set
             {
                 m_ControllerId = (byte)value;
-                m_ReportArgs.Pad = PadId;
+                m_ReportArgs.PadId = PadId;
 
                 _hidReport[9] = _ledStatus;
             }
@@ -203,13 +203,10 @@ namespace ScpControl.Usb.Ds3
                 m_Packet = 0;
             }
 
-            m_ReportArgs.Report[2] = m_BatteryStatus = report[30];
+            m_BatteryStatus = m_ReportArgs.BatteryStatus = report[30];
 
-            m_ReportArgs.Report[4] = (byte)(m_Packet >> 0 & 0xFF);
-            m_ReportArgs.Report[5] = (byte)(m_Packet >> 8 & 0xFF);
-            m_ReportArgs.Report[6] = (byte)(m_Packet >> 16 & 0xFF);
-            m_ReportArgs.Report[7] = (byte)(m_Packet >> 24 & 0xFF);
-
+            m_ReportArgs.SetPacketCounter(m_Packet);
+            
             var buttons = (Ds3Button)((report[2] << 0) | (report[3] << 8) | (report[4] << 16) | (report[5] << 24));
             var trigger = false;
 
@@ -225,7 +222,7 @@ namespace ScpControl.Usb.Ds3
 
             for (var index = 8; index < 57; index++)
             {
-                m_ReportArgs.Report[index] = report[index - 8];
+                m_ReportArgs.RawBytes[index] = report[index - 8];
             }
 
             if (trigger && !m_IsDisconnect)
