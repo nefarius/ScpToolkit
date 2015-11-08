@@ -65,7 +65,7 @@
         <GroupBox Grid.Row="4"
                   Header="4. Share your results">
             <StackPanel>
-            <TextBlock TextWrapping="Wrap" TextAlignment="Justify">There should now be a file called *._hid-report.dump.txt in the main application folder, please submit it to the forums so your gamepad can get integrated into the ScpToolkit!</TextBlock>
+            <TextBlock TextWrapping="Wrap" TextAlignment="Justify">There should now be a file called *_hid-report.dump.txt on your Desktop, please submit it to the forums so your gamepad can get integrated into the ScpToolkit!</TextBlock>
             <Label>
                     <Hyperlink NavigateUri="http://forums.pcsx2.net/Thread-ScpToolkit-XInput-Wrapper-aka-ScpServer-Reloaded"
                                RequestNavigate="Hyperlink_OnRequestNavigate">

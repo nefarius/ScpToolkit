@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Navigation;
@@ -99,8 +100,11 @@ namespace ScpGamepadAnalyzer
                 return;
             }
 
-            _device = new UsbBlankGamepad(SelectedHidDevice, SelectedHidDevice.DevicePath,
+            var targetFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 string.Format("{0}_hid-report.dump.txt", SelectedHidDevice.ProductName));
+
+            _device = new UsbBlankGamepad(SelectedHidDevice, SelectedHidDevice.DevicePath,
+                targetFile);
 
             if (_device.Open(SelectedHidDevice.DevicePath) && _device.Start())
             {
