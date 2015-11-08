@@ -50,7 +50,7 @@ namespace ScpControl
             new byte[2] {0, 0}
         };
 
-        private readonly IDsDevice[] _mPad =
+        private readonly IDsDevice[] _pads =
         {
             new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
             new DsNull(DsPadId.Four)
@@ -78,11 +78,13 @@ namespace ScpControl
             return scpMap.Active;
         }
 
+        [Obsolete]
         public string GetXml()
         {
             return scpMap.Xml;
         }
 
+        [Obsolete]
         public void SetXml(string xml)
         {
             scpMap.Xml = xml;
@@ -99,18 +101,18 @@ namespace ScpControl
 
             var data = new byte[11];
 
-            Log.DebugFormat("Requested Pads local MAC = {0}", _mPad[serial].Local);
+            Log.DebugFormat("Requested Pads local MAC = {0}", _pads[serial].Local);
 
             data[0] = serial;
-            data[1] = (byte)_mPad[serial].State;
-            data[2] = (byte)_mPad[serial].Model;
-            data[3] = (byte)_mPad[serial].Connection;
-            data[4] = (byte)_mPad[serial].Battery;
+            data[1] = (byte)_pads[serial].State;
+            data[2] = (byte)_pads[serial].Model;
+            data[3] = (byte)_pads[serial].Connection;
+            data[4] = (byte)_pads[serial].Battery;
 
-            Buffer.BlockCopy(_mPad[serial].BdAddress, 0, data, 5, _mPad[serial].BdAddress.Length);
+            Buffer.BlockCopy(_pads[serial].BdAddress, 0, data, 5, _pads[serial].BdAddress.Length);
 
             return new DsDetail((DsPadId)data[0], (DsState)data[1], (DsModel)data[2],
-                _mPad[serial].Local.ToBytes().ToArray(),
+                _pads[serial].Local.ToBytes().ToArray(),
                 (DsConnection)data[3], (DsBattery)data[4]);
         }
 
@@ -255,7 +257,7 @@ namespace ScpControl
 
         public IDsDevice[] Pad
         {
-            get { return _mPad; }
+            get { return _pads; }
         }
 
         public string Dongle
@@ -458,9 +460,9 @@ namespace ScpControl
         {
             _mSuspended = true;
 
-            lock (_mPad)
+            lock (_pads)
             {
-                foreach (var t in _mPad)
+                foreach (var t in _pads)
                     t.Disconnect();
             }
 
@@ -477,9 +479,9 @@ namespace ScpControl
             Log.Debug("++ Resumed");
 
             _scpBus.Resume();
-            for (var index = 0; index < _mPad.Length; index++)
+            for (var index = 0; index < _pads.Length; index++)
             {
-                if (_mPad[index].State != DsState.Disconnected)
+                if (_pads[index].State != DsState.Disconnected)
                 {
                     _scpBus.Plugin(index + 1);
                 }
@@ -501,20 +503,20 @@ namespace ScpControl
             var bFound = false;
             var arrived = e.Device;
 
-            lock (_mPad)
+            lock (_pads)
             {
-                for (var index = 0; index < _mPad.Length && !bFound; index++)
+                for (var index = 0; index < _pads.Length && !bFound; index++)
                 {
                     if (arrived.Local == _mReserved[index])
                     {
-                        if (_mPad[index].State == DsState.Connected)
+                        if (_pads[index].State == DsState.Connected)
                         {
-                            if (_mPad[index].Connection == DsConnection.BTH)
+                            if (_pads[index].Connection == DsConnection.BTH)
                             {
-                                _mPad[index].Disconnect();
+                                _pads[index].Disconnect();
                             }
 
-                            if (_mPad[index].Connection == DsConnection.USB)
+                            if (_pads[index].Connection == DsConnection.USB)
                             {
                                 arrived.Disconnect();
 
@@ -526,19 +528,19 @@ namespace ScpControl
                         bFound = true;
 
                         arrived.PadId = (DsPadId)index;
-                        _mPad[index] = arrived;
+                        _pads[index] = arrived;
                     }
                 }
 
-                for (var index = 0; index < _mPad.Length && !bFound; index++)
+                for (var index = 0; index < _pads.Length && !bFound; index++)
                 {
-                    if (_mPad[index].State == DsState.Disconnected)
+                    if (_pads[index].State == DsState.Disconnected)
                     {
                         bFound = true;
                         _mReserved[index] = arrived.Local;
 
                         arrived.PadId = (DsPadId)index;
-                        _mPad[index] = arrived;
+                        _pads[index] = arrived;
                     }
                 }
             }
@@ -561,7 +563,7 @@ namespace ScpControl
             var rumble = _mCache[serial].Rumble;
             var mapped = _mCache[serial].Mapped;
 
-            if (scpMap.Remap(model, serial, _mPad[serial].Local, e.RawBytes, mapped))
+            if (scpMap.Remap(model, serial, _pads[serial].Local, e.RawBytes, mapped))
             {
                 _scpBus.Parse(mapped, report, model);
             }
