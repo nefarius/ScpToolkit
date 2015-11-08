@@ -14,9 +14,6 @@
 
             #region HID Report translation
 
-            // overwrite Report ID
-            m_ReportArgs.ReportId = 0x01;
-
             // battery
             m_BatteryStatus = m_ReportArgs.BatteryStatus = report[30];
 

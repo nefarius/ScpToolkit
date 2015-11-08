@@ -19,9 +19,6 @@ namespace ScpControl.Usb.Gamepads
 
             #region HID Report translation
 
-            // overwrite Report ID
-            m_ReportArgs.ReportId = 0x01;
-
             // no battery state since the Gamepad is USB-powered
             m_BatteryStatus = m_ReportArgs.SetBatteryStatus(DsBattery.None);
 

@@ -185,6 +185,7 @@ namespace ScpControl.Profiler
         public NativeInputReport()
         {
             RawBytes = new byte[Length];
+            ReportId = 0x01;
         }
 
         public NativeInputReport(byte[] report)
