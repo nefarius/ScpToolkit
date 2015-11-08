@@ -7,13 +7,40 @@ namespace ScpControl
 {
     public sealed partial class BusDevice : ScpDevice
     {
-        private static Guid DeviceClassGuid {get { return Guid.Parse("{F679F562-3164-42CE-A4DB-E7DDBE723909}"); }} 
-        public const int ReportSize = 28;
-        public const int RumbleSize = 8;
+        #region Private fields
+
         private const int BusWidth = 4;
         private readonly List<int> m_Plugged = new List<int>();
         private int m_Offset;
         private DsState m_State = DsState.Disconnected;
+
+        #endregion
+
+        #region Public properties
+
+        public static int ReportSize
+        {
+            get { return 28; }
+        }
+
+        public static int RumbleSize
+        {
+            get { return 8; }
+        }
+
+        private static Guid DeviceClassGuid
+        {
+            get { return Guid.Parse("{F679F562-3164-42CE-A4DB-E7DDBE723909}"); }
+        }
+
+        public DsState State
+        {
+            get { return m_State; }
+        }
+
+        #endregion
+
+        #region Ctors
 
         public BusDevice() : base(DeviceClassGuid)
         {
@@ -27,10 +54,9 @@ namespace ScpControl
             InitializeComponent();
         }
 
-        public DsState State
-        {
-            get { return m_State; }
-        }
+        #endregion
+
+        #region Private methods
 
         private int IndexToSerial(byte index)
         {
@@ -70,17 +96,21 @@ namespace ScpControl
             return r*r >= x*x + y*y;
         }
 
+        #endregion
+
+        #region Public methods
+
         public override bool Open(int instance = 0)
         {
             if (State == DsState.Disconnected)
             {
                 m_Offset = instance*BusWidth;
 
-                Log.DebugFormat("-- Bus Open   : Offset {0}", m_Offset);
+                Log.DebugFormat("-- Bus Open: Offset {0}", m_Offset);
 
                 if (!base.Open(0))
                 {
-                    Log.DebugFormat("-- Bus Open   : Failed!!", m_Offset);
+                    Log.ErrorFormat("-- Bus Open: Offset {0} failed", m_Offset);
                 }
             }
 
@@ -93,7 +123,7 @@ namespace ScpControl
             {
                 Path = devicePath;
 
-                Log.DebugFormat("-- Bus Open   : Path {0}", Path);
+                Log.DebugFormat("-- Bus Open: Path {0}", Path);
 
                 if (GetDeviceHandle(Path))
                 {
@@ -213,11 +243,13 @@ namespace ScpControl
                         output[(uint) X360Axis.LT] = input[(uint) Ds3Axis.L2];
                         output[(uint) X360Axis.RT] = input[(uint) Ds3Axis.R2];
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, input[(uint)Ds3Axis.LX], input[(uint)Ds3Axis.LY]))
+                        if (
+                            !DeadZone(GlobalConfiguration.Instance.DeadZoneL, input[(uint) Ds3Axis.LX],
+                                input[(uint) Ds3Axis.LY]))
                             // Left Stick DeadZone
                         {
-                            var thumbLx = +Scale(input[(uint)Ds3Axis.LX], GlobalConfiguration.Instance.FlipLX);
-                            var thumbLy = -Scale(input[(uint)Ds3Axis.LY], GlobalConfiguration.Instance.FlipLY);
+                            var thumbLx = +Scale(input[(uint) Ds3Axis.LX], GlobalConfiguration.Instance.FlipLX);
+                            var thumbLy = -Scale(input[(uint) Ds3Axis.LY], GlobalConfiguration.Instance.FlipLY);
 
                             output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
                             output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
@@ -226,11 +258,13 @@ namespace ScpControl
                             output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR, input[(uint)Ds3Axis.RX], input[(uint)Ds3Axis.RY]))
+                        if (
+                            !DeadZone(GlobalConfiguration.Instance.DeadZoneR, input[(uint) Ds3Axis.RX],
+                                input[(uint) Ds3Axis.RY]))
                             // Right Stick DeadZone
                         {
-                            var thumbRx = +Scale(input[(uint)Ds3Axis.RX], GlobalConfiguration.Instance.FlipRX);
-                            var thumbRy = -Scale(input[(uint)Ds3Axis.RY], GlobalConfiguration.Instance.FlipRY);
+                            var thumbRx = +Scale(input[(uint) Ds3Axis.RX], GlobalConfiguration.Instance.FlipRX);
+                            var thumbRy = -Scale(input[(uint) Ds3Axis.RY], GlobalConfiguration.Instance.FlipRY);
 
                             output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
                             output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
@@ -272,11 +306,13 @@ namespace ScpControl
                         output[(uint) X360Axis.LT] = input[(uint) Ds4Axis.L2];
                         output[(uint) X360Axis.RT] = input[(uint) Ds4Axis.R2];
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, input[(uint)Ds4Axis.LX], input[(uint)Ds4Axis.LY]))
+                        if (
+                            !DeadZone(GlobalConfiguration.Instance.DeadZoneL, input[(uint) Ds4Axis.LX],
+                                input[(uint) Ds4Axis.LY]))
                             // Left Stick DeadZone
                         {
-                            var thumbLx = +Scale(input[(uint)Ds4Axis.LX], GlobalConfiguration.Instance.FlipLX);
-                            var thumbLy = -Scale(input[(uint)Ds4Axis.LY], GlobalConfiguration.Instance.FlipLY);
+                            var thumbLx = +Scale(input[(uint) Ds4Axis.LX], GlobalConfiguration.Instance.FlipLX);
+                            var thumbLy = -Scale(input[(uint) Ds4Axis.LY], GlobalConfiguration.Instance.FlipLY);
 
                             output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
                             output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
@@ -285,11 +321,13 @@ namespace ScpControl
                             output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR, input[(uint)Ds4Axis.RX], input[(uint)Ds4Axis.RY]))
+                        if (
+                            !DeadZone(GlobalConfiguration.Instance.DeadZoneR, input[(uint) Ds4Axis.RX],
+                                input[(uint) Ds4Axis.RY]))
                             // Right Stick DeadZone
                         {
-                            var thumbRx = +Scale(input[(uint)Ds4Axis.RX], GlobalConfiguration.Instance.FlipRX);
-                            var thumbRy = -Scale(input[(uint)Ds4Axis.RY], GlobalConfiguration.Instance.FlipRY);
+                            var thumbRx = +Scale(input[(uint) Ds4Axis.RX], GlobalConfiguration.Instance.FlipRX);
+                            var thumbRy = -Scale(input[(uint) Ds4Axis.RY], GlobalConfiguration.Instance.FlipRY);
 
                             output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
                             output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);
@@ -401,5 +439,7 @@ namespace ScpControl
 
             return false;
         }
+
+        #endregion
     }
 }
