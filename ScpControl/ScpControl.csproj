@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.37.15311</AssemblyVersion>
+    <AssemblyVersion>1.6.38.15311</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +47,10 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
+    <Reference Include="CSScriptLibrary">
+      <HintPath>..\packages\CS-Script.3.9.17.0\lib\net45\CSScriptLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HidSharp, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\HidSharp.1.5\lib\net35\HidSharp.dll</HintPath>
@@ -64,6 +68,9 @@
       <HintPath>..\packages\MadMilkman.Ini.1.0.5.0\lib\net20\MadMilkman.Ini.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Mono.CSharp">
+      <HintPath>..\packages\CS-Script.3.9.17.0\lib\net45\Mono.CSharp.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="PropertyChanged">
       <HintPath>..\packages\PropertyChanged.Fody.1.50.3\Lib\portable-net4+sl4+wp8+win8+wpa81+MonoAndroid16+MonoTouch40\PropertyChanged.dll</HintPath>
@@ -94,6 +101,9 @@
     <Reference Include="System.XML" />
     <Reference Include="Trinet.Core.IO.Ntfs">
       <HintPath>..\packages\Trinet.Core.IO.Ntfs.3.5.0.0\lib\net35\Trinet.Core.IO.Ntfs.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsInput">
+      <HintPath>..\packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +179,7 @@
     <Compile Include="ScpCore\GamePadEnums.cs" />
     <Compile Include="ScpCore\Profile.cs" />
     <Compile Include="ScpCore\SingletonBase.cs" />
+    <Compile Include="Scripting.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />
     <Compile Include="Usb\Gamepads\UsbBadBigBenGamepad.cs">
       <SubType>Component</SubType>
