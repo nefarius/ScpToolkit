@@ -33,6 +33,14 @@ namespace ScpControl.Profiler
                     return (buttons & button.Offset) == button.Offset;
                 }
 
+                if (button is Ds4Button && Model == DsModel.DS4)
+                {
+                    var buttons =
+                        (uint)((RawBytes[13] << 0) | (RawBytes[14] << 8) | (RawBytes[15] << 16));
+
+                    return (buttons & button.Offset) == button.Offset;
+                }
+
                 return false;
             }
         }
