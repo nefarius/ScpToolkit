@@ -1,5 +1,29 @@
 ﻿namespace ScpControl.Profiler
 {
+    /// <summary>
+    ///     Defines a DualShock axis state.
+    /// </summary>
+    public interface IDsAxisState
+    {
+        bool IsEngaged { get; set; }
+        byte Value { get; set; }
+    }
+
+    /// <summary>
+    ///     Implements a DualShock axis state.
+    /// </summary>
+    public class DsAxisState : IDsAxisState
+    {
+        public DsAxisState()
+        {
+            Value = 0x80;
+        }
+
+        public bool IsEngaged { get; set; }
+
+        public byte Value { get; set; }
+    }
+
     public interface IDsAxis
     {
         uint Offset { get; }

@@ -244,7 +244,7 @@ namespace ScpControl.Profiler
         /// </summary>
         /// <param name="button">The DualShock button to question.</param>
         /// <returns>True if the button is pressed, false if the button is released.</returns>
-        public bool this[IDsButton button]
+        public IDsButtonState this[IDsButton button]
         {
             get
             {
@@ -253,7 +253,7 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[10] << 0) | (RawBytes[11] << 8) | (RawBytes[12] << 16) | (RawBytes[13] << 24));
 
-                    return (buttons & button.Offset) == button.Offset;
+                    return new DsButtonState() {IsPressed = (buttons & button.Offset) == button.Offset};
                 }
 
                 if (button is Ds4Button && Model == DsModel.DS4)
@@ -261,10 +261,10 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[13] << 0) | (RawBytes[14] << 8) | (RawBytes[15] << 16));
 
-                    return (buttons & button.Offset) == button.Offset;
+                    return new DsButtonState() {IsPressed = (buttons & button.Offset) == button.Offset};
                 }
 
-                return false;
+                return new DsButtonState();
             }
         }
 
@@ -273,22 +273,30 @@ namespace ScpControl.Profiler
         /// </summary>
         /// <param name="axis">The DualShock axis to question.</param>
         /// <returns>The value of the axis in question.</returns>
-        public byte this[IDsAxis axis]
+        public IDsAxisState this[IDsAxis axis]
         {
             get
             {
                 if (axis is Ds3Axis && Model == DsModel.DS3)
                 {
-                    return RawBytes[axis.Offset];
+                    return new DsAxisState()
+                    {
+                        IsEngaged = RawBytes[axis.Offset] != 0x80,
+                        Value = RawBytes[axis.Offset]
+                    };
                 }
 
                 if (axis is Ds4Axis && Model == DsModel.DS4)
                 {
-                    return RawBytes[axis.Offset];
+                    return new DsAxisState()
+                    {
+                        IsEngaged = RawBytes[axis.Offset] != 0x80,
+                        Value = RawBytes[axis.Offset]
+                    };
                 }
 
                 // default is centered
-                return 0x80;
+                return new DsAxisState();
             }
         }
 

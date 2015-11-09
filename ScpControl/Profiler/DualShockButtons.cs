@@ -1,5 +1,15 @@
 ﻿namespace ScpControl.Profiler
 {
+    public interface IDsButtonState
+    {
+        bool IsPressed { get; set; }
+    }
+
+    public class DsButtonState : IDsButtonState
+    {
+        public bool IsPressed { get; set; }
+    }
+
     public interface IDsButton
     {
         uint Offset { get; }
