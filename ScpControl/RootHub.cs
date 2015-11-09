@@ -20,6 +20,9 @@ using ScpControl.Usb.Ds4;
 using ScpControl.Usb.Gamepads;
 using ScpControl.Utilities;
 using ScpControl.Wcf;
+using Ds3Axis = ScpControl.Profiler.Ds3Axis;
+using Ds3Button = ScpControl.Profiler.Ds3Button;
+using Ds4Button = ScpControl.Profiler.Ds4Button;
 
 namespace ScpControl
 {

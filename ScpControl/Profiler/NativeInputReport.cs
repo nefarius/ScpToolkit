@@ -5,6 +5,13 @@ namespace ScpControl.Profiler
 {
     public class NativeInputReport : EventArgs
     {
+        public static int Length
+        {
+            get { return 96; }
+        }
+
+        #region Public methods
+
         public void SetPacketCounter(uint packet)
         {
             RawBytes[4] = (byte) (packet >> 0 & 0xFF);
@@ -178,7 +185,7 @@ namespace ScpControl.Profiler
             RawBytes[16] = input;
         }
 
-        public static int Length { get { return 96; } }
+        #endregion
 
         #region Ctors
 
@@ -207,13 +214,13 @@ namespace ScpControl.Profiler
 
         public DsPadId PadId
         {
-            get { return (DsPadId)RawBytes[(int) DsOffset.Pad]; }
-            set { RawBytes[(int) DsOffset.Pad] = (byte)value; }
+            get { return (DsPadId) RawBytes[(int) DsOffset.Pad]; }
+            set { RawBytes[(int) DsOffset.Pad] = (byte) value; }
         }
 
         public DsState PadState
         {
-            get { return (DsState)RawBytes[1]; }
+            get { return (DsState) RawBytes[1]; }
             set { RawBytes[1] = (byte) value; }
         }
 
@@ -225,7 +232,7 @@ namespace ScpControl.Profiler
 
         public DsConnection ConnectionType
         {
-            get { return (DsConnection)RawBytes[(int) DsOffset.Connection]; }
+            get { return (DsConnection) RawBytes[(int) DsOffset.Connection]; }
             set { RawBytes[(int) DsOffset.Connection] = (byte) value; }
         }
 
@@ -253,7 +260,7 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[10] << 0) | (RawBytes[11] << 8) | (RawBytes[12] << 16) | (RawBytes[13] << 24));
 
-                    return new DsButtonState() {IsPressed = (buttons & button.Offset) == button.Offset};
+                    return new DsButtonState {IsPressed = (buttons & button.Offset) == button.Offset};
                 }
 
                 if (button is Ds4Button && Model == DsModel.DS4)
@@ -261,7 +268,7 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[13] << 0) | (RawBytes[14] << 8) | (RawBytes[15] << 16));
 
-                    return new DsButtonState() {IsPressed = (buttons & button.Offset) == button.Offset};
+                    return new DsButtonState {IsPressed = (buttons & button.Offset) == button.Offset};
                 }
 
                 return new DsButtonState();
@@ -277,22 +284,10 @@ namespace ScpControl.Profiler
         {
             get
             {
-                if (axis is Ds3Axis && Model == DsModel.DS3)
+                if ((axis is Ds3Axis && Model == DsModel.DS3)
+                    || (axis is Ds4Axis && Model == DsModel.DS4))
                 {
-                    return new DsAxisState()
-                    {
-                        IsEngaged = RawBytes[axis.Offset] != 0x80,
-                        Value = RawBytes[axis.Offset]
-                    };
-                }
-
-                if (axis is Ds4Axis && Model == DsModel.DS4)
-                {
-                    return new DsAxisState()
-                    {
-                        IsEngaged = RawBytes[axis.Offset] != 0x80,
-                        Value = RawBytes[axis.Offset]
-                    };
+                    return new DsAxisState {Value = RawBytes[axis.Offset]};
                 }
 
                 // default is centered

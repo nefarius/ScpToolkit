@@ -5,7 +5,6 @@
     /// </summary>
     public interface IDsAxisState
     {
-        bool IsEngaged { get; set; }
         byte Value { get; set; }
     }
 
@@ -18,8 +17,6 @@
         {
             Value = 0x80;
         }
-
-        public bool IsEngaged { get; set; }
 
         public byte Value { get; set; }
     }
