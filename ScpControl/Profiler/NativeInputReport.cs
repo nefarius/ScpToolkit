@@ -14,55 +14,55 @@ namespace ScpControl.Profiler
 
         public void SetPacketCounter(uint packet)
         {
-            RawBytes[4] = (byte) (packet >> 0 & 0xFF);
-            RawBytes[5] = (byte) (packet >> 8 & 0xFF);
-            RawBytes[6] = (byte) (packet >> 16 & 0xFF);
-            RawBytes[7] = (byte) (packet >> 24 & 0xFF);
+            RawBytes[4] = (byte)(packet >> 0 & 0xFF);
+            RawBytes[5] = (byte)(packet >> 8 & 0xFF);
+            RawBytes[6] = (byte)(packet >> 16 & 0xFF);
+            RawBytes[7] = (byte)(packet >> 24 & 0xFF);
         }
 
         public byte SetBatteryStatus(DsBattery battery)
         {
-            return RawBytes[2] = (byte) battery;
+            return RawBytes[2] = (byte)battery;
         }
 
         public void SetTriangleDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 4);
+            RawBytes[11] |= (byte)((input & 1) << 4);
         }
 
         public void SetCircleDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 5);
+            RawBytes[11] |= (byte)((input & 1) << 5);
         }
 
         public void SetCrossDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 6);
+            RawBytes[11] |= (byte)((input & 1) << 6);
         }
 
         public void SetSquareDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 7);
+            RawBytes[11] |= (byte)((input & 1) << 7);
         }
 
         public void SetDpadRightDigital(bool input)
         {
-            RawBytes[10] |= (byte) (input ? 0x20 : 0x00);
+            RawBytes[10] |= (byte)(input ? 0x20 : 0x00);
         }
 
         public void SetDpadLeftDigital(bool input)
         {
-            RawBytes[10] |= (byte) (input ? 0x80 : 0x00);
+            RawBytes[10] |= (byte)(input ? 0x80 : 0x00);
         }
 
         public void SetDpadUpDigital(bool input)
         {
-            RawBytes[10] |= (byte) (input ? 0x10 : 0x00);
+            RawBytes[10] |= (byte)(input ? 0x10 : 0x00);
         }
 
         public void SetDpadDownDigital(bool input)
         {
-            RawBytes[10] |= (byte) (input ? 0x40 : 0x00);
+            RawBytes[10] |= (byte)(input ? 0x40 : 0x00);
         }
 
         public void ZeroShoulderButtonsState()
@@ -82,37 +82,37 @@ namespace ScpControl.Profiler
 
         public void SetSelect(int input)
         {
-            RawBytes[10] |= (byte) (input & 1);
+            RawBytes[10] |= (byte)(input & 1);
         }
 
         public void SetStart(int input)
         {
-            RawBytes[10] |= (byte) ((input & 1) << 3);
+            RawBytes[10] |= (byte)((input & 1) << 3);
         }
 
         public void SetPs(int input)
         {
-            RawBytes[12] |= (byte) (input & 1);
+            RawBytes[12] |= (byte)(input & 1);
         }
 
         public void SetLeftShoulderDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 2);
+            RawBytes[11] |= (byte)((input & 1) << 2);
         }
 
         public void SetRightShoulderDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 3);
+            RawBytes[11] |= (byte)((input & 1) << 3);
         }
 
         public void SetLeftTriggerDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 0);
+            RawBytes[11] |= (byte)((input & 1) << 0);
         }
 
         public void SetRightTriggerDigital(int input)
         {
-            RawBytes[11] |= (byte) ((input & 1) << 1);
+            RawBytes[11] |= (byte)((input & 1) << 1);
         }
 
         public void SetLeftShoulderAnalog(byte input)
@@ -157,12 +157,12 @@ namespace ScpControl.Profiler
 
         public void SetLeftThumb(int input)
         {
-            RawBytes[10] |= (byte) ((input & 1) << 1);
+            RawBytes[10] |= (byte)((input & 1) << 1);
         }
 
         public void SetRightThumb(int input)
         {
-            RawBytes[10] |= (byte) ((input & 1) << 2);
+            RawBytes[10] |= (byte)((input & 1) << 2);
         }
 
         public void SetLeftAxisY(byte input)
@@ -208,20 +208,20 @@ namespace ScpControl.Profiler
 
         public DsModel Model
         {
-            get { return (DsModel) RawBytes[(int) DsOffset.Model]; }
-            set { RawBytes[(int) DsOffset.Model] = (byte) value; }
+            get { return (DsModel)RawBytes[(int)DsOffset.Model]; }
+            set { RawBytes[(int)DsOffset.Model] = (byte)value; }
         }
 
         public DsPadId PadId
         {
-            get { return (DsPadId) RawBytes[(int) DsOffset.Pad]; }
-            set { RawBytes[(int) DsOffset.Pad] = (byte) value; }
+            get { return (DsPadId)RawBytes[(int)DsOffset.Pad]; }
+            set { RawBytes[(int)DsOffset.Pad] = (byte)value; }
         }
 
         public DsState PadState
         {
-            get { return (DsState) RawBytes[1]; }
-            set { RawBytes[1] = (byte) value; }
+            get { return (DsState)RawBytes[1]; }
+            set { RawBytes[1] = (byte)value; }
         }
 
         public byte ReportId
@@ -232,14 +232,58 @@ namespace ScpControl.Profiler
 
         public DsConnection ConnectionType
         {
-            get { return (DsConnection) RawBytes[(int) DsOffset.Connection]; }
-            set { RawBytes[(int) DsOffset.Connection] = (byte) value; }
+            get { return (DsConnection)RawBytes[(int)DsOffset.Connection]; }
+            set { RawBytes[(int)DsOffset.Connection] = (byte)value; }
         }
 
         public byte BatteryStatus
         {
             get { return RawBytes[2]; }
             set { RawBytes[2] = value; }
+        }
+
+        #endregion
+
+        #region DualShock 4 specific properties
+
+        /// <summary>
+        ///     The first touch spot on the DualShock 4 track pad.
+        /// </summary>
+        /// <remarks>https://github.com/ehd/node-ds4</remarks>
+        public DsTrackPadTouch TrackPadTouch0
+        {
+            get
+            {
+                if (Model != DsModel.DS4) return null;
+                
+                return new DsTrackPadTouch()
+                {
+                    Id = RawBytes[43] & 0x7f,
+                    IsActive = (RawBytes[43] >> 7) == 0,
+                    X = ((RawBytes[45] & 0x0f) << 8) | RawBytes[44],
+                    Y = RawBytes[46] << 4 | ((RawBytes[45] & 0xf0) >> 4),
+                };
+            }
+        }
+
+        /// <summary>
+        ///     The second touch spot on the DualShock 4 track pad.
+        /// </summary>
+        /// <remarks>https://github.com/ehd/node-ds4</remarks>
+        public DsTrackPadTouch TrackPadTouch1
+        {
+            get
+            {
+                if (Model != DsModel.DS4) return null;
+
+                return new DsTrackPadTouch()
+                {
+                    Id = RawBytes[47] & 0x7f,
+                    IsActive = (RawBytes[47] >> 7) == 0,
+                    X = ((RawBytes[49] & 0x0f) << 8) | RawBytes[48],
+                    Y = RawBytes[50] << 4 | ((RawBytes[49] & 0xf0) >> 4),
+                };
+            }
         }
 
         #endregion
@@ -258,17 +302,17 @@ namespace ScpControl.Profiler
                 if (button is Ds3Button && Model == DsModel.DS3)
                 {
                     var buttons =
-                        (uint) ((RawBytes[10] << 0) | (RawBytes[11] << 8) | (RawBytes[12] << 16) | (RawBytes[13] << 24));
+                        (uint)((RawBytes[10] << 0) | (RawBytes[11] << 8) | (RawBytes[12] << 16) | (RawBytes[13] << 24));
 
-                    return new DsButtonState {IsPressed = (buttons & button.Offset) == button.Offset};
+                    return new DsButtonState { IsPressed = (buttons & button.Offset) == button.Offset };
                 }
 
                 if (button is Ds4Button && Model == DsModel.DS4)
                 {
                     var buttons =
-                        (uint) ((RawBytes[13] << 0) | (RawBytes[14] << 8) | (RawBytes[15] << 16));
+                        (uint)((RawBytes[13] << 0) | (RawBytes[14] << 8) | (RawBytes[15] << 16));
 
-                    return new DsButtonState {IsPressed = (buttons & button.Offset) == button.Offset};
+                    return new DsButtonState { IsPressed = (buttons & button.Offset) == button.Offset };
                 }
 
                 return new DsButtonState();
@@ -287,7 +331,7 @@ namespace ScpControl.Profiler
                 if ((axis is Ds3Axis && Model == DsModel.DS3)
                     || (axis is Ds4Axis && Model == DsModel.DS4))
                 {
-                    return new DsAxisState {Value = RawBytes[axis.Offset]};
+                    return new DsAxisState { Value = RawBytes[axis.Offset] };
                 }
 
                 // default is centered

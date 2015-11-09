@@ -566,6 +566,11 @@ namespace ScpControl
             var rumble = _mCache[serial].Rumble;
             var mapped = _mCache[serial].Mapped;
 
+            if (e.TrackPadTouch0.IsActive)
+            {
+                Log.Debug("TrackPad touched");
+            }
+
             if (scpMap.Remap(model, serial, _pads[serial].Local, e.RawBytes, mapped))
             {
                 _scpBus.Parse(mapped, report, model);
