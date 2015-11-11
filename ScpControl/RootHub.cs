@@ -23,6 +23,7 @@ using ScpControl.Utilities;
 using ScpControl.Wcf;
 using Ds3Axis = ScpControl.Profiler.Ds3Axis;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
+using Ds4Axis = ScpControl.Profiler.Ds4Axis;
 using Ds4Button = ScpControl.Profiler.Ds4Button;
 
 namespace ScpControl

@@ -6,6 +6,7 @@
     public interface IDsAxisState
     {
         byte Value { get; set; }
+        bool IsEngaged { get; set; }
     }
 
     /// <summary>
@@ -19,10 +20,13 @@
         }
 
         public byte Value { get; set; }
+        
+        public bool IsEngaged { get; set; }
     }
 
     public interface IDsAxis
     {
+        byte DefaultValue { get; }
         uint Offset { get; }
         string Name { get; }
         string DisplayName { get; }
@@ -42,6 +46,19 @@
         public uint Offset { get; protected set; }
         public string Name { get; private set; }
         public string DisplayName { get; protected set; }
+        public byte DefaultValue { get; protected set; }
+
+        public override bool Equals(object obj)
+        {
+            var axis = obj as DsAxis;
+
+            return (axis != null && axis.Name.Equals(this.Name));
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Name.GetHashCode();
+        }
     }
 
     /// <summary>
@@ -67,7 +84,8 @@
                 return new Ds3Axis("None")
                 {
                     Offset = 0,
-                    DisplayName = "None"
+                    DisplayName = "None",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -79,7 +97,8 @@
                 return new Ds3Axis("Lx")
                 {
                     Offset = 14,
-                    DisplayName = "Lx"
+                    DisplayName = "Lx",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -91,7 +110,8 @@
                 return new Ds3Axis("Ly")
                 {
                     Offset = 15,
-                    DisplayName = "Ly"
+                    DisplayName = "Ly",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -103,7 +123,8 @@
                 return new Ds3Axis("Rx")
                 {
                     Offset = 16,
-                    DisplayName = "Rx"
+                    DisplayName = "Rx",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -115,7 +136,8 @@
                 return new Ds3Axis("Ry")
                 {
                     Offset = 17,
-                    DisplayName = "Ry"
+                    DisplayName = "Ry",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -127,7 +149,8 @@
                 return new Ds3Axis("Up")
                 {
                     Offset = 22,
-                    DisplayName = "D-Pad up"
+                    DisplayName = "D-Pad up",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -139,7 +162,8 @@
                 return new Ds3Axis("Right")
                 {
                     Offset = 23,
-                    DisplayName = "D-Pad right"
+                    DisplayName = "D-Pad right",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -151,7 +175,8 @@
                 return new Ds3Axis("Down")
                 {
                     Offset = 24,
-                    DisplayName = "D-Pad down"
+                    DisplayName = "D-Pad down",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -163,7 +188,8 @@
                 return new Ds3Axis("Left")
                 {
                     Offset = 25,
-                    DisplayName = "D-Pad left"
+                    DisplayName = "D-Pad left",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -175,7 +201,8 @@
                 return new Ds3Axis("L2")
                 {
                     Offset = 26,
-                    DisplayName = "L2"
+                    DisplayName = "L2",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -187,7 +214,8 @@
                 return new Ds3Axis("R2")
                 {
                     Offset = 27,
-                    DisplayName = "R2"
+                    DisplayName = "R2",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -199,7 +227,8 @@
                 return new Ds3Axis("L1")
                 {
                     Offset = 28,
-                    DisplayName = "L1"
+                    DisplayName = "L1",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -211,7 +240,8 @@
                 return new Ds3Axis("R1")
                 {
                     Offset = 29,
-                    DisplayName = "R1"
+                    DisplayName = "R1",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -223,7 +253,8 @@
                 return new Ds3Axis("Triangle")
                 {
                     Offset = 30,
-                    DisplayName = "Triangle"
+                    DisplayName = "Triangle",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -235,7 +266,8 @@
                 return new Ds3Axis("Circle")
                 {
                     Offset = 31,
-                    DisplayName = "Circle"
+                    DisplayName = "Circle",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -247,7 +279,8 @@
                 return new Ds3Axis("Cross")
                 {
                     Offset = 32,
-                    DisplayName = "Cross"
+                    DisplayName = "Cross",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -259,7 +292,8 @@
                 return new Ds3Axis("Square")
                 {
                     Offset = 33,
-                    DisplayName = "Square"
+                    DisplayName = "Square",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -290,7 +324,8 @@
                 return new Ds4Axis("None")
                 {
                     Offset = 0,
-                    DisplayName = "None"
+                    DisplayName = "None",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -302,7 +337,8 @@
                 return new Ds4Axis("Lx")
                 {
                     Offset = 9,
-                    DisplayName = "Lx"
+                    DisplayName = "Lx",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -314,7 +350,8 @@
                 return new Ds4Axis("Ly")
                 {
                     Offset = 10,
-                    DisplayName = "Ly"
+                    DisplayName = "Ly",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -326,7 +363,8 @@
                 return new Ds4Axis("Rx")
                 {
                     Offset = 11,
-                    DisplayName = "Rx"
+                    DisplayName = "Rx",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -338,7 +376,8 @@
                 return new Ds4Axis("Ry")
                 {
                     Offset = 12,
-                    DisplayName = "Ry"
+                    DisplayName = "Ry",
+                    DefaultValue = 0x80
                 };
             }
         }
@@ -350,7 +389,8 @@
                 return new Ds4Axis("L2")
                 {
                     Offset = 16,
-                    DisplayName = "L2"
+                    DisplayName = "L2",
+                    DefaultValue = 0x00
                 };
             }
         }
@@ -362,7 +402,8 @@
                 return new Ds4Axis("R2")
                 {
                     Offset = 17,
-                    DisplayName = "R2"
+                    DisplayName = "R2",
+                    DefaultValue = 0x00
                 };
             }
         }

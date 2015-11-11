@@ -132,45 +132,22 @@ namespace ScpControl.Bluetooth
 
             InputReport.BatteryStatus = m_BatteryStatus;
 
-            InputReport.SetPacketCounter(m_Packet);
+            InputReport.PacketCounter = m_Packet;
+
+            Buffer.BlockCopy(report, 9, InputReport.RawBytes, 8, 49);
             
-            var buttons = (Ds3Button)((report[11] << 0) | (report[12] << 8) | (report[13] << 16) | (report[14] << 24));
-            bool trigger = false, active = false;
+            var trigger = false;
 
             // Quick Disconnect
-            if ((buttons & Ds3Button.L1) == Ds3Button.L1
-                && (buttons & Ds3Button.R1) == Ds3Button.R1
-                && (buttons & Ds3Button.PS) == Ds3Button.PS
-                )
+            if (InputReport[Profiler.Ds3Button.L1].IsPressed
+                && InputReport[Profiler.Ds3Button.R1].IsPressed
+                && InputReport[Profiler.Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
-                report[13] ^= 0x1;
+                InputReport.RawBytes[21] ^= 0x1;
             }
 
-            for (var index = 8; index < 57; index++)
-            {
-                InputReport.RawBytes[index] = report[index + 1];
-            }
-
-            // Buttons
-            for (var index = 11; index < 15 && !active; index++)
-            {
-                if (report[index] != 0) active = true;
-            }
-
-            // Axis
-            for (var index = 15; index < 19 && !active; index++)
-            {
-                if (report[index] < 117 || report[index] > 137) active = true;
-            }
-
-            // Triggers & Pressure
-            for (var index = 23; index < 35 && !active; index++)
-            {
-                if (report[index] != 0) active = true;
-            }
-
-            if (active)
+            if (InputReport.IsPadActive)
             {
                 m_IsIdle = false;
             }
