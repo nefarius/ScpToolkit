@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using ScpControl.ScpCore;
+using Ds4Button = ScpControl.Profiler.Ds4Button;
 
 namespace ScpControl.Usb.Ds4
 {
@@ -242,13 +243,13 @@ namespace ScpControl.Usb.Ds4
         {
             if (report[0] != 0x01) return;
 
-            m_Packet++;
+            PacketCounter++;
 
             m_BatteryStatus = InputReport.SetBatteryStatus((DsBattery) MapBattery(report[30]));
 
-            InputReport.SetPacketCounter(m_Packet);
+            InputReport.PacketCounter = PacketCounter;
 
-            var buttons = (Ds4Button) ((report[5] << 0) | (report[6] << 8) | (report[7] << 16));
+            var buttons = ((report[5] << 0) | (report[6] << 8) | (report[7] << 16));
 
             //++ Convert HAT to DPAD
             report[5] &= 0xF0;
@@ -256,36 +257,33 @@ namespace ScpControl.Usb.Ds4
             switch ((uint) buttons & 0xF)
             {
                 case 0:
-                    report[5] |= (byte) (Ds4Button.Up);
+                    report[5] |= (byte) Ds4Button.Up.Offset;
                     break;
                 case 1:
-                    report[5] |= (byte) (Ds4Button.Up | Ds4Button.Right);
+                    report[5] |= (byte) (Ds4Button.Up.Offset | Ds4Button.Right.Offset);
                     break;
                 case 2:
-                    report[5] |= (byte) (Ds4Button.Right);
+                    report[5] |= (byte) Ds4Button.Right.Offset;
                     break;
                 case 3:
-                    report[5] |= (byte) (Ds4Button.Right | Ds4Button.Down);
+                    report[5] |= (byte) (Ds4Button.Right.Offset | Ds4Button.Down.Offset);
                     break;
                 case 4:
-                    report[5] |= (byte) (Ds4Button.Down);
+                    report[5] |= (byte) (Ds4Button.Down.Offset);
                     break;
                 case 5:
-                    report[5] |= (byte) (Ds4Button.Down | Ds4Button.Left);
+                    report[5] |= (byte) (Ds4Button.Down.Offset | Ds4Button.Left.Offset);
                     break;
                 case 6:
-                    report[5] |= (byte) (Ds4Button.Left);
+                    report[5] |= (byte) Ds4Button.Left.Offset;
                     break;
                 case 7:
-                    report[5] |= (byte) (Ds4Button.Left | Ds4Button.Up);
+                    report[5] |= (byte) (Ds4Button.Left.Offset | Ds4Button.Up.Offset);
                     break;
             }
             //--
 
-            for (var index = 8; index < 72; index++)
-            {
-                InputReport.RawBytes[index] = report[index - 8];
-            }
+            Buffer.BlockCopy(report, 0, InputReport.RawBytes, 8, 64);
 
             OnHidReportReceived();
         }

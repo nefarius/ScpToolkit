@@ -34,7 +34,7 @@ namespace ScpControl.Usb
                     return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", m_ControllerId + 1, Model,
                         Local,
                         Connection,
-                        m_Packet,
+                        PacketCounter,
                         Battery
                         );
             }
@@ -92,7 +92,7 @@ namespace ScpControl.Usb
         protected byte[] m_Local = new byte[6];
         protected byte[] m_Master = new byte[6];
         protected byte m_Model = 0;
-        protected uint m_Packet;
+        protected uint PacketCounter;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
         protected readonly ScpHidReport InputReport = new ScpHidReport();
@@ -209,7 +209,7 @@ namespace ScpControl.Usb
             InputReport.Model = Model;
 
             m_State = DsState.Connected;
-            m_Packet = 0;
+            PacketCounter = 0;
 
             Task.Factory.StartNew(HidWorker, _hidCancellationTokenSource.Token);
 

@@ -18,6 +18,7 @@ namespace ScpControl.Profiler
 
         #region Public methods
 
+        [Obsolete]
         public void SetPacketCounter(uint packet)
         {
             RawBytes[4] = (byte)(packet >> 0 & 0xFF);
@@ -211,6 +212,17 @@ namespace ScpControl.Profiler
         #region Public properties
 
         public byte[] RawBytes { get; private set; }
+
+        public uint PacketCounter
+        {
+            set
+            {
+                RawBytes[4] = (byte)(value >> 0 & 0xFF);
+                RawBytes[5] = (byte)(value >> 8 & 0xFF);
+                RawBytes[6] = (byte)(value >> 16 & 0xFF);
+                RawBytes[7] = (byte)(value >> 24 & 0xFF);
+            }
+        }
 
         public DsModel Model
         {

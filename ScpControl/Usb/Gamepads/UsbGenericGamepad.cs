@@ -156,7 +156,7 @@ namespace ScpControl.Usb.Gamepads
             InputReport.Model = Model;
 
             m_State = DsState.Connected;
-            m_Packet = 0;
+            PacketCounter = 0;
 
             Task.Factory.StartNew(MainHidInputReader, _cancellationTokenSource.Token);
 

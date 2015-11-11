@@ -195,36 +195,31 @@ namespace ScpControl.Usb.Ds3
         /// <param name="report">The HID report as byte array.</param>
         protected override void ParseHidReport(byte[] report)
         {
+            // report ID must be 1
             if (report[0] != 0x01) return;
 
-            if (m_Packet++ + 1 < m_Packet)
-            {
-                Log.WarnFormat("Packet counter rolled over ({0}), resetting to 0", m_Packet);
-                m_Packet = 0;
-            }
+            PacketCounter++;
 
+            // set battery level
             m_BatteryStatus = InputReport.BatteryStatus = report[30];
 
-            InputReport.SetPacketCounter(m_Packet);
-            
-            var buttons = (Ds3Button)((report[2] << 0) | (report[3] << 8) | (report[4] << 16) | (report[5] << 24));
+            // set packet counter
+            InputReport.PacketCounter = PacketCounter;
+
+            // copy controller data to report packet
+            Buffer.BlockCopy(report, 0, InputReport.RawBytes, 8, 49);
+
             var trigger = false;
 
             // detect Quick Disconnect combo (L1, R1 and PS buttons pressed at the same time)
-            if ((buttons & Ds3Button.L1) == Ds3Button.L1
-                && (buttons & Ds3Button.R1) == Ds3Button.R1
-                && (buttons & Ds3Button.PS) == Ds3Button.PS
-                )
+            if (InputReport[Profiler.Ds3Button.L1].IsPressed
+                && InputReport[Profiler.Ds3Button.R1].IsPressed
+                && InputReport[Profiler.Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
-                report[4] ^= 0x1;
+                InputReport.RawBytes[12] ^= 0x1;
             }
-
-            for (var index = 8; index < 57; index++)
-            {
-                InputReport.RawBytes[index] = report[index - 8];
-            }
-
+            
             if (trigger && !m_IsDisconnect)
             {
                 m_IsDisconnect = true;
@@ -259,7 +254,7 @@ namespace ScpControl.Usb.Ds3
 
                 #region LED control
 
-                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod && m_Packet > 0)
+                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod && PacketCounter > 0)
                 {
                     m_Last = now;
                     _ledStatus = 0;
