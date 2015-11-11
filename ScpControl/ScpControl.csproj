@@ -165,6 +165,7 @@
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
+    <Compile Include="Plugins\ScpPlugins.cs" />
     <Compile Include="Profiler\DualShockAxes.cs" />
     <Compile Include="Profiler\DualShockButtons.cs" />
     <Compile Include="Profiler\DualShockTrackPad.cs" />
@@ -483,6 +484,7 @@
       <Name>ScpControl.Shared</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
