@@ -3,8 +3,14 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Profiler
 {
+    /// <summary>
+    ///     Represents an extended HID Input Report ready to be sent to the virtual bus device.
+    /// </summary>
     public class ScpHidReport : EventArgs
     {
+        /// <summary>
+        ///     Report bytes count.
+        /// </summary>
         public static int Length
         {
             get { return 96; }
