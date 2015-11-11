@@ -279,7 +279,7 @@ namespace ScpControl.Bluetooth
         #region Events
 
         public event EventHandler<ArrivalEventArgs> DeviceArrived;
-        public event EventHandler<NativeInputReport> HidReportReceived;
+        public event EventHandler<ScpHidReport> HidReportReceived;
 
         private bool OnDeviceArrival(IDsDevice arrived)
         {
@@ -307,7 +307,7 @@ namespace ScpControl.Bluetooth
             if (count > 0) _connected[new BthHandle(lsb, msb)].Completed();
         }
 
-        private void OnHidReportReceived(object sender, NativeInputReport e)
+        private void OnHidReportReceived(object sender, ScpHidReport e)
         {
             if (HidReportReceived != null) HidReportReceived(sender, e);
         }

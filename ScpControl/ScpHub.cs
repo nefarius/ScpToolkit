@@ -31,7 +31,7 @@ namespace ScpControl
         }
 
         public event EventHandler<ArrivalEventArgs> Arrival;
-        public event EventHandler<NativeInputReport> Report;
+        public event EventHandler<ScpHidReport> Report;
 
         protected virtual bool LogArrival(IDsDevice Arrived)
         {
@@ -93,7 +93,7 @@ namespace ScpControl
             if (Arrival != null) Arrival(this, e);
         }
 
-        protected virtual void OnHidReportReceived(object sender, NativeInputReport e)
+        protected virtual void OnHidReportReceived(object sender, ScpHidReport e)
         {
             if (Report != null) Report(sender, e);
         }

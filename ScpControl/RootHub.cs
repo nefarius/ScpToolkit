@@ -214,7 +214,7 @@ namespace ScpControl
 
         private class Cache
         {
-            private readonly byte[] m_Mapped = new byte[NativeInputReport.Length];
+            private readonly byte[] m_Mapped = new byte[ScpHidReport.Length];
             private readonly byte[] m_Report = new byte[BusDevice.ReportSize];
             private readonly byte[] m_Rumble = new byte[BusDevice.RumbleSize];
 
@@ -558,7 +558,7 @@ namespace ScpControl
             e.Handled = bFound;
         }
 
-        protected override void OnHidReportReceived(object sender, NativeInputReport e)
+        protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
             int serial = (int)e.PadId;
             var model = e.Model;

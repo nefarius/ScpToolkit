@@ -27,7 +27,7 @@ namespace ScpControl.Bluetooth
         protected byte m_PlugStatus = 0;
         private bool m_Publish;
         protected uint m_Queued = 0;
-        protected readonly NativeInputReport InputReport = new NativeInputReport();
+        protected readonly ScpHidReport InputReport = new ScpHidReport();
         protected DsState m_State = DsState.Disconnected;
         private readonly byte[] m_Master = new byte[6];
 
@@ -98,7 +98,7 @@ namespace ScpControl.Bluetooth
             return m_Device.HCI_Disconnect(HciHandle) > 0;
         }
 
-        public event EventHandler<NativeInputReport> HidReportReceived;
+        public event EventHandler<ScpHidReport> HidReportReceived;
 
         protected virtual void OnHidReportReceived()
         {

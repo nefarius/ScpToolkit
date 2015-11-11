@@ -95,7 +95,7 @@ namespace ScpControl.Usb
         protected uint m_Packet;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
-        protected readonly NativeInputReport InputReport = new NativeInputReport();
+        protected readonly ScpHidReport InputReport = new ScpHidReport();
         protected DsState m_State = DsState.Disconnected;
         protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
 
@@ -103,7 +103,7 @@ namespace ScpControl.Usb
 
         #region Events
 
-        public event EventHandler<NativeInputReport> HidReportReceived;
+        public event EventHandler<ScpHidReport> HidReportReceived;
 
         protected virtual void OnHidReportReceived()
         {

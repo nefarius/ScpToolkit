@@ -3,7 +3,7 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Profiler
 {
-    public class NativeInputReport : EventArgs
+    public class ScpHidReport : EventArgs
     {
         public static int Length
         {
@@ -189,13 +189,13 @@ namespace ScpControl.Profiler
 
         #region Ctors
 
-        public NativeInputReport()
+        public ScpHidReport()
         {
             RawBytes = new byte[Length];
             ReportId = 0x01;
         }
 
-        public NativeInputReport(byte[] report)
+        public ScpHidReport(byte[] report)
         {
             RawBytes = report;
         }
