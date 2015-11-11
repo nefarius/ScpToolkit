@@ -217,7 +217,7 @@ namespace ScpControl.Usb.Ds3
                 && InputReport[Profiler.Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
-                InputReport.RawBytes[12] ^= 0x1;
+                InputReport.RawBytes[12] ^= 0x01;
             }
             
             if (trigger && !m_IsDisconnect)

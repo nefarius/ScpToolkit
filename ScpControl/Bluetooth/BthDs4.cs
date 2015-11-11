@@ -272,9 +272,9 @@ namespace ScpControl.Bluetooth
 
             InputReport.BatteryStatus = m_BatteryStatus = (byte)((report[41] + 2) / 2);
 
-            InputReport.SetPacketCounter(m_Packet);
+            InputReport.PacketCounter = m_Packet;
 
-            var buttons = (Ds4Button)((report[16] << 0) | (report[17] << 8) | (report[18] << 16));
+            var buttons = ((report[16] << 0) | (report[17] << 8) | (report[18] << 16));
             bool trigger = false, active = false;
 
             //++ Convert HAT to DPAD
@@ -283,68 +283,47 @@ namespace ScpControl.Bluetooth
             switch ((uint)buttons & 0xF)
             {
                 case 0:
-                    report[16] |= (byte)(Ds4Button.Up);
+                    report[16] |= (byte)Profiler.Ds4Button.Up.Offset;
                     break;
                 case 1:
-                    report[16] |= (byte)(Ds4Button.Up | Ds4Button.Right);
+                    report[16] |= (byte)(Profiler.Ds4Button.Up.Offset | Profiler.Ds4Button.Right.Offset);
                     break;
                 case 2:
-                    report[16] |= (byte)(Ds4Button.Right);
+                    report[16] |= (byte)Profiler.Ds4Button.Right.Offset;
                     break;
                 case 3:
-                    report[16] |= (byte)(Ds4Button.Right | Ds4Button.Down);
+                    report[16] |= (byte)(Profiler.Ds4Button.Right.Offset | Profiler.Ds4Button.Down.Offset);
                     break;
                 case 4:
-                    report[16] |= (byte)(Ds4Button.Down);
+                    report[16] |= (byte)Profiler.Ds4Button.Down.Offset;
                     break;
                 case 5:
-                    report[16] |= (byte)(Ds4Button.Down | Ds4Button.Left);
+                    report[16] |= (byte)(Profiler.Ds4Button.Down.Offset | Profiler.Ds4Button.Left.Offset);
                     break;
                 case 6:
-                    report[16] |= (byte)(Ds4Button.Left);
+                    report[16] |= (byte)(Profiler.Ds4Button.Left.Offset);
                     break;
                 case 7:
-                    report[16] |= (byte)(Ds4Button.Left | Ds4Button.Up);
+                    report[16] |= (byte)(Profiler.Ds4Button.Left.Offset | Profiler.Ds4Button.Up.Offset);
                     break;
             }
             //--
 
+            Buffer.BlockCopy(report, 11, InputReport.RawBytes, 8, 76);
+            
+            InputReport.RawBytes[8] = report[9];
+
             // Quick Disconnect
-            if ((buttons & Ds4Button.L1) == Ds4Button.L1
-                && (buttons & Ds4Button.R1) == Ds4Button.R1
-                && (buttons & Ds4Button.PS) == Ds4Button.PS
+            if (InputReport[Profiler.Ds4Button.L1].IsPressed
+                && InputReport[Profiler.Ds4Button.R1].IsPressed
+                && InputReport[Profiler.Ds4Button.Ps].IsPressed
                 )
             {
                 trigger = true;
-                report[18] ^= 0x1;
+                InputReport.RawBytes[15] ^= 0x01;
             }
 
-            for (var index = 8; index < 84; index++)
-            {
-                InputReport.RawBytes[index] = report[index + 3];
-            }
-
-            InputReport.RawBytes[8] = report[9];
-
-            // Buttons
-            for (var index = 16; index < 18 && !active; index++)
-            {
-                if (report[index] != 0) active = true;
-            }
-
-            // Axis
-            for (var index = 12; index < 16 && !active; index++)
-            {
-                if (report[index] < 117 || report[index] > 137) active = true;
-            }
-
-            // Triggers
-            for (var index = 19; index < 21 && !active; index++)
-            {
-                if (report[index] != 0) active = true;
-            }
-
-            if (active)
+            if (InputReport.IsPadActive)
             {
                 m_IsIdle = false;
             }

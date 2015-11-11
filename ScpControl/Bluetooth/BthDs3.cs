@@ -144,7 +144,7 @@ namespace ScpControl.Bluetooth
                 && InputReport[Profiler.Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
-                InputReport.RawBytes[21] ^= 0x1;
+                InputReport.RawBytes[12] ^= 0x01;
             }
 
             if (InputReport.IsPadActive)

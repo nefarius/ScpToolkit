@@ -115,6 +115,7 @@ namespace ScpControl.Profiler
             RawBytes[10] |= (byte) ((input & 1) << 3);
         }
 
+        [Obsolete]
         public void SetPs(int input)
         {
             RawBytes[12] |= (byte) (input & 1);
