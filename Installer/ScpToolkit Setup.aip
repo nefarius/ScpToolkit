@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{F1A3CEFD-EFFB-4F24-86E0-2B9AAEA4BB9D} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{822F731E-7DE3-4AA1-989C-CB6B1103176D} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.114.15315" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.115.15315" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -81,6 +81,7 @@
     <ROW Component="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" ComponentId="{41B7B3CD-01C6-4761-BDF6-D75F7523F9AA}" Directory_="APPDIR" Attributes="260" KeyPath="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" Options="2"/>
     <ROW Component="CA62D813A4E74FA2AAE86A7D7B7B1493" ComponentId="{2B5CDF55-D099-489B-B829-1D3991E6C6D9}" Directory_="APPDIR" Attributes="260" KeyPath="CA62D813A4E74FA2AAE86A7D7B7B1493" Options="2"/>
     <ROW Component="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" ComponentId="{178A2D76-8462-4566-AE83-8AE51144FBAC}" Directory_="APPDIR" Attributes="260" KeyPath="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" Options="2"/>
+    <ROW Component="CSScriptLibrary.dll" ComponentId="{4F6EB43B-F66D-4C56-8A88-E2988585D4E8}" Directory_="APPDIR" Attributes="0" KeyPath="CSScriptLibrary.dll"/>
     <ROW Component="CsvHelper.dll" ComponentId="{DE6E7B69-FF6F-4DCD-A54C-76BA7C4FD15D}" Directory_="APPDIR" Attributes="0" KeyPath="CsvHelper.dll"/>
     <ROW Component="D564007E3BBE4F85950A09B470A7CA65" ComponentId="{B3E6B2BC-372C-46E6-AE11-CC8B294B644C}" Directory_="APPDIR" Attributes="260" KeyPath="D564007E3BBE4F85950A09B470A7CA65" Options="2"/>
     <ROW Component="DIFxAPI.dll" ComponentId="{3C6052E3-C1BE-4F7F-8471-E876931225FF}" Directory_="amd64_Dir" Attributes="256" Condition="VersionNT64" KeyPath="DIFxAPI.dll"/>
@@ -165,7 +166,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="AI32BitFiles" Title="32-bit" Description="32-bit Executables and Libraries" Display="5" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_ExePath DIFxAPI.dll_1 ScpVBus.sys_1 ikpFlac.dll_1 ikpMP3.dll_1 irrKlang.NET4.dll_1 libusb0.dll_1 libusbK.dll_1 libwdi.dll_1 wdfcoinstaller01007.dll_1 wdfcoinstaller01009.dll_1 xusb21.sys_2 xusb21.sys_3"/>
     <ROW Feature="AI64BitFiles" Title="64-bit" Description="64-bit Executables and Libraries" Display="3" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_ExePath DIFxAPI.dll ScpVBus.sys ikpFlac.dll ikpMP3.dll irrKlang.NET4.dll libusb0.dll libusbK.dll libwdi.dll wdfcoinstaller01007.dll wdfcoinstaller01009.dll xusb21.sys xusb21.sys_1"/>
-    <ROW Feature="AIOtherFiles" Title="Common" Description="Shared Resource and Regular Files" Display="7" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_ExePath CsvHelper.dll HidSharp.xml LilyPad LilyPadScpr5875.dll Logs MadMilkman.Ini.xml MadMilkman.Ini.xml_1 Ookii.Dialogs.Wpf.xml ReactiveSockets.xml SHORTCUTDIR ScpCleanWipe.exe ScpCleanWipe.exe.config ScpControl.dll.config ScpControl.ini ScpDebugInfoCollector.exe ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpGamepadAnalyzer.exe ScpGamepadAnalyzer.exe.config ScpMapper.xml ScpMonitor.exe ScpMonitor.exe.config ScpPair.exe ScpPair.exe.config ScpServer.exe ScpServer.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpXInput.ini System.Reactive.Core.xml System.Reactive.Interfaces.xml System.Reactive.Linq.xml System.Reactive.PlatformServices.xml Trinet.Core.IO.Ntfs.dll Trinet.Core.IO.Ntfs.xml XInput connect.wav disconnect.flac log4net.xml log4net.xml_1 startup.ogg x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1"/>
+    <ROW Feature="AIOtherFiles" Title="Common" Description="Shared Resource and Regular Files" Display="7" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll HidSharp.xml LilyPad LilyPadScpr5875.dll Logs MadMilkman.Ini.xml MadMilkman.Ini.xml_1 Ookii.Dialogs.Wpf.xml ReactiveSockets.xml SHORTCUTDIR ScpCleanWipe.exe ScpCleanWipe.exe.config ScpControl.dll.config ScpControl.ini ScpDebugInfoCollector.exe ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpGamepadAnalyzer.exe ScpGamepadAnalyzer.exe.config ScpMapper.xml ScpMonitor.exe ScpMonitor.exe.config ScpPair.exe ScpPair.exe.config ScpServer.exe ScpServer.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpXInput.ini System.Reactive.Core.xml System.Reactive.Interfaces.xml System.Reactive.Linq.xml System.Reactive.PlatformServices.xml Trinet.Core.IO.Ntfs.dll Trinet.Core.IO.Ntfs.xml XInput connect.wav disconnect.flac log4net.xml log4net.xml_1 startup.ogg x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1"/>
     <ROW Feature="B63_41B8_9CB7_8C5E07C0FC18_" Title="Visual C++ 2010 SP1 x64 (MFC Security Update)" Description="Visual C++ 2010 SP1 x64 (MFC Security Update)" Display="11" Level="1" Attributes="0" Components="AI_ExePath B63_41B8_9CB7_8C5E07C0FC18_"/>
     <ROW Feature="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" Title="DirectX 9.0c Runtime (web installer)" Description="DirectX 9.0c Runtime (web installer)" Display="9" Level="1" Attributes="0" Components="AI_ExePath BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4"/>
     <ROW Feature="CA62D813A4E74FA2AAE86A7D7B7B1493" Title="Visual C++ Redistributable for Visual Studio 2013 x64" Description="Visual C++ Redistributable for Visual Studio 2013 x64" Display="15" Level="1" Attributes="0" Components="AI_ExePath CA62D813A4E74FA2AAE86A7D7B7B1493"/>
@@ -178,7 +179,8 @@
     <ATTRIBUTE name="CurrentFeature" value="AIOtherFiles"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="CsvHelper.dll" Component_="CsvHelper.dll" FileName="CSVHEL~1.DLL|CsvHelper.dll" Attributes="0" SourcePath="..\..\bin\CsvHelper.dll" SelfReg="false"/>
+    <ROW File="CSScriptLibrary.dll" Component_="CSScriptLibrary.dll" FileName="CSSCRI~1.DLL|CSScriptLibrary.dll" Attributes="0" SourcePath="..\..\bin\CSScriptLibrary.dll" SelfReg="false"/>
+    <ROW File="CsvHelper.dll" Component_="CsvHelper.dll" FileName="CSVHEL~1.DLL|CsvHelper.dll" Attributes="0" SourcePath="..\..\bin\CsvHelper.dll" SelfReg="false" NextFile="CSScriptLibrary.dll"/>
     <ROW File="DIFxAPI.dll" Component_="DIFxAPI.dll" FileName="DIFxAPI.dll" Attributes="0" SourcePath="..\..\bin\DIFxAPI\amd64\DIFxAPI.dll" SelfReg="false" NextFile="ikpFlac.dll"/>
     <ROW File="DIFxAPI.dll_1" Component_="DIFxAPI.dll_1" FileName="DIFxAPI.dll" Attributes="0" SourcePath="..\..\bin\DIFxAPI\x86\DIFxAPI.dll" SelfReg="false" NextFile="ikpFlac.dll_1"/>
     <ROW File="HidSharp.dll" Component_="ScpService.exe" FileName="HidSharp.dll" Attributes="0" SourcePath="..\..\bin\HidSharp.dll" SelfReg="false" NextFile="Libarius.dll"/>
@@ -592,8 +594,8 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="B63_41B8_9CB7_8C5E07C0FC18_Version" Prereq="B63_41B8_9CB7_8C5E07C0FC18_" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\10.0\red\amd64\1033\Version" VerMin="40219.325" Order="1" Property="PreReqSearch_B63_41B8_9CB7_8C5E07C0FC18_"/>
-    <ROW SearchKey="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4Version" Prereq="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DirectX\Version" VerMin="4.09.00.0904" Order="1" Property="PreReqSearch_BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4"/>
-    <ROW SearchKey="CA62D813A4E74FA2AAE86A7D7B7B1493Version" Prereq="CA62D813A4E74FA2AAE86A7D7B7B1493" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_CA62D813A4E74FA2AAE86A7D7B7B1493"/>
+    <ROW SearchKey="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4Version" Prereq="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DirectX\Version" VerMin="4.09.00.0904" Order="1" Property="PreReqSearch_BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" Platform="1"/>
+    <ROW SearchKey="CA62D813A4E74FA2AAE86A7D7B7B1493Version" Prereq="CA62D813A4E74FA2AAE86A7D7B7B1493" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_CA62D813A4E74FA2AAE86A7D7B7B1493" Platform="1"/>
     <ROW SearchKey="CB585686_DAA3_4384_BDDF_08ABA631E9F3_Version" Prereq="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\10.0\red\x86\1033\Version" VerMin="40219.325" Order="1" Property="PreReqSearch_CB585686_DAA3_4384_BDDF_08ABA631E9F3_"/>
     <ROW SearchKey="D564007E3BBE4F85950A09B470A7CA65Version" Prereq="D564007E3BBE4F85950A09B470A7CA65" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_D564007E3BBE4F85950A09B470A7CA65"/>
     <ROW SearchKey="F7FB4AD7F09F46EF88CE1FACFB376EB1Release" Prereq="F7FB4AD7F09F46EF88CE1FACFB376EB1" SearchType="9" SearchString="HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\Release" RefContent="G378757" Order="1" Property="PreReqSearch_F7FB4AD7F09F46EF88CE1FACFB376EB1"/>
