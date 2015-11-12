@@ -217,6 +217,7 @@ namespace ScpControl.Usb.Ds3
                 && InputReport[Profiler.Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
+                // unset PS button
                 InputReport.RawBytes[12] ^= 0x01;
             }
             

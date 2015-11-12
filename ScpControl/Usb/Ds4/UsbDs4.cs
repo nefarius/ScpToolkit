@@ -251,7 +251,8 @@ namespace ScpControl.Usb.Ds4
 
             var buttons = ((report[5] << 0) | (report[6] << 8) | (report[7] << 16));
 
-            //++ Convert HAT to DPAD
+            #region Convert HAT to DPAD
+
             report[5] &= 0xF0;
 
             switch ((uint) buttons & 0xF)
@@ -281,8 +282,10 @@ namespace ScpControl.Usb.Ds4
                     report[5] |= (byte) (Ds4Button.Left.Offset | Ds4Button.Up.Offset);
                     break;
             }
-            //--
 
+            #endregion
+
+            // copy controller data to report packet
             Buffer.BlockCopy(report, 0, InputReport.RawBytes, 8, 64);
 
             OnHidReportReceived();

@@ -157,8 +157,10 @@ namespace ScpControl.Bluetooth
             }
             //--
 
+            // copy controller data to report packet
             Buffer.BlockCopy(report, 11, InputReport.RawBytes, 8, 76);
 
+            // set report ID
             InputReport.RawBytes[8] = report[9];
 
             // Quick Disconnect
@@ -167,6 +169,7 @@ namespace ScpControl.Bluetooth
                 && InputReport[Ds4Button.Ps].IsPressed)
             {
                 trigger = true;
+                // unset PS button
                 InputReport.RawBytes[15] ^= 0x01;
             }
 

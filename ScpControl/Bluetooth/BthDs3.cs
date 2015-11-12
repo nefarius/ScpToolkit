@@ -134,6 +134,7 @@ namespace ScpControl.Bluetooth
 
             InputReport.PacketCounter = m_Packet;
 
+            // copy controller data to report packet
             Buffer.BlockCopy(report, 9, InputReport.RawBytes, 8, 49);
             
             var trigger = false;
@@ -144,6 +145,7 @@ namespace ScpControl.Bluetooth
                 && InputReport[Profiler.Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
+                // unset PS button
                 InputReport.RawBytes[12] ^= 0x01;
             }
 
