@@ -6,6 +6,7 @@ namespace ScpControl.Plugins.Mapper
     public class RetroArchProfile : IScpMapperProfile
     {
         private readonly Stopwatch _time = Stopwatch.StartNew();
+        private uint _offCounter = 0;
 
         public void Process(ScpHidReport report)
         {
@@ -14,7 +15,11 @@ namespace ScpControl.Plugins.Mapper
             if (_time.ElapsedMilliseconds < 100) return;
 
             report.Set(Ds3Button.Triangle, false);
+
+            if (_offCounter++ != 10) return;
+
             _time.Restart();
+            _offCounter = 0;
         }
     }
 }

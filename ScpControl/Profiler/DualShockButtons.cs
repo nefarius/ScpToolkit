@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ScpControl.Profiler
+﻿namespace ScpControl.Profiler
 {
     public interface IDsButtonState
     {
@@ -38,18 +36,6 @@ namespace ScpControl.Profiler
         public string Name { get; private set; }
         public string DisplayName { get; protected set; }
 
-        public override bool Equals(object obj)
-        {
-            var button = obj as DsButton;
-
-            return (button != null && button.Name.Equals(this.Name));
-        }
-
-        public override int GetHashCode()
-        {
-            return this.Name.GetHashCode();
-        }
-
         public void ToggleBit(ref byte source, bool value)
         {
             if (value)
@@ -63,8 +49,20 @@ namespace ScpControl.Profiler
         }
 
         public int MaskOffset { get; protected set; }
-        
+
         public int ArrayIndex { get; protected set; }
+
+        public override bool Equals(object obj)
+        {
+            var button = obj as DsButton;
+
+            return (button != null && button.Name.Equals(Name));
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 
     /// <summary>

@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using CSScriptLibrary;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl.Plugins
 {
     public class ScpPlugins : SingletonBase<ScpPlugins>
     {
-        public IList<IScpMapperProfile> MapperProfiles { get; private set; }
-
-        private DateTime _lastTimestamp = DateTime.Now;
-
         private ScpPlugins()
         {
             MapperProfiles = new List<IScpMapperProfile>();
@@ -26,6 +20,8 @@ namespace ScpControl.Plugins
                     CSScript.Evaluator.LoadFile<IScpMapperProfile>(file).TryAlignToInterface<IScpMapperProfile>());
             }
         }
+
+        private IList<IScpMapperProfile> MapperProfiles { get; set; }
 
         public void Process(ScpHidReport report)
         {

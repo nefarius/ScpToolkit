@@ -301,7 +301,7 @@ namespace ScpControl.Profiler
                     case DsModel.DS3:
                         if (
                             Ds3Buttons.Any(
-                                button => this[button.GetValue(typeof(Ds3Button), null) as IDsButton].IsPressed)
+                                button => this[button.GetValue(typeof (Ds3Button), null) as IDsButton].IsPressed)
                             || Ds3Axes.Any(axis => this[axis.GetValue(typeof (Ds3Axis), null) as IDsAxis].IsEngaged))
                         {
                             return true;
@@ -405,11 +405,6 @@ namespace ScpControl.Profiler
 
                 return new DsButtonState();
             }
-
-            set
-            {
-                var t = value;
-            }
         }
 
         /// <summary>
@@ -425,7 +420,7 @@ namespace ScpControl.Profiler
                     || (axis is Ds4Axis && Model == DsModel.DS4))
                 {
                     if (axis.Equals(Ds3Axis.None) || axis.Equals(Ds4Axis.None))
-                        return new DsAxisState() {IsEngaged = false};
+                        return new DsAxisState {IsEngaged = false};
 
                     return new DsAxisState
                     {
