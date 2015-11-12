@@ -567,18 +567,10 @@ namespace ScpControl
 
             var report = _mCache[serial].Report;
             var rumble = _mCache[serial].Rumble;
-            var mapped = _mCache[serial].Mapped;
 
             ScpPlugins.Instance.Process(e);
 
-            if (scpMap.Remap(model, serial, _pads[serial].Local, e.RawBytes, mapped))
-            {
-                _scpBus.Parse(mapped, report, model);
-            }
-            else
-            {
-                _scpBus.Parse(e.RawBytes, report, model);
-            }
+            _scpBus.Parse(e.RawBytes, report, model);
 
             if (_scpBus.Report(report, rumble) && (DsState)e.RawBytes[1] == DsState.Connected)
             {

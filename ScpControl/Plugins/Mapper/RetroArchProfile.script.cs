@@ -12,11 +12,11 @@ namespace ScpControl.Plugins.Mapper
         {
             if (!report[Ds3Button.Triangle].IsPressed) return;
 
-            if (_time.ElapsedMilliseconds < 100) return;
+            if (_time.ElapsedMilliseconds < 50) return;
 
             report.Set(Ds3Button.Triangle, false);
 
-            if (_offCounter++ != 10) return;
+            if (_offCounter++ != 5) return;
 
             _time.Restart();
             _offCounter = 0;
