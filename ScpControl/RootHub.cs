@@ -10,6 +10,7 @@ using Libarius.System;
 using ReactiveSockets;
 using ScpControl.Bluetooth;
 using ScpControl.Exceptions;
+using ScpControl.Plugins;
 using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
@@ -567,6 +568,8 @@ namespace ScpControl
             var report = _mCache[serial].Report;
             var rumble = _mCache[serial].Rumble;
             var mapped = _mCache[serial].Mapped;
+
+            ScpPlugins.Instance.Process(e);
 
             if (scpMap.Remap(model, serial, _pads[serial].Local, e.RawBytes, mapped))
             {

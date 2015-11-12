@@ -36,6 +36,11 @@ namespace ScpControl.Profiler
 
         #region Public methods
 
+        public void Set(IDsButton button, bool value)
+        {
+            button.ToggleBit(ref RawBytes[button.ArrayIndex], value);
+        }
+
         [Obsolete]
         public void SetPacketCounter(uint packet)
         {
@@ -50,41 +55,49 @@ namespace ScpControl.Profiler
             return RawBytes[2] = (byte) battery;
         }
 
+        [Obsolete]
         public void SetTriangleDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 4);
         }
 
+        [Obsolete]
         public void SetCircleDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 5);
         }
 
+        [Obsolete]
         public void SetCrossDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 6);
         }
 
+        [Obsolete]
         public void SetSquareDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 7);
         }
 
+        [Obsolete]
         public void SetDpadRightDigital(bool input)
         {
             RawBytes[10] |= (byte) (input ? 0x20 : 0x00);
         }
 
+        [Obsolete]
         public void SetDpadLeftDigital(bool input)
         {
             RawBytes[10] |= (byte) (input ? 0x80 : 0x00);
         }
 
+        [Obsolete]
         public void SetDpadUpDigital(bool input)
         {
             RawBytes[10] |= (byte) (input ? 0x10 : 0x00);
         }
 
+        [Obsolete]
         public void SetDpadDownDigital(bool input)
         {
             RawBytes[10] |= (byte) (input ? 0x40 : 0x00);
@@ -391,6 +404,11 @@ namespace ScpControl.Profiler
                 }
 
                 return new DsButtonState();
+            }
+
+            set
+            {
+                var t = value;
             }
         }
 

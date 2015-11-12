@@ -1,4 +1,6 @@
-﻿namespace ScpControl.Profiler
+﻿using System;
+
+namespace ScpControl.Profiler
 {
     public interface IDsButtonState
     {
@@ -15,6 +17,9 @@
         uint Offset { get; }
         string Name { get; }
         string DisplayName { get; }
+        int MaskOffset { get; }
+        int ArrayIndex { get; }
+        void ToggleBit(ref byte source, bool value);
     }
 
     public class DsButton : IDsButton
@@ -44,6 +49,22 @@
         {
             return this.Name.GetHashCode();
         }
+
+        public void ToggleBit(ref byte source, bool value)
+        {
+            if (value)
+            {
+                source |= (byte) (1 << MaskOffset);
+            }
+            else
+            {
+                source &= (byte) ~(1 << MaskOffset);
+            }
+        }
+
+        public int MaskOffset { get; protected set; }
+        
+        public int ArrayIndex { get; protected set; }
     }
 
     /// <summary>
@@ -133,7 +154,9 @@
                 return new Ds3Button("Up")
                 {
                     Offset = 1 << 4,
-                    DisplayName = "D-Pad up"
+                    DisplayName = "D-Pad up",
+                    ArrayIndex = 10,
+                    MaskOffset = 0x10
                 };
             }
         }
@@ -145,7 +168,9 @@
                 return new Ds3Button("Right")
                 {
                     Offset = 1 << 5,
-                    DisplayName = "D-Pad right"
+                    DisplayName = "D-Pad right",
+                    ArrayIndex = 10,
+                    MaskOffset = 0x20
                 };
             }
         }
@@ -157,7 +182,9 @@
                 return new Ds3Button("Down")
                 {
                     Offset = 1 << 6,
-                    DisplayName = "D-Pad down"
+                    DisplayName = "D-Pad down",
+                    ArrayIndex = 10,
+                    MaskOffset = 0x40
                 };
             }
         }
@@ -169,7 +196,9 @@
                 return new Ds3Button("Left")
                 {
                     Offset = 1 << 7,
-                    DisplayName = "D-Pad left"
+                    DisplayName = "D-Pad left",
+                    ArrayIndex = 10,
+                    MaskOffset = 0x80
                 };
             }
         }
@@ -229,7 +258,9 @@
                 return new Ds3Button("Triangle")
                 {
                     Offset = 1 << 12,
-                    DisplayName = "Triangle"
+                    DisplayName = "Triangle",
+                    ArrayIndex = 11,
+                    MaskOffset = 4
                 };
             }
         }
@@ -241,7 +272,9 @@
                 return new Ds3Button("Circle")
                 {
                     Offset = 1 << 13,
-                    DisplayName = "Circle"
+                    DisplayName = "Circle",
+                    ArrayIndex = 11,
+                    MaskOffset = 5
                 };
             }
         }
@@ -253,7 +286,9 @@
                 return new Ds3Button("Cross")
                 {
                     Offset = 1 << 14,
-                    DisplayName = "Cross"
+                    DisplayName = "Cross",
+                    ArrayIndex = 11,
+                    MaskOffset = 6
                 };
             }
         }
@@ -265,7 +300,9 @@
                 return new Ds3Button("Square")
                 {
                     Offset = 1 << 15,
-                    DisplayName = "Square"
+                    DisplayName = "Square",
+                    ArrayIndex = 11,
+                    MaskOffset = 7
                 };
             }
         }
