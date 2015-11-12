@@ -1,5 +1,7 @@
 ﻿namespace ScpControl.Profiler
 {
+    #region Interfaces
+
     public interface IDsButtonState
     {
         bool IsPressed { get; set; }
@@ -20,8 +22,12 @@
         void ToggleBit(ref byte source, bool value);
     }
 
+    #endregion
+
     public class DsButton : IDsButton
     {
+        #region Ctors
+
         public DsButton()
         {
         }
@@ -32,9 +38,19 @@
             Name = name;
         }
 
+        #endregion
+
+        #region Properties
+
         public uint Offset { get; protected set; }
         public string Name { get; private set; }
         public string DisplayName { get; protected set; }
+        public int MaskOffset { get; protected set; }
+        public int ArrayIndex { get; protected set; }
+        
+        #endregion
+
+        #region Methods
 
         public void ToggleBit(ref byte source, bool value)
         {
@@ -47,11 +63,7 @@
                 source &= (byte) ~(1 << MaskOffset);
             }
         }
-
-        public int MaskOffset { get; protected set; }
-
-        public int ArrayIndex { get; protected set; }
-
+        
         public override bool Equals(object obj)
         {
             var button = obj as DsButton;
@@ -63,6 +75,8 @@
         {
             return Name.GetHashCode();
         }
+
+        #endregion
     }
 
     /// <summary>
