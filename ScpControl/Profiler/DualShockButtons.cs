@@ -2,16 +2,17 @@
 {
     #region Interfaces
 
+    /// <summary>
+    ///     Describes the possible states for a DualShock button.
+    /// </summary>
     public interface IDsButtonState
     {
         bool IsPressed { get; set; }
     }
 
-    public class DsButtonState : IDsButtonState
-    {
-        public bool IsPressed { get; set; }
-    }
-
+    /// <summary>
+    ///     Describes a DualShock button.
+    /// </summary>
     public interface IDsButton
     {
         uint Offset { get; }
@@ -24,6 +25,20 @@
 
     #endregion
 
+    /// <summary>
+    ///     Implements the possible states for a DualShock button.
+    /// </summary>
+    public class DsButtonState : IDsButtonState
+    {
+        /// <summary>
+        ///     True if the button in question is currently pressed, false if it's released.
+        /// </summary>
+        public bool IsPressed { get; set; }
+    }
+
+    /// <summary>
+    ///     Implements a DualShock button.
+    /// </summary>
     public class DsButton : IDsButton
     {
         #region Ctors
@@ -42,16 +57,39 @@
 
         #region Properties
 
+        // TODO: can this be superseded?
         public uint Offset { get; protected set; }
+
+        /// <summary>
+        ///     The short name identifying the button.
+        /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        ///     A short descriptive name of the button.
+        /// </summary>
         public string DisplayName { get; protected set; }
+
+        /// <summary>
+        ///     The bit offset within the <see cref="ArrayIndex"/>
+        /// </summary>
         public int MaskOffset { get; protected set; }
+
+        /// <summary>
+        ///     The corresponding byte in the <see cref="ScpHidReport.RawBytes"/> holding the value of the button.
+        /// </summary>
         public int ArrayIndex { get; protected set; }
         
         #endregion
 
         #region Methods
 
+        /// <summary>
+        ///     Sets or unsets a given bit in a specified byte.
+        /// </summary>
+        /// <param name="source">The byte to manipulate.</param>
+        /// <param name="value">True if the bit should be set high, false otherwise.</param>
+        /// <remarks>If the bit is already high it will be overwritten and vice versa.</remarks>
         public void ToggleBit(ref byte source, bool value)
         {
             if (value)

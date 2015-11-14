@@ -19,11 +19,20 @@
             Value = 0x80;
         }
 
+        /// <summary>
+        ///     The current value of the axis in question.
+        /// </summary>
         public byte Value { get; set; }
         
+        /// <summary>
+        ///     True if the current value differs from the default value of the axis, false otherwise.
+        /// </summary>
         public bool IsEngaged { get; set; }
     }
 
+    /// <summary>
+    ///     Defines a DualShock axis.
+    /// </summary>
     public interface IDsAxis
     {
         byte DefaultValue { get; }
@@ -32,8 +41,13 @@
         string DisplayName { get; }
     }
 
+    /// <summary>
+    ///     Implementes a DualShock axis.
+    /// </summary>
     public class DsAxis : IDsAxis
     {
+        #region Ctors
+
         public DsAxis()
         {
         }
@@ -43,9 +57,26 @@
             Name = name;
         }
 
+        #endregion
+
+        /// <summary>
+        ///     The offset used to identify and access the appropriate byte in <see cref="ScpHidReport"/>.
+        /// </summary>
         public uint Offset { get; protected set; }
+
+        /// <summary>
+        ///     The short name of the axis.
+        /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        ///     The descriptive name of the axis.
+        /// </summary>
         public string DisplayName { get; protected set; }
+
+        /// <summary>
+        ///     The default value of the axis reported at non-engaged state.
+        /// </summary>
         public byte DefaultValue { get; protected set; }
 
         public override bool Equals(object obj)
