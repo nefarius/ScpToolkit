@@ -174,6 +174,11 @@ namespace ScpControl
             return BitConverter.ToUInt16(new[] { (byte)id, (byte)type }, 0);
         }
 
+        protected bool IsBitSet(byte value, int offset)
+        {
+            return ((value >> offset) & 1) == 0x01;
+        }
+
         #region WinUSB wrapper methods
 
         protected bool ReadIntPipe(byte[] buffer, int length, ref int transfered)

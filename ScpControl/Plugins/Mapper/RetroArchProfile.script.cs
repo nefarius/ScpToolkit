@@ -14,7 +14,7 @@ namespace ScpControl.Plugins.Mapper
 
             if (_time.ElapsedMilliseconds < 50) return;
 
-            report.Set(Ds3Button.Triangle, false);
+            report.Unset(Ds3Button.Triangle);
 
             if (_offCounter++ != 5) return;
 

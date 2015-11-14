@@ -118,7 +118,9 @@
                 return new Ds3Button("Select")
                 {
                     Offset = 1 << 0,
-                    DisplayName = "Select"
+                    DisplayName = "Select",
+                    ArrayIndex = 10,
+                    MaskOffset = 0
                 };
             }
         }
@@ -154,7 +156,9 @@
                 return new Ds3Button("Start")
                 {
                     Offset = 1 << 3,
-                    DisplayName = "Start"
+                    DisplayName = "Start",
+                    ArrayIndex = 10,
+                    MaskOffset = 3
                 };
             }
         }
@@ -168,7 +172,7 @@
                     Offset = 1 << 4,
                     DisplayName = "D-Pad up",
                     ArrayIndex = 10,
-                    MaskOffset = 0x10
+                    MaskOffset = 4
                 };
             }
         }
@@ -182,7 +186,7 @@
                     Offset = 1 << 5,
                     DisplayName = "D-Pad right",
                     ArrayIndex = 10,
-                    MaskOffset = 0x20
+                    MaskOffset = 5
                 };
             }
         }
@@ -196,7 +200,7 @@
                     Offset = 1 << 6,
                     DisplayName = "D-Pad down",
                     ArrayIndex = 10,
-                    MaskOffset = 0x40
+                    MaskOffset = 6
                 };
             }
         }
@@ -210,7 +214,7 @@
                     Offset = 1 << 7,
                     DisplayName = "D-Pad left",
                     ArrayIndex = 10,
-                    MaskOffset = 0x80
+                    MaskOffset = 7
                 };
             }
         }
@@ -222,7 +226,9 @@
                 return new Ds3Button("L2")
                 {
                     Offset = 1 << 8,
-                    DisplayName = "Left trigger"
+                    DisplayName = "Left trigger",
+                    ArrayIndex = 11,
+                    MaskOffset = 0
                 };
             }
         }
@@ -234,7 +240,9 @@
                 return new Ds3Button("R2")
                 {
                     Offset = 1 << 9,
-                    DisplayName = "Right trigger"
+                    DisplayName = "Right trigger",
+                    ArrayIndex = 11,
+                    MaskOffset = 1
                 };
             }
         }
@@ -246,7 +254,9 @@
                 return new Ds3Button("L1")
                 {
                     Offset = 1 << 10,
-                    DisplayName = "Left shoulder"
+                    DisplayName = "Left shoulder",
+                    ArrayIndex = 11,
+                    MaskOffset = 2
                 };
             }
         }
@@ -258,7 +268,9 @@
                 return new Ds3Button("R1")
                 {
                     Offset = 1 << 11,
-                    DisplayName = "Right shoulder"
+                    DisplayName = "Right shoulder",
+                    ArrayIndex = 11,
+                    MaskOffset = 3
                 };
             }
         }
@@ -326,7 +338,9 @@
                 return new Ds3Button("PS")
                 {
                     Offset = 1 << 16,
-                    DisplayName = "PS"
+                    DisplayName = "PS",
+                    ArrayIndex = 12,
+                    MaskOffset = 0
                 };
             }
         }

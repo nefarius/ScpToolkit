@@ -36,9 +36,23 @@ namespace ScpControl.Profiler
 
         #region Public methods
 
-        public void Set(IDsButton button, bool value)
+        /// <summary>
+        ///     Sets the status of a digital (two-state) button.
+        /// </summary>
+        /// <param name="button">The button of the current report to manipulate.</param>
+        /// <param name="value">True to set the button as pressed, false to set the button as released.</param>
+        public void Set(IDsButton button, bool value = true)
         {
             button.ToggleBit(ref RawBytes[button.ArrayIndex], value);
+        }
+
+        /// <summary>
+        ///     Sets the status of a digital (two-state) button to 'released'.
+        /// </summary>
+        /// <param name="button">The button of the current report to unset.</param>
+        public void Unset(IDsButton button)
+        {
+            Set(button, false);
         }
 
         [Obsolete]
@@ -118,11 +132,13 @@ namespace ScpControl.Profiler
             RawBytes[12] = 0x00;
         }
 
+        [Obsolete]
         public void SetSelect(int input)
         {
             RawBytes[10] |= (byte) (input & 1);
         }
 
+        [Obsolete]
         public void SetStart(int input)
         {
             RawBytes[10] |= (byte) ((input & 1) << 3);
@@ -134,21 +150,25 @@ namespace ScpControl.Profiler
             RawBytes[12] |= (byte) (input & 1);
         }
 
+        [Obsolete]
         public void SetLeftShoulderDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 2);
         }
 
+        [Obsolete]
         public void SetRightShoulderDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 3);
         }
 
+        [Obsolete]
         public void SetLeftTriggerDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 0);
         }
 
+        [Obsolete]
         public void SetRightTriggerDigital(int input)
         {
             RawBytes[11] |= (byte) ((input & 1) << 1);
