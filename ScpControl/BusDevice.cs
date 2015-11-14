@@ -251,8 +251,8 @@ namespace ScpControl
                         output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
 
                         // trigger
-                        output[(uint) X360Axis.LT] = inputReport[Profiler.Ds3Axis.L2].Value;
-                        output[(uint) X360Axis.RT] = inputReport[Profiler.Ds3Axis.R2].Value;
+                        output[(uint) X360Axis.LT] = inputReport[Ds3Axis.L2].Value;
+                        output[(uint) X360Axis.RT] = inputReport[Ds3Axis.R2].Value;
 
                         if (
                             !DeadZone(GlobalConfiguration.Instance.DeadZoneL, inputReport[Ds3Axis.Lx].Value,
