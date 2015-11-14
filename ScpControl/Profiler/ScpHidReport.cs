@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using ScpControl.ScpCore;
 
@@ -114,6 +115,15 @@ namespace ScpControl.Profiler
         #region Public properties
 
         public byte[] RawBytes { get; private set; }
+
+        public PhysicalAddress PadMacAddress
+        {
+            get
+            {
+                // last 6 bytes contain the PADs MAC address
+                return new PhysicalAddress(RawBytes.Skip(Math.Max(0, RawBytes.Length - 6)).ToArray());
+            }
+        }
 
         public uint PacketCounter
         {

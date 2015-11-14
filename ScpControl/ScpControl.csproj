@@ -246,12 +246,12 @@
     <Compile Include="ScpMapper.Designer.cs">
       <DependentUpon>ScpMapper.cs</DependentUpon>
     </Compile>
-    <Compile Include="ScpPadState.cs">
+    <None Include="ScpPadState.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ScpPadState.Designer.cs">
+    </None>
+    <None Include="ScpPadState.Designer.cs">
       <DependentUpon>ScpPadState.cs</DependentUpon>
-    </Compile>
+    </None>
     <Compile Include="ScpProxy.cs">
       <SubType>Component</SubType>
     </Compile>

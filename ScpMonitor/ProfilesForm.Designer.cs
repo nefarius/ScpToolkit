@@ -1,4 +1,5 @@
-﻿using ScpControl.ScpCore;
+﻿using ScpControl.Profiler;
+using ScpControl.ScpCore;
 
 namespace ScpMonitor
 {
@@ -282,7 +283,7 @@ namespace ScpMonitor
             // 
             // scpProxy
             // 
-            this.scpProxy.NativeFeedReceived += new System.EventHandler<ScpControl.ScpCore.DsPacket>(this.Parse);
+            this.scpProxy.NativeFeedReceived += new System.EventHandler<ScpHidReport>(this.Parse);
             // 
             // btnView
             // 

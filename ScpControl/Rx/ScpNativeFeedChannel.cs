@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ReactiveSockets;
+using ScpControl.Profiler;
 
 namespace ScpControl.Rx
 {
@@ -18,7 +19,7 @@ namespace ScpControl.Rx
         {
             this._socket = socket;
 
-            Receiver = from packet in socket.Receiver.Buffer(96)
+            Receiver = from packet in socket.Receiver.Buffer(ScpHidReport.Length)
                        select packet.ToArray();
         }
 

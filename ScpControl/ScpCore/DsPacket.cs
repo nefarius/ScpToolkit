@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 namespace ScpControl.ScpCore
 {
+    [Obsolete]
     public class DsPacket : EventArgs
     {
         private Ds3Button m_Ds3Button = Ds3Button.None;

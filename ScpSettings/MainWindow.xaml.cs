@@ -152,6 +152,8 @@ namespace ScpSettings
             {
                 MessageBox.Show("Couldn't mod PCSX2!", "Mod install failed",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Error details",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

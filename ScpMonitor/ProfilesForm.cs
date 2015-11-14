@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpMonitor.Properties;
+using Ds3Axis = ScpControl.Profiler.Ds3Axis;
+using Ds3Button = ScpControl.Profiler.Ds3Button;
+using Ds4Axis = ScpControl.Profiler.Ds4Axis;
+using Ds4Button = ScpControl.Profiler.Ds4Button;
 
 namespace ScpMonitor
 {
@@ -53,84 +58,84 @@ namespace ScpMonitor
             CenterToScreen();
         }
 
-        private void Parse(object sender, DsPacket e)
+        private void Parse(object sender, ScpHidReport e)
         {
             lock (this)
             {
-                if (e.Detail.Pad == (DsPadId)m_SelectedPad)
+                if (e.PadId == (DsPadId)m_SelectedPad)
                 {
-                    if (e.Detail.State != DsState.Connected)
+                    if (e.PadState != DsState.Connected)
                     {
                         ResetControls();
                         return;
                     }
 
-                    scpProxy.Remap(m_SelectedProfile, e);
+                    //scpProxy.Remap(m_SelectedProfile, e);
 
-                    switch (e.Detail.Model)
+                    switch (e.Model)
                     {
                         case DsModel.DS3:
                             {
-                                axLX.Value = e.Axis(Ds3Axis.LX);
-                                axLY.Value = e.Axis(Ds3Axis.LY);
-                                axRX.Value = e.Axis(Ds3Axis.RX);
-                                axRY.Value = e.Axis(Ds3Axis.RY);
+                                axLX.Value = e[Ds3Axis.Lx].Value;
+                                axLY.Value = e[Ds3Axis.Ly].Value;
+                                axRX.Value = e[Ds3Axis.Rx].Value;
+                                axRY.Value = e[Ds3Axis.Ry].Value;
 
-                                axL1.Value = e.Axis(Ds3Axis.L1);
-                                axR1.Value = e.Axis(Ds3Axis.R1);
-                                axL2.Value = e.Axis(Ds3Axis.L2);
-                                axR2.Value = e.Axis(Ds3Axis.R2);
+                                axL1.Value = e[Ds3Axis.L1].Value;
+                                axR1.Value = e[Ds3Axis.R1].Value;
+                                axL2.Value = e[Ds3Axis.L2].Value;
+                                axR2.Value = e[Ds3Axis.R2].Value;
 
-                                axL3.Value = (Byte)(e.Button(Ds3Button.L3) ? 255 : 0);
-                                axR3.Value = (Byte)(e.Button(Ds3Button.R3) ? 255 : 0);
+                                axL3.Value = (Byte)(e[Ds3Button.L3].IsPressed ? 255 : 0);
+                                axR3.Value = (Byte)(e[Ds3Button.R3].IsPressed ? 255 : 0);
 
-                                axSH.Value = (Byte)(e.Button(Ds3Button.Select) ? 255 : 0);
-                                axOP.Value = (Byte)(e.Button(Ds3Button.Start) ? 255 : 0);
+                                axSH.Value = (Byte)(e[Ds3Button.Select].IsPressed ? 255 : 0);
+                                axOP.Value = (Byte)(e[Ds3Button.Start].IsPressed ? 255 : 0);
 
-                                axT.Value = e.Axis(Ds3Axis.Triangle);
-                                axC.Value = e.Axis(Ds3Axis.Circle);
-                                axX.Value = e.Axis(Ds3Axis.Cross);
-                                axS.Value = e.Axis(Ds3Axis.Square);
+                                axT.Value = e[Ds3Axis.Triangle].Value;
+                                axC.Value = e[Ds3Axis.Circle].Value;
+                                axX.Value = e[Ds3Axis.Cross].Value;
+                                axS.Value = e[Ds3Axis.Square].Value;
 
-                                axU.Value = e.Axis(Ds3Axis.Up);
-                                axR.Value = e.Axis(Ds3Axis.Right);
-                                axD.Value = e.Axis(Ds3Axis.Down);
-                                axL.Value = e.Axis(Ds3Axis.Left);
+                                axU.Value = e[Ds3Axis.Up].Value;
+                                axR.Value = e[Ds3Axis.Right].Value;
+                                axD.Value = e[Ds3Axis.Down].Value;
+                                axL.Value = e[Ds3Axis.Left].Value;
 
-                                axPS.Value = (Byte)(e.Button(Ds3Button.PS) ? 255 : 0);
+                                axPS.Value = (Byte)(e[Ds3Button.Ps].IsPressed ? 255 : 0);
                             }
                             break;
 
                         case DsModel.DS4:
                             {
-                                axLX.Value = e.Axis(Ds4Axis.LX);
-                                axLY.Value = e.Axis(Ds4Axis.LY);
-                                axRX.Value = e.Axis(Ds4Axis.RX);
-                                axRY.Value = e.Axis(Ds4Axis.RY);
+                                axLX.Value = e[Ds4Axis.Lx].Value;
+                                axLY.Value = e[Ds4Axis.Ly].Value;
+                                axRX.Value = e[Ds4Axis.Rx].Value;
+                                axRY.Value = e[Ds4Axis.Ry].Value;
 
-                                axL2.Value = e.Axis(Ds4Axis.L2);
-                                axR2.Value = e.Axis(Ds4Axis.R2);
+                                axL2.Value = e[Ds4Axis.L2].Value;
+                                axR2.Value = e[Ds4Axis.R2].Value;
 
-                                axL1.Value = (Byte)(e.Button(Ds4Button.L1) ? 255 : 0);
-                                axR1.Value = (Byte)(e.Button(Ds4Button.R1) ? 255 : 0);
-                                axL3.Value = (Byte)(e.Button(Ds4Button.L3) ? 255 : 0);
-                                axR3.Value = (Byte)(e.Button(Ds4Button.R3) ? 255 : 0);
+                                axL1.Value = (Byte)(e[Ds4Button.L1].IsPressed ? 255 : 0);
+                                axR1.Value = (Byte)(e[Ds4Button.R1].IsPressed ? 255 : 0);
+                                axL3.Value = (Byte)(e[Ds4Button.L3].IsPressed ? 255 : 0);
+                                axR3.Value = (Byte)(e[Ds4Button.R3].IsPressed ? 255 : 0);
 
-                                axSH.Value = (Byte)(e.Button(Ds4Button.Share) ? 255 : 0);
-                                axOP.Value = (Byte)(e.Button(Ds4Button.Options) ? 255 : 0);
+                                axSH.Value = (Byte)(e[Ds4Button.Share].IsPressed ? 255 : 0);
+                                axOP.Value = (Byte)(e[Ds4Button.Options].IsPressed ? 255 : 0);
 
-                                axT.Value = (Byte)(e.Button(Ds4Button.Triangle) ? 255 : 0);
-                                axC.Value = (Byte)(e.Button(Ds4Button.Circle) ? 255 : 0);
-                                axX.Value = (Byte)(e.Button(Ds4Button.Cross) ? 255 : 0);
-                                axS.Value = (Byte)(e.Button(Ds4Button.Square) ? 255 : 0);
+                                axT.Value = (Byte)(e[Ds4Button.Triangle].IsPressed ? 255 : 0);
+                                axC.Value = (Byte)(e[Ds4Button.Circle].IsPressed ? 255 : 0);
+                                axX.Value = (Byte)(e[Ds4Button.Cross].IsPressed ? 255 : 0);
+                                axS.Value = (Byte)(e[Ds4Button.Square].IsPressed ? 255 : 0);
 
-                                axU.Value = (Byte)(e.Button(Ds4Button.Up) ? 255 : 0);
-                                axR.Value = (Byte)(e.Button(Ds4Button.Right) ? 255 : 0);
-                                axD.Value = (Byte)(e.Button(Ds4Button.Down) ? 255 : 0);
-                                axL.Value = (Byte)(e.Button(Ds4Button.Left) ? 255 : 0);
+                                axU.Value = (Byte)(e[Ds4Button.Up].IsPressed ? 255 : 0);
+                                axR.Value = (Byte)(e[Ds4Button.Right].IsPressed ? 255 : 0);
+                                axD.Value = (Byte)(e[Ds4Button.Down].IsPressed ? 255 : 0);
+                                axL.Value = (Byte)(e[Ds4Button.Left].IsPressed ? 255 : 0);
 
-                                axPS.Value = (Byte)(e.Button(Ds4Button.PS) ? 255 : 0);
-                                axTP.Value = (Byte)(e.Button(Ds4Button.TouchPad) ? 255 : 0);
+                                axPS.Value = (Byte)(e[Ds4Button.Ps].IsPressed ? 255 : 0);
+                                axTP.Value = (Byte)(e[Ds4Button.TouchPad].IsPressed ? 255 : 0);
                             }
                             break;
                     }

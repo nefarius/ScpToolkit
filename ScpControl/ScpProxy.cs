@@ -9,12 +9,15 @@ using System.ServiceModel;
 using System.Xml;
 using log4net;
 using ReactiveSockets;
+using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Utilities;
 using ScpControl.Shared.XInput;
 using ScpControl.Wcf;
+using Ds3Axis = ScpControl.Profiler.Ds3Axis;
+using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl
 {
@@ -29,21 +32,19 @@ namespace ScpControl
         /// <returns>The pressure sensitive button/axis information.</returns>
         public SCP_EXTN GetExtended(uint dwUserIndex)
         {
-            DsPacket packet;
+            ScpHidReport inputReport;
             var extended = default(SCP_EXTN);
 
             try
             {
-                packet = _packetCache[(DsPadId) dwUserIndex];
+                inputReport = _packetCache[(DsPadId) dwUserIndex];
             }
             catch (KeyNotFoundException)
             {
                 return extended;
             }
 
-            var native = packet.Native;
-
-            switch (packet.Detail.Model)
+            switch (inputReport.Model)
             {
                 case DsModel.None:
                     break;
@@ -51,27 +52,27 @@ namespace ScpControl
                     // translate and wrap button/axis information
                     extended = new SCP_EXTN
                     {
-                        SCP_UP = native.GetDpadUpAnalog().ToPressure(),
-                        SCP_RIGHT = native.GetDpadRightAnalog().ToPressure(),
-                        SCP_DOWN = native.GetDpadDownAnalog().ToPressure(),
-                        SCP_LEFT = native.GetDpadLeftAnalog().ToPressure(),
-                        SCP_LX = native.GetLeftAxisX(),
-                        SCP_LY = native.GetLeftAxisY(),
-                        SCP_L1 = native.GetLeftShoulderAnalog().ToPressure(),
-                        SCP_L2 = native.GetLeftTriggerAnalog().ToPressure(),
-                        SCP_L3 = native.GetLeftThumb() ? 1.0f : 0.0f,
-                        SCP_RX = native.GetRightAxisX(),
-                        SCP_RY = native.GetRightAxisY(),
-                        SCP_R1 = native.GetRightShoulderAnalog().ToPressure(),
-                        SCP_R2 = native.GetRightTriggerAnalog().ToPressure(),
-                        SCP_R3 = native.GetRightThumb() ? 1.0f : 0.0f,
-                        SCP_T = native.GetTriangleAnalog().ToPressure(),
-                        SCP_C = native.GetCircleAnalog().ToPressure(),
-                        SCP_X = native.GetCrossAnalog().ToPressure(),
-                        SCP_S = native.GetSquareAnalog().ToPressure(),
-                        SCP_SELECT = native.GetSelect() ? 1.0f : 0.0f,
-                        SCP_START = native.GetStart() ? 1.0f : 0.0f,
-                        SCP_PS = native.GetPs() ? 1.0f : 0.0f
+                        SCP_UP = inputReport[Ds3Axis.Up].Value.ToPressure(),
+                        SCP_RIGHT = inputReport[Ds3Axis.Right].Value.ToPressure(),
+                        SCP_DOWN = inputReport[Ds3Axis.Down].Value.ToPressure(),
+                        SCP_LEFT = inputReport[Ds3Axis.Left].Value.ToPressure(),
+                        SCP_LX = inputReport[Ds3Axis.Lx].Value,
+                        SCP_LY = inputReport[Ds3Axis.Ly].Value,
+                        SCP_L1 = inputReport[Ds3Axis.L1].Value.ToPressure(),
+                        SCP_L2 = inputReport[Ds3Axis.L2].Value.ToPressure(),
+                        SCP_L3 = inputReport[Ds3Button.L3].IsPressed ? 1.0f : 0.0f,
+                        SCP_RX = inputReport[Ds3Axis.Rx].Value,
+                        SCP_RY = inputReport[Ds3Axis.Ry].Value,
+                        SCP_R1 = inputReport[Ds3Axis.R1].Value.ToPressure(),
+                        SCP_R2 = inputReport[Ds3Axis.R2].Value.ToPressure(),
+                        SCP_R3 = inputReport[Ds3Button.R3].IsPressed ? 1.0f : 0.0f,
+                        SCP_T = inputReport[Ds3Axis.Triangle].Value.ToPressure(),
+                        SCP_C = inputReport[Ds3Axis.Circle].Value.ToPressure(),
+                        SCP_X = inputReport[Ds3Axis.Cross].Value.ToPressure(),
+                        SCP_S = inputReport[Ds3Axis.Square].Value.ToPressure(),
+                        SCP_SELECT = inputReport[Ds3Button.Select].IsPressed ? 1.0f : 0.0f,
+                        SCP_START = inputReport[Ds3Button.Start].IsPressed ? 1.0f : 0.0f,
+                        SCP_PS = inputReport[Ds3Button.Ps].IsPressed ? 1.0f : 0.0f
                     };
                     break;
                     // TODO: implement DS4 and Generic
@@ -89,7 +90,7 @@ namespace ScpControl
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly IDictionary<DsPadId, DsPacket> _packetCache = new Dictionary<DsPadId, DsPacket>();
+        private readonly IDictionary<DsPadId, ScpHidReport> _packetCache = new Dictionary<DsPadId, ScpHidReport>();
 
         private XmlDocument _xmlMap = new XmlDocument();
 
@@ -312,9 +313,7 @@ namespace ScpControl
                         if (buffer.Length <= 0)
                             return;
 
-                        var packet = new DsPacket();
-
-                        OnFeedPacketReceived(packet.Load(buffer));
+                        OnFeedPacketReceived(new ScpHidReport(buffer));
                     });
 
                     _rxFeedClient.ConnectAsync();
@@ -379,7 +378,7 @@ namespace ScpControl
 
         #region Public events
 
-        public event EventHandler<DsPacket> NativeFeedReceived;
+        public event EventHandler<ScpHidReport> NativeFeedReceived;
 
         public event EventHandler<EventArgs> RootHubDisconnected;
 
@@ -387,9 +386,9 @@ namespace ScpControl
 
         #region Event methods
 
-        private void OnFeedPacketReceived(DsPacket data)
+        private void OnFeedPacketReceived(ScpHidReport data)
         {
-            _packetCache[data.Detail.Pad] = data;
+            _packetCache[data.PadId] = data;
 
             if (NativeFeedReceived != null)
             {
