@@ -570,7 +570,7 @@ namespace ScpControl
 
             ScpPlugins.Instance.Process(e);
 
-            _scpBus.Parse(e.RawBytes, report, model);
+            _scpBus.Parse(e, report, model);
 
             if (_scpBus.Report(report, rumble) && (DsState)e.RawBytes[1] == DsState.Connected)
             {
