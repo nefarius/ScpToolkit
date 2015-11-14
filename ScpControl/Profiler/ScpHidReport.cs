@@ -55,66 +55,9 @@ namespace ScpControl.Profiler
             Set(button, false);
         }
 
-        [Obsolete]
-        public void SetPacketCounter(uint packet)
-        {
-            RawBytes[4] = (byte) (packet >> 0 & 0xFF);
-            RawBytes[5] = (byte) (packet >> 8 & 0xFF);
-            RawBytes[6] = (byte) (packet >> 16 & 0xFF);
-            RawBytes[7] = (byte) (packet >> 24 & 0xFF);
-        }
-
         public byte SetBatteryStatus(DsBattery battery)
         {
             return RawBytes[2] = (byte) battery;
-        }
-
-        [Obsolete]
-        public void SetTriangleDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 4);
-        }
-
-        [Obsolete]
-        public void SetCircleDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 5);
-        }
-
-        [Obsolete]
-        public void SetCrossDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 6);
-        }
-
-        [Obsolete]
-        public void SetSquareDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 7);
-        }
-
-        [Obsolete]
-        public void SetDpadRightDigital(bool input)
-        {
-            RawBytes[10] |= (byte) (input ? 0x20 : 0x00);
-        }
-
-        [Obsolete]
-        public void SetDpadLeftDigital(bool input)
-        {
-            RawBytes[10] |= (byte) (input ? 0x80 : 0x00);
-        }
-
-        [Obsolete]
-        public void SetDpadUpDigital(bool input)
-        {
-            RawBytes[10] |= (byte) (input ? 0x10 : 0x00);
-        }
-
-        [Obsolete]
-        public void SetDpadDownDigital(bool input)
-        {
-            RawBytes[10] |= (byte) (input ? 0x40 : 0x00);
         }
 
         public void ZeroShoulderButtonsState()
@@ -130,48 +73,6 @@ namespace ScpControl.Profiler
         public void ZeroPsButtonState()
         {
             RawBytes[12] = 0x00;
-        }
-
-        [Obsolete]
-        public void SetSelect(int input)
-        {
-            RawBytes[10] |= (byte) (input & 1);
-        }
-
-        [Obsolete]
-        public void SetStart(int input)
-        {
-            RawBytes[10] |= (byte) ((input & 1) << 3);
-        }
-
-        [Obsolete]
-        public void SetPs(int input)
-        {
-            RawBytes[12] |= (byte) (input & 1);
-        }
-
-        [Obsolete]
-        public void SetLeftShoulderDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 2);
-        }
-
-        [Obsolete]
-        public void SetRightShoulderDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 3);
-        }
-
-        [Obsolete]
-        public void SetLeftTriggerDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 0);
-        }
-
-        [Obsolete]
-        public void SetRightTriggerDigital(int input)
-        {
-            RawBytes[11] |= (byte) ((input & 1) << 1);
         }
 
         public void SetLeftShoulderAnalog(byte input)
@@ -212,18 +113,6 @@ namespace ScpControl.Profiler
         public void SetSquareAnalog(byte input)
         {
             RawBytes[33] = input;
-        }
-
-        [Obsolete]
-        public void SetLeftThumb(int input)
-        {
-            RawBytes[10] |= (byte) ((input & 1) << 1);
-        }
-
-        [Obsolete]
-        public void SetRightThumb(int input)
-        {
-            RawBytes[10] |= (byte) ((input & 1) << 2);
         }
 
         public void SetLeftAxisY(byte input)

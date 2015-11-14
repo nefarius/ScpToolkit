@@ -1,4 +1,5 @@
 ﻿using ScpControl.ScpCore;
+using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads
 {
@@ -8,11 +9,7 @@ namespace ScpControl.Usb.Gamepads
         {
             if (report[5] != 0x00) return;
 
-            if (PacketCounter++ + 1 < PacketCounter)
-            {
-                Log.WarnFormat("Packet counter rolled over ({0}), resetting to 0", PacketCounter);
-                PacketCounter = 0;
-            }
+            PacketCounter++;
 
             #region HID Report translation
 
@@ -20,30 +17,30 @@ namespace ScpControl.Usb.Gamepads
             m_BatteryStatus = InputReport.SetBatteryStatus(DsBattery.None);
 
             // packet counter
-            InputReport.SetPacketCounter(PacketCounter);
+            InputReport.PacketCounter = PacketCounter;
 
-            InputReport.SetCircleDigital(report[6] >> 5);
-            InputReport.SetCrossDigital(report[6] >> 6);
-            InputReport.SetTriangleDigital(report[6] >> 4);
-            InputReport.SetSquareDigital(report[6] >> 7);
+            InputReport.Set(Ds3Button.Triangle, IsBitSet(report[6], 4));
+            InputReport.Set(Ds3Button.Circle, IsBitSet(report[6], 5));
+            InputReport.Set(Ds3Button.Cross, IsBitSet(report[6], 6));
+            InputReport.Set(Ds3Button.Square, IsBitSet(report[6], 7));
 
-            InputReport.SetSelect(report[7] >> 4);
-            InputReport.SetStart(report[7] >> 5);
+            InputReport.Set(Ds3Button.Select, IsBitSet(report[7], 4));
+            InputReport.Set(Ds3Button.Start, IsBitSet(report[7], 5));
 
-            InputReport.SetDpadUpDigital(report[4] == 0x00);
-            InputReport.SetDpadRightDigital(report[3] == 0xFF);
-            InputReport.SetDpadDownDigital(report[4] == 0xFF);
-            InputReport.SetDpadLeftDigital(report[3] == 0x00);
+            InputReport.Set(Ds3Button.Up, (report[4] == 0x00));
+            InputReport.Set(Ds3Button.Right, (report[3] == 0xFF));
+            InputReport.Set(Ds3Button.Down, (report[4] == 0xFF));
+            InputReport.Set(Ds3Button.Left, (report[3] == 0x00));
 
-            InputReport.SetLeftShoulderDigital(report[7] >> 0);
-            InputReport.SetRightShoulderDigital(report[7] >> 1);
-            InputReport.SetLeftTriggerDigital(report[7] >> 2);
-            InputReport.SetRightTriggerDigital(report[7] >> 3);
+            InputReport.Set(Ds3Button.L1, IsBitSet(report[7], 0));
+            InputReport.Set(Ds3Button.R1, IsBitSet(report[7], 1));
+            InputReport.Set(Ds3Button.L2, IsBitSet(report[7], 2));
+            InputReport.Set(Ds3Button.R2, IsBitSet(report[7], 3));
 
-            InputReport.SetLeftThumb(report[7] >> 6);
-            InputReport.SetRightThumb(report[7] >> 7);
+            InputReport.Set(Ds3Button.L3, IsBitSet(report[7], 6));
+            InputReport.Set(Ds3Button.R3, IsBitSet(report[7], 7));
             
-            // TODO: dafuq?!
+            // TODO: the PS-button is dead according to the report:
             // http://forums.pcsx2.net/attachment.php?aid=57420
 
             #endregion

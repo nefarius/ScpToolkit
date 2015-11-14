@@ -1,4 +1,5 @@
 ﻿using ScpControl.ScpCore;
+using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads
 {
@@ -23,7 +24,7 @@ namespace ScpControl.Usb.Gamepads
             m_BatteryStatus = InputReport.SetBatteryStatus(DsBattery.None);
 
             // packet counter
-            InputReport.SetPacketCounter(PacketCounter);
+            InputReport.PacketCounter = PacketCounter;
 
             // null button states
             InputReport.ZeroPsButtonState();
@@ -31,37 +32,37 @@ namespace ScpControl.Usb.Gamepads
             InputReport.ZeroShoulderButtonsState();
 
             // control buttons
-            InputReport.SetSelect(report[6] >> 4);
-            InputReport.SetStart(report[6] >> 5);
+            InputReport.Set(Ds3Button.Select, IsBitSet(report[6], 4));
+            InputReport.Set(Ds3Button.Start, IsBitSet(report[6], 5));
 
             // Left shoulder
-            InputReport.SetLeftShoulderDigital(report[6] >> 0);
+            InputReport.Set(Ds3Button.L1, IsBitSet(report[6], 0));
 
             // Right shoulder
-            InputReport.SetRightShoulderDigital(report[6] >> 1);
+            InputReport.Set(Ds3Button.R1, IsBitSet(report[6], 1));
 
             // Left trigger
-            InputReport.SetLeftTriggerDigital(report[6] >> 2);
+            InputReport.Set(Ds3Button.L2, IsBitSet(report[6], 2));
 
             // Right trigger
-            InputReport.SetRightTriggerDigital(report[6] >> 3);
+            InputReport.Set(Ds3Button.R2, IsBitSet(report[6], 3));
 
             // Triangle
-            InputReport.SetTriangleDigital(report[5] >> 4);
+            InputReport.Set(Ds3Button.Triangle, IsBitSet(report[5], 4));
 
             // Circle
-            InputReport.SetCircleDigital(report[5] >> 5);
+            InputReport.Set(Ds3Button.Circle, IsBitSet(report[5], 5));
 
             // Cross
-            InputReport.SetCrossDigital(report[5] >> 6);
+            InputReport.Set(Ds3Button.Cross, IsBitSet(report[5], 6));
 
             // Square
-            InputReport.SetSquareDigital(report[5] >> 7);
+            InputReport.Set(Ds3Button.Square, IsBitSet(report[5], 7));
 
             // Left thumb
-            InputReport.SetLeftThumb(report[6] >> 6);
+            InputReport.Set(Ds3Button.L3, IsBitSet(report[6], 6));
             // Right thumb
-            InputReport.SetRightThumb(report[6] >> 7);
+            InputReport.Set(Ds3Button.R3, IsBitSet(report[6], 7));
 
             var dPad = (byte)(report[5] & ~0xF0);
 
@@ -69,32 +70,32 @@ namespace ScpControl.Usb.Gamepads
             switch (dPad)
             {
                 case 0:
-                    InputReport.SetDpadUpDigital(true);
+                    InputReport.Set(Ds3Button.Up);
                     break;
                 case 1:
-                    InputReport.SetDpadUpDigital(true);
-                    InputReport.SetDpadRightDigital(true);
+                    InputReport.Set(Ds3Button.Up);
+                    InputReport.Set(Ds3Button.Right);
                     break;
                 case 2:
-                    InputReport.SetDpadRightDigital(true);
+                    InputReport.Set(Ds3Button.Right);
                     break;
                 case 3:
-                    InputReport.SetDpadRightDigital(true);
-                    InputReport.SetDpadDownDigital(true);
+                    InputReport.Set(Ds3Button.Right);
+                    InputReport.Set(Ds3Button.Down);
                     break;
                 case 4:
-                    InputReport.SetDpadDownDigital(true);
+                    InputReport.Set(Ds3Button.Down);
                     break;
                 case 5:
-                    InputReport.SetDpadDownDigital(true);
-                    InputReport.SetDpadLeftDigital(true);
+                    InputReport.Set(Ds3Button.Down);
+                    InputReport.Set(Ds3Button.Left);
                     break;
                 case 6:
-                    InputReport.SetDpadLeftDigital(true);
+                    InputReport.Set(Ds3Button.Left);
                     break;
                 case 7:
-                    InputReport.SetDpadLeftDigital(true);
-                    InputReport.SetDpadUpDigital(true);
+                    InputReport.Set(Ds3Button.Left);
+                    InputReport.Set(Ds3Button.Up);
                     break;
             }
 
