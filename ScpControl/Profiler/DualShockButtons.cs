@@ -132,7 +132,9 @@
                 return new Ds3Button("L3")
                 {
                     Offset = 1 << 1,
-                    DisplayName = "Left thumb"
+                    DisplayName = "Left thumb",
+                    ArrayIndex = 10,
+                    MaskOffset = 1
                 };
             }
         }
@@ -144,7 +146,9 @@
                 return new Ds3Button("R3")
                 {
                     Offset = 1 << 2,
-                    DisplayName = "Right thumb"
+                    DisplayName = "Right thumb",
+                    ArrayIndex = 10,
+                    MaskOffset = 2
                 };
             }
         }

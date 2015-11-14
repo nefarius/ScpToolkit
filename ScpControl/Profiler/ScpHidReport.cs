@@ -214,11 +214,13 @@ namespace ScpControl.Profiler
             RawBytes[33] = input;
         }
 
+        [Obsolete]
         public void SetLeftThumb(int input)
         {
             RawBytes[10] |= (byte) ((input & 1) << 1);
         }
 
+        [Obsolete]
         public void SetRightThumb(int input)
         {
             RawBytes[10] |= (byte) ((input & 1) << 2);
