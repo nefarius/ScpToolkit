@@ -1,4 +1,5 @@
 ﻿using ScpControl.ScpCore;
+using Ds3Axis = ScpControl.Profiler.Ds3Axis;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads
@@ -82,12 +83,12 @@ namespace ScpControl.Usb.Gamepads
             InputReport.Set(Ds3Button.L3, IsBitSet(report[6], 6));
             InputReport.Set(Ds3Button.R3, IsBitSet(report[6], 7));
 
-            InputReport.SetLeftAxisX(report[3]);
-            InputReport.SetLeftAxisY(report[4]);
+            InputReport.Set(Ds3Axis.Lx, report[3]);
+            InputReport.Set(Ds3Axis.Ly, report[4]);
 
-            InputReport.SetRightAxisX(report[1]);
-            InputReport.SetRightAxisY(report[2]);
-
+            InputReport.Set(Ds3Axis.Rx, report[1]);
+            InputReport.Set(Ds3Axis.Ry, report[2]);
+            
             #endregion
 
             OnHidReportReceived();

@@ -1,4 +1,5 @@
 ﻿using ScpControl.ScpCore;
+using Ds3Axis = ScpControl.Profiler.Ds3Axis;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads
@@ -60,10 +61,10 @@ namespace ScpControl.Usb.Gamepads
                     InputReport.Set(Ds3Button.Left, (report[1] == 0x00));
 
                     // mode 1 doesn't report the thumb sticks
-                    InputReport.SetLeftAxisX(0x80);
-                    InputReport.SetLeftAxisY(0x80);
-                    InputReport.SetRightAxisX(0x80);
-                    InputReport.SetRightAxisY(0x80);
+                    InputReport.Set(Ds3Axis.Lx, 0x80);
+                    InputReport.Set(Ds3Axis.Ly, 0x80);
+                    InputReport.Set(Ds3Axis.Rx, 0x80);
+                    InputReport.Set(Ds3Axis.Ry, 0x80);
                 }
                     break;
                 case 0x40: // mode 2
@@ -102,11 +103,11 @@ namespace ScpControl.Usb.Gamepads
                             break;
                     }
 
-                    InputReport.SetLeftAxisX(report[1]);
-                    InputReport.SetLeftAxisY(report[2]);
+                    InputReport.Set(Ds3Axis.Lx, report[1]);
+                    InputReport.Set(Ds3Axis.Ly, report[2]);
 
-                    InputReport.SetRightAxisX(report[4]);
-                    InputReport.SetRightAxisY(report[5]);
+                    InputReport.Set(Ds3Axis.Rx, report[4]);
+                    InputReport.Set(Ds3Axis.Ry, report[5]);
                 }
                     break;
             }

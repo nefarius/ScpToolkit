@@ -1,4 +1,5 @@
 ﻿using ScpControl.ScpCore;
+using Ds3Axis = ScpControl.Profiler.Ds3Axis;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads
@@ -49,10 +50,10 @@ namespace ScpControl.Usb.Gamepads
             InputReport.Set(Ds3Button.Down, (report[5] == 0xFF)); // D-Pad down
 
             // This device has no thumb sticks, center axes
-            InputReport.SetLeftAxisY(0x80);
-            InputReport.SetLeftAxisX(0x80);
-            InputReport.SetRightAxisY(0x80);
-            InputReport.SetRightAxisX(0x80);
+            InputReport.Set(Ds3Axis.Lx, 0x80);
+            InputReport.Set(Ds3Axis.Ly, 0x80);
+            InputReport.Set(Ds3Axis.Rx, 0x80);
+            InputReport.Set(Ds3Axis.Ry, 0x80);
 
             #endregion
 

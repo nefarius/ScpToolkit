@@ -30,35 +30,35 @@ namespace ScpControl.Usb.Ds3.Replica
 
             // Left shoulder
             InputReport.Set(Ds3Button.L1, IsBitSet(report[0], 4));
-            InputReport.SetLeftShoulderAnalog(report[15]);
+            InputReport.Set(Ds3Axis.L1, report[15]);
 
             // Right shoulder
             InputReport.Set(Ds3Button.R1, IsBitSet(report[0], 5));
-            InputReport.SetRightShoulderAnalog(report[16]);
+            InputReport.Set(Ds3Axis.R1, report[16]);
 
             // Left trigger
             InputReport.Set(Ds3Button.L2, IsBitSet(report[0], 6));
-            InputReport.SetLeftTriggerAnalog(report[17]);
+            InputReport.Set(Ds3Axis.L2, report[17]);
 
             // Right trigger
             InputReport.Set(Ds3Button.R2, IsBitSet(report[0], 7));
-            InputReport.SetRightTriggerAnalog(report[18]);
+            InputReport.Set(Ds3Axis.R2, report[18]);
 
             // Triangle
             InputReport.Set(Ds3Button.Triangle, IsBitSet(report[0], 3));
-            InputReport.SetTriangleAnalog(report[11]);
+            InputReport.Set(Ds3Axis.Triangle, report[11]);
 
             // Circle
             InputReport.Set(Ds3Button.Circle, IsBitSet(report[0], 2));
-            InputReport.SetCircleAnalog(report[12]);
+            InputReport.Set(Ds3Axis.Circle, report[12]);
 
             // Cross
             InputReport.Set(Ds3Button.Cross, IsBitSet(report[0], 1));
-            InputReport.SetCrossAnalog(report[13]);
+            InputReport.Set(Ds3Axis.Cross, report[13]);
 
             // Square
             InputReport.Set(Ds3Button.Square, IsBitSet(report[0], 0));
-            InputReport.SetSquareAnalog(report[14]);
+            InputReport.Set(Ds3Axis.Square, report[14]);
 
             // Left thumb
             InputReport.Set(Ds3Button.L3, IsBitSet(report[1], 2));
@@ -102,12 +102,12 @@ namespace ScpControl.Usb.Ds3.Replica
             }
 
             // Left thumb stick
-            InputReport.SetLeftAxisY(report[4]);
-            InputReport.SetLeftAxisX(report[3]);
+            InputReport.Set(Ds3Axis.Lx, report[3]);
+            InputReport.Set(Ds3Axis.Ly, report[4]);
 
             // Right thumb stick
-            InputReport.SetRightAxisY(report[6]);
-            InputReport.SetRightAxisX(report[5]);
+            InputReport.Set(Ds3Axis.Rx, report[5]);
+            InputReport.Set(Ds3Axis.Ry, report[6]);
 
             #endregion
 

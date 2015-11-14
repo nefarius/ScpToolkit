@@ -55,6 +55,25 @@ namespace ScpControl.Profiler
             Set(button, false);
         }
 
+        /// <summary>
+        ///     Sets the value of an analog axis.
+        /// </summary>
+        /// <param name="axis">The axis of the current report to manipulate.</param>
+        /// <param name="value">The value to set the axis to.</param>
+        public void Set(IDsAxis axis, byte value)
+        {
+            RawBytes[axis.Offset] = value;
+        }
+
+        /// <summary>
+        ///     Sets the value of an analog axis to it's default value.
+        /// </summary>
+        /// <param name="axis">The axis of the current report to manipulate.</param>
+        public void Unset(IDsAxis axis)
+        {
+            RawBytes[axis.Offset] = axis.DefaultValue;
+        }
+
         public byte SetBatteryStatus(DsBattery battery)
         {
             return RawBytes[2] = (byte) battery;
@@ -73,66 +92,6 @@ namespace ScpControl.Profiler
         public void ZeroPsButtonState()
         {
             RawBytes[12] = 0x00;
-        }
-
-        public void SetLeftShoulderAnalog(byte input)
-        {
-            RawBytes[28] = input;
-        }
-
-        public void SetRightShoulderAnalog(byte input)
-        {
-            RawBytes[29] = input;
-        }
-
-        public void SetLeftTriggerAnalog(byte input)
-        {
-            RawBytes[26] = input;
-        }
-
-        public void SetRightTriggerAnalog(byte input)
-        {
-            RawBytes[27] = input;
-        }
-
-        public void SetTriangleAnalog(byte input)
-        {
-            RawBytes[30] = input;
-        }
-
-        public void SetCircleAnalog(byte input)
-        {
-            RawBytes[31] = input;
-        }
-
-        public void SetCrossAnalog(byte input)
-        {
-            RawBytes[32] = input;
-        }
-
-        public void SetSquareAnalog(byte input)
-        {
-            RawBytes[33] = input;
-        }
-
-        public void SetLeftAxisY(byte input)
-        {
-            RawBytes[15] = input;
-        }
-
-        public void SetLeftAxisX(byte input)
-        {
-            RawBytes[14] = input;
-        }
-
-        public void SetRightAxisY(byte input)
-        {
-            RawBytes[17] = input;
-        }
-
-        public void SetRightAxisX(byte input)
-        {
-            RawBytes[16] = input;
         }
 
         #endregion
