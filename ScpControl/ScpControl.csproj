@@ -175,6 +175,7 @@
     <Compile Include="Profiler\DualShockTrackPad.cs" />
     <Compile Include="Profiler\ScpHidReport.cs" />
     <Compile Include="Profiler\DualShockProfile.cs" />
+    <Compile Include="Profiler\VirtualMouse.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

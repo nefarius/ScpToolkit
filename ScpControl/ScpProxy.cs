@@ -13,7 +13,6 @@ using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
-using ScpControl.Shared.Utilities;
 using ScpControl.Shared.XInput;
 using ScpControl.Wcf;
 using Ds3Axis = ScpControl.Profiler.Ds3Axis;
@@ -52,27 +51,27 @@ namespace ScpControl
                     // translate and wrap button/axis information
                     extended = new SCP_EXTN
                     {
-                        SCP_UP = inputReport[Ds3Axis.Up].Value.ToPressure(),
-                        SCP_RIGHT = inputReport[Ds3Axis.Right].Value.ToPressure(),
-                        SCP_DOWN = inputReport[Ds3Axis.Down].Value.ToPressure(),
-                        SCP_LEFT = inputReport[Ds3Axis.Left].Value.ToPressure(),
+                        SCP_UP = inputReport[Ds3Axis.Up].Pressure,
+                        SCP_RIGHT = inputReport[Ds3Axis.Right].Pressure,
+                        SCP_DOWN = inputReport[Ds3Axis.Down].Pressure,
+                        SCP_LEFT = inputReport[Ds3Axis.Left].Pressure,
                         SCP_LX = inputReport[Ds3Axis.Lx].Value,
                         SCP_LY = inputReport[Ds3Axis.Ly].Value,
-                        SCP_L1 = inputReport[Ds3Axis.L1].Value.ToPressure(),
-                        SCP_L2 = inputReport[Ds3Axis.L2].Value.ToPressure(),
-                        SCP_L3 = inputReport[Ds3Button.L3].IsPressed ? 1.0f : 0.0f,
+                        SCP_L1 = inputReport[Ds3Axis.L1].Pressure,
+                        SCP_L2 = inputReport[Ds3Axis.L2].Pressure,
+                        SCP_L3 = inputReport[Ds3Button.L3].Pressure,
                         SCP_RX = inputReport[Ds3Axis.Rx].Value,
                         SCP_RY = inputReport[Ds3Axis.Ry].Value,
-                        SCP_R1 = inputReport[Ds3Axis.R1].Value.ToPressure(),
-                        SCP_R2 = inputReport[Ds3Axis.R2].Value.ToPressure(),
-                        SCP_R3 = inputReport[Ds3Button.R3].IsPressed ? 1.0f : 0.0f,
-                        SCP_T = inputReport[Ds3Axis.Triangle].Value.ToPressure(),
-                        SCP_C = inputReport[Ds3Axis.Circle].Value.ToPressure(),
-                        SCP_X = inputReport[Ds3Axis.Cross].Value.ToPressure(),
-                        SCP_S = inputReport[Ds3Axis.Square].Value.ToPressure(),
-                        SCP_SELECT = inputReport[Ds3Button.Select].IsPressed ? 1.0f : 0.0f,
-                        SCP_START = inputReport[Ds3Button.Start].IsPressed ? 1.0f : 0.0f,
-                        SCP_PS = inputReport[Ds3Button.Ps].IsPressed ? 1.0f : 0.0f
+                        SCP_R1 = inputReport[Ds3Axis.R1].Pressure,
+                        SCP_R2 = inputReport[Ds3Axis.R2].Pressure,
+                        SCP_R3 = inputReport[Ds3Button.R3].Pressure,
+                        SCP_T = inputReport[Ds3Axis.Triangle].Pressure,
+                        SCP_C = inputReport[Ds3Axis.Circle].Pressure,
+                        SCP_X = inputReport[Ds3Axis.Cross].Pressure,
+                        SCP_S = inputReport[Ds3Axis.Square].Pressure,
+                        SCP_SELECT = inputReport[Ds3Button.Select].Pressure,
+                        SCP_START = inputReport[Ds3Button.Start].Pressure,
+                        SCP_PS = inputReport[Ds3Button.Ps].Pressure
                     };
                     break;
                     // TODO: implement DS4 and Generic

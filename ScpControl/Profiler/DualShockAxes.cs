@@ -7,6 +7,7 @@
     {
         byte Value { get; set; }
         bool IsEngaged { get; set; }
+        float Pressure { get; }
     }
 
     /// <summary>
@@ -28,6 +29,17 @@
         ///     True if the current value differs from the default value of the axis, false otherwise.
         /// </summary>
         public bool IsEngaged { get; set; }
+
+        /// <summary>
+        ///     Gets the pressure value of the current button compatible with PCSX2s XInput/LilyPad mod.
+        /// </summary>
+        public float Pressure
+        {
+            get
+            {
+                return (Value & 0xFF) / 255.0f;
+            }
+        }
     }
 
     /// <summary>

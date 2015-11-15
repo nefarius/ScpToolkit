@@ -38,7 +38,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
-    <Compile Include="Utilities\NativeFeedExtensions.cs" />
     <Compile Include="XInput\ScpXInputExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

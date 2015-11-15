@@ -8,6 +8,7 @@
     public interface IDsButtonState
     {
         bool IsPressed { get; set; }
+        float Pressure { get; }
     }
 
     /// <summary>
@@ -34,6 +35,15 @@
         ///     True if the button in question is currently pressed, false if it's released.
         /// </summary>
         public bool IsPressed { get; set; }
+
+        /// <summary>
+        ///     Gets the pressure value of the current button compatible with PCSX2s XInput/LilyPad mod.
+        /// </summary>
+        /// <remarks>This is just a boolean to float conversion.</remarks>
+        public float Pressure
+        {
+            get { return IsPressed ? 1.0f : 0.0f; }
+        }
     }
 
     /// <summary>
