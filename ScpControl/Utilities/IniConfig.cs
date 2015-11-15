@@ -63,6 +63,17 @@ namespace ScpControl.Utilities
                     DeviceGuid = ini.Sections["Bluetooth Dongles"].Keys["DeviceGuid"].Value,
                     HardwareIds = ini.Sections["Bluetooth Dongles"].Keys.Where(k => k.Name == "HardwareId").Select(v => v.Value)
                 };
+
+                BthChipManufacturers = new List<BthChipManufacturerCfg>();
+
+                foreach (var key in ini.Sections["Bluetooth Chip Manufacturers"].Keys)
+                {
+                    BthChipManufacturers.Add(new BthChipManufacturerCfg()
+                    {
+                        Name = key.Name,
+                        PartialMacAddress = key.Value
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -79,6 +90,7 @@ namespace ScpControl.Utilities
         public Ds3DriverCfg Ds3Driver { get; private set; }
         public Ds4DriverCfg Ds4Driver { get; private set; }
         public BthDongleDriverCfg BthDongleDriver { get; private set; }
+        public IList<BthChipManufacturerCfg> BthChipManufacturers { get; private set; }
 
         public class HciCfg
         {
@@ -102,6 +114,12 @@ namespace ScpControl.Utilities
         {
             public string DeviceGuid { get; set; }
             public IEnumerable<string> HardwareIds { get; set; }
+        }
+
+        public class BthChipManufacturerCfg
+        {
+            public string Name { get; set; }
+            public string PartialMacAddress { get; set; }
         }
     }
 }

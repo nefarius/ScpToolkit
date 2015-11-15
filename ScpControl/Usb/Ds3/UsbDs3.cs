@@ -109,7 +109,19 @@ namespace ScpControl.Usb.Ds3
                 if (!IniConfig.Instance.Hci.GenuineMacAddresses.Any(m => m_Mac.StartsWith(m)))
                 {
                     Log.InfoFormat("-- Fake DualShock detected [{0}]", m_Mac);
-                    IsFake = true;
+
+                    var bthCompany = IniConfig.Instance.BthChipManufacturers.FirstOrDefault(
+                        m => m_Mac.ToUpper().StartsWith(m.PartialMacAddress.ToUpper()));
+
+                    if (bthCompany != null && bthCompany.Name.Equals("AirohaTechnologyCorp"))
+                    {
+                        Log.InfoFormat("Controller uses Bluetooth chip by Airoha Technology Corp., suppressing workaround");
+                        IsFake = false;
+                    }
+                    else
+                    {
+                        IsFake = true;
+                    }
                 }
             }
 
