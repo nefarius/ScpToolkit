@@ -18,6 +18,8 @@ using ScpControl.Shared.XInput;
 using ScpControl.Wcf;
 using Ds3Axis = ScpControl.Profiler.Ds3Axis;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
+using Ds4Axis = ScpControl.Profiler.Ds4Axis;
+using Ds4Button = ScpControl.Profiler.Ds4Button;
 
 namespace ScpControl
 {
@@ -75,7 +77,32 @@ namespace ScpControl
                         SCP_PS = inputReport[Ds3Button.Ps].Pressure
                     };
                     break;
-                    // TODO: implement DS4 and Generic
+                case DsModel.DS4:
+                    extended = new SCP_EXTN
+                    {
+                        SCP_UP = inputReport[Ds4Button.Up].Pressure,
+                        SCP_RIGHT = inputReport[Ds4Button.Right].Pressure,
+                        SCP_DOWN = inputReport[Ds4Button.Down].Pressure,
+                        SCP_LEFT = inputReport[Ds4Button.Left].Pressure,
+                        SCP_LX = inputReport[Ds4Axis.Lx].Value,
+                        SCP_LY = inputReport[Ds4Axis.Ly].Value,
+                        SCP_L1 = inputReport[Ds4Button.L1].Pressure,
+                        SCP_L2 = inputReport[Ds4Axis.L2].Pressure,
+                        SCP_L3 = inputReport[Ds4Button.L3].Pressure,
+                        SCP_RX = inputReport[Ds4Axis.Rx].Value,
+                        SCP_RY = inputReport[Ds4Axis.Ry].Value,
+                        SCP_R1 = inputReport[Ds4Button.R1].Pressure,
+                        SCP_R2 = inputReport[Ds4Axis.R2].Pressure,
+                        SCP_R3 = inputReport[Ds4Button.R3].Pressure,
+                        SCP_T = inputReport[Ds4Button.Triangle].Pressure,
+                        SCP_C = inputReport[Ds4Button.Circle].Pressure,
+                        SCP_X = inputReport[Ds4Button.Cross].Pressure,
+                        SCP_S = inputReport[Ds4Button.Square].Pressure,
+                        SCP_SELECT = inputReport[Ds4Button.Share].Pressure,
+                        SCP_START = inputReport[Ds4Button.Options].Pressure,
+                        SCP_PS = inputReport[Ds4Button.Ps].Pressure
+                    };
+                    break;
             }
 
             return extended;
