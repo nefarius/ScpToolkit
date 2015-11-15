@@ -579,14 +579,6 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="ScpControl.Utilities.SafeList&lt;T&gt;" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="28" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>iAIQAAAAAAAAABAAAAAABAAAAAAIAAAEYAAAAAAQAQA=</HashCode>
-      <FileName>Utilities\SafeList.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
   <Class Name="ScpControl.Utilities.StringExtensions" Collapsed="true">
     <Position X="26.25" Y="7.5" Width="1.5" />
     <TypeIdentifier>

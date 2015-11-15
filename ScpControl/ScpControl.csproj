@@ -321,7 +321,6 @@
     <Compile Include="Utilities\IniConfig.cs" />
     <Compile Include="Utilities\KbmPost.cs" />
     <Compile Include="Utilities\OsInfoHelper.cs" />
-    <Compile Include="Utilities\SafeList.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ThemeUtil.cs" />
     <Compile Include="XmlMapper.cs">
