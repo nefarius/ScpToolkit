@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.ServiceModel;
-using WindowsInput;
 using Libarius.System;
 using ReactiveSockets;
 using ScpControl.Bluetooth;
@@ -22,33 +22,17 @@ using ScpControl.Usb.Ds4;
 using ScpControl.Usb.Gamepads;
 using ScpControl.Utilities;
 using ScpControl.Wcf;
-using Ds3Axis = ScpControl.Profiler.Ds3Axis;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
-using Ds4Axis = ScpControl.Profiler.Ds4Axis;
-using Ds4Button = ScpControl.Profiler.Ds4Button;
 
 namespace ScpControl
 {
     [ServiceBehavior(IncludeExceptionDetailInFaults = false, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
-        // creates a system-wide mutex to check if the root hub has been instantiated already
-        private LimitInstance _limitInstance;
-        // server to broadcast native byte stream
-        private ReactiveListener _rxFeedServer;
-        // subscribed clients who receive the native stream
-        private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers = new Dictionary<int, ScpNativeFeedChannel>();
-        private volatile bool _mSuspended;
-        // the WCF service host
-        private ServiceHost _rootHubServiceHost;
-        private bool _serviceStarted;
+        #region Private fields
+
         // Bluetooth hub
         private readonly BthHub _bthHub = new BthHub();
-        // virtual bus wrapper
-        private readonly BusDevice _scpBus = new BusDevice();
-        // USB hub
-        private readonly UsbHub _usbHub = new UsbHub();
-        private readonly Cache[] _mCache = { new Cache(), new Cache(), new Cache(), new Cache() };
+        private readonly Cache[] _mCache = {new Cache(), new Cache(), new Cache(), new Cache()};
 
         private readonly byte[][] _mNative =
         {
@@ -56,19 +40,40 @@ namespace ScpControl
             new byte[2] {0, 0}
         };
 
-        private readonly IDsDevice[] _pads =
-        {
-            new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
-            new DsNull(DsPadId.Four)
-        };
-
-        private readonly string[] _mReserved = { string.Empty, string.Empty, string.Empty, string.Empty };
+        private readonly string[] _mReserved = {string.Empty, string.Empty, string.Empty, string.Empty};
 
         private readonly byte[][] _mXInput =
         {
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
             new byte[2] {0, 0}
         };
+
+        // subscribed clients who receive the native stream
+        private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers =
+            new ConcurrentDictionary<int, ScpNativeFeedChannel>();
+
+        private readonly IDsDevice[] _pads =
+        {
+            new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
+            new DsNull(DsPadId.Four)
+        };
+
+        // virtual bus wrapper
+        private readonly BusDevice _scpBus = new BusDevice();
+        // USB hub
+        private readonly UsbHub _usbHub = new UsbHub();
+        // creates a system-wide mutex to check if the root hub has been instantiated already
+        private LimitInstance _limitInstance;
+        private volatile bool _mSuspended;
+        // the WCF service host
+        private ServiceHost _rootHubServiceHost;
+        // server to broadcast native byte stream
+        private ReactiveListener _rxFeedServer;
+        private bool _serviceStarted;
+
+        #endregion
+
+        #region IScpCommandService methods
 
         /// <summary>
         ///     Checks if the native stream is available or disabled in configuration.
@@ -103,28 +108,28 @@ namespace ScpControl
 
         public DsDetail GetPadDetail(DsPadId pad)
         {
-            var serial = (byte)pad;
+            var serial = (byte) pad;
 
             var data = new byte[11];
 
             Log.DebugFormat("Requested Pads local MAC = {0}", _pads[serial].Local);
 
             data[0] = serial;
-            data[1] = (byte)_pads[serial].State;
-            data[2] = (byte)_pads[serial].Model;
-            data[3] = (byte)_pads[serial].Connection;
-            data[4] = (byte)_pads[serial].Battery;
+            data[1] = (byte) _pads[serial].State;
+            data[2] = (byte) _pads[serial].Model;
+            data[3] = (byte) _pads[serial].Connection;
+            data[4] = (byte) _pads[serial].Battery;
 
             Buffer.BlockCopy(_pads[serial].BdAddress, 0, data, 5, _pads[serial].BdAddress.Length);
 
-            return new DsDetail((DsPadId)data[0], (DsState)data[1], (DsModel)data[2],
+            return new DsDetail((DsPadId) data[0], (DsState) data[1], (DsModel) data[2],
                 _pads[serial].Local.ToBytes().ToArray(),
-                (DsConnection)data[3], (DsBattery)data[4]);
+                (DsConnection) data[3], (DsBattery) data[4]);
         }
 
         public bool Rumble(DsPadId pad, byte large, byte small)
         {
-            var serial = (byte)pad;
+            var serial = (byte) pad;
             if (Pad[serial].State == DsState.Connected)
             {
                 if (large != _mNative[serial][0] || small != _mNative[serial][1])
@@ -171,13 +176,34 @@ namespace ScpControl
                 Pad[target] = Pad[target - 1];
                 Pad[target - 1] = swap;
 
-                Pad[target].PadId = (DsPadId)(target);
-                Pad[target - 1].PadId = (DsPadId)(target - 1);
+                Pad[target].PadId = (DsPadId) (target);
+                Pad[target - 1].PadId = (DsPadId) (target - 1);
 
                 _mReserved[target] = Pad[target].Local;
                 _mReserved[target - 1] = Pad[target - 1].Local;
             }
         }
+
+        /// <summary>
+        ///     Requests the currently active configuration set from the root hub.
+        /// </summary>
+        /// <returns>Returns the global configuration object.</returns>
+        public GlobalConfiguration RequestConfiguration()
+        {
+            return GlobalConfiguration.Request();
+        }
+
+        /// <summary>
+        ///     Submits an altered copy of the global configuration to the root hub and saves it.
+        /// </summary>
+        /// <param name="configuration">The global configuration object.</param>
+        public void SubmitConfiguration(GlobalConfiguration configuration)
+        {
+            GlobalConfiguration.Submit(configuration);
+            GlobalConfiguration.Save();
+        }
+
+        #endregion
 
         public override DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
         {
@@ -300,11 +326,13 @@ namespace ScpControl
             try
             {
                 if (!_limitInstance.IsOnlyInstance) // existing root hub running as desktop app
-                    throw new RootHubAlreadyStartedException("The root hub is already running, please close the ScpServer first!");
+                    throw new RootHubAlreadyStartedException(
+                        "The root hub is already running, please close the ScpServer first!");
             }
             catch (UnauthorizedAccessException) // existing root hub running as service
             {
-                throw new RootHubAlreadyStartedException("The root hub is already running, please stop the ScpService first!");
+                throw new RootHubAlreadyStartedException(
+                    "The root hub is already running, please stop the ScpService first!");
             }
 
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
@@ -320,15 +348,9 @@ namespace ScpControl
                 Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
                 var protocol = new ScpNativeFeedChannel(socket);
 
-                lock (this)
-                {
-                    _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
-                }
+                _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
 
-                protocol.Receiver.Subscribe(packet =>
-                {
-                    Log.Debug("Uuuhh how did we end up here?!");
-                });
+                protocol.Receiver.Subscribe(packet => { Log.Debug("Uuuhh how did we end up here?!"); });
 
                 socket.Disconnected += (sender, e) =>
                 {
@@ -336,10 +358,7 @@ namespace ScpControl
                         "Client disconnected from native feed channel {0}",
                         sender.GetHashCode());
 
-                    lock (this)
-                    {
-                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
-                    }
+                    _nativeFeedSubscribers.Remove(socket.GetHashCode());
                 };
 
                 socket.Disposed += (sender, e) =>
@@ -347,10 +366,7 @@ namespace ScpControl
                     Log.InfoFormat("Client disposed from native feed channel {0}",
                         sender.GetHashCode());
 
-                    lock (this)
-                    {
-                        _nativeFeedSubscribers.Remove(socket.GetHashCode());
-                    }
+                    _nativeFeedSubscribers.Remove(socket.GetHashCode());
                 };
             });
 
@@ -380,14 +396,14 @@ namespace ScpControl
             {
                 var baseAddress = new Uri("net.tcp://localhost:26760/ScpRootHubService");
 
-                var binding = new NetTcpBinding()
+                var binding = new NetTcpBinding
                 {
                     TransferMode = TransferMode.Streamed,
-                    Security = new NetTcpSecurity() { Mode = SecurityMode.None }
+                    Security = new NetTcpSecurity {Mode = SecurityMode.None}
                 };
 
                 _rootHubServiceHost = new ServiceHost(this, baseAddress);
-                _rootHubServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
+                _rootHubServiceHost.AddServiceEndpoint(typeof (IScpCommandService), binding, baseAddress);
 
                 _rootHubServiceHost.Open();
 
@@ -413,7 +429,7 @@ namespace ScpControl
             Log.Info("Root hub started");
 
             // make some noise =)
-            if(GlobalConfiguration.Instance.IsStartupSoundEnabled)
+            if (GlobalConfiguration.Instance.IsStartupSoundEnabled)
                 AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.StartupSoundFile);
 
             return m_Started;
@@ -533,7 +549,7 @@ namespace ScpControl
 
                         bFound = true;
 
-                        arrived.PadId = (DsPadId)index;
+                        arrived.PadId = (DsPadId) index;
                         _pads[index] = arrived;
                     }
                 }
@@ -545,7 +561,7 @@ namespace ScpControl
                         bFound = true;
                         _mReserved[index] = arrived.Local;
 
-                        arrived.PadId = (DsPadId)index;
+                        arrived.PadId = (DsPadId) index;
                         _pads[index] = arrived;
                     }
                 }
@@ -553,16 +569,16 @@ namespace ScpControl
 
             if (bFound)
             {
-                _scpBus.Plugin((int)arrived.PadId + 1);
+                _scpBus.Plugin((int) arrived.PadId + 1);
 
-                Log.InfoFormat("++ Plugin Port #{0} for [{1}]", (int)arrived.PadId + 1, arrived.Local);
+                Log.InfoFormat("++ Plugin Port #{0} for [{1}]", (int) arrived.PadId + 1, arrived.Local);
             }
             e.Handled = bFound;
         }
 
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
-            int serial = (int)e.PadId;
+            var serial = (int) e.PadId;
             var model = e.Model;
 
             var report = _mCache[serial].Report;
@@ -572,7 +588,7 @@ namespace ScpControl
 
             _scpBus.Parse(e, report, model);
 
-            if (_scpBus.Report(report, rumble) && (DsState)e.RawBytes[1] == DsState.Connected)
+            if (_scpBus.Report(report, rumble) && (DsState) e.RawBytes[1] == DsState.Connected)
             {
                 var large = rumble[3];
                 var small = rumble[4];
@@ -586,7 +602,7 @@ namespace ScpControl
                 }
             }
 
-            if ((DsState)e.RawBytes[1] != DsState.Connected)
+            if ((DsState) e.RawBytes[1] != DsState.Connected)
             {
                 _mXInput[serial][0] = _mXInput[serial][1] = 0;
                 _mNative[serial][0] = _mNative[serial][1] = 0;
@@ -596,44 +612,22 @@ namespace ScpControl
             if (GlobalConfiguration.Instance.DisableNative)
                 return;
 
-            lock (this)
+            // send native controller inputs to subscribed clients
+            foreach (
+                var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
             {
-                // send native controller inputs to subscribed clients
-                foreach (
-                    var channel in _nativeFeedSubscribers.Select(nativeFeedSubscriber => nativeFeedSubscriber.Value))
+                try
                 {
-                    try
-                    {
-                        channel.SendAsync(e.RawBytes);
-                    }
-                    catch (AggregateException)
-                    {
-                        /* This might happen if the client disconnects while sending the 
-                         * response is still in progress. The exception can be ignored. */
-                    }
+                    channel.SendAsync(e.RawBytes);
+                }
+                catch (AggregateException)
+                {
+                    /* This might happen if the client disconnects while sending the 
+                     * response is still in progress. The exception can be ignored. */
                 }
             }
         }
 
         #endregion
-
-        /// <summary>
-        ///     Requests the currently active configuration set from the root hub.
-        /// </summary>
-        /// <returns>Returns the global configuration object.</returns>
-        public GlobalConfiguration RequestConfiguration()
-        {
-            return GlobalConfiguration.Request();
-        }
-
-        /// <summary>
-        ///     Submits an altered copy of the global configuration to the root hub and saves it.
-        /// </summary>
-        /// <param name="configuration">The global configuration object.</param>
-        public void SubmitConfiguration(GlobalConfiguration configuration)
-        {
-            GlobalConfiguration.Submit(configuration);
-            GlobalConfiguration.Save();
-        }
     }
 }
