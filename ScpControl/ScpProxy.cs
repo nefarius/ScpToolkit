@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -89,7 +90,8 @@ namespace ScpControl
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private readonly IDictionary<DsPadId, ScpHidReport> _packetCache = new Dictionary<DsPadId, ScpHidReport>();
+        // caches the latest HID report for every pad in a thread-save dictionary
+        private readonly IDictionary<DsPadId, ScpHidReport> _packetCache = new ConcurrentDictionary<DsPadId, ScpHidReport>();
 
         [Obsolete]
         private XmlDocument _xmlMap = new XmlDocument();
@@ -394,7 +396,7 @@ namespace ScpControl
 
         private void OnFeedPacketReceived(ScpHidReport data)
         {
-            _packetCache[data.PadId] = data;
+            _packetCache[data.PadId] = data.CopyHidReport();
 
             if (NativeFeedReceived != null)
             {

@@ -9,7 +9,7 @@ namespace ScpControl.Profiler
     /// <summary>
     ///     Represents an extended HID Input Report ready to be sent to the virtual bus device.
     /// </summary>
-    public class ScpHidReport : EventArgs
+    public class ScpHidReport : EventArgs, ICloneable
     {
         /// <summary>
         ///     Report bytes count.
@@ -327,5 +327,15 @@ namespace ScpControl.Profiler
         }
 
         #endregion
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        public ScpHidReport CopyHidReport()
+        {
+            return (ScpHidReport) Clone();
+        }
     }
 }
