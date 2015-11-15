@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 namespace ScpControl.Utilities
 {
+    [Obsolete]
     public static class KbmPost
     {
         public enum MouseButtons

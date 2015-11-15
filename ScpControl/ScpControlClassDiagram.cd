@@ -71,7 +71,7 @@
   <Class Name="ScpControl.ScpDevice" Collapsed="true">
     <Position X="11.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EhQagIkADSICKKpB+ReIhGiSBDgkAIGQKEIFgDmoxBw=</HashCode>
+      <HashCode>EhQagIkADSICKKpB+ReIhGiSBDgkQIGQKEIFgDmoxBw=</HashCode>
       <FileName>ScpDevice.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -87,13 +87,6 @@
     <TypeIdentifier>
       <HashCode>AAAACGAAgWAAIgAAIACAAAAGACoAAAAgKBAAQQCAACA=</HashCode>
       <FileName>ScpMapper.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.ScpPadState" Collapsed="true">
-    <Position X="33.25" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AFgAAAAECCAABoAAwAKAAABCCggEYBCQAAIgAAIEEAA=</HashCode>
-      <FileName>ScpPadState.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ScpControl.ScpProxy" Collapsed="true">
@@ -627,7 +620,7 @@
   <Class Name="ScpControl.Profiler.DsButton" Collapsed="true">
     <Position X="8" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAAgAAAAAQAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAAggAAAAQAAAAgAIAAAAIAAAAAgAA=</HashCode>
       <FileName>Profiler\DualShockButtons.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -649,7 +642,7 @@
   <Class Name="ScpControl.Profiler.DsAxis" Collapsed="true">
     <Position X="2" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAAgAAAAAQAAABAAAAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAAgAAAAAQAAABAAIAAAAAAAAAAgAA=</HashCode>
       <FileName>Profiler\DualShockAxes.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -666,6 +659,13 @@
     <TypeIdentifier>
       <HashCode>AAAABAABACAACAAAAABAABAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Profiler\DualShockAxes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ScpControl.ScpPadState" Collapsed="true">
+    <Position X="33.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AFgAAAAECCAABoAAwAKAAABCCggEYBCQAAIgAAIEEAA=</HashCode>
+      <FileName>ScpPadState.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="ScpControl.Driver.KISO_PACKET" Collapsed="true">
@@ -755,7 +755,7 @@
   <Interface Name="ScpControl.Profiler.IDsButton" Collapsed="true">
     <Position X="31.5" Y="10" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAAAgAAAAQAAAAgAAAAAAIAAAAAgAA=</HashCode>
       <FileName>Profiler\DualShockButtons.cs</FileName>
     </TypeIdentifier>
   </Interface>

@@ -8,6 +8,7 @@ using ScpControl.Utilities;
 
 namespace ScpControl
 {
+    [Obsolete]
     public partial class ScpPadState : Component
     {
         protected const int Centre = 127;
@@ -40,7 +41,6 @@ namespace ScpControl
             set
             {
                 m_Proxy = value;
-                Proxy.NativeFeedReceived += Sample;
             }
         }
 
