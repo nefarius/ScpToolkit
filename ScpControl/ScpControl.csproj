@@ -172,6 +172,7 @@
     <Compile Include="Plugins\ScpPlugins.cs" />
     <Compile Include="Profiler\DualShockAxes.cs" />
     <Compile Include="Profiler\DualShockButtons.cs" />
+    <Compile Include="Profiler\DualShockMotion.cs" />
     <Compile Include="Profiler\DualShockTrackPad.cs" />
     <Compile Include="Profiler\ScpHidReport.cs" />
     <Compile Include="Profiler\DualShockProfile.cs" />
