@@ -328,6 +328,8 @@ namespace ScpControl.Profiler
 
         #endregion
 
+        #region ICloneable
+
         public object Clone()
         {
             return this.MemberwiseClone();
@@ -337,5 +339,7 @@ namespace ScpControl.Profiler
         {
             return (ScpHidReport) Clone();
         }
+
+        #endregion
     }
 }
