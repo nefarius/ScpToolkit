@@ -209,6 +209,60 @@ namespace ScpControl.Profiler
             }
         }
 
+        /// <summary>
+        ///     Gets the motion data from the DualShock accelerometer sensor.
+        /// </summary>
+        /// <remarks>https://github.com/ehd/node-ds4/blob/master/index.js</remarks>
+        public DsAccelerometer Motion
+        {
+            get
+            {
+                switch (Model)
+                {
+                    case DsModel.DS3:
+                        throw new NotImplementedException("DualShock 3 accelerometer readout not implemented yet.");
+                        break;
+                    case DsModel.DS4:
+                        return new DsAccelerometer()
+                        {
+                            Y = (short)((RawBytes[22] << 8) | RawBytes[21]),
+                            X = (short)(-((RawBytes[24] << 8) | RawBytes[23])),
+                            Z = (short)(-((RawBytes[26] << 8) | RawBytes[25]))
+                        };
+                        break;
+                }
+
+                return new DsAccelerometer();
+            }
+        }
+
+        /// <summary>
+        ///     Gets the orientation data from the DualShock gyroscope sensor.
+        /// </summary>
+        /// <remarks>https://github.com/ehd/node-ds4/blob/master/index.js</remarks>
+        public DsGyroscope Orientation
+        {
+            get
+            {
+                switch (Model)
+                {
+                    case DsModel.DS3:
+                        throw new NotImplementedException("DualShock 3 gyroscope readout not implemented yet.");
+                        break;
+                    case DsModel.DS4:
+                        return new DsGyroscope()
+                        {
+                            Roll = (short)(-((RawBytes[28] << 8) | RawBytes[27])),
+                            Yaw = (short)((RawBytes[30] << 8) | RawBytes[29]),
+                            Pitch = (short)((RawBytes[32] << 8) | RawBytes[31])
+                        };
+                        break;
+                }
+
+                return new DsGyroscope();
+            }
+        }
+
         #endregion
 
         #region DualShock 4 specific properties

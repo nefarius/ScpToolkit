@@ -576,6 +576,8 @@ namespace ScpControl
             e.Handled = bFound;
         }
 
+        private uint _counter = 0;
+
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
             var serial = (int) e.PadId;
