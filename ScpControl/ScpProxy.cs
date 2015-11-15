@@ -92,10 +92,12 @@ namespace ScpControl
 
         private readonly IDictionary<DsPadId, ScpHidReport> _packetCache = new Dictionary<DsPadId, ScpHidReport>();
 
+        [Obsolete]
         private XmlDocument _xmlMap = new XmlDocument();
 
         private IScpCommandService _rootHub;
 
+        [Obsolete]
         private readonly XmlMapper _xmlMapper = new XmlMapper();
 
         #endregion
@@ -104,6 +106,7 @@ namespace ScpControl
 
         public bool IsActive { get; private set; }
 
+        [Obsolete]
         public XmlMapper Mapper
         {
             get { return _xmlMapper; }
@@ -149,6 +152,7 @@ namespace ScpControl
             _rootHub.SubmitConfiguration(config);
         }
 
+        [Obsolete]
         public bool Save()
         {
             var saved = false;
@@ -173,6 +177,7 @@ namespace ScpControl
             return saved;
         }
 
+        [Obsolete]
         public bool Select(Profile target)
         {
             var selected = false;
@@ -217,6 +222,7 @@ namespace ScpControl
             return _rootHub.Rumble(pad, large, small);
         }
 
+        [Obsolete]
         public bool Remap(string target, DsPacket packet)
         {
             var remapped = false;
@@ -259,6 +265,7 @@ namespace ScpControl
             return remapped;
         }
 
+        [Obsolete]
         public bool SetDefault(Profile profile)
         {
             var set = true;

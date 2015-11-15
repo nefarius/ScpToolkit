@@ -39,7 +39,7 @@ namespace ScpControl.Plugins.Mapper
 
         public bool IsActive
         {
-            get { return true; }
+            get { return false; }
         }
     }
 }

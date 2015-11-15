@@ -1,4 +1,5 @@
-﻿using ScpControl.ScpCore;
+﻿using System.Net.NetworkInformation;
+using ScpControl.ScpCore;
 using Ds3Axis = ScpControl.Profiler.Ds3Axis;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
 
@@ -26,6 +27,9 @@ namespace ScpControl.Usb.Gamepads
 
             // packet counter
             InputReport.PacketCounter = PacketCounter;
+
+            // set fake MAC address
+            InputReport.PadMacAddress = PhysicalAddress.Parse(m_Mac.Replace(":", string.Empty));
 
             // null button states
             InputReport.ZeroPsButtonState();

@@ -123,6 +123,11 @@ namespace ScpControl.Profiler
                 // last 6 bytes contain the PADs MAC address
                 return new PhysicalAddress(RawBytes.Skip(Math.Max(0, RawBytes.Length - 6)).ToArray());
             }
+            set
+            {
+                if (value != null)
+                    Buffer.BlockCopy(value.GetAddressBytes(), 0, RawBytes, 90, 6);
+            }
         }
 
         public uint PacketCounter
