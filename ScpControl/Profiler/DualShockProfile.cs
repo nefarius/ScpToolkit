@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace ScpControl.Profiler
 {
@@ -14,7 +16,7 @@ namespace ScpControl.Profiler
         MouseAxis
     }
 
-    public class ButtonMappingTarget
+    public class DsButtonMappingTarget
     {
         public CommandType CommandType { get; set; }
         public object CommandTarget { get; set; }
@@ -22,22 +24,28 @@ namespace ScpControl.Profiler
 
     public class DualShockProfile
     {
+        #region Ctor
+
         public DualShockProfile()
         {
-            Ps = new DualShockButtonProfile();
-            Circle = new DualShockButtonProfile();
-            Cross = new DualShockButtonProfile();
-            Square = new DualShockButtonProfile();
-            Triangle = new DualShockButtonProfile();
-            Select = new DualShockButtonProfile();
-            Start = new DualShockButtonProfile();
-            LeftShoulder = new DualShockButtonProfile();
-            RightShoulder = new DualShockButtonProfile();
-            LeftTrigger = new DualShockButtonProfile();
-            RightTrigger = new DualShockButtonProfile();
-            LeftThumb = new DualShockButtonProfile();
-            RightThumb = new DualShockButtonProfile();
+            Ps = new DsButtonProfile();
+            Circle = new DsButtonProfile();
+            Cross = new DsButtonProfile();
+            Square = new DsButtonProfile();
+            Triangle = new DsButtonProfile();
+            Select = new DsButtonProfile();
+            Start = new DsButtonProfile();
+            LeftShoulder = new DsButtonProfile();
+            RightShoulder = new DsButtonProfile();
+            LeftTrigger = new DsButtonProfile();
+            RightTrigger = new DsButtonProfile();
+            LeftThumb = new DsButtonProfile();
+            RightThumb = new DsButtonProfile();
         }
+
+        #endregion
+
+        #region Properties
 
         public IDsButtonProfile Ps { get; set; }
         public IDsButtonProfile Circle { get; set; }
@@ -52,24 +60,46 @@ namespace ScpControl.Profiler
         public IDsButtonProfile RightTrigger { get; set; }
         public IDsButtonProfile LeftThumb { get; set; }
         public IDsButtonProfile RightThumb { get; set; }
+
+        #endregion
+
+        public static DualShockProfile Load(string file)
+        {
+            var serializer = new XmlSerializer(typeof (DualShockProfile));
+
+            using (var fs = File.OpenText(file))
+            {
+                return (DualShockProfile) serializer.Deserialize(fs);
+            }
+        }
+
+        public void Save(string file)
+        {
+            var serializer = new XmlSerializer(typeof(DualShockProfile));
+
+            using (var fs = File.CreateText(file))
+            {
+                serializer.Serialize(fs, this);
+            }
+        }
     }
 
     public interface IDsButtonProfile
     {
-        ButtonMappingTarget MappingTarget { get; set; }
+        DsButtonMappingTarget MappingTarget { get; set; }
         bool IsEnabled { get; set; }
         DsButtonProfileTurboSetting Turbo { get; set; }
     }
 
-    public class DualShockButtonProfile : IDsButtonProfile
+    public class DsButtonProfile : IDsButtonProfile
     {
-        public ButtonMappingTarget MappingTarget { get; set; }
+        public DsButtonMappingTarget MappingTarget { get; set; }
         public bool IsEnabled { get; set; }
         public DsButtonProfileTurboSetting Turbo { get; set; }
 
-        public DualShockButtonProfile()
+        public DsButtonProfile()
         {
-            MappingTarget = new ButtonMappingTarget();
+            MappingTarget = new DsButtonMappingTarget();
             Turbo = new DsButtonProfileTurboSetting();
         }
     }

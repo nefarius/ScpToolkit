@@ -63,7 +63,7 @@
   <Class Name="ScpControl.RootHub" Collapsed="true">
     <Position X="5.5" Y="12" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BgBgAACAJSEBogCAGgCAEAEGJIgQCCBYIAEAAAqgAAg=</HashCode>
+      <HashCode>BgBgAACAJSEBogCAGgCAEAEGJIgQCCBYIAEAAAqgEAg=</HashCode>
       <FileName>RootHub.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -252,7 +252,7 @@
       <FileName>Exceptions\RootHubAlreadyStartedException.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ScpControl.Profiler.ButtonMappingTarget" Collapsed="true">
+  <Class Name="ScpControl.Profiler.DsButtonMappingTarget" Collapsed="true">
     <Position X="31.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
@@ -269,7 +269,7 @@
   <Class Name="ScpControl.Profiler.DualShockProfile" Collapsed="true">
     <Position X="31.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AABAACAABCAAAAAJAAAAAAAAACgAAAAAAACgQQAAAAA=</HashCode>
       <FileName>Profiler\DualShockProfile.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -612,7 +612,7 @@
   <Class Name="ScpControl.Profiler.DsButton" Collapsed="true">
     <Position X="8" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAAggAAAAQAAAAgAIAAAAIAAAAAgAA=</HashCode>
+      <HashCode>AAAAEAAAAAAAAAAEggAAAAQAAAAgAIAAAAIAAAAAgAA=</HashCode>
       <FileName>Profiler\DualShockButtons.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

@@ -41,7 +41,7 @@ namespace ScpProfiler
 
         public ButtonMappingEntryControl()
         {
-            ButtonProfile = new DualShockButtonProfile();
+            ButtonProfile = new DsButtonProfile();
 
             InitializeComponent();
 

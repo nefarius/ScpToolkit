@@ -14,7 +14,6 @@ namespace ScpProfiler
     {
         private readonly ScpProxy _proxy = new ScpProxy();
         private DsPadId _currentPad;
-        private DualShockProfile _currentProfile = new DualShockProfile();
 
         public MainWindow()
         {
@@ -37,8 +36,11 @@ namespace ScpProfiler
         private void CurrentPad_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _currentPad = (DsPadId)((ComboBox)sender).SelectedItem;
+        }
 
-            var t = CurrentDualShockProfile;
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentDualShockProfile.Save("TEST.xml");
         }
     }
 }

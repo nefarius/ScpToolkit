@@ -17,7 +17,9 @@
         </Grid.RowDefinitions>
 
         <!-- Top navigation -->
-        <DockPanel Grid.Row="0">
+        <DockPanel Grid.Row="0" LastChildFill="False">
+            
+            <!-- Pad selection -->
             <Label Content="Pad:"
                    FontSize="18"
                    VerticalAlignment="Center" />
@@ -33,6 +35,8 @@
                 <scpCore:DsPadId>Four</scpCore:DsPadId>
                 <scpCore:DsPadId>All</scpCore:DsPadId>
             </ComboBox>
+            
+            <!-- Profile selection -->
             <Label Content="Profile:"
                    FontSize="18"
                    VerticalAlignment="Center" />
@@ -41,6 +45,9 @@
                       HorizontalAlignment="Left"
                       Margin="5"
                       Width="200" />
+            
+            <!-- Actions -->
+            <Button Margin="5" Click="SaveButton_Click">Save</Button>
         </DockPanel>
 
         <!-- Main area -->
