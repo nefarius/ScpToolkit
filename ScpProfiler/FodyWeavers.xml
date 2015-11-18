@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Weavers>
+  <PropertyChanged/>
+  <LoadAssembliesOnStartup>
+    <IncludeAssemblies>
+      WindowsBase
+    </IncludeAssemblies>
+  </LoadAssembliesOnStartup>
+  <AutoDependencyProperty/>
+</Weavers>

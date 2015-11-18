@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             xmlns:myself="clr-namespace:ScpProfiler"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:valueConverters="clr-namespace:ScpControl.Value_Converters;assembly=ScpControl"
+             xmlns:profiler="clr-namespace:ScpControl.Profiler;assembly=ScpControl"
              mc:Ignorable="d"
              MinHeight="48" MinWidth="600" Width="886">
     <UserControl.Resources>
@@ -16,7 +16,7 @@
                             ObjectType="{x:Type sys:Enum}"
                             x:Key="MyCommandTypes">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="myself:CommandTypes" />
+                <x:Type TypeName="profiler:CommandType" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
@@ -27,16 +27,17 @@
             <ColumnDefinition Width="60" />
             <ColumnDefinition Width="180" />
             <ColumnDefinition />
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100" />
             <ColumnDefinition Width="250" />
         </Grid.ColumnDefinitions>
 
         <!-- Button Icon -->
-        <Image Grid.Column="0" 
-               x:Name="ButtonImage" 
-               Width="48" 
+        <Image Grid.Column="0"
+               Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=IconSource}"
+               ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=IconToolTip}"
+               Width="48"
                HorizontalAlignment="Left"
-               VerticalAlignment="Top"/>
+               VerticalAlignment="Top" />
 
         <!-- Button/Axis signal strength -->
         <ProgressBar Grid.Column="1"
@@ -44,16 +45,16 @@
                      VerticalAlignment="Top"
                      HorizontalAlignment="Stretch"
                      Height="16" Margin="5,16"
-                     Value="50"/>
+                     Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonValue}" />
 
         <!-- Type of target command -->
         <ComboBox Grid.Column="2"
                   ToolTip="Target command type"
-                  VerticalAlignment="Top" 
+                  VerticalAlignment="Top"
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch"
-                  Margin="10,9" 
-                  ItemsSource="{Binding Source={StaticResource MyCommandTypes}}" 
+                  Margin="10,9"
+                  ItemsSource="{Binding Source={StaticResource MyCommandTypes}}"
                   SelectedIndex="0"
                   SelectionChanged="TargetTypeComboBox_OnSelectionChanged" Height="30">
             <ComboBox.ItemTemplate>
@@ -64,28 +65,29 @@
         </ComboBox>
 
         <!-- Target command -->
-        <ComboBox Grid.Column="3" 
+        <ComboBox Grid.Column="3"
                   ToolTip="Action target"
-                  x:Name="TargetCommandComboBox" 
+                  x:Name="TargetCommandComboBox"
                   VerticalAlignment="Top"
                   VerticalContentAlignment="Center"
-                  HorizontalAlignment="Stretch" 
-                  Margin="10,9" 
-                  SelectedIndex="0" Height="30"/>
+                  HorizontalAlignment="Stretch"
+                  Margin="10,9"
+                  SelectedIndex="0" Height="30"
+                  SelectionChanged="TargetCommandComboBox_SelectionChanged" />
 
         <!-- Mapping enabled? -->
-        <CheckBox Grid.Column="4" 
+        <CheckBox Grid.Column="4"
                   ToolTip="Enable/Disable mapping"
                   Content="Enabled"
-                  IsChecked="True"
-                  VerticalAlignment="Top" 
+                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.IsEnabled}"
+                  VerticalAlignment="Top"
                   VerticalContentAlignment="Center"
-                  HorizontalAlignment="Left" Height="30" Margin="0,9" Width="88"/>
-        
+                  HorizontalAlignment="Left" Height="30" Margin="0,9" Width="88" />
+
         <!-- Advanced settings -->
-        <Expander Grid.Column="5" 
-                  Header="Advanced" 
-                  IsExpanded="False" 
+        <Expander Grid.Column="5"
+                  Header="Advanced"
+                  IsExpanded="False"
                   Margin="5"
                   VerticalAlignment="Top">
             <StackPanel Margin="0,5,0,0">
@@ -93,78 +95,69 @@
                 <GroupBox>
                     <!-- Turbo checkbox -->
                     <GroupBox.Header>
-                        <CheckBox x:Name="TurboCheckBox" Content="Turbo"/>
+                        <CheckBox x:Name="TurboCheckBox"
+                                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.IsEnabled}"
+                                  Content="Turbo" />
                     </GroupBox.Header>
-                    
+
                     <!-- Turbo settings -->
                     <Grid IsEnabled="{Binding ElementName=TurboCheckBox, Path=IsChecked}">
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
-                        
+
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="80"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        
+
                         <Label Grid.Row="0" Grid.Column="0"
                                HorizontalAlignment="Right"
-                               VerticalAlignment="Center">Delay:</Label>
+                               VerticalAlignment="Center">
+                            Delay:
+                        </Label>
                         <Label Grid.Row="1" Grid.Column="0"
                                HorizontalAlignment="Right"
-                               VerticalAlignment="Center">Interval:</Label>
+                               VerticalAlignment="Center">
+                            Interval:
+                        </Label>
                         <Label Grid.Row="2" Grid.Column="0"
                                HorizontalAlignment="Right"
-                               VerticalAlignment="Center">Release:</Label>
-                        
+                               VerticalAlignment="Center">
+                            Release:
+                        </Label>
+
                         <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1"
                                             Margin="5"
                                             FormatString="N"
-                                            Value="0"/>
+                                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.Delay}" />
                         <xctk:DecimalUpDown Grid.Row="1" Grid.Column="1"
                                             Margin="5"
                                             FormatString="N"
-                                            Value="50"/>
+                                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.Interval}" />
                         <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1"
                                             Margin="5"
                                             FormatString="N"
-                                            Value="100"/>
-                        
+                                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.Release}" />
+
                         <Label Grid.Row="0" Grid.Column="2"
                                HorizontalAlignment="Left"
-                               VerticalAlignment="Center">ms</Label>
+                               VerticalAlignment="Center">
+                            ms
+                        </Label>
                         <Label Grid.Row="1" Grid.Column="2"
                                HorizontalAlignment="Left"
-                               VerticalAlignment="Center">ms</Label>
+                               VerticalAlignment="Center">
+                            ms
+                        </Label>
                         <Label Grid.Row="2" Grid.Column="2"
                                HorizontalAlignment="Left"
-                               VerticalAlignment="Center">ms</Label>
-                    </Grid>
-                </GroupBox>
-                
-                <!-- Analog to digital -->
-                <GroupBox Margin="0,10,0,0">
-                    <GroupBox.Header>
-                        <CheckBox x:Name="AnalogToDigitalCheckBox" Content="Force analog to digital"/>
-                    </GroupBox.Header>
-                    
-                    <Grid IsEnabled="{Binding ElementName=AnalogToDigitalCheckBox, Path=IsChecked}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-
-                        <Label Grid.Column="0" 
-                               HorizontalAlignment="Right" 
-                               VerticalAlignment="Center">Threshold:</Label>
-                        
-                        <xctk:DecimalUpDown Grid.Column="1"
-                                            Margin="5"
-                                            FormatString="N"
-                                            Value="128"/>
+                               VerticalAlignment="Center">
+                            ms
+                        </Label>
                     </Grid>
                 </GroupBox>
             </StackPanel>

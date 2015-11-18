@@ -124,6 +124,11 @@
             return Name.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return DisplayName;
+        }
+
         #endregion
     }
 

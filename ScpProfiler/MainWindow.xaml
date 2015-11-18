@@ -5,9 +5,10 @@
     xmlns:scpProfiler="clr-namespace:ScpProfiler"
     xmlns:scpCore="clr-namespace:ScpControl.ScpCore;assembly=ScpControl"
     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
+    xmlns:profiler="clr-namespace:ScpControl.Profiler;assembly=ScpControl"
     x:Class="ScpProfiler.MainWindow"
     Title="Scp Gamepad Button Profile Manager" Height="930.2" Width="984" WindowStartupLocation="CenterScreen"
-    Icon="Scp.ico">
+    Icon="Scp.ico" Initialized="Window_Initialized">
     <Grid Background="#FF1B1B1B">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
@@ -24,7 +25,8 @@
                       VerticalAlignment="Center"
                       HorizontalAlignment="Left"
                       Margin="5"
-                      Width="100">
+                      Width="100"
+                      SelectedIndex="0" SelectionChanged="CurrentPad_SelectionChanged">
                 <scpCore:DsPadId>One</scpCore:DsPadId>
                 <scpCore:DsPadId>Two</scpCore:DsPadId>
                 <scpCore:DsPadId>Three</scpCore:DsPadId>
@@ -50,30 +52,48 @@
             <controls:AccordionItem Header="Button mappings">
                 <ScrollViewer>
                     <StackPanel>
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_PSHome.png"
-                                                           ImageToolTip="PS Home button" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Circle.png"
-                                                           ImageToolTip="Circle" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Cross.png" ImageToolTip="Cross" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Sqaure.png"
-                                                           ImageToolTip="Square" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Triangle.png"
-                                                           ImageToolTip="Triangle" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Select.png"
-                                                           ImageToolTip="Select" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_Start.png" ImageToolTip="Start" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L1.png"
-                                                           ImageToolTip="Left shoulder" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R1.png"
-                                                           ImageToolTip="Right shoulder" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L2.png"
-                                                           ImageToolTip="Left trigger" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R2.png"
-                                                           ImageToolTip="Right trigger" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_L3.png"
-                                                           ImageToolTip="Left thumb" />
-                        <scpProfiler:ButtonMappingEntryControl ImageSource="Icons/48px-PS3_R3.png"
-                                                           ImageToolTip="Right thumb" />
+                        <StackPanel.DataContext>
+                            <profiler:DualShockProfile x:Name="CurrentDualShockProfile"/>
+                        </StackPanel.DataContext>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_PSHome.png"
+                                                               IconToolTip="PS Home button"
+                                                               ButtonProfile="{Binding Path=Ps, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Circle.png"
+                                                               IconToolTip="Circle" 
+                                                               ButtonProfile="{Binding Path=Circle, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Cross.png"
+                                                               IconToolTip="Cross" 
+                                                               ButtonProfile="{Binding Path=Cross, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Sqaure.png"
+                                                               IconToolTip="Square" 
+                                                               ButtonProfile="{Binding Path=Square, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Triangle.png"
+                                                               IconToolTip="Triangle" 
+                                                               ButtonProfile="{Binding Path=Triangle, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Select.png"
+                                                               IconToolTip="Select" 
+                                                               ButtonProfile="{Binding Path=Select, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Start.png"
+                                                               IconToolTip="Start" 
+                                                               ButtonProfile="{Binding Path=Start, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_L1.png"
+                                                               IconToolTip="Left shoulder" 
+                                                               ButtonProfile="{Binding Path=LeftShoulder, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_R1.png"
+                                                               IconToolTip="Right shoulder" 
+                                                               ButtonProfile="{Binding Path=RightShoulder, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_L2.png"
+                                                               IconToolTip="Left trigger" 
+                                                               ButtonProfile="{Binding Path=LeftTrigger, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_R2.png"
+                                                               IconToolTip="Right trigger" 
+                                                               ButtonProfile="{Binding Path=RightTrigger, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_L3.png"
+                                                               IconToolTip="Left thumb" 
+                                                               ButtonProfile="{Binding Path=LeftThumb, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_R3.png"
+                                                               IconToolTip="Right thumb" 
+                                                               ButtonProfile="{Binding Path=RightThumb, Mode=TwoWay}"/>
                     </StackPanel>
                 </ScrollViewer>
             </controls:AccordionItem>
@@ -81,21 +101,21 @@
             <!-- Axis mappings -->
             <controls:AccordionItem Header="Axis mappings &amp; settings">
                 <Grid>
-                    <scpProfiler:DpadAxisControl/>
+                    <scpProfiler:DpadAxisControl />
                 </Grid>
             </controls:AccordionItem>
 
             <!-- LED settings -->
-            <controls:AccordionItem Header="DualShock 3 LED behaviour"></controls:AccordionItem>
+            <controls:AccordionItem Header="DualShock 3 LED behaviour" />
 
             <!-- Lightbar settings -->
-            <controls:AccordionItem Header="DualShock 4 Lightbar behaviour"></controls:AccordionItem>
+            <controls:AccordionItem Header="DualShock 4 Lightbar behaviour" />
 
             <!-- Touchpad settings -->
-            <controls:AccordionItem Header="DualShock 4 Touchpad settings"></controls:AccordionItem>
-            
+            <controls:AccordionItem Header="DualShock 4 Touchpad settings" />
+
             <!-- Rumble settings -->
-            <controls:AccordionItem Header="Rumble settings"></controls:AccordionItem>
+            <controls:AccordionItem Header="Rumble settings" />
         </controls:Accordion>
 
         <tb:TaskbarIcon Grid.Row="2"

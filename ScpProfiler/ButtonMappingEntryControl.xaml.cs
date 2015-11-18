@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
+using System.Reflection;
 using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Media.Imaging;
-using ScpControl.Utilities;
-using ComboBox = System.Windows.Controls.ComboBox;
-using UserControl = System.Windows.Controls.UserControl;
+using System.Windows.Media;
+using WindowsInput;
+using WindowsInput.Native;
+using AutoDependencyPropertyMarker;
+using ScpControl.Profiler;
 
 namespace ScpProfiler
 {
@@ -16,97 +16,83 @@ namespace ScpProfiler
     /// </summary>
     public partial class ButtonMappingEntryControl : UserControl
     {
+        #region Private fields
+
+        private static readonly IEnumerable<Ds3Button> Ds3Buttons = typeof (Ds3Button).GetProperties(
+            BindingFlags.Public | BindingFlags.Static)
+            .Select(b => ((Ds3Button) b.GetValue(null, null)));
+
+        private static readonly IEnumerable<VirtualKeyCode> ValidKeys = Enum.GetValues(typeof (VirtualKeyCode))
+            .Cast<VirtualKeyCode>()
+            .Where(k => k != VirtualKeyCode.MODECHANGE
+                        && k != VirtualKeyCode.PACKET
+                        && k != VirtualKeyCode.NONAME
+                        && k != VirtualKeyCode.LBUTTON
+                        && k != VirtualKeyCode.RBUTTON
+                        && k != VirtualKeyCode.MBUTTON
+                        && k != VirtualKeyCode.XBUTTON1
+                        && k != VirtualKeyCode.XBUTTON2
+                        && k != VirtualKeyCode.HANGEUL
+                        && k != VirtualKeyCode.HANGUL);
+
+        #endregion
+
+        #region Ctor
+
         public ButtonMappingEntryControl()
         {
+            ButtonProfile = new DualShockButtonProfile();
+
             InitializeComponent();
 
             TargetCommandComboBox.ItemsSource = ValidKeys;
         }
 
-        public Uri ImageSource
-        {
-            get { return (Uri) GetValue(ImageSourceProperty); }
-            set { SetValue(ImageSourceProperty, value); }
-        }
-
-        public string ImageToolTip
-        {
-            get { return (string) GetValue(ImageToolTipProperty); }
-            set { SetValue(ImageToolTipProperty, value);}
-        }
-
-        private static void OnImageSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var myUserControl = sender as ButtonMappingEntryControl;
-            if (myUserControl != null)
-            {
-                myUserControl.ButtonImage.Source = new BitmapImage((Uri) e.NewValue);
-            }
-        }
-
-        private static void OnImageToolTipChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
-            var myUserControl = sender as ButtonMappingEntryControl;
-            if (myUserControl != null)
-            {
-                myUserControl.ButtonImage.ToolTip = e.NewValue;
-            }
-        }
+        #endregion
 
         private void TargetTypeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var type = ((ComboBox) sender).SelectedItem as CommandTypes?;
+            ButtonProfile.MappingTarget.CommandType = ((CommandType) ((ComboBox) sender).SelectedItem);
 
-            if (type == null || TargetCommandComboBox == null)
+            if (TargetCommandComboBox == null)
                 return;
 
-            switch (type)
+            switch (ButtonProfile.MappingTarget.CommandType)
             {
-                case CommandTypes.GamepadButton:
+                case CommandType.GamepadButton:
+                    TargetCommandComboBox.ItemsSource = Ds3Buttons;
                     break;
-                case CommandTypes.Keystrokes:
+                case CommandType.Keystrokes:
                     TargetCommandComboBox.ItemsSource = ValidKeys;
                     break;
-                case CommandTypes.MouseAxis:
+                case CommandType.MouseAxis:
                     break;
-                case CommandTypes.MouseButtons:
+                case CommandType.MouseButtons:
                     TargetCommandComboBox.ItemsSource =
-                        Enum.GetValues(typeof (KbmPost.MouseButtons)).Cast<KbmPost.MouseButtons>();
+                        Enum.GetValues(typeof (MouseButton)).Cast<MouseButton>();
                     break;
             }
         }
 
-        private static readonly IEnumerable<Keys> ValidKeys = Enum.GetValues(typeof (Keys))
-            .Cast<Keys>()
-            .Where(k => k != Keys.None 
-                && k != Keys.KeyCode 
-                && k != Keys.Modifiers
-                && k != Keys.Packet
-                && k != Keys.NoName
-                && k != Keys.LButton
-                && k != Keys.RButton
-                && k != Keys.MButton
-                && k != Keys.XButton1
-                && k != Keys.XButton2
-                && k != Keys.HanguelMode
-                && k != Keys.IMEAceept);
+        private void TargetCommandComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ButtonProfile.MappingTarget.CommandTarget = ((ComboBox) sender).SelectedItem;
+        }
 
-        public static readonly DependencyProperty ImageSourceProperty =
-            DependencyProperty.Register
-                (
-                    "ImageSource",
-                    typeof (Uri),
-                    typeof (ButtonMappingEntryControl),
-                    new FrameworkPropertyMetadata(OnImageSourceChanged)
-                );
+        #region Dependency properties
 
-        public static readonly DependencyProperty ImageToolTipProperty =
-            DependencyProperty.Register
-                (
-                    "ImageToolTip",
-                    typeof(string),
-                    typeof(ButtonMappingEntryControl),
-                    new FrameworkPropertyMetadata(OnImageToolTipChanged)
-                );
+        [AutoDependencyProperty]
+        public ImageSource IconSource { get; set; }
+
+        [AutoDependencyProperty]
+        public string IconToolTip { get; set; }
+
+        [AutoDependencyProperty]
+        public byte ButtonValue { get; set; }
+
+        [AutoDependencyProperty]
+        public IDsButtonProfile ButtonProfile { get; set; }
+
+        #endregion
     }
 }
