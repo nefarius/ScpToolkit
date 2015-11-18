@@ -29,6 +29,9 @@ namespace ScpControl.Profiler
         public object CommandTarget { get; set; }
     }
 
+    /// <summary>
+    ///     Represents a DualShock button/axis mapping profile.
+    /// </summary>
     [ImplementPropertyChanged]
     public class DualShockProfile
     {
@@ -57,6 +60,12 @@ namespace ScpControl.Profiler
 
         #region Public methods
 
+        /// <summary>
+        ///     Deserializes an object from the specified XML file.
+        /// </summary>
+        /// <param name="file">The path of the XML file.</param>
+        /// <returns>The retreived object.</returns>
+        /// TODO: add error handling
         public static DualShockProfile Load(string file)
         {
             var knownTypes = new List<Type> {typeof (DsButtonProfile)};
@@ -72,6 +81,11 @@ namespace ScpControl.Profiler
             }
         }
 
+        /// <summary>
+        ///     Serializes the current object to an XML file.
+        /// </summary>
+        /// <param name="file">The target XML file path.</param>
+        /// TODO: add error handling
         public void Save(string file)
         {
             var serializer = new DataContractSerializer(typeof (DualShockProfile));
@@ -135,6 +149,7 @@ namespace ScpControl.Profiler
     /// <summary>
     ///     Describes button turbo mode details.
     /// </summary>
+    [ImplementPropertyChanged]
     public class DsButtonProfileTurboSetting
     {
         public DsButtonProfileTurboSetting()
