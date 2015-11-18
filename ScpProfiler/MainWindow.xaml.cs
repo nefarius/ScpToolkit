@@ -35,6 +35,8 @@ namespace ScpProfiler
         {
             if(report.PadId != _currentPad) return;
 
+            CurrentDualShockProfile.Remap(ref report);
+
             switch (report.Model)
             {
                 case DsModel.DS3:
@@ -78,8 +80,6 @@ namespace ScpProfiler
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             CurrentDualShockProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "TEST.xml"));
-
-            var t = DualShockProfile.Load(Path.Combine(GlobalConfiguration.AppDirectory, "TEST.xml"));
         }
     }
 }

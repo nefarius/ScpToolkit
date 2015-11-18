@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using PropertyChanged;
@@ -33,6 +34,7 @@ namespace ScpControl.Profiler
     ///     Represents a DualShock button/axis mapping profile.
     /// </summary>
     [ImplementPropertyChanged]
+    [DataContract]
     public class DualShockProfile
     {
         #region Ctor
@@ -41,24 +43,40 @@ namespace ScpControl.Profiler
         {
             Name = string.Empty;
 
-            Ps = new DsButtonProfile();
-            Circle = new DsButtonProfile();
-            Cross = new DsButtonProfile();
-            Square = new DsButtonProfile();
-            Triangle = new DsButtonProfile();
-            Select = new DsButtonProfile();
-            Start = new DsButtonProfile();
-            LeftShoulder = new DsButtonProfile();
-            RightShoulder = new DsButtonProfile();
-            LeftTrigger = new DsButtonProfile();
-            RightTrigger = new DsButtonProfile();
-            LeftThumb = new DsButtonProfile();
-            RightThumb = new DsButtonProfile();
+            Ps = new DsButtonProfile(Ds3Button.Ps, Ds4Button.Ps);
+            Circle = new DsButtonProfile(Ds3Button.Circle, Ds4Button.Circle);
+            Cross = new DsButtonProfile(Ds3Button.Cross, Ds4Button.Cross);
+            Square = new DsButtonProfile(Ds3Button.Square, Ds4Button.Square);
+            Triangle = new DsButtonProfile(Ds3Button.Triangle, Ds4Button.Triangle);
+            Select = new DsButtonProfile(Ds3Button.Select, Ds4Button.Share);
+            Start = new DsButtonProfile(Ds3Button.Start, Ds4Button.Options);
+            LeftShoulder = new DsButtonProfile(Ds3Button.L1, Ds4Button.L1);
+            RightShoulder = new DsButtonProfile(Ds3Button.R1, Ds4Button.R1);
+            LeftTrigger = new DsButtonProfile(Ds3Button.L2, Ds4Button.L2);
+            RightTrigger = new DsButtonProfile(Ds3Button.R2, Ds4Button.R2);
+            LeftThumb = new DsButtonProfile(Ds3Button.L3, Ds4Button.L3);
+            RightThumb = new DsButtonProfile(Ds3Button.R3, Ds4Button.R3);
+
+            var props = this.GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
+
+            Buttons = props.Select(b => b.GetValue(this)).Cast<DsButtonProfile>();
         }
 
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        ///     Applies button re-mapping to the supplied report.
+        /// </summary>
+        /// <param name="report">The report to manipulate.</param>
+        public void Remap(ref ScpHidReport report)
+        {
+            foreach (var buttonProfile in Buttons)
+            {
+                buttonProfile.Remap(ref report);
+            }
+        }
 
         /// <summary>
         ///     Deserializes an object from the specified XML file.
@@ -114,6 +132,8 @@ namespace ScpControl.Profiler
 
         public string Name { get; set; }
 
+        private IEnumerable<DsButtonProfile> Buttons { get; set; }
+
         public DsButtonProfile Ps { get; set; }
         public DsButtonProfile Circle { get; set; }
         public DsButtonProfile Cross { get; set; }
@@ -132,18 +152,50 @@ namespace ScpControl.Profiler
     }
 
     [ImplementPropertyChanged]
+    [DataContract]
     public class DsButtonProfile
     {
-        public DsButtonProfile()
+        /// <summary>
+        ///     Creates a new button mapping profile.
+        /// </summary>
+        /// <param name="sources">A list of DualShock buttons which will be affected by this profile.</param>
+        public DsButtonProfile(params IDsButton[] sources)
         {
+            SourceButtons = sources;
             MappingTarget = new DsButtonMappingTarget();
             Turbo = new DsButtonProfileTurboSetting();
         }
 
-        public DsButtonMappingTarget MappingTarget { get; set; }
+        private IEnumerable<IDsButton> SourceButtons { get; set; }
+        public DsButtonMappingTarget MappingTarget { get; private set; }
         public bool IsEnabled { get; set; }
         public DsButtonProfileTurboSetting Turbo { get; set; }
         public byte CurrentValue { get; set; }
+
+        /// <summary>
+        ///     Applies button re-mapping to the supplied report.
+        /// </summary>
+        /// <param name="report">The report to manipulate.</param>
+        public void Remap(ref ScpHidReport report)
+        {
+            if (!IsEnabled) return;
+
+            switch (MappingTarget.CommandType)
+            {
+                case CommandType.GamepadButton:
+                    foreach (var button in SourceButtons)
+                    {
+                        // if source button isn't pressed, skip it
+                        if (!report[button].IsPressed) continue;
+
+                        // unset original button
+                        report.Unset(button);
+                        // set target button
+                        report.Set((IDsButton) MappingTarget.CommandTarget);
+                    }
+                    break;
+            }
+        }
     }
 
     /// <summary>
