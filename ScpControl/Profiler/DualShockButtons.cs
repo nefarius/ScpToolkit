@@ -9,6 +9,7 @@
     {
         bool IsPressed { get; set; }
         float Pressure { get; }
+        byte Value { get; }
     }
 
     /// <summary>
@@ -43,6 +44,15 @@
         public float Pressure
         {
             get { return IsPressed ? 1.0f : 0.0f; }
+        }
+
+        /// <summary>
+        ///     Gets the button press state as byte value.
+        /// </summary>
+        /// <remarks>255 equals pressed, 0 equals released.</remarks>
+        public byte Value
+        {
+            get { return (byte) (IsPressed ? 0xFF : 0x00); }
         }
     }
 

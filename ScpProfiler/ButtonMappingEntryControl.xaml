@@ -45,7 +45,7 @@
                      VerticalAlignment="Top"
                      HorizontalAlignment="Stretch"
                      Height="16" Margin="5,16"
-                     Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonValue}" />
+                     Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.CurrentValue}" />
 
         <!-- Type of target command -->
         <ComboBox Grid.Column="2"
