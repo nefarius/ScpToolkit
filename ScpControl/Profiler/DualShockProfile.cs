@@ -8,6 +8,9 @@ using PropertyChanged;
 
 namespace ScpControl.Profiler
 {
+    /// <summary>
+    ///     Possible mapping target types (keystrokes, mouse movement etc.)
+    /// </summary>
     public enum CommandType : byte
     {
         [Description("Keystrokes")] Keystrokes,
@@ -16,6 +19,9 @@ namespace ScpControl.Profiler
         [Description("Mouse axis")] MouseAxis
     }
 
+    /// <summary>
+    ///     Describes a mapping target.
+    /// </summary>
     [ImplementPropertyChanged]
     public class DsButtonMappingTarget
     {
@@ -94,34 +100,25 @@ namespace ScpControl.Profiler
 
         public string Name { get; set; }
 
-        public IDsButtonProfile Ps { get; set; }
-        public IDsButtonProfile Circle { get; set; }
-        public IDsButtonProfile Cross { get; set; }
-        public IDsButtonProfile Square { get; set; }
-        public IDsButtonProfile Triangle { get; set; }
-        public IDsButtonProfile Select { get; set; }
-        public IDsButtonProfile Start { get; set; }
-        public IDsButtonProfile LeftShoulder { get; set; }
-        public IDsButtonProfile RightShoulder { get; set; }
-        public IDsButtonProfile LeftTrigger { get; set; }
-        public IDsButtonProfile RightTrigger { get; set; }
-        public IDsButtonProfile LeftThumb { get; set; }
-        public IDsButtonProfile RightThumb { get; set; }
+        public DsButtonProfile Ps { get; set; }
+        public DsButtonProfile Circle { get; set; }
+        public DsButtonProfile Cross { get; set; }
+        public DsButtonProfile Square { get; set; }
+        public DsButtonProfile Triangle { get; set; }
+        public DsButtonProfile Select { get; set; }
+        public DsButtonProfile Start { get; set; }
+        public DsButtonProfile LeftShoulder { get; set; }
+        public DsButtonProfile RightShoulder { get; set; }
+        public DsButtonProfile LeftTrigger { get; set; }
+        public DsButtonProfile RightTrigger { get; set; }
+        public DsButtonProfile LeftThumb { get; set; }
+        public DsButtonProfile RightThumb { get; set; }
 
         #endregion
     }
 
-    public interface IDsButtonProfile
-    {
-        DsButtonMappingTarget MappingTarget { get; set; }
-        bool IsEnabled { get; set; }
-        DsButtonProfileTurboSetting Turbo { get; set; }
-        byte CurrentValue { get; set; }
-    }
-
-    [KnownType(typeof (DsButtonProfile))]
     [ImplementPropertyChanged]
-    public class DsButtonProfile : IDsButtonProfile
+    public class DsButtonProfile
     {
         public DsButtonProfile()
         {
@@ -135,6 +132,9 @@ namespace ScpControl.Profiler
         public byte CurrentValue { get; set; }
     }
 
+    /// <summary>
+    ///     Describes button turbo mode details.
+    /// </summary>
     public class DsButtonProfileTurboSetting
     {
         public DsButtonProfileTurboSetting()
@@ -144,9 +144,24 @@ namespace ScpControl.Profiler
             Release = 100;
         }
 
+        /// <summary>
+        ///     True if turbo mode is enabled for the current button, false otherwise.
+        /// </summary>
         public bool IsEnabled { get; set; }
+
+        /// <summary>
+        ///     The delay (in milliseconds) afther which the turbo mode shall engage (default is immediate).
+        /// </summary>
         public int Delay { get; set; }
+
+        /// <summary>
+        ///     The timespan (in milliseconds) the button should be reported as remaining pressed to the output.
+        /// </summary>
         public int Interval { get; set; }
+
+        /// <summary>
+        ///     The timespan (in milliseconds) the button state should be reported as released so the turbo event can repeat again.
+        /// </summary>
         public int Release { get; set; }
     }
 }

@@ -88,7 +88,7 @@ namespace ScpProfiler
         public string IconToolTip { get; set; }
 
         [AutoDependencyProperty]
-        public IDsButtonProfile ButtonProfile { get; set; }
+        public DsButtonProfile ButtonProfile { get; set; }
 
         #endregion
     }
