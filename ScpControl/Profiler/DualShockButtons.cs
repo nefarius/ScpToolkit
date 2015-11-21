@@ -82,7 +82,6 @@ namespace ScpControl.Profiler
 
         #region Properties
 
-        // TODO: can this be superseded?
         public uint Offset { get; protected set; }
 
         /// <summary>
@@ -166,6 +165,8 @@ namespace ScpControl.Profiler
 
         #endregion
 
+        #region Properties
+
         public static IEnumerable<Ds3Button> Buttons
         {
             get
@@ -175,7 +176,9 @@ namespace ScpControl.Profiler
                     .Select(b => b.GetValue(null, null))
                     .Where(o => o.GetType() == typeof(Ds3Button)).Cast<Ds3Button>();
             }  
-        } 
+        }
+
+        #endregion
 
         #region Buttons
 
@@ -451,6 +454,8 @@ namespace ScpControl.Profiler
 
         #endregion
 
+        #region Properties
+
         public static IEnumerable<Ds4Button> Buttons
         {
             get
@@ -460,7 +465,9 @@ namespace ScpControl.Profiler
                     .Select(b => b.GetValue(null, null))
                     .Where(o => o.GetType() == typeof(Ds4Button)).Cast<Ds4Button>();
             }
-        } 
+        }
+
+        #endregion
 
         #region Buttons
 
