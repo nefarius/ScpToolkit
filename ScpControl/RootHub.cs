@@ -576,8 +576,6 @@ namespace ScpControl
             e.Handled = bFound;
         }
 
-        private uint _counter = 0;
-
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
             var serial = (int) e.PadId;
@@ -585,6 +583,8 @@ namespace ScpControl
 
             var report = _mCache[serial].Report;
             var rumble = _mCache[serial].Rumble;
+
+            DualShockProfileManager.Instance.PassThroughAllProfiles(e);
 
             ScpPlugins.Instance.Process(e);
 

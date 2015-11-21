@@ -34,7 +34,7 @@ namespace ScpProfiler
         {
             if(report.PadId != _currentPad) return;
 
-            CurrentDualShockProfile.Remap(ref report);
+            CurrentDualShockProfile.Remap(report);
 
             switch (report.Model)
             {

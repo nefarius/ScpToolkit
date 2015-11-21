@@ -68,10 +68,6 @@ namespace ScpControl.Profiler
             Right = new DsButtonProfile(Ds3Button.Right, Ds4Button.Right);
             Down = new DsButtonProfile(Ds3Button.Down, Ds4Button.Down);
             Left = new DsButtonProfile(Ds3Button.Left, Ds4Button.Left);
-
-            var props = GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
-
-            Buttons = props.Select(b => b.GetValue(this)).Cast<DsButtonProfile>();
         }
 
         #endregion
@@ -82,19 +78,11 @@ namespace ScpControl.Profiler
         ///     Applies button re-mapping to the supplied report.
         /// </summary>
         /// <param name="report">The report to manipulate.</param>
-        public void Remap(ref ScpHidReport report)
+        public void Remap(ScpHidReport report)
         {
             foreach (var buttonProfile in Buttons)
             {
-                buttonProfile.Remap(ref report);
-            }
-        }
-
-        public static void PassThroughAllProfiles(ref ScpHidReport report)
-        {
-            foreach (var profile in Profiles)
-            {
-                profile.Remap(ref report);
+                buttonProfile.Remap(report);
             }
         }
 
@@ -106,7 +94,12 @@ namespace ScpControl.Profiler
         /// TODO: add error handling
         public static DualShockProfile Load(string file)
         {
-            var knownTypes = new List<Type> {typeof (DsButtonProfile)};
+            var knownTypes = new List<Type>
+            {
+                typeof (DsButtonProfile),
+                typeof (Ds3Button),
+                typeof (Ds4Button)
+            };
 
             var serializer = new DataContractSerializer(typeof (DualShockProfile), knownTypes);
 
@@ -150,28 +143,18 @@ namespace ScpControl.Profiler
 
         #region Properties
 
-        public static IEnumerable<DualShockProfile> Profiles
-        {
-            get
-            {
-                try
-                {
-                    return
-                        Directory.GetFiles(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles"), "*.xml")
-                            .Select(Load)
-                            .ToList();
-                }
-                catch
-                {
-                    return new List<DualShockProfile>();
-                }
-            }
-        }
-
         [DataMember]
         public string Name { get; set; }
 
-        private IEnumerable<DsButtonProfile> Buttons { get; set; }
+        private IEnumerable<DsButtonProfile> Buttons
+        {
+            get
+            {
+                var props = GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
+
+                return props.Select(b => b.GetValue(this)).Cast<DsButtonProfile>();
+            }
+        }
 
         [DataMember]
         public DsButtonProfile Ps { get; set; }
@@ -261,7 +244,7 @@ namespace ScpControl.Profiler
         ///     Applies button re-mapping to the supplied report.
         /// </summary>
         /// <param name="report">The report to manipulate.</param>
-        public void Remap(ref ScpHidReport report)
+        public void Remap(ScpHidReport report)
         {
             // skip disabled mapping
             if (!IsEnabled) return;
