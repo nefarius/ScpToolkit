@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -15,10 +16,14 @@ namespace ScpControl.Profiler
     /// </summary>
     public enum CommandType : byte
     {
-        [Description("Keystrokes")] Keystrokes,
-        [Description("Gamepad buttons")] GamepadButton,
-        [Description("Mouse buttons")] MouseButtons,
-        [Description("Mouse axis")] MouseAxis
+        [Description("Keystrokes")]
+        Keystrokes,
+        [Description("Gamepad buttons")]
+        GamepadButton,
+        [Description("Mouse buttons")]
+        MouseButtons,
+        [Description("Mouse axis")]
+        MouseAxis
     }
 
     /// <summary>
@@ -26,7 +31,7 @@ namespace ScpControl.Profiler
     /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
-    [KnownType(typeof (DsButtonMappingTarget))]
+    [KnownType(typeof(DsButtonMappingTarget))]
     public class DsButtonMappingTarget
     {
         [DataMember]
@@ -101,13 +106,13 @@ namespace ScpControl.Profiler
                 typeof (Ds4Button)
             };
 
-            var serializer = new DataContractSerializer(typeof (DualShockProfile), knownTypes);
+            var serializer = new DataContractSerializer(typeof(DualShockProfile), knownTypes);
 
             using (var fs = File.OpenText(file))
             {
                 using (var xml = XmlReader.Create(fs))
                 {
-                    return (DualShockProfile) serializer.ReadObject(xml);
+                    return (DualShockProfile)serializer.ReadObject(xml);
                 }
             }
         }
@@ -119,9 +124,9 @@ namespace ScpControl.Profiler
         /// TODO: add error handling
         public void Save(string file)
         {
-            var serializer = new DataContractSerializer(typeof (DualShockProfile));
+            var serializer = new DataContractSerializer(typeof(DualShockProfile));
 
-            using (var xml = XmlWriter.Create(file, new XmlWriterSettings {Indent = true}))
+            using (var xml = XmlWriter.Create(file, new XmlWriterSettings { Indent = true }))
             {
                 serializer.WriteObject(xml, this);
             }
@@ -150,7 +155,7 @@ namespace ScpControl.Profiler
         {
             get
             {
-                var props = GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
+                var props = GetType().GetProperties().Where(pi => pi.PropertyType == typeof(DsButtonProfile));
 
                 return props.Select(b => b.GetValue(this)).Cast<DsButtonProfile>();
             }
@@ -254,27 +259,30 @@ namespace ScpControl.Profiler
                 case CommandType.GamepadButton:
                     foreach (var button in SourceButtons)
                     {
-                        // if source button isn't pressed, skip it
+                        // turbo is special, apply first
+                        if (Turbo.IsEnabled)
+                        {
+                            Turbo.ApplyOn(report, button);
+                        }
+
+                        // get target button
+                        IDsButton target = MappingTarget.CommandTarget as Ds3Button;
+                        // if target is no valid button or none, skip setting it
+                        if (target == null) continue;
+
+                        // if it's a DS4, translate button
+                        if (report.Model == DsModel.DS4)
+                        {
+                            target = Ds4Button.Buttons.First(b => b.Name.Equals(target.Name));
+                        }
+
+                        // if original isn't pressed we can ignore
                         if (!report[button].IsPressed) continue;
 
                         // unset original button
                         report.Unset(button);
-
-                        var target = MappingTarget.CommandTarget as Ds3Button;
-                        // if target is no valid button or none, skip setting it
-                        if (target == null || target.Equals(Ds3Button.None)) continue;
-
-                        switch (report.Model)
-                        {
-                            case DsModel.DS3:
-                                // set target button
-                                report.Set(target);
-                                break;
-                            case DsModel.DS4:
-                                // set target button (translate to DS4)
-                                report.Set(Ds4Button.Buttons.First(b => b.Name.Equals(target.Name)));
-                                break;
-                        }
+                        // set new button
+                        report.Set(target);
                     }
                     break;
             }
@@ -286,7 +294,7 @@ namespace ScpControl.Profiler
     /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
-    [KnownType(typeof (DsButtonProfileTurboSetting))]
+    [KnownType(typeof(DsButtonProfileTurboSetting))]
     public class DsButtonProfileTurboSetting
     {
         public DsButtonProfileTurboSetting()
@@ -319,5 +327,76 @@ namespace ScpControl.Profiler
         /// </summary>
         [DataMember]
         public int Release { get; set; }
+
+        private Stopwatch _delayedFrame = new Stopwatch();
+        private Stopwatch _engagedFrame = new Stopwatch();
+        private Stopwatch _releasedFrame = new Stopwatch();
+        private bool _isActive;
+
+        private void OnCreated()
+        {
+            _delayedFrame = new Stopwatch();
+            _engagedFrame = new Stopwatch();
+            _releasedFrame = new Stopwatch();
+            _isActive = false;
+        }
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext c)
+        {
+            OnCreated();
+        }
+
+        public void ApplyOn(ScpHidReport report, IDsButton button)
+        {
+            if (!IsEnabled) return;
+
+            // if button got released...
+            if (_isActive && !report[button].IsPressed)
+            {
+                // ...disable, reset and return
+                _isActive = false;
+                _delayedFrame.Reset();
+                _engagedFrame.Reset();
+                _releasedFrame.Reset();
+                return;
+            }
+
+            // if turbo is enabled and button is pressed...
+            if (!_isActive && report[button].IsPressed)
+            {
+                if(!_delayedFrame.IsRunning) _delayedFrame.Start();
+
+                if(_delayedFrame.ElapsedMilliseconds < Delay) return;
+
+                // time to activate!
+                _isActive = true;
+                _delayedFrame.Reset();
+            }
+
+            if (!report[button].IsPressed)
+            {
+                _isActive = false;
+                _delayedFrame.Reset();
+                _engagedFrame.Reset();
+                _releasedFrame.Reset();
+                return;
+            }
+
+            if (!_engagedFrame.IsRunning) _engagedFrame.Start();
+
+            if (_engagedFrame.ElapsedMilliseconds < Interval && report[button].IsPressed) return;
+
+            if (_releasedFrame.IsRunning) _releasedFrame.Start();
+
+            if (_releasedFrame.ElapsedMilliseconds < Release)
+            {
+                report.Unset(button);
+            }
+            else
+            {
+                _engagedFrame.Reset();
+            }
+        }
     }
 }
