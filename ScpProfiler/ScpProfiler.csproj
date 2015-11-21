@@ -261,6 +261,42 @@
   <ItemGroup>
     <Resource Include="redirect.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\Ds4\a_butt.png" />
+    <Resource Include="Icons\Ds4\back_butt.png" />
+    <Resource Include="Icons\Ds4\b_butt.png" />
+    <Resource Include="Icons\Ds4\dpad_all.png" />
+    <Resource Include="Icons\Ds4\dpad_down.png" />
+    <Resource Include="Icons\Ds4\dpad_left.png" />
+    <Resource Include="Icons\Ds4\dpad_leftright.png" />
+    <Resource Include="Icons\Ds4\dpad_none.png" />
+    <Resource Include="Icons\Ds4\dpad_right.png" />
+    <Resource Include="Icons\Ds4\dpad_up.png" />
+    <Resource Include="Icons\Ds4\dpad_updown.png" />
+    <Resource Include="Icons\Ds4\lb_butt.png" />
+    <Resource Include="Icons\Ds4\lstick_all.png" />
+    <Resource Include="Icons\Ds4\lstick_down.png" />
+    <Resource Include="Icons\Ds4\lstick_left.png" />
+    <Resource Include="Icons\Ds4\lstick_leftright.png" />
+    <Resource Include="Icons\Ds4\lstick_none.png" />
+    <Resource Include="Icons\Ds4\lstick_right.png" />
+    <Resource Include="Icons\Ds4\lstick_up.png" />
+    <Resource Include="Icons\Ds4\lstick_updown.png" />
+    <Resource Include="Icons\Ds4\lt_butt.png" />
+    <Resource Include="Icons\Ds4\rb_butt.png" />
+    <Resource Include="Icons\Ds4\rstick_all.png" />
+    <Resource Include="Icons\Ds4\rstick_down.png" />
+    <Resource Include="Icons\Ds4\rstick_left.png" />
+    <Resource Include="Icons\Ds4\rstick_leftright.png" />
+    <Resource Include="Icons\Ds4\rstick_none.png" />
+    <Resource Include="Icons\Ds4\rstick_right.png" />
+    <Resource Include="Icons\Ds4\rstick_up.png" />
+    <Resource Include="Icons\Ds4\rstick_updown.png" />
+    <Resource Include="Icons\Ds4\rt_butt.png" />
+    <Resource Include="Icons\Ds4\start_butt.png" />
+    <Resource Include="Icons\Ds4\x_butt.png" />
+    <Resource Include="Icons\Ds4\y_butt.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>Copy /Y /B $(SolutionDir)\ScpControl\Properties\CommonInfo.cs $(ProjectDir)\Properties\CommonInfo.cs &gt; nul:</PreBuildEvent>
