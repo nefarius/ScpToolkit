@@ -139,7 +139,7 @@
 
         <tb:TaskbarIcon Grid.Row="2"
                         Visibility="Visible"
-                        IconSource="Scp.ico"
+                        IconSource="xbox.ico"
                         ToolTipText="Scp Custom Mouse &amp; Keyboard Profiler"
                         MenuActivation="LeftOrRightClick"
                         PopupActivation="DoubleClick" />
