@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace ScpControl.Profiler
 {
@@ -149,6 +150,7 @@ namespace ScpControl.Profiler
     /// <summary>
     ///     Definition of a DualShock 3 button.
     /// </summary>
+    [KnownType(typeof(Ds3Button))]
     public class Ds3Button : DsButton
     {
         #region Ctors
@@ -433,6 +435,7 @@ namespace ScpControl.Profiler
     /// <summary>
     ///     Definition of a DualShock 4 button.
     /// </summary>
+    [KnownType(typeof(Ds4Button))]
     public class Ds4Button : DsButton
     {
         #region Ctors
@@ -480,7 +483,9 @@ namespace ScpControl.Profiler
                 return new Ds4Button("Up")
                 {
                     Offset = 1 << 0,
-                    DisplayName = "D-Pad up"
+                    DisplayName = "D-Pad up",
+                    ArrayIndex = 13,
+                    MaskOffset = 0
                 };
             }
         }
@@ -492,7 +497,9 @@ namespace ScpControl.Profiler
                 return new Ds4Button("Right")
                 {
                     Offset = 1 << 1,
-                    DisplayName = "D-Pad right"
+                    DisplayName = "D-Pad right",
+                    ArrayIndex = 13,
+                    MaskOffset = 1
                 };
             }
         }
@@ -504,7 +511,9 @@ namespace ScpControl.Profiler
                 return new Ds4Button("Down")
                 {
                     Offset = 1 << 2,
-                    DisplayName = "D-Pad down"
+                    DisplayName = "D-Pad down",
+                    ArrayIndex = 13,
+                    MaskOffset = 2
                 };
             }
         }
@@ -516,7 +525,9 @@ namespace ScpControl.Profiler
                 return new Ds4Button("Left")
                 {
                     Offset = 1 << 3,
-                    DisplayName = "D-Pad left"
+                    DisplayName = "D-Pad left",
+                    ArrayIndex = 13,
+                    MaskOffset = 3
                 };
             }
         }

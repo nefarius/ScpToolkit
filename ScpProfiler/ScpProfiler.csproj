@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>redirect.ico</ApplicationIcon>
+    <ApplicationIcon>xbox.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AutoDependencyPropertyMarker">
@@ -296,6 +296,9 @@
     <Resource Include="Icons\Ds4\start_butt.png" />
     <Resource Include="Icons\Ds4\x_butt.png" />
     <Resource Include="Icons\Ds4\y_butt.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="xbox.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

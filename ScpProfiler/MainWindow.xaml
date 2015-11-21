@@ -8,7 +8,7 @@
     xmlns:profiler="clr-namespace:ScpControl.Profiler;assembly=ScpControl"
     x:Class="ScpProfiler.MainWindow"
     Title="Scp Gamepad Input Profile Manager" Height="930.2" Width="984" WindowStartupLocation="CenterScreen"
-    Icon="redirect.ico" Initialized="Window_Initialized">
+    Icon="xbox.ico" Initialized="Window_Initialized">
     <Grid Background="#FF1B1B1B">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />

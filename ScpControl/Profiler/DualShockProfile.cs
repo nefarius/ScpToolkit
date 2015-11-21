@@ -25,9 +25,14 @@ namespace ScpControl.Profiler
     ///     Describes a mapping target.
     /// </summary>
     [ImplementPropertyChanged]
+    [DataContract]
+    [KnownType(typeof(DsButtonMappingTarget))]
     public class DsButtonMappingTarget
     {
+        [DataMember]
         public CommandType CommandType { get; set; }
+
+        [DataMember]
         public object CommandTarget { get; set; }
     }
 
@@ -113,7 +118,9 @@ namespace ScpControl.Profiler
         /// TODO: add error handling
         public void Save(string file)
         {
-            var serializer = new DataContractSerializer(typeof (DualShockProfile));
+            var knownTypes = new List<Type> { typeof(DsButtonProfile) };
+
+            var serializer = new DataContractSerializer(typeof (DualShockProfile), knownTypes);
 
             using (var xml = XmlWriter.Create(file, new XmlWriterSettings {Indent = true}))
             {
@@ -137,28 +144,61 @@ namespace ScpControl.Profiler
 
         #region Properties
 
+        [DataMember]
         public string Name { get; set; }
 
         private IEnumerable<DsButtonProfile> Buttons { get; set; }
 
+        [DataMember]
         public DsButtonProfile Ps { get; set; }
+
+        [DataMember]
         public DsButtonProfile Circle { get; set; }
+
+        [DataMember]
         public DsButtonProfile Cross { get; set; }
+
+        [DataMember]
         public DsButtonProfile Square { get; set; }
+
+        [DataMember]
         public DsButtonProfile Triangle { get; set; }
+
+        [DataMember]
         public DsButtonProfile Select { get; set; }
+
+        [DataMember]
         public DsButtonProfile Start { get; set; }
+
+        [DataMember]
         public DsButtonProfile LeftShoulder { get; set; }
+
+        [DataMember]
         public DsButtonProfile RightShoulder { get; set; }
+
+        [DataMember]
         public DsButtonProfile LeftTrigger { get; set; }
+
+        [DataMember]
         public DsButtonProfile RightTrigger { get; set; }
+
+        [DataMember]
         public DsButtonProfile LeftThumb { get; set; }
+
+        [DataMember]
         public DsButtonProfile RightThumb { get; set; }
 
         // D-Pad
+        [DataMember]
         public DsButtonProfile Up { get; set; }
+        
+        [DataMember]
         public DsButtonProfile Right { get; set; }
+
+        [DataMember]
         public DsButtonProfile Down { get; set; }
+
+        [DataMember]
         public DsButtonProfile Left { get; set; }
 
         #endregion
@@ -179,10 +219,18 @@ namespace ScpControl.Profiler
             Turbo = new DsButtonProfileTurboSetting();
         }
 
+        [DataMember]
         private IEnumerable<IDsButton> SourceButtons { get; set; }
+
+        [DataMember]
         public DsButtonMappingTarget MappingTarget { get; private set; }
+
+        [DataMember]
         public bool IsEnabled { get; set; }
+
+        [DataMember]
         public DsButtonProfileTurboSetting Turbo { get; set; }
+
         public byte CurrentValue { get; set; }
 
         /// <summary>
@@ -230,6 +278,8 @@ namespace ScpControl.Profiler
     ///     Describes button turbo mode details.
     /// </summary>
     [ImplementPropertyChanged]
+    [DataContract]
+    [KnownType(typeof(DsButtonProfileTurboSetting))]
     public class DsButtonProfileTurboSetting
     {
         public DsButtonProfileTurboSetting()
@@ -242,21 +292,25 @@ namespace ScpControl.Profiler
         /// <summary>
         ///     True if turbo mode is enabled for the current button, false otherwise.
         /// </summary>
+        [DataMember]
         public bool IsEnabled { get; set; }
 
         /// <summary>
         ///     The delay (in milliseconds) afther which the turbo mode shall engage (default is immediate).
         /// </summary>
+        [DataMember]
         public int Delay { get; set; }
 
         /// <summary>
         ///     The timespan (in milliseconds) the button should be reported as remaining pressed to the output.
         /// </summary>
+        [DataMember]
         public int Interval { get; set; }
 
         /// <summary>
         ///     The timespan (in milliseconds) the button state should be reported as released so the turbo event can repeat again.
         /// </summary>
+        [DataMember]
         public int Release { get; set; }
     }
 }
