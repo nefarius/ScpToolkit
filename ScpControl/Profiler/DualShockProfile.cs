@@ -90,6 +90,14 @@ namespace ScpControl.Profiler
             }
         }
 
+        public static void PassThroughAllProfiles(ref ScpHidReport report)
+        {
+            foreach (var profile in Profiles)
+            {
+                profile.Remap(ref report);
+            }
+        }
+
         /// <summary>
         ///     Deserializes an object from the specified XML file.
         /// </summary>
@@ -142,7 +150,7 @@ namespace ScpControl.Profiler
 
         #region Properties
 
-        public static IList<DualShockProfile> Profiles
+        public static IEnumerable<DualShockProfile> Profiles
         {
             get
             {
