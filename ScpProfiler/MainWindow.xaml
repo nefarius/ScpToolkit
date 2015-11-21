@@ -55,7 +55,7 @@
                             Margin="10"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch">
-            <!-- Button mappings -->
+            <!-- DualShock 3 Button mappings -->
             <controls:AccordionItem Header="Button mappings">
                 <ScrollViewer>
                     <StackPanel>
@@ -101,28 +101,40 @@
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_R3.png"
                                                                IconToolTip="Right thumb" 
                                                                ButtonProfile="{Binding Path=RightThumb, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_up.png"
+                                                               IconToolTip="D-Pad up" 
+                                                               ButtonProfile="{Binding Path=Up, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_right.png"
+                                                               IconToolTip="D-Pad right" 
+                                                               ButtonProfile="{Binding Path=Right, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_down.png"
+                                                               IconToolTip="D-Pad down" 
+                                                               ButtonProfile="{Binding Path=Down, Mode=TwoWay}"/>
+                        <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_left.png"
+                                                               IconToolTip="D-Pad left" 
+                                                               ButtonProfile="{Binding Path=Left, Mode=TwoWay}"/>
                     </StackPanel>
                 </ScrollViewer>
             </controls:AccordionItem>
 
             <!-- Axis mappings -->
-            <controls:AccordionItem Header="Axis mappings &amp; settings">
+            <controls:AccordionItem Header="Axis mappings &amp; settings" IsEnabled="False">
                 <Grid>
                     <scpProfiler:DpadAxisControl />
                 </Grid>
             </controls:AccordionItem>
 
             <!-- LED settings -->
-            <controls:AccordionItem Header="DualShock 3 LED behaviour" />
+            <controls:AccordionItem Header="DualShock 3 LED behaviour" IsEnabled="False"/>
 
             <!-- Lightbar settings -->
-            <controls:AccordionItem Header="DualShock 4 Lightbar behaviour" />
+            <controls:AccordionItem Header="DualShock 4 Lightbar behaviour" IsEnabled="False"/>
 
             <!-- Touchpad settings -->
-            <controls:AccordionItem Header="DualShock 4 Touchpad settings" />
+            <controls:AccordionItem Header="DualShock 4 Touchpad settings" IsEnabled="False"/>
 
             <!-- Rumble settings -->
-            <controls:AccordionItem Header="Rumble settings" />
+            <controls:AccordionItem Header="Rumble settings" IsEnabled="False"/>
         </controls:Accordion>
 
         <tb:TaskbarIcon Grid.Row="2"

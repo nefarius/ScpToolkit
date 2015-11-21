@@ -18,10 +18,6 @@ namespace ScpProfiler
     {
         #region Private fields
 
-        private static readonly IEnumerable<Ds3Button> Ds3Buttons = typeof (Ds3Button).GetProperties(
-            BindingFlags.Public | BindingFlags.Static)
-            .Select(b => ((Ds3Button) b.GetValue(null, null)));
-
         private static readonly IEnumerable<VirtualKeyCode> ValidKeys = Enum.GetValues(typeof (VirtualKeyCode))
             .Cast<VirtualKeyCode>()
             .Where(k => k != VirtualKeyCode.MODECHANGE
@@ -60,7 +56,7 @@ namespace ScpProfiler
             switch (ButtonProfile.MappingTarget.CommandType)
             {
                 case CommandType.GamepadButton:
-                    TargetCommandComboBox.ItemsSource = Ds3Buttons;
+                    TargetCommandComboBox.ItemsSource = Ds3Button.Buttons;
                     break;
                 case CommandType.Keystrokes:
                     TargetCommandComboBox.ItemsSource = ValidKeys;

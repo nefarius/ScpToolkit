@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using PropertyChanged;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Profiler
 {
@@ -56,6 +57,12 @@ namespace ScpControl.Profiler
             RightTrigger = new DsButtonProfile(Ds3Button.R2, Ds4Button.R2);
             LeftThumb = new DsButtonProfile(Ds3Button.L3, Ds4Button.L3);
             RightThumb = new DsButtonProfile(Ds3Button.R3, Ds4Button.R3);
+
+            // D-Pad
+            Up = new DsButtonProfile(Ds3Button.Up, Ds4Button.Up);
+            Right = new DsButtonProfile(Ds3Button.Right, Ds4Button.Right);
+            Down = new DsButtonProfile(Ds3Button.Down, Ds4Button.Down);
+            Left = new DsButtonProfile(Ds3Button.Left, Ds4Button.Left);
 
             var props = this.GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
 
@@ -148,6 +155,12 @@ namespace ScpControl.Profiler
         public DsButtonProfile LeftThumb { get; set; }
         public DsButtonProfile RightThumb { get; set; }
 
+        // D-Pad
+        public DsButtonProfile Up { get; set; }
+        public DsButtonProfile Right { get; set; }
+        public DsButtonProfile Down { get; set; }
+        public DsButtonProfile Left { get; set; }
+
         #endregion
     }
 
@@ -178,6 +191,7 @@ namespace ScpControl.Profiler
         /// <param name="report">The report to manipulate.</param>
         public void Remap(ref ScpHidReport report)
         {
+            // skip disabled mapping
             if (!IsEnabled) return;
 
             switch (MappingTarget.CommandType)
@@ -190,8 +204,22 @@ namespace ScpControl.Profiler
 
                         // unset original button
                         report.Unset(button);
-                        // set target button
-                        report.Set((IDsButton) MappingTarget.CommandTarget);
+
+                        var target = MappingTarget.CommandTarget as Ds3Button;
+                        // if target is no valid button or none, skip setting it
+                        if (target == null || target.Equals(Ds3Button.None)) continue;
+
+                        switch (report.Model)
+                        {
+                            case DsModel.DS3:
+                                // set target button
+                                report.Set(target);
+                                break;
+                            case DsModel.DS4:
+                                // set target button (translate to DS4)
+                                report.Set(Ds4Button.Buttons.First(b => b.Name.Equals(target.Name)));
+                                break;
+                        }
                     }
                     break;
             }

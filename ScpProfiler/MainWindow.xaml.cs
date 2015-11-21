@@ -28,7 +28,6 @@ namespace ScpProfiler
             _proxy.NativeFeedReceived += ProxyOnNativeFeedReceived;
             _proxy.Start();
 
-            CurrentDualShockProfile.Ps.CurrentValue = 0xFF;
         }
 
         private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)
@@ -53,6 +52,10 @@ namespace ScpProfiler
                     CurrentDualShockProfile.RightTrigger.CurrentValue = report[Ds3Button.R2].Value;
                     CurrentDualShockProfile.LeftThumb.CurrentValue = report[Ds3Button.L3].Value;
                     CurrentDualShockProfile.RightThumb.CurrentValue = report[Ds3Button.R3].Value;
+                    CurrentDualShockProfile.Up.CurrentValue = report[Ds3Button.Up].Value;
+                    CurrentDualShockProfile.Right.CurrentValue = report[Ds3Button.Right].Value;
+                    CurrentDualShockProfile.Down.CurrentValue = report[Ds3Button.Down].Value;
+                    CurrentDualShockProfile.Left.CurrentValue = report[Ds3Button.Left].Value;
                     break;
                 case DsModel.DS4:
                     CurrentDualShockProfile.Ps.CurrentValue = report[Ds4Button.Ps].Value;
@@ -68,6 +71,10 @@ namespace ScpProfiler
                     CurrentDualShockProfile.RightTrigger.CurrentValue = report[Ds4Button.R2].Value;
                     CurrentDualShockProfile.LeftThumb.CurrentValue = report[Ds4Button.L3].Value;
                     CurrentDualShockProfile.RightThumb.CurrentValue = report[Ds4Button.R3].Value;
+                    CurrentDualShockProfile.Up.CurrentValue = report[Ds4Button.Up].Value;
+                    CurrentDualShockProfile.Right.CurrentValue = report[Ds4Button.Right].Value;
+                    CurrentDualShockProfile.Down.CurrentValue = report[Ds4Button.Down].Value;
+                    CurrentDualShockProfile.Left.CurrentValue = report[Ds4Button.Left].Value;
                     break;
             }
         }

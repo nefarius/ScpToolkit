@@ -1,4 +1,8 @@
-﻿namespace ScpControl.Profiler
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+
+namespace ScpControl.Profiler
 {
     #region Interfaces
 
@@ -159,6 +163,17 @@
         }
 
         #endregion
+
+        public static IEnumerable<Ds3Button> Buttons
+        {
+            get
+            {
+                return typeof (Ds3Button).GetProperties(
+                    BindingFlags.Public | BindingFlags.Static)
+                    .Select(b => b.GetValue(null, null))
+                    .Where(o => o.GetType() == typeof(Ds3Button)).Cast<Ds3Button>();
+            }  
+        } 
 
         #region Buttons
 
@@ -433,6 +448,17 @@
 
         #endregion
 
+        public static IEnumerable<Ds4Button> Buttons
+        {
+            get
+            {
+                return typeof(Ds4Button).GetProperties(
+                    BindingFlags.Public | BindingFlags.Static)
+                    .Select(b => b.GetValue(null, null))
+                    .Where(o => o.GetType() == typeof(Ds4Button)).Cast<Ds4Button>();
+            }
+        } 
+
         #region Buttons
 
         public static IDsButton None
@@ -502,7 +528,9 @@
                 return new Ds4Button("Square")
                 {
                     Offset = 1 << 4,
-                    DisplayName = "Square"
+                    DisplayName = "Square",
+                    ArrayIndex = 13,
+                    MaskOffset = 4
                 };
             }
         }
@@ -514,7 +542,9 @@
                 return new Ds4Button("Cross")
                 {
                     Offset = 1 << 5,
-                    DisplayName = "Cross"
+                    DisplayName = "Cross",
+                    ArrayIndex = 13,
+                    MaskOffset = 5
                 };
             }
         }
@@ -526,7 +556,9 @@
                 return new Ds4Button("Circle")
                 {
                     Offset = 1 << 6,
-                    DisplayName = "Circle"
+                    DisplayName = "Circle",
+                    ArrayIndex = 13,
+                    MaskOffset = 6
                 };
             }
         }
@@ -538,7 +570,9 @@
                 return new Ds4Button("Triangle")
                 {
                     Offset = 1 << 7,
-                    DisplayName = "Triangle"
+                    DisplayName = "Triangle",
+                    ArrayIndex = 13,
+                    MaskOffset = 7
                 };
             }
         }
@@ -550,7 +584,9 @@
                 return new Ds4Button("L1")
                 {
                     Offset = 1 << 8,
-                    DisplayName = "Left shoulder"
+                    DisplayName = "Left shoulder",
+                    ArrayIndex = 14,
+                    MaskOffset = 0
                 };
             }
         }
@@ -562,7 +598,9 @@
                 return new Ds4Button("R1")
                 {
                     Offset = 1 << 9,
-                    DisplayName = "Right shoulder"
+                    DisplayName = "Right shoulder",
+                    ArrayIndex = 14,
+                    MaskOffset = 1
                 };
             }
         }
@@ -574,7 +612,9 @@
                 return new Ds4Button("L2")
                 {
                     Offset = 1 << 10,
-                    DisplayName = "Left trigger"
+                    DisplayName = "Left trigger",
+                    ArrayIndex = 14,
+                    MaskOffset = 2
                 };
             }
         }
@@ -586,7 +626,9 @@
                 return new Ds4Button("R2")
                 {
                     Offset = 1 << 11,
-                    DisplayName = "Right trigger"
+                    DisplayName = "Right trigger",
+                    ArrayIndex = 14,
+                    MaskOffset = 3
                 };
             }
         }
@@ -595,10 +637,12 @@
         {
             get
             {
-                return new Ds4Button("Share")
+                return new Ds4Button("Select")
                 {
                     Offset = 1 << 12,
-                    DisplayName = "Share"
+                    DisplayName = "Share",
+                    ArrayIndex = 14,
+                    MaskOffset = 4
                 };
             }
         }
@@ -607,10 +651,12 @@
         {
             get
             {
-                return new Ds4Button("Options")
+                return new Ds4Button("Start")
                 {
                     Offset = 1 << 13,
-                    DisplayName = "Options"
+                    DisplayName = "Options",
+                    ArrayIndex = 14,
+                    MaskOffset = 5
                 };
             }
         }
@@ -622,7 +668,9 @@
                 return new Ds4Button("L3")
                 {
                     Offset = 1 << 14,
-                    DisplayName = "Left thumb"
+                    DisplayName = "Left thumb",
+                    ArrayIndex = 14,
+                    MaskOffset = 6
                 };
             }
         }
@@ -634,7 +682,9 @@
                 return new Ds4Button("R3")
                 {
                     Offset = 1 << 15,
-                    DisplayName = "Right thumb"
+                    DisplayName = "Right thumb",
+                    ArrayIndex = 14,
+                    MaskOffset = 7
                 };
             }
         }
@@ -646,7 +696,9 @@
                 return new Ds4Button("PS")
                 {
                     Offset = 1 << 16,
-                    DisplayName = "PS"
+                    DisplayName = "PS",
+                    ArrayIndex = 15,
+                    MaskOffset = 0
                 };
             }
         }
@@ -658,7 +710,9 @@
                 return new Ds4Button("TouchPad")
                 {
                     Offset = 1 << 17,
-                    DisplayName = "Touchpad"
+                    DisplayName = "Touchpad",
+                    ArrayIndex = 15,
+                    MaskOffset = 1
                 };
             }
         }
