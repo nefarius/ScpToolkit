@@ -64,6 +64,7 @@ namespace ScpControl.Profiler
     /// <summary>
     ///     Implements a DualShock button.
     /// </summary>
+    [DataContract]
     public class DsButton : IDsButton
     {
         #region Ctors
@@ -82,26 +83,31 @@ namespace ScpControl.Profiler
 
         #region Properties
 
+        [DataMember]
         public uint Offset { get; protected set; }
 
         /// <summary>
         ///     The short name identifying the button.
         /// </summary>
+        [DataMember]
         public string Name { get; private set; }
 
         /// <summary>
         ///     A short descriptive name of the button.
         /// </summary>
+        [DataMember]
         public string DisplayName { get; protected set; }
 
         /// <summary>
         ///     The bit offset within the <see cref="ArrayIndex"/>
         /// </summary>
+        [DataMember]
         public int MaskOffset { get; protected set; }
 
         /// <summary>
         ///     The corresponding byte in the <see cref="ScpHidReport.RawBytes"/> holding the value of the button.
         /// </summary>
+        [DataMember]
         public int ArrayIndex { get; protected set; }
         
         #endregion

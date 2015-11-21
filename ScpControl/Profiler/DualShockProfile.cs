@@ -26,7 +26,7 @@ namespace ScpControl.Profiler
     /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
-    [KnownType(typeof(DsButtonMappingTarget))]
+    [KnownType(typeof (DsButtonMappingTarget))]
     public class DsButtonMappingTarget
     {
         [DataMember]
@@ -69,7 +69,7 @@ namespace ScpControl.Profiler
             Down = new DsButtonProfile(Ds3Button.Down, Ds4Button.Down);
             Left = new DsButtonProfile(Ds3Button.Left, Ds4Button.Left);
 
-            var props = this.GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
+            var props = GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
 
             Buttons = props.Select(b => b.GetValue(this)).Cast<DsButtonProfile>();
         }
@@ -118,9 +118,7 @@ namespace ScpControl.Profiler
         /// TODO: add error handling
         public void Save(string file)
         {
-            var knownTypes = new List<Type> { typeof(DsButtonProfile) };
-
-            var serializer = new DataContractSerializer(typeof (DualShockProfile), knownTypes);
+            var serializer = new DataContractSerializer(typeof (DualShockProfile));
 
             using (var xml = XmlWriter.Create(file, new XmlWriterSettings {Indent = true}))
             {
@@ -143,6 +141,24 @@ namespace ScpControl.Profiler
         #endregion
 
         #region Properties
+
+        public static IList<DualShockProfile> Profiles
+        {
+            get
+            {
+                try
+                {
+                    return
+                        Directory.GetFiles(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles"), "*.xml")
+                            .Select(Load)
+                            .ToList();
+                }
+                catch
+                {
+                    return new List<DualShockProfile>();
+                }
+            }
+        }
 
         [DataMember]
         public string Name { get; set; }
@@ -191,7 +207,7 @@ namespace ScpControl.Profiler
         // D-Pad
         [DataMember]
         public DsButtonProfile Up { get; set; }
-        
+
         [DataMember]
         public DsButtonProfile Right { get; set; }
 
@@ -279,7 +295,7 @@ namespace ScpControl.Profiler
     /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
-    [KnownType(typeof(DsButtonProfileTurboSetting))]
+    [KnownType(typeof (DsButtonProfileTurboSetting))]
     public class DsButtonProfileTurboSetting
     {
         public DsButtonProfileTurboSetting()
