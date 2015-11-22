@@ -29,11 +29,15 @@ namespace ScpControl.Profiler
     [KnownType(typeof (DsButtonMappingTarget))]
     public class DsButtonMappingTarget
     {
+        #region Properties
+
         [DataMember]
         public CommandType CommandType { get; set; }
 
         [DataMember]
         public object CommandTarget { get; set; }
+
+        #endregion
     }
 
     /// <summary>
@@ -45,13 +49,15 @@ namespace ScpControl.Profiler
     [KnownType(typeof (Ds4Button))]
     public class DualShockProfile
     {
+        
+
+        #region Ctor
+
         [OnDeserializing]
         private void OnDeserializing(StreamingContext c)
         {
             OnCreated();
         }
-
-        #region Ctor
 
         public DualShockProfile()
         {
@@ -221,6 +227,8 @@ namespace ScpControl.Profiler
     [DataContract]
     public class DsButtonProfile
     {
+        #region Ctor
+
         /// <summary>
         ///     Creates a new button mapping profile.
         /// </summary>
@@ -230,6 +238,10 @@ namespace ScpControl.Profiler
             SourceButtons = sources;
             OnCreated();
         }
+
+        #endregion
+
+        #region Properties
 
         [DataMember]
         private IEnumerable<IDsButton> SourceButtons { get; set; }
@@ -245,6 +257,10 @@ namespace ScpControl.Profiler
 
         public byte CurrentValue { get; set; }
 
+        #endregion
+
+        #region Deserialization
+
         private void OnCreated()
         {
             MappingTarget = new DsButtonMappingTarget();
@@ -256,6 +272,10 @@ namespace ScpControl.Profiler
         {
             OnCreated();
         }
+
+        #endregion
+
+        #region Public methods
 
         /// <summary>
         ///     Applies button re-mapping to the supplied report.
@@ -299,6 +319,8 @@ namespace ScpControl.Profiler
                     break;
             }
         }
+
+        #endregion
     }
 
     /// <summary>
@@ -308,10 +330,16 @@ namespace ScpControl.Profiler
     [DataContract]
     public class DsButtonProfileTurboSetting
     {
+        #region Private fields
+
         private Stopwatch _delayedFrame = new Stopwatch();
         private Stopwatch _engagedFrame = new Stopwatch();
         private bool _isActive;
         private Stopwatch _releasedFrame = new Stopwatch();
+
+        #endregion
+
+        #region Ctor
 
         public DsButtonProfileTurboSetting()
         {
@@ -319,6 +347,10 @@ namespace ScpControl.Profiler
             Interval = 50;
             Release = 100;
         }
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         ///     True if turbo mode is enabled for the current button, false otherwise.
@@ -344,6 +376,10 @@ namespace ScpControl.Profiler
         [DataMember]
         public int Release { get; set; }
 
+        #endregion
+
+        #region Deserialization
+
         private void OnCreated()
         {
             _delayedFrame = new Stopwatch();
@@ -358,8 +394,15 @@ namespace ScpControl.Profiler
             OnCreated();
         }
 
+        #endregion
+
+        #region Public methods
+
         public void ApplyOn(ScpHidReport report, IDsButton button)
         {
+            if ((report.Model != DsModel.DS3 || !(button is Ds3Button)) &&
+                (report.Model != DsModel.DS4 || !(button is Ds4Button))) return;
+
             // if button got released...
             if (_isActive && !report[button].IsPressed)
             {
@@ -374,7 +417,7 @@ namespace ScpControl.Profiler
             // if turbo is enabled and button is pressed...
             if (!_isActive && report[button].IsPressed)
             {
-                if (!_delayedFrame.IsRunning) _delayedFrame.Start();
+                if (!_delayedFrame.IsRunning) _delayedFrame.Restart();
 
                 if (_delayedFrame.ElapsedMilliseconds < Delay) return;
 
@@ -383,20 +426,19 @@ namespace ScpControl.Profiler
                 _delayedFrame.Reset();
             }
 
+            // if the button was released...
             if (!report[button].IsPressed)
             {
+                // ...restore default states
                 _isActive = false;
-                _delayedFrame.Reset();
-                _engagedFrame.Reset();
-                _releasedFrame.Reset();
                 return;
             }
 
-            if (!_engagedFrame.IsRunning) _engagedFrame.Start();
-
+            if (!_engagedFrame.IsRunning) _engagedFrame.Restart();
+            
             if (_engagedFrame.ElapsedMilliseconds < Interval && report[button].IsPressed) return;
 
-            if (!_releasedFrame.IsRunning) _releasedFrame.Start();
+            if (!_releasedFrame.IsRunning) _releasedFrame.Restart();
 
             if (_releasedFrame.ElapsedMilliseconds < Release)
             {
@@ -404,8 +446,14 @@ namespace ScpControl.Profiler
             }
             else
             {
-                _engagedFrame.Reset();
+                _isActive = false;
+
+                _delayedFrame.Stop();
+                _engagedFrame.Stop();
+                _releasedFrame.Stop();
             }
         }
+
+        #endregion
     }
 }

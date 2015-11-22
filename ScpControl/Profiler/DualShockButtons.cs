@@ -5,7 +5,6 @@ using System.Runtime.Serialization;
 
 namespace ScpControl.Profiler
 {
-
     #region Interfaces
 
     /// <summary>
@@ -38,6 +37,8 @@ namespace ScpControl.Profiler
     /// </summary>
     public class DsButtonState : IDsButtonState
     {
+        #region Properties
+
         /// <summary>
         ///     True if the button in question is currently pressed, false if it's released.
         /// </summary>
@@ -60,6 +61,8 @@ namespace ScpControl.Profiler
         {
             get { return (byte) (IsPressed ? 0xFF : 0x00); }
         }
+
+        #endregion
     }
 
     /// <summary>
