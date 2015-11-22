@@ -387,7 +387,7 @@ namespace ScpControl.Profiler
 
             if (_engagedFrame.ElapsedMilliseconds < Interval && report[button].IsPressed) return;
 
-            if (_releasedFrame.IsRunning) _releasedFrame.Start();
+            if (!_releasedFrame.IsRunning) _releasedFrame.Start();
 
             if (_releasedFrame.ElapsedMilliseconds < Release)
             {

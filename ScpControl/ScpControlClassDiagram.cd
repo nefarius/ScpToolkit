@@ -63,7 +63,7 @@
   <Class Name="ScpControl.RootHub" Collapsed="true">
     <Position X="5.5" Y="12" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BgBgAACAJSEBogCAGgCAEAEGJIgQCCBYIAEAAAqgEAg=</HashCode>
+      <HashCode>BgBgAACAJSEBogCAGgCAEAEGJIgQCCBYIAEAAAqgAAg=</HashCode>
       <FileName>RootHub.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -269,7 +269,7 @@
   <Class Name="ScpControl.Profiler.DualShockProfile" Collapsed="true">
     <Position X="31.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AABAACAABCAAAAAJAAAAAAAAACgAAAAAAACgQQAAAAA=</HashCode>
+      <HashCode>AABAgOIABCAgAAAJgAAAAAQAACgAAIAACACgQQAAAAI=</HashCode>
       <FileName>Profiler\DualShockProfile.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -620,14 +620,14 @@
   <Class Name="ScpControl.Profiler.Ds3Button" Collapsed="true">
     <Position X="6.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AACAACIAACAAAAABAABAABAAACggAAgACACgQAEAAAI=</HashCode>
+      <HashCode>AACAACIAACAgAAABAABAABAAACggAAgACACgQAEAAAI=</HashCode>
       <FileName>Profiler\DualShockButtons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ScpControl.Profiler.Ds4Button" Collapsed="true">
     <Position X="9" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AICQACIAAAAAAAABAABAABAAACggAAgACACgAAFAAAI=</HashCode>
+      <HashCode>AICQACIAAAAgAAABAABAABAAACggAAgACACgAAFAAAI=</HashCode>
       <FileName>Profiler\DualShockButtons.cs</FileName>
     </TypeIdentifier>
   </Class>
