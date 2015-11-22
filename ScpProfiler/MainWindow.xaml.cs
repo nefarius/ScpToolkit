@@ -86,7 +86,7 @@ namespace ScpProfiler
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentDualShockProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "TEST.xml"));
+            CurrentDualShockProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles", "TEST.xml"));
         }
     }
 }
