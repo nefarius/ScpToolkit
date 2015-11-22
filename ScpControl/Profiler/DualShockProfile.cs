@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -16,14 +15,10 @@ namespace ScpControl.Profiler
     /// </summary>
     public enum CommandType : byte
     {
-        [Description("Keystrokes")]
-        Keystrokes,
-        [Description("Gamepad buttons")]
-        GamepadButton,
-        [Description("Mouse buttons")]
-        MouseButtons,
-        [Description("Mouse axis")]
-        MouseAxis
+        [Description("Keystrokes")] Keystrokes,
+        [Description("Gamepad buttons")] GamepadButton,
+        [Description("Mouse buttons")] MouseButtons,
+        [Description("Mouse axis")] MouseAxis
     }
 
     /// <summary>
@@ -31,7 +26,7 @@ namespace ScpControl.Profiler
     /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
-    [KnownType(typeof(DsButtonMappingTarget))]
+    [KnownType(typeof (DsButtonMappingTarget))]
     public class DsButtonMappingTarget
     {
         [DataMember]
@@ -46,11 +41,24 @@ namespace ScpControl.Profiler
     /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
+    [KnownType(typeof (Ds3Button))]
+    [KnownType(typeof (Ds4Button))]
     public class DualShockProfile
     {
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext c)
+        {
+            OnCreated();
+        }
+
         #region Ctor
 
         public DualShockProfile()
+        {
+            OnCreated();
+        }
+
+        private void OnCreated()
         {
             Name = string.Empty;
 
@@ -99,20 +107,13 @@ namespace ScpControl.Profiler
         /// TODO: add error handling
         public static DualShockProfile Load(string file)
         {
-            var knownTypes = new List<Type>
-            {
-                typeof (DsButtonProfile),
-                typeof (Ds3Button),
-                typeof (Ds4Button)
-            };
-
-            var serializer = new DataContractSerializer(typeof(DualShockProfile), knownTypes);
+            var serializer = new DataContractSerializer(typeof (DualShockProfile));
 
             using (var fs = File.OpenText(file))
             {
                 using (var xml = XmlReader.Create(fs))
                 {
-                    return (DualShockProfile)serializer.ReadObject(xml);
+                    return (DualShockProfile) serializer.ReadObject(xml);
                 }
             }
         }
@@ -124,9 +125,9 @@ namespace ScpControl.Profiler
         /// TODO: add error handling
         public void Save(string file)
         {
-            var serializer = new DataContractSerializer(typeof(DualShockProfile));
+            var serializer = new DataContractSerializer(typeof (DualShockProfile));
 
-            using (var xml = XmlWriter.Create(file, new XmlWriterSettings { Indent = true }))
+            using (var xml = XmlWriter.Create(file, new XmlWriterSettings {Indent = true}))
             {
                 serializer.WriteObject(xml, this);
             }
@@ -155,7 +156,7 @@ namespace ScpControl.Profiler
         {
             get
             {
-                var props = GetType().GetProperties().Where(pi => pi.PropertyType == typeof(DsButtonProfile));
+                var props = GetType().GetProperties().Where(pi => pi.PropertyType == typeof (DsButtonProfile));
 
                 return props.Select(b => b.GetValue(this)).Cast<DsButtonProfile>();
             }
@@ -227,8 +228,7 @@ namespace ScpControl.Profiler
         public DsButtonProfile(params IDsButton[] sources)
         {
             SourceButtons = sources;
-            MappingTarget = new DsButtonMappingTarget();
-            Turbo = new DsButtonProfileTurboSetting();
+            OnCreated();
         }
 
         [DataMember]
@@ -244,6 +244,18 @@ namespace ScpControl.Profiler
         public DsButtonProfileTurboSetting Turbo { get; set; }
 
         public byte CurrentValue { get; set; }
+
+        private void OnCreated()
+        {
+            MappingTarget = new DsButtonMappingTarget();
+            Turbo = new DsButtonProfileTurboSetting();
+        }
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext c)
+        {
+            OnCreated();
+        }
 
         /// <summary>
         ///     Applies button re-mapping to the supplied report.
@@ -294,9 +306,13 @@ namespace ScpControl.Profiler
     /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
-    [KnownType(typeof(DsButtonProfileTurboSetting))]
     public class DsButtonProfileTurboSetting
     {
+        private Stopwatch _delayedFrame = new Stopwatch();
+        private Stopwatch _engagedFrame = new Stopwatch();
+        private bool _isActive;
+        private Stopwatch _releasedFrame = new Stopwatch();
+
         public DsButtonProfileTurboSetting()
         {
             Delay = 0;
@@ -328,11 +344,6 @@ namespace ScpControl.Profiler
         [DataMember]
         public int Release { get; set; }
 
-        private Stopwatch _delayedFrame = new Stopwatch();
-        private Stopwatch _engagedFrame = new Stopwatch();
-        private Stopwatch _releasedFrame = new Stopwatch();
-        private bool _isActive;
-
         private void OnCreated()
         {
             _delayedFrame = new Stopwatch();
@@ -349,8 +360,6 @@ namespace ScpControl.Profiler
 
         public void ApplyOn(ScpHidReport report, IDsButton button)
         {
-            if (!IsEnabled) return;
-
             // if button got released...
             if (_isActive && !report[button].IsPressed)
             {
@@ -365,9 +374,9 @@ namespace ScpControl.Profiler
             // if turbo is enabled and button is pressed...
             if (!_isActive && report[button].IsPressed)
             {
-                if(!_delayedFrame.IsRunning) _delayedFrame.Start();
+                if (!_delayedFrame.IsRunning) _delayedFrame.Start();
 
-                if(_delayedFrame.ElapsedMilliseconds < Delay) return;
+                if (_delayedFrame.ElapsedMilliseconds < Delay) return;
 
                 // time to activate!
                 _isActive = true;

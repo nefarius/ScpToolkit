@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 
 namespace ScpControl.Profiler
 {
+
     #region Interfaces
 
     /// <summary>
@@ -99,17 +100,17 @@ namespace ScpControl.Profiler
         public string DisplayName { get; protected set; }
 
         /// <summary>
-        ///     The bit offset within the <see cref="ArrayIndex"/>
+        ///     The bit offset within the <see cref="ArrayIndex" />
         /// </summary>
         [DataMember]
         public int MaskOffset { get; protected set; }
 
         /// <summary>
-        ///     The corresponding byte in the <see cref="ScpHidReport.RawBytes"/> holding the value of the button.
+        ///     The corresponding byte in the <see cref="ScpHidReport.RawBytes" /> holding the value of the button.
         /// </summary>
         [DataMember]
         public int ArrayIndex { get; protected set; }
-        
+
         #endregion
 
         #region Methods
@@ -131,7 +132,7 @@ namespace ScpControl.Profiler
                 source &= (byte) ~(1 << MaskOffset);
             }
         }
-        
+
         public override bool Equals(object obj)
         {
             var button = obj as DsButton;
@@ -155,22 +156,8 @@ namespace ScpControl.Profiler
     /// <summary>
     ///     Definition of a DualShock 3 button.
     /// </summary>
-    [KnownType(typeof(Ds3Button))]
     public class Ds3Button : DsButton
     {
-        #region Ctors
-
-        public Ds3Button()
-        {
-        }
-
-        public Ds3Button(string name)
-            : base(name)
-        {
-        }
-
-        #endregion
-
         #region Properties
 
         public static IEnumerable<Ds3Button> Buttons
@@ -180,8 +167,21 @@ namespace ScpControl.Profiler
                 return typeof (Ds3Button).GetProperties(
                     BindingFlags.Public | BindingFlags.Static)
                     .Select(b => b.GetValue(null, null))
-                    .Where(o => o.GetType() == typeof(Ds3Button)).Cast<Ds3Button>();
-            }  
+                    .Where(o => o.GetType() == typeof (Ds3Button)).Cast<Ds3Button>();
+            }
+        }
+
+        #endregion
+
+        #region Ctors
+
+        public Ds3Button()
+        {
+        }
+
+        public Ds3Button(string name)
+            : base(name)
+        {
         }
 
         #endregion
@@ -444,9 +444,23 @@ namespace ScpControl.Profiler
     /// <summary>
     ///     Definition of a DualShock 4 button.
     /// </summary>
-    [KnownType(typeof(Ds4Button))]
     public class Ds4Button : DsButton
     {
+        #region Properties
+
+        public static IEnumerable<Ds4Button> Buttons
+        {
+            get
+            {
+                return typeof (Ds4Button).GetProperties(
+                    BindingFlags.Public | BindingFlags.Static)
+                    .Select(b => b.GetValue(null, null))
+                    .Where(o => o.GetType() == typeof (Ds4Button)).Cast<Ds4Button>();
+            }
+        }
+
+        #endregion
+
         #region Ctors
 
         public Ds4Button()
@@ -456,21 +470,6 @@ namespace ScpControl.Profiler
         public Ds4Button(string name)
             : base(name)
         {
-        }
-
-        #endregion
-
-        #region Properties
-
-        public static IEnumerable<Ds4Button> Buttons
-        {
-            get
-            {
-                return typeof(Ds4Button).GetProperties(
-                    BindingFlags.Public | BindingFlags.Static)
-                    .Select(b => b.GetValue(null, null))
-                    .Where(o => o.GetType() == typeof(Ds4Button)).Cast<Ds4Button>();
-            }
         }
 
         #endregion
