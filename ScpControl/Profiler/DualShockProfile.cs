@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.Serialization;
+using System.Security.AccessControl;
 using System.Xml;
 using PropertyChanged;
 using ScpControl.ScpCore;
@@ -49,25 +52,24 @@ namespace ScpControl.Profiler
     [KnownType(typeof (Ds4Button))]
     public class DualShockProfile
     {
-        
-
         #region Ctor
+        
+        public DualShockProfile()
+        {
+            Id = Guid.NewGuid();
+            Name = "New Profile";
 
+            OnCreated();
+        }
+        
         [OnDeserializing]
         private void OnDeserializing(StreamingContext c)
         {
             OnCreated();
         }
 
-        public DualShockProfile()
-        {
-            OnCreated();
-        }
-
         private void OnCreated()
         {
-            Name = string.Empty;
-
             Ps = new DsButtonProfile(Ds3Button.Ps, Ds4Button.Ps);
             Circle = new DsButtonProfile(Ds3Button.Circle, Ds4Button.Circle);
             Cross = new DsButtonProfile(Ds3Button.Cross, Ds4Button.Cross);
@@ -133,6 +135,11 @@ namespace ScpControl.Profiler
         {
             var serializer = new DataContractSerializer(typeof (DualShockProfile));
 
+            var path = Path.GetDirectoryName(file) ?? GlobalConfiguration.AppDirectory;
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
             using (var xml = XmlWriter.Create(file, new XmlWriterSettings {Indent = true}))
             {
                 serializer.WriteObject(xml, this);
@@ -157,6 +164,26 @@ namespace ScpControl.Profiler
 
         [DataMember]
         public string Name { get; set; }
+
+        [DataMember]
+        public Guid Id { get; private set; }
+
+        public string FileName
+        {
+            get { return string.Format("{0}.xml", Id.ToString("D")); }
+        }
+
+        [DataMember]
+        public DsPadId PadId { get; set; }
+
+        [DataMember]
+        public string MacAddress { get; set; }
+
+        [DataMember]
+        public DsModel Model { get; set; }
+
+        [DataMember]
+        public DsMatch Match { get; set; }
 
         private IEnumerable<DsButtonProfile> Buttons
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using ScpControl;
@@ -33,6 +34,11 @@ namespace ScpProfiler
         private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)
         {
             if(report.PadId != _currentPad) return;
+
+            CurrentDualShockProfile.Model = report.Model;
+            CurrentDualShockProfile.MacAddress = string.Join(":",
+                (from z in report.PadMacAddress.GetAddressBytes() select z.ToString("X2")).ToArray());
+            CurrentDualShockProfile.PadId = report.PadId;
 
             CurrentDualShockProfile.Remap(report);
 
@@ -86,7 +92,18 @@ namespace ScpProfiler
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentDualShockProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles", "TEST.xml"));
+            CurrentDualShockProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles",
+                CurrentDualShockProfile.FileName));
+        }
+
+        private void NewButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void EditButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            EditProfileChildWindow.Show();
         }
     }
 }
