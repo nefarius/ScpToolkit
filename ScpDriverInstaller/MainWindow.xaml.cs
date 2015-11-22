@@ -383,7 +383,7 @@ namespace ScpDriverInstaller
                         else
                         {
                             Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
-                                Marshal.GetLastWin32Error());
+                                (uint) Marshal.GetLastWin32Error());
                             return;
                         }
                     }
