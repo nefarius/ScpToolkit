@@ -395,6 +395,42 @@ namespace ScpDriverInstaller
                     _reboot |= rebootRequired;
                     if (result == 0) _busDriverConfigured = true;
 
+                    // install Xbox 360 driver if requested (Vista/7 only)
+                    if (_viewModel.IsXbox360DriverNeeded && _viewModel.InstallXbox360Driver)
+                    {
+                        string driverPath = string.Empty, os = OsInfoHelper.OsInfo;
+
+                        switch (OsInfoHelper.OsParse(os))
+                        {
+                            case OsType.Vista:
+                                driverPath = Path.Combine(GlobalConfiguration.AppDirectory,
+                                    @"Xbox360\driver\vista_xp\xusb21.inf");
+                                break;
+                            case OsType.Win7:
+                                driverPath = Path.Combine(GlobalConfiguration.AppDirectory,
+                                    @"Xbox360\driver\win7\xusb21.inf");
+                                break;
+                            default:
+                                Log.WarnFormat("Microsoft Xbox 360 controller driver installation for unknown OS requested, won't install driver");
+                                break;
+                        }
+
+                        if (driverPath != string.Empty)
+                        {
+                            Log.DebugFormat("{0} detected, {1} driver selected", os, driverPath);
+                            Log.InfoFormat("Installing Microsoft Xbox 360 controller driver in Windows Driver Store");
+
+                            if (Devcon.Install(driverPath, ref rebootRequired))
+                            {
+                                Log.Info("Successfully installed Microsoft Xbox 360 controller driver");
+                            }
+                            else
+                            {
+                                Log.ErrorFormat("Couldn't install Microsoft Xbox 360 controller drivers [{0}]", driverPath);
+                            }
+                        }
+                    }
+
                     if (_viewModel.InstallBluetoothDriver)
                     {
                         result = DriverInstaller.InstallBluetoothDongles(donglesToInstall, force: forceInstall);
@@ -415,7 +451,7 @@ namespace ScpDriverInstaller
 
                         if (result > 0) _ds4DriverConfigured = true;
                     }
-
+                    
                     if (_viewModel.InstallWindowsService)
                     {
                         IDictionary state = new Hashtable();

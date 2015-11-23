@@ -1,33 +1,32 @@
 ﻿<Window
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:scpProfiler="clr-namespace:ScpProfiler"
     xmlns:scpCore="clr-namespace:ScpControl.ScpCore;assembly=ScpControl"
     xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
     xmlns:profiler="clr-namespace:ScpControl.Profiler;assembly=ScpControl"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     x:Class="ScpProfiler.MainWindow"
-    Title="Scp Gamepad Input Profile Manager" Height="930.2" Width="984" WindowStartupLocation="CenterScreen"
+    Title="Scp Gamepad Input Profile Manager" Height="857" Width="980" WindowStartupLocation="CenterScreen"
     Icon="xbox.ico" Initialized="Window_Initialized">
-    
+
     <Grid Background="#FF1B1B1B">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
-            <RowDefinition />
-            <RowDefinition Height="5" />
+            <RowDefinition Height="*" />
+
         </Grid.RowDefinitions>
-        
+
         <Grid.DataContext>
             <profiler:DualShockProfile x:Name="CurrentDualShockProfile" />
         </Grid.DataContext>
-        
+
         <Grid.Resources>
             <ObjectDataProvider x:Key="DsMatchEnum" MethodName="GetValues"
-                            ObjectType="{x:Type System:Enum}">
+                                ObjectType="{x:Type system:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="scpCore:DsMatch"/>
+                    <x:Type TypeName="scpCore:DsMatch" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
         </Grid.Resources>
@@ -176,17 +175,17 @@
                         <ColumnDefinition Width="10" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    
+
                     <!-- File Name -->
                     <TextBlock Grid.Row="0" Grid.Column="0"
                                HorizontalAlignment="Right"
                                VerticalAlignment="Center">
                         File name:
                     </TextBlock>
-                    <TextBlock Grid.Row="0" Grid.Column="2" 
+                    <TextBlock Grid.Row="0" Grid.Column="2"
                                VerticalAlignment="Center"
-                               Text="{Binding Path=FileName}"/>
-                    
+                               Text="{Binding Path=FileName}" />
+
                     <!-- Pad ID -->
                     <TextBlock Grid.Row="1" Grid.Column="0"
                                HorizontalAlignment="Right"
@@ -195,7 +194,7 @@
                     </TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="2"
                                VerticalAlignment="Center"
-                               Text="{Binding Path=PadId}"/>
+                               Text="{Binding Path=PadId}" />
 
                     <!-- MAC address -->
                     <TextBlock Grid.Row="2" Grid.Column="0"
@@ -205,7 +204,7 @@
                     </TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="2"
                                VerticalAlignment="Center"
-                               Text="{Binding Path=MacAddress}"/>
+                               Text="{Binding Path=MacAddress}" />
 
                     <!-- Profile match -->
                     <TextBlock Grid.Row="3" Grid.Column="0"
@@ -218,7 +217,7 @@
                               HorizontalAlignment="Left"
                               Margin="5" Width="100"
                               ItemsSource="{Binding Source={StaticResource DsMatchEnum}}"
-                              SelectedItem="{Binding Path=Match, Mode=TwoWay}"/>
+                              SelectedItem="{Binding Path=Match, Mode=TwoWay}" />
 
                     <!-- Profile name -->
                     <TextBlock Grid.Row="4" Grid.Column="0"
@@ -229,16 +228,9 @@
                     <TextBox Grid.Row="4" Grid.Column="2"
                              VerticalAlignment="Center"
                              Margin="5"
-                             Text="{Binding Path=Name, Mode=TwoWay}"/>
+                             Text="{Binding Path=Name, Mode=TwoWay}" />
                 </Grid>
             </GroupBox>
         </xctk:ChildWindow>
-
-        <tb:TaskbarIcon Grid.Row="2"
-                        Visibility="Visible"
-                        IconSource="xbox.ico"
-                        ToolTipText="Scp Custom Mouse &amp; Keyboard Profiler"
-                        MenuActivation="LeftOrRightClick"
-                        PopupActivation="DoubleClick" />
     </Grid>
 </Window>

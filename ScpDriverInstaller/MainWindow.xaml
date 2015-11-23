@@ -51,6 +51,14 @@
                                       ToolTip="Install Windows Service running in the background (recommended)">
                                 Install Windows Service
                             </CheckBox>
+                            
+                            <CheckBox Grid.Row="0" Grid.Column="1"
+                                      IsChecked="{Binding Path=InstallXbox360Driver}"
+                                      IsEnabled="{Binding Path=IsXbox360DriverNeeded}"
+                                      ToolTip="Install Microsoft Xbox 360 controller driver (Windows Vista/7 only)">
+                                Install Xbox 360 controller driver
+                            </CheckBox>
+                            
                             <CheckBox Grid.Row="1" Grid.Column="0"
                                       IsChecked="{Binding Path=InstallBluetoothDriver}"
                                       ToolTip="Replace driver of selected Bluetooth dongle (not needed if controllers are only used wired)">
