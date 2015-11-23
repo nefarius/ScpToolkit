@@ -59,7 +59,12 @@
                       VerticalAlignment="Center"
                       HorizontalAlignment="Left"
                       Margin="5"
-                      Width="200" />
+                      Width="200"
+                      SelectedIndex="0">
+                <ComboBox.ItemsSource>
+                    <Binding Source="{x:Static profiler:DualShockProfileManager.Instance}" Path="Profiles" />
+                </ComboBox.ItemsSource>
+            </ComboBox>
 
             <!-- Actions -->
             <Button Margin="5" Click="NewButton_OnClick">New...</Button>
