@@ -11,7 +11,7 @@
     Title="Scp Gamepad Input Profile Manager" Height="857" Width="980" WindowStartupLocation="CenterScreen"
     Icon="xbox.ico" Initialized="Window_Initialized">
 
-    <Grid Background="#FF1B1B1B">
+    <Grid Background="#FF1B1B1B" x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <Grid.DataContext>
-            <profiler:DualShockProfile x:Name="CurrentDualShockProfile" />
+            <scpProfiler:DualShockProfileViewModel/>
         </Grid.DataContext>
 
         <Grid.Resources>
@@ -60,7 +60,8 @@
                       HorizontalAlignment="Left"
                       Margin="5"
                       Width="200"
-                      SelectedIndex="0">
+                      SelectedIndex="0"
+                      SelectionChanged="Profiles_OnSelectionChanged">
                 <ComboBox.ItemsSource>
                     <Binding Source="{x:Static profiler:DualShockProfileManager.Instance}" Path="Profiles" />
                 </ComboBox.ItemsSource>
@@ -83,55 +84,55 @@
                     <StackPanel>
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_PSHome.png"
                                                                IconToolTip="PS Home button"
-                                                               ButtonProfile="{Binding Path=Ps, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Ps, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Circle.png"
                                                                IconToolTip="Circle"
-                                                               ButtonProfile="{Binding Path=Circle, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Circle, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Cross.png"
                                                                IconToolTip="Cross"
-                                                               ButtonProfile="{Binding Path=Cross, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Cross, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Sqaure.png"
                                                                IconToolTip="Square"
-                                                               ButtonProfile="{Binding Path=Square, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Square, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Triangle.png"
                                                                IconToolTip="Triangle"
-                                                               ButtonProfile="{Binding Path=Triangle, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Triangle, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Select.png"
                                                                IconToolTip="Select"
-                                                               ButtonProfile="{Binding Path=Select, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Select, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_Start.png"
                                                                IconToolTip="Start"
-                                                               ButtonProfile="{Binding Path=Start, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Start, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_L1.png"
                                                                IconToolTip="Left shoulder"
-                                                               ButtonProfile="{Binding Path=LeftShoulder, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.LeftShoulder, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_R1.png"
                                                                IconToolTip="Right shoulder"
-                                                               ButtonProfile="{Binding Path=RightShoulder, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.RightShoulder, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_L2.png"
                                                                IconToolTip="Left trigger"
-                                                               ButtonProfile="{Binding Path=LeftTrigger, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.LeftTrigger, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_R2.png"
                                                                IconToolTip="Right trigger"
-                                                               ButtonProfile="{Binding Path=RightTrigger, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.RightTrigger, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_L3.png"
                                                                IconToolTip="Left thumb"
-                                                               ButtonProfile="{Binding Path=LeftThumb, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.LeftThumb, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/48px-PS3_R3.png"
                                                                IconToolTip="Right thumb"
-                                                               ButtonProfile="{Binding Path=RightThumb, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.RightThumb, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_up.png"
                                                                IconToolTip="D-Pad up"
-                                                               ButtonProfile="{Binding Path=Up, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Up, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_right.png"
                                                                IconToolTip="D-Pad right"
-                                                               ButtonProfile="{Binding Path=Right, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Right, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_down.png"
                                                                IconToolTip="D-Pad down"
-                                                               ButtonProfile="{Binding Path=Down, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Down, Mode=TwoWay}" />
                         <scpProfiler:ButtonMappingEntryControl IconSource="Icons/Ds4/dpad_left.png"
                                                                IconToolTip="D-Pad left"
-                                                               ButtonProfile="{Binding Path=Left, Mode=TwoWay}" />
+                                                               ButtonProfile="{Binding Path=CurrentProfile.Left, Mode=TwoWay}" />
                     </StackPanel>
                 </ScrollViewer>
             </controls:AccordionItem>
@@ -189,7 +190,7 @@
                     </TextBlock>
                     <TextBlock Grid.Row="0" Grid.Column="2"
                                VerticalAlignment="Center"
-                               Text="{Binding Path=FileName}" />
+                               Text="{Binding Path=CurrentProfile.FileName}" />
 
                     <!-- Pad ID -->
                     <TextBlock Grid.Row="1" Grid.Column="0"
@@ -199,7 +200,7 @@
                     </TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="2"
                                VerticalAlignment="Center"
-                               Text="{Binding Path=PadId}" />
+                               Text="{Binding Path=CurrentProfile.PadId}" />
 
                     <!-- MAC address -->
                     <TextBlock Grid.Row="2" Grid.Column="0"
@@ -209,7 +210,7 @@
                     </TextBlock>
                     <TextBlock Grid.Row="2" Grid.Column="2"
                                VerticalAlignment="Center"
-                               Text="{Binding Path=MacAddress}" />
+                               Text="{Binding Path=CurrentProfile.MacAddress}" />
 
                     <!-- Profile match -->
                     <TextBlock Grid.Row="3" Grid.Column="0"
@@ -222,7 +223,7 @@
                               HorizontalAlignment="Left"
                               Margin="5" Width="100"
                               ItemsSource="{Binding Source={StaticResource DsMatchEnum}}"
-                              SelectedItem="{Binding Path=Match, Mode=TwoWay}" />
+                              SelectedItem="{Binding Path=CurrentProfile.Match, Mode=TwoWay}" />
 
                     <!-- Profile name -->
                     <TextBlock Grid.Row="4" Grid.Column="0"
@@ -233,7 +234,7 @@
                     <TextBox Grid.Row="4" Grid.Column="2"
                              VerticalAlignment="Center"
                              Margin="5"
-                             Text="{Binding Path=Name, Mode=TwoWay}" />
+                             Text="{Binding Path=CurrentProfile.Name, Mode=TwoWay}" />
                 </Grid>
             </GroupBox>
         </xctk:ChildWindow>

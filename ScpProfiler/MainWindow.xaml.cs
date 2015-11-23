@@ -18,6 +18,7 @@ namespace ScpProfiler
     {
         private readonly ScpProxy _proxy = new ScpProxy();
         private DsPadId _currentPad;
+        private readonly DualShockProfileViewModel _vm = new DualShockProfileViewModel();
 
         public MainWindow()
         {
@@ -29,58 +30,59 @@ namespace ScpProfiler
             _proxy.NativeFeedReceived += ProxyOnNativeFeedReceived;
             _proxy.Start();
 
+            MainGrid.DataContext = _vm;
         }
 
         private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)
         {
             if(report.PadId != _currentPad) return;
 
-            CurrentDualShockProfile.Model = report.Model;
-            CurrentDualShockProfile.MacAddress = string.Join(":",
+            _vm.CurrentProfile.Model = report.Model;
+            _vm.CurrentProfile.MacAddress = string.Join(":",
                 (from z in report.PadMacAddress.GetAddressBytes() select z.ToString("X2")).ToArray());
-            CurrentDualShockProfile.PadId = report.PadId;
+            _vm.CurrentProfile.PadId = report.PadId;
 
-            CurrentDualShockProfile.Remap(report);
+            _vm.CurrentProfile.Remap(report);
 
             switch (report.Model)
             {
                 case DsModel.DS3:
-                    CurrentDualShockProfile.Ps.CurrentValue = report[Ds3Button.Ps].Value;
-                    CurrentDualShockProfile.Circle.CurrentValue = report[Ds3Button.Circle].Value;
-                    CurrentDualShockProfile.Cross.CurrentValue = report[Ds3Button.Cross].Value;
-                    CurrentDualShockProfile.Square.CurrentValue = report[Ds3Button.Square].Value;
-                    CurrentDualShockProfile.Triangle.CurrentValue = report[Ds3Button.Triangle].Value;
-                    CurrentDualShockProfile.Select.CurrentValue = report[Ds3Button.Select].Value;
-                    CurrentDualShockProfile.Start.CurrentValue = report[Ds3Button.Start].Value;
-                    CurrentDualShockProfile.LeftShoulder.CurrentValue = report[Ds3Button.L1].Value;
-                    CurrentDualShockProfile.RightShoulder.CurrentValue = report[Ds3Button.R1].Value;
-                    CurrentDualShockProfile.LeftTrigger.CurrentValue = report[Ds3Button.L2].Value;
-                    CurrentDualShockProfile.RightTrigger.CurrentValue = report[Ds3Button.R2].Value;
-                    CurrentDualShockProfile.LeftThumb.CurrentValue = report[Ds3Button.L3].Value;
-                    CurrentDualShockProfile.RightThumb.CurrentValue = report[Ds3Button.R3].Value;
-                    CurrentDualShockProfile.Up.CurrentValue = report[Ds3Button.Up].Value;
-                    CurrentDualShockProfile.Right.CurrentValue = report[Ds3Button.Right].Value;
-                    CurrentDualShockProfile.Down.CurrentValue = report[Ds3Button.Down].Value;
-                    CurrentDualShockProfile.Left.CurrentValue = report[Ds3Button.Left].Value;
+                    _vm.CurrentProfile.Ps.CurrentValue = report[Ds3Button.Ps].Value;
+                    _vm.CurrentProfile.Circle.CurrentValue = report[Ds3Button.Circle].Value;
+                    _vm.CurrentProfile.Cross.CurrentValue = report[Ds3Button.Cross].Value;
+                    _vm.CurrentProfile.Square.CurrentValue = report[Ds3Button.Square].Value;
+                    _vm.CurrentProfile.Triangle.CurrentValue = report[Ds3Button.Triangle].Value;
+                    _vm.CurrentProfile.Select.CurrentValue = report[Ds3Button.Select].Value;
+                    _vm.CurrentProfile.Start.CurrentValue = report[Ds3Button.Start].Value;
+                    _vm.CurrentProfile.LeftShoulder.CurrentValue = report[Ds3Button.L1].Value;
+                    _vm.CurrentProfile.RightShoulder.CurrentValue = report[Ds3Button.R1].Value;
+                    _vm.CurrentProfile.LeftTrigger.CurrentValue = report[Ds3Button.L2].Value;
+                    _vm.CurrentProfile.RightTrigger.CurrentValue = report[Ds3Button.R2].Value;
+                    _vm.CurrentProfile.LeftThumb.CurrentValue = report[Ds3Button.L3].Value;
+                    _vm.CurrentProfile.RightThumb.CurrentValue = report[Ds3Button.R3].Value;
+                    _vm.CurrentProfile.Up.CurrentValue = report[Ds3Button.Up].Value;
+                    _vm.CurrentProfile.Right.CurrentValue = report[Ds3Button.Right].Value;
+                    _vm.CurrentProfile.Down.CurrentValue = report[Ds3Button.Down].Value;
+                    _vm.CurrentProfile.Left.CurrentValue = report[Ds3Button.Left].Value;
                     break;
                 case DsModel.DS4:
-                    CurrentDualShockProfile.Ps.CurrentValue = report[Ds4Button.Ps].Value;
-                    CurrentDualShockProfile.Circle.CurrentValue = report[Ds4Button.Circle].Value;
-                    CurrentDualShockProfile.Cross.CurrentValue = report[Ds4Button.Cross].Value;
-                    CurrentDualShockProfile.Square.CurrentValue = report[Ds4Button.Square].Value;
-                    CurrentDualShockProfile.Triangle.CurrentValue = report[Ds4Button.Triangle].Value;
-                    CurrentDualShockProfile.Select.CurrentValue = report[Ds4Button.Share].Value;
-                    CurrentDualShockProfile.Start.CurrentValue = report[Ds4Button.Options].Value;
-                    CurrentDualShockProfile.LeftShoulder.CurrentValue = report[Ds4Button.L1].Value;
-                    CurrentDualShockProfile.RightShoulder.CurrentValue = report[Ds4Button.R1].Value;
-                    CurrentDualShockProfile.LeftTrigger.CurrentValue = report[Ds4Button.L2].Value;
-                    CurrentDualShockProfile.RightTrigger.CurrentValue = report[Ds4Button.R2].Value;
-                    CurrentDualShockProfile.LeftThumb.CurrentValue = report[Ds4Button.L3].Value;
-                    CurrentDualShockProfile.RightThumb.CurrentValue = report[Ds4Button.R3].Value;
-                    CurrentDualShockProfile.Up.CurrentValue = report[Ds4Button.Up].Value;
-                    CurrentDualShockProfile.Right.CurrentValue = report[Ds4Button.Right].Value;
-                    CurrentDualShockProfile.Down.CurrentValue = report[Ds4Button.Down].Value;
-                    CurrentDualShockProfile.Left.CurrentValue = report[Ds4Button.Left].Value;
+                    _vm.CurrentProfile.Ps.CurrentValue = report[Ds4Button.Ps].Value;
+                    _vm.CurrentProfile.Circle.CurrentValue = report[Ds4Button.Circle].Value;
+                    _vm.CurrentProfile.Cross.CurrentValue = report[Ds4Button.Cross].Value;
+                    _vm.CurrentProfile.Square.CurrentValue = report[Ds4Button.Square].Value;
+                    _vm.CurrentProfile.Triangle.CurrentValue = report[Ds4Button.Triangle].Value;
+                    _vm.CurrentProfile.Select.CurrentValue = report[Ds4Button.Share].Value;
+                    _vm.CurrentProfile.Start.CurrentValue = report[Ds4Button.Options].Value;
+                    _vm.CurrentProfile.LeftShoulder.CurrentValue = report[Ds4Button.L1].Value;
+                    _vm.CurrentProfile.RightShoulder.CurrentValue = report[Ds4Button.R1].Value;
+                    _vm.CurrentProfile.LeftTrigger.CurrentValue = report[Ds4Button.L2].Value;
+                    _vm.CurrentProfile.RightTrigger.CurrentValue = report[Ds4Button.R2].Value;
+                    _vm.CurrentProfile.LeftThumb.CurrentValue = report[Ds4Button.L3].Value;
+                    _vm.CurrentProfile.RightThumb.CurrentValue = report[Ds4Button.R3].Value;
+                    _vm.CurrentProfile.Up.CurrentValue = report[Ds4Button.Up].Value;
+                    _vm.CurrentProfile.Right.CurrentValue = report[Ds4Button.Right].Value;
+                    _vm.CurrentProfile.Down.CurrentValue = report[Ds4Button.Down].Value;
+                    _vm.CurrentProfile.Left.CurrentValue = report[Ds4Button.Left].Value;
                     break;
             }
         }
@@ -92,8 +94,8 @@ namespace ScpProfiler
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            CurrentDualShockProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles",
-                CurrentDualShockProfile.FileName));
+            _vm.CurrentProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles",
+                _vm.CurrentProfile.FileName));
         }
 
         private void NewButton_OnClick(object sender, RoutedEventArgs e)
@@ -104,6 +106,11 @@ namespace ScpProfiler
         private void EditButton_OnClick(object sender, RoutedEventArgs e)
         {
             EditProfileChildWindow.Show();
+        }
+
+        private void Profiles_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _vm.CurrentProfile = ((ComboBox) sender).SelectedItem as DualShockProfile;
         }
     }
 }
