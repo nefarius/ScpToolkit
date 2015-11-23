@@ -92,6 +92,7 @@
     <Compile Include="DpadAxisControl.xaml.cs">
       <DependentUpon>DpadAxisControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DualShockProfileViewModel.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="ThumbStickAxisControl.xaml.cs">
       <DependentUpon>ThumbStickAxisControl.xaml</DependentUpon>
