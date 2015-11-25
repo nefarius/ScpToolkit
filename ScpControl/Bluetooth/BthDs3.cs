@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 using ScpControl.ScpCore;
-using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
@@ -49,7 +47,7 @@ namespace ScpControl.Bluetooth
 
         private readonly byte[] _ledOffsets = { 0x02, 0x04, 0x08, 0x10 };
 
-        private readonly byte[] _hidReport =
+        private readonly byte[] _hidOutputReport =
         {
             0x52, 0x01,
             0x00, 0xFF, 0x00, 0xFF, 0x00,
@@ -98,7 +96,7 @@ namespace ScpControl.Bluetooth
                 m_ControllerId = (byte)value;
                 InputReport.PadId = PadId;
 
-                _hidReport[11] = ledStatus;
+                _hidOutputReport[11] = ledStatus;
             }
         }
 
@@ -184,13 +182,13 @@ namespace ScpControl.Bluetooth
             {
                 if (GlobalConfiguration.Instance.DisableRumble)
                 {
-                    _hidReport[4] = 0;
-                    _hidReport[6] = 0;
+                    _hidOutputReport[4] = 0;
+                    _hidOutputReport[6] = 0;
                 }
                 else
                 {
-                    _hidReport[4] = (byte)(small > 0 ? 0x01 : 0x00);
-                    _hidReport[6] = large;
+                    _hidOutputReport[4] = (byte)(small > 0 ? 0x01 : 0x00);
+                    _hidOutputReport[6] = large;
                 }
 
                 if (!m_Blocked && GlobalConfiguration.Instance.Latency == 0)
@@ -198,7 +196,7 @@ namespace ScpControl.Bluetooth
                     m_Last = DateTime.Now;
                     m_Blocked = true;
 
-                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
+                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidOutputReport);
                 }
                 else
                 {
@@ -293,7 +291,7 @@ namespace ScpControl.Bluetooth
                                 break;
                         }
 
-                        _hidReport[11] = ledStatus;
+                        _hidOutputReport[11] = ledStatus;
 
                     }
 
@@ -303,9 +301,9 @@ namespace ScpControl.Bluetooth
 
                 if (IsFake)
                 {
-                    _hidReport[0] = 0xA2;
-                    _hidReport[3] = 0xFF;
-                    _hidReport[5] = 0x00;
+                    _hidOutputReport[0] = 0xA2;
+                    _hidOutputReport[3] = 0xFF;
+                    _hidOutputReport[5] = 0x00;
                 }
 
                 #endregion
@@ -318,7 +316,7 @@ namespace ScpControl.Bluetooth
                 m_Blocked = true;
                 m_Queued--;
 
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
+                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidOutputReport);
             
         }
     }
