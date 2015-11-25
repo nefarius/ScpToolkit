@@ -428,8 +428,14 @@ namespace ScpControl.Profiler
 
         #region Public methods
 
+        /// <summary>
+        ///     Applies turbo algorithm for a specified <see cref="IDsButton"/> on a given <see cref="ScpHidReport"/>.
+        /// </summary>
+        /// <param name="report">The HID report to manipulate.</param>
+        /// <param name="button">The button to trigger turbo on.</param>
         public void ApplyOn(ScpHidReport report, IDsButton button)
         {
+            // button type must match model, madness otherwise!
             if ((report.Model != DsModel.DS3 || !(button is Ds3Button)) &&
                 (report.Model != DsModel.DS4 || !(button is Ds4Button))) return;
 
@@ -447,8 +453,10 @@ namespace ScpControl.Profiler
             // if turbo is enabled and button is pressed...
             if (!_isActive && report[button].IsPressed)
             {
+                // ...start calculating the activation delay...
                 if (!_delayedFrame.IsRunning) _delayedFrame.Restart();
 
+                // ...if we are still activating, don't do anything
                 if (_delayedFrame.ElapsedMilliseconds < Delay) return;
 
                 // time to activate!
@@ -459,23 +467,29 @@ namespace ScpControl.Profiler
             // if the button was released...
             if (!report[button].IsPressed)
             {
-                // ...restore default states
+                // ...restore default states and skip processing
                 _isActive = false;
                 return;
             }
 
+            // reset engaged ("keep pressed") time frame...
             if (!_engagedFrame.IsRunning) _engagedFrame.Restart();
             
+            // ...do not change state while within frame and button is still pressed, then skip
             if (_engagedFrame.ElapsedMilliseconds < Interval && report[button].IsPressed) return;
 
+            // reset released time frame ("forecefully release") for button
             if (!_releasedFrame.IsRunning) _releasedFrame.Restart();
 
+            // while we're still within the released time frame...
             if (_releasedFrame.ElapsedMilliseconds < Release)
             {
+                // ...re-set the button state to released
                 report.Unset(button);
             }
             else
             {
+                // all frames passed, reset and start over
                 _isActive = false;
 
                 _delayedFrame.Stop();

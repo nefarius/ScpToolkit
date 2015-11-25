@@ -46,6 +46,8 @@ namespace ScpProfiler
 
         #endregion
 
+        #region Private event handlers
+
         private void TargetTypeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ButtonProfile.MappingTarget.CommandType =
@@ -57,6 +59,7 @@ namespace ScpProfiler
             switch (ButtonProfile.MappingTarget.CommandType)
             {
                 case CommandType.GamepadButton:
+                    TargetCommandComboBox.SelectedItem = ButtonProfile.MappingTarget.CommandTarget;
                     TargetCommandComboBox.ItemsSource = Ds3Button.Buttons;
                     break;
                 case CommandType.Keystrokes:
@@ -75,6 +78,8 @@ namespace ScpProfiler
         {
             ButtonProfile.MappingTarget.CommandTarget = ((ComboBox) sender).SelectedItem;
         }
+
+        #endregion
 
         #region Dependency properties
 

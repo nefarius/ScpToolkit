@@ -10,7 +10,7 @@
              MinHeight="48" MinWidth="600" Width="886">
     <UserControl.Resources>
         <ObjectDataProvider x:Key="MyCommandTypes" MethodName="GetValuesAndDescriptions"
-                    ObjectType="utilities:EnumExtensions">
+                            ObjectType="utilities:EnumExtensions">
             <ObjectDataProvider.MethodParameters>
                 <x:TypeExtension TypeName="profiler:CommandType" />
             </ObjectDataProvider.MethodParameters>
@@ -51,9 +51,11 @@
                   HorizontalAlignment="Stretch"
                   Margin="10,9"
                   ItemsSource="{Binding Source={StaticResource MyCommandTypes}}"
+                  SelectedValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.MappingTarget.CommandType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   DisplayMemberPath="Description"
                   SelectedValuePath="Value"
-                  SelectionChanged="TargetTypeComboBox_OnSelectionChanged" Height="30"/>
+                  SelectionChanged="TargetTypeComboBox_OnSelectionChanged"
+                  Height="30" />
 
         <!-- Target command -->
         <ComboBox Grid.Column="3"
@@ -63,7 +65,8 @@
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch"
                   Margin="10,9"
-                  SelectedIndex="0" Height="30"
+                  SelectedIndex="0"
+                  Height="30"
                   SelectionChanged="TargetCommandComboBox_SelectionChanged" />
 
         <!-- Mapping enabled? -->
