@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace ScpControl.Utilities
 {
@@ -24,5 +26,29 @@ namespace ScpControl.Utilities
 
             return en.ToString();
         }
+
+        // Might want to return a named type, this is a lazy example (which does work though)
+        public static IList<EnumMetaData> GetValuesAndDescriptions(Type enumType)
+        {
+            var values = Enum.GetValues(enumType).Cast<object>();
+            var valuesAndDescriptions = from value in values
+                                        select new EnumMetaData()
+                                        {
+                                            Value = value,
+                                            Description = value.GetType()
+                                                .GetMember(value.ToString())[0]
+                                                .GetCustomAttributes(true)
+                                                .OfType<DescriptionAttribute>()
+                                                .First()
+                                                .Description
+                                        };
+            return valuesAndDescriptions.ToList();
+        }
+    }
+
+    public class EnumMetaData
+    {
+        public string Description { get; set; }
+        public object Value { get; set; }
     }
 }

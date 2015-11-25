@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WindowsInput;
 using WindowsInput.Native;
 using AutoDependencyPropertyMarker;
 using ScpControl.Profiler;
+using ScpControl.Utilities;
 
 namespace ScpProfiler
 {
@@ -48,7 +48,8 @@ namespace ScpProfiler
 
         private void TargetTypeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ButtonProfile.MappingTarget.CommandType = ((CommandType) ((ComboBox) sender).SelectedItem);
+            ButtonProfile.MappingTarget.CommandType =
+                ((CommandType) ((EnumMetaData) ((ComboBox) sender).SelectedItem).Value);
 
             if (TargetCommandComboBox == null)
                 return;

@@ -3,20 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:valueConverters="clr-namespace:ScpControl.Value_Converters;assembly=ScpControl"
              xmlns:profiler="clr-namespace:ScpControl.Profiler;assembly=ScpControl"
+             xmlns:utilities="clr-namespace:ScpControl.Utilities;assembly=ScpControl"
              mc:Ignorable="d"
              MinHeight="48" MinWidth="600" Width="886">
     <UserControl.Resources>
-        <valueConverters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
-
-        <ObjectDataProvider MethodName="GetValues"
-                            ObjectType="{x:Type sys:Enum}"
-                            x:Key="MyCommandTypes">
+        <ObjectDataProvider x:Key="MyCommandTypes" MethodName="GetValuesAndDescriptions"
+                    ObjectType="utilities:EnumExtensions">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="profiler:CommandType" />
+                <x:TypeExtension TypeName="profiler:CommandType" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
@@ -55,14 +51,9 @@
                   HorizontalAlignment="Stretch"
                   Margin="10,9"
                   ItemsSource="{Binding Source={StaticResource MyCommandTypes}}"
-                  SelectedIndex="0"
-                  SelectionChanged="TargetTypeComboBox_OnSelectionChanged" Height="30">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+                  DisplayMemberPath="Description"
+                  SelectedValuePath="Value"
+                  SelectionChanged="TargetTypeComboBox_OnSelectionChanged" Height="30"/>
 
         <!-- Target command -->
         <ComboBox Grid.Column="3"
