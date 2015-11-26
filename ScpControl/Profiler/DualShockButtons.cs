@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -140,7 +141,7 @@ namespace ScpControl.Profiler
         {
             var button = obj as DsButton;
 
-            return (button != null && button.Name.Equals(Name));
+            return button != null && button.Name.Equals(Name);
         }
 
         public override int GetHashCode()
@@ -191,254 +192,236 @@ namespace ScpControl.Profiler
 
         #region Buttons
 
+        private static readonly Lazy<IDsButton> DsBtnNone = new Lazy<IDsButton>(() => new Ds3Button("None")
+        {
+            Offset = 0,
+            DisplayName = "None"
+        });
+
         public static IDsButton None
         {
-            get
-            {
-                return new Ds3Button("None")
-                {
-                    Offset = 0,
-                    DisplayName = "None"
-                };
-            }
+            get { return DsBtnNone.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnSelect = new Lazy<IDsButton>(() => new Ds3Button("Select")
+        {
+            Offset = 1 << 0,
+            DisplayName = "Select",
+            ArrayIndex = 10,
+            MaskOffset = 0
+        });
 
         public static IDsButton Select
         {
-            get
-            {
-                return new Ds3Button("Select")
-                {
-                    Offset = 1 << 0,
-                    DisplayName = "Select",
-                    ArrayIndex = 10,
-                    MaskOffset = 0
-                };
-            }
+            get { return DsBtnSelect.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnL3 = new Lazy<IDsButton>(() => new Ds3Button("L3")
+        {
+            Offset = 1 << 1,
+            DisplayName = "Left thumb",
+            ArrayIndex = 10,
+            MaskOffset = 1
+        });
 
         public static IDsButton L3
         {
-            get
-            {
-                return new Ds3Button("L3")
-                {
-                    Offset = 1 << 1,
-                    DisplayName = "Left thumb",
-                    ArrayIndex = 10,
-                    MaskOffset = 1
-                };
-            }
+            get { return DsBtnL3.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnR3 = new Lazy<IDsButton>(() => new Ds3Button("R3")
+        {
+            Offset = 1 << 2,
+            DisplayName = "Right thumb",
+            ArrayIndex = 10,
+            MaskOffset = 2
+        });
 
         public static IDsButton R3
         {
-            get
-            {
-                return new Ds3Button("R3")
-                {
-                    Offset = 1 << 2,
-                    DisplayName = "Right thumb",
-                    ArrayIndex = 10,
-                    MaskOffset = 2
-                };
-            }
+            get { return DsBtnR3.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnStart = new Lazy<IDsButton>(() => new Ds3Button("Start")
+        {
+            Offset = 1 << 3,
+            DisplayName = "Start",
+            ArrayIndex = 10,
+            MaskOffset = 3
+        });
 
         public static IDsButton Start
         {
-            get
-            {
-                return new Ds3Button("Start")
-                {
-                    Offset = 1 << 3,
-                    DisplayName = "Start",
-                    ArrayIndex = 10,
-                    MaskOffset = 3
-                };
-            }
+            get { return DsBtnStart.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnUp = new Lazy<IDsButton>(() => new Ds3Button("Up")
+        {
+            Offset = 1 << 4,
+            DisplayName = "D-Pad up",
+            ArrayIndex = 10,
+            MaskOffset = 4
+        });
 
         public static IDsButton Up
         {
-            get
-            {
-                return new Ds3Button("Up")
-                {
-                    Offset = 1 << 4,
-                    DisplayName = "D-Pad up",
-                    ArrayIndex = 10,
-                    MaskOffset = 4
-                };
-            }
+            get { return DsBtnUp.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnRight = new Lazy<IDsButton>(() => new Ds3Button("Right")
+        {
+            Offset = 1 << 5,
+            DisplayName = "D-Pad right",
+            ArrayIndex = 10,
+            MaskOffset = 5
+        });
 
         public static IDsButton Right
         {
-            get
-            {
-                return new Ds3Button("Right")
-                {
-                    Offset = 1 << 5,
-                    DisplayName = "D-Pad right",
-                    ArrayIndex = 10,
-                    MaskOffset = 5
-                };
-            }
+            get { return DsBtnRight.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnDown = new Lazy<IDsButton>(() => new Ds3Button("Down")
+        {
+            Offset = 1 << 6,
+            DisplayName = "D-Pad down",
+            ArrayIndex = 10,
+            MaskOffset = 6
+        });
 
         public static IDsButton Down
         {
-            get
-            {
-                return new Ds3Button("Down")
-                {
-                    Offset = 1 << 6,
-                    DisplayName = "D-Pad down",
-                    ArrayIndex = 10,
-                    MaskOffset = 6
-                };
-            }
+            get { return DsBtnDown.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnLeft = new Lazy<IDsButton>(() => new Ds3Button("Left")
+        {
+            Offset = 1 << 7,
+            DisplayName = "D-Pad left",
+            ArrayIndex = 10,
+            MaskOffset = 7
+        });
 
         public static IDsButton Left
         {
-            get
-            {
-                return new Ds3Button("Left")
-                {
-                    Offset = 1 << 7,
-                    DisplayName = "D-Pad left",
-                    ArrayIndex = 10,
-                    MaskOffset = 7
-                };
-            }
+            get { return DsBtnLeft.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnL2 = new Lazy<IDsButton>(() => new Ds3Button("L2")
+        {
+            Offset = 1 << 8,
+            DisplayName = "Left trigger",
+            ArrayIndex = 11,
+            MaskOffset = 0
+        });
 
         public static IDsButton L2
         {
-            get
-            {
-                return new Ds3Button("L2")
-                {
-                    Offset = 1 << 8,
-                    DisplayName = "Left trigger",
-                    ArrayIndex = 11,
-                    MaskOffset = 0
-                };
-            }
+            get { return DsBtnL2.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnR2 = new Lazy<IDsButton>(() => new Ds3Button("R2")
+        {
+            Offset = 1 << 9,
+            DisplayName = "Right trigger",
+            ArrayIndex = 11,
+            MaskOffset = 1
+        });
 
         public static IDsButton R2
         {
-            get
-            {
-                return new Ds3Button("R2")
-                {
-                    Offset = 1 << 9,
-                    DisplayName = "Right trigger",
-                    ArrayIndex = 11,
-                    MaskOffset = 1
-                };
-            }
+            get { return DsBtnR2.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnL1 = new Lazy<IDsButton>(() => new Ds3Button("L1")
+        {
+            Offset = 1 << 10,
+            DisplayName = "Left shoulder",
+            ArrayIndex = 11,
+            MaskOffset = 2
+        });
 
         public static IDsButton L1
         {
-            get
-            {
-                return new Ds3Button("L1")
-                {
-                    Offset = 1 << 10,
-                    DisplayName = "Left shoulder",
-                    ArrayIndex = 11,
-                    MaskOffset = 2
-                };
-            }
+            get { return DsBtnL1.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnR1 = new Lazy<IDsButton>(() => new Ds3Button("R1")
+        {
+            Offset = 1 << 11,
+            DisplayName = "Right shoulder",
+            ArrayIndex = 11,
+            MaskOffset = 3
+        });
 
         public static IDsButton R1
         {
-            get
-            {
-                return new Ds3Button("R1")
-                {
-                    Offset = 1 << 11,
-                    DisplayName = "Right shoulder",
-                    ArrayIndex = 11,
-                    MaskOffset = 3
-                };
-            }
+            get { return DsBtnR1.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnTriangle = new Lazy<IDsButton>(() => new Ds3Button("Triangle")
+        {
+            Offset = 1 << 12,
+            DisplayName = "Triangle",
+            ArrayIndex = 11,
+            MaskOffset = 4
+        });
 
         public static IDsButton Triangle
         {
-            get
-            {
-                return new Ds3Button("Triangle")
-                {
-                    Offset = 1 << 12,
-                    DisplayName = "Triangle",
-                    ArrayIndex = 11,
-                    MaskOffset = 4
-                };
-            }
+            get { return DsBtnTriangle.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnCircle = new Lazy<IDsButton>(() => new Ds3Button("Circle")
+        {
+            Offset = 1 << 13,
+            DisplayName = "Circle",
+            ArrayIndex = 11,
+            MaskOffset = 5
+        });
 
         public static IDsButton Circle
         {
-            get
-            {
-                return new Ds3Button("Circle")
-                {
-                    Offset = 1 << 13,
-                    DisplayName = "Circle",
-                    ArrayIndex = 11,
-                    MaskOffset = 5
-                };
-            }
+            get { return DsBtnCircle.Value; }
         }
 
-        public static IDsButton Cross
-        {
-            get
-            {
-                return new Ds3Button("Cross")
+        private static readonly Lazy<IDsButton> DsBtnCross = new Lazy<IDsButton>(() => new Ds3Button("Cross")
                 {
                     Offset = 1 << 14,
                     DisplayName = "Cross",
                     ArrayIndex = 11,
                     MaskOffset = 6
-                };
-            }
+                });
+
+        public static IDsButton Cross
+        {
+            get { return DsBtnCross.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnSquare = new Lazy<IDsButton>(() => new Ds3Button("Square")
+        {
+            Offset = 1 << 15,
+            DisplayName = "Square",
+            ArrayIndex = 11,
+            MaskOffset = 7
+        });
 
         public static IDsButton Square
         {
-            get
-            {
-                return new Ds3Button("Square")
-                {
-                    Offset = 1 << 15,
-                    DisplayName = "Square",
-                    ArrayIndex = 11,
-                    MaskOffset = 7
-                };
-            }
+            get { return DsBtnSquare.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnPs = new Lazy<IDsButton>(() => new Ds3Button("PS")
+        {
+            Offset = 1 << 16,
+            DisplayName = "PS",
+            ArrayIndex = 12,
+            MaskOffset = 0
+        });
 
         public static IDsButton Ps
         {
-            get
-            {
-                return new Ds3Button("PS")
-                {
-                    Offset = 1 << 16,
-                    DisplayName = "PS",
-                    ArrayIndex = 12,
-                    MaskOffset = 0
-                };
-            }
+            get { return DsBtnPs.Value; }
         }
 
         #endregion
@@ -479,268 +462,249 @@ namespace ScpControl.Profiler
 
         #region Buttons
 
+        private static readonly Lazy<IDsButton> DsBtnNone = new Lazy<IDsButton>(() => new Ds4Button("None")
+        {
+            Offset = 0,
+            DisplayName = "None"
+        });
+
         public static IDsButton None
         {
-            get
-            {
-                return new Ds4Button("None")
-                {
-                    Offset = 0,
-                    DisplayName = "None"
-                };
-            }
+            get { return DsBtnNone.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnUp = new Lazy<IDsButton>(() => new Ds4Button("Up")
+        {
+            Offset = 1 << 0,
+            DisplayName = "D-Pad up",
+            ArrayIndex = 13,
+            MaskOffset = 0
+        });
 
         public static IDsButton Up
         {
-            get
-            {
-                return new Ds4Button("Up")
-                {
-                    Offset = 1 << 0,
-                    DisplayName = "D-Pad up",
-                    ArrayIndex = 13,
-                    MaskOffset = 0
-                };
-            }
+            get { return DsBtnUp.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnRight = new Lazy<IDsButton>(() => new Ds4Button("Right")
+        {
+            Offset = 1 << 1,
+            DisplayName = "D-Pad right",
+            ArrayIndex = 13,
+            MaskOffset = 1
+        });
 
         public static IDsButton Right
         {
-            get
-            {
-                return new Ds4Button("Right")
-                {
-                    Offset = 1 << 1,
-                    DisplayName = "D-Pad right",
-                    ArrayIndex = 13,
-                    MaskOffset = 1
-                };
-            }
+            get { return DsBtnRight.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnDown = new Lazy<IDsButton>(() => new Ds4Button("Down")
+        {
+            Offset = 1 << 2,
+            DisplayName = "D-Pad down",
+            ArrayIndex = 13,
+            MaskOffset = 2
+        });
 
         public static IDsButton Down
         {
-            get
-            {
-                return new Ds4Button("Down")
-                {
-                    Offset = 1 << 2,
-                    DisplayName = "D-Pad down",
-                    ArrayIndex = 13,
-                    MaskOffset = 2
-                };
-            }
+            get { return DsBtnDown.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnLeft = new Lazy<IDsButton>(() => new Ds4Button("Left")
+        {
+            Offset = 1 << 3,
+            DisplayName = "D-Pad left",
+            ArrayIndex = 13,
+            MaskOffset = 3
+        });
 
         public static IDsButton Left
         {
-            get
-            {
-                return new Ds4Button("Left")
-                {
-                    Offset = 1 << 3,
-                    DisplayName = "D-Pad left",
-                    ArrayIndex = 13,
-                    MaskOffset = 3
-                };
-            }
+            get { return DsBtnLeft.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnSquare = new Lazy<IDsButton>(() => new Ds4Button("Square")
+        {
+            Offset = 1 << 4,
+            DisplayName = "Square",
+            ArrayIndex = 13,
+            MaskOffset = 4
+        });
 
         public static IDsButton Square
         {
-            get
-            {
-                return new Ds4Button("Square")
-                {
-                    Offset = 1 << 4,
-                    DisplayName = "Square",
-                    ArrayIndex = 13,
-                    MaskOffset = 4
-                };
-            }
+            get { return DsBtnSquare.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnCross = new Lazy<IDsButton>(() => new Ds4Button("Cross")
+        {
+            Offset = 1 << 5,
+            DisplayName = "Cross",
+            ArrayIndex = 13,
+            MaskOffset = 5
+        });
 
         public static IDsButton Cross
         {
-            get
-            {
-                return new Ds4Button("Cross")
-                {
-                    Offset = 1 << 5,
-                    DisplayName = "Cross",
-                    ArrayIndex = 13,
-                    MaskOffset = 5
-                };
-            }
+            get { return DsBtnCross.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnCircle = new Lazy<IDsButton>(() => new Ds4Button("Circle")
+        {
+            Offset = 1 << 6,
+            DisplayName = "Circle",
+            ArrayIndex = 13,
+            MaskOffset = 6
+        });
 
         public static IDsButton Circle
         {
-            get
-            {
-                return new Ds4Button("Circle")
-                {
-                    Offset = 1 << 6,
-                    DisplayName = "Circle",
-                    ArrayIndex = 13,
-                    MaskOffset = 6
-                };
-            }
+            get { return DsBtnCircle.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnTriangle = new Lazy<IDsButton>(() => new Ds4Button("Triangle")
+        {
+            Offset = 1 << 7,
+            DisplayName = "Triangle",
+            ArrayIndex = 13,
+            MaskOffset = 7
+        });
 
         public static IDsButton Triangle
         {
-            get
-            {
-                return new Ds4Button("Triangle")
-                {
-                    Offset = 1 << 7,
-                    DisplayName = "Triangle",
-                    ArrayIndex = 13,
-                    MaskOffset = 7
-                };
-            }
+            get { return DsBtnTriangle.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnL1 = new Lazy<IDsButton>(() => new Ds4Button("L1")
+        {
+            Offset = 1 << 8,
+            DisplayName = "Left shoulder",
+            ArrayIndex = 14,
+            MaskOffset = 0
+        });
 
         public static IDsButton L1
         {
-            get
-            {
-                return new Ds4Button("L1")
-                {
-                    Offset = 1 << 8,
-                    DisplayName = "Left shoulder",
-                    ArrayIndex = 14,
-                    MaskOffset = 0
-                };
-            }
+            get { return DsBtnL1.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnR1 = new Lazy<IDsButton>(() => new Ds4Button("R1")
+        {
+            Offset = 1 << 9,
+            DisplayName = "Right shoulder",
+            ArrayIndex = 14,
+            MaskOffset = 1
+        });
 
         public static IDsButton R1
         {
-            get
-            {
-                return new Ds4Button("R1")
-                {
-                    Offset = 1 << 9,
-                    DisplayName = "Right shoulder",
-                    ArrayIndex = 14,
-                    MaskOffset = 1
-                };
-            }
+            get { return DsBtnR1.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnL2 = new Lazy<IDsButton>(() => new Ds4Button("L2")
+        {
+            Offset = 1 << 10,
+            DisplayName = "Left trigger",
+            ArrayIndex = 14,
+            MaskOffset = 2
+        });
 
         public static IDsButton L2
         {
-            get
-            {
-                return new Ds4Button("L2")
-                {
-                    Offset = 1 << 10,
-                    DisplayName = "Left trigger",
-                    ArrayIndex = 14,
-                    MaskOffset = 2
-                };
-            }
+            get { return DsBtnL2.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnR2 = new Lazy<IDsButton>(() => new Ds4Button("R2")
+        {
+            Offset = 1 << 11,
+            DisplayName = "Right trigger",
+            ArrayIndex = 14,
+            MaskOffset = 3
+        });
 
         public static IDsButton R2
         {
-            get
-            {
-                return new Ds4Button("R2")
-                {
-                    Offset = 1 << 11,
-                    DisplayName = "Right trigger",
-                    ArrayIndex = 14,
-                    MaskOffset = 3
-                };
-            }
+            get { return DsBtnR2.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnShare = new Lazy<IDsButton>(() => new Ds4Button("Select")
+        {
+            Offset = 1 << 12,
+            DisplayName = "Share",
+            ArrayIndex = 14,
+            MaskOffset = 4
+        });
 
         public static IDsButton Share
         {
-            get
-            {
-                return new Ds4Button("Select")
-                {
-                    Offset = 1 << 12,
-                    DisplayName = "Share",
-                    ArrayIndex = 14,
-                    MaskOffset = 4
-                };
-            }
+            get { return DsBtnShare.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnOptions = new Lazy<IDsButton>(() => new Ds4Button("Start")
+        {
+            Offset = 1 << 13,
+            DisplayName = "Options",
+            ArrayIndex = 14,
+            MaskOffset = 5
+        });
 
         public static IDsButton Options
         {
-            get
-            {
-                return new Ds4Button("Start")
-                {
-                    Offset = 1 << 13,
-                    DisplayName = "Options",
-                    ArrayIndex = 14,
-                    MaskOffset = 5
-                };
-            }
+            get { return DsBtnOptions.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnL3 = new Lazy<IDsButton>(() => new Ds4Button("L3")
+        {
+            Offset = 1 << 14,
+            DisplayName = "Left thumb",
+            ArrayIndex = 14,
+            MaskOffset = 6
+        });
 
         public static IDsButton L3
         {
-            get
-            {
-                return new Ds4Button("L3")
-                {
-                    Offset = 1 << 14,
-                    DisplayName = "Left thumb",
-                    ArrayIndex = 14,
-                    MaskOffset = 6
-                };
-            }
+            get { return DsBtnL3.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnR3 = new Lazy<IDsButton>(() => new Ds4Button("R3")
+        {
+            Offset = 1 << 15,
+            DisplayName = "Right thumb",
+            ArrayIndex = 14,
+            MaskOffset = 7
+        });
 
         public static IDsButton R3
         {
-            get
-            {
-                return new Ds4Button("R3")
-                {
-                    Offset = 1 << 15,
-                    DisplayName = "Right thumb",
-                    ArrayIndex = 14,
-                    MaskOffset = 7
-                };
-            }
+            get { return DsBtnR3.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnPs = new Lazy<IDsButton>(() => new Ds4Button("PS")
+        {
+            Offset = 1 << 16,
+            DisplayName = "PS",
+            ArrayIndex = 15,
+            MaskOffset = 0
+        });
 
         public static IDsButton Ps
         {
-            get
-            {
-                return new Ds4Button("PS")
-                {
-                    Offset = 1 << 16,
-                    DisplayName = "PS",
-                    ArrayIndex = 15,
-                    MaskOffset = 0
-                };
-            }
+            get { return DsBtnPs.Value; }
         }
+
+        private static readonly Lazy<IDsButton> DsBtnTouchPad = new Lazy<IDsButton>(() => new Ds4Button("TouchPad")
+        {
+            Offset = 1 << 17,
+            DisplayName = "Touchpad",
+            ArrayIndex = 15,
+            MaskOffset = 1
+        });
 
         public static IDsButton TouchPad
         {
-            get
-            {
-                return new Ds4Button("TouchPad")
-                {
-                    Offset = 1 << 17,
-                    DisplayName = "Touchpad",
-                    ArrayIndex = 15,
-                    MaskOffset = 1
-                };
-            }
+            get { return DsBtnTouchPad.Value; }
         }
 
         #endregion
