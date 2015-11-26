@@ -163,9 +163,11 @@
                           x:Name="EditProfileChildWindow"
                           Width="457" Height="300"
                           Background="#FF2B2B2B"
-                          VerticalAlignment="Top"
-                          HorizontalAlignment="Left"
-                          Margin="50,50,0,0" WindowBackground="#FF00AADE">
+                          WindowBackground="#FF00AADE"
+                          Left="150"
+                          Top="50" 
+                          HorizontalAlignment="Left" 
+                          VerticalAlignment="Top">
             <!-- Profile Properties -->
             <GroupBox Header="Profile Properties" Margin="5">
                 <Grid Margin="5">

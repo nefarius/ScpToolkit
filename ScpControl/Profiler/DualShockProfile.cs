@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
+using WindowsInput.Native;
 using PropertyChanged;
 using ScpControl.ScpCore;
 
@@ -48,6 +49,7 @@ namespace ScpControl.Profiler
     [DataContract]
     [KnownType(typeof (Ds3Button))]
     [KnownType(typeof (Ds4Button))]
+    [KnownType(typeof (VirtualKeyCode))]
     public class DualShockProfile
     {
         #region Ctor
