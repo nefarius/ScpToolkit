@@ -100,7 +100,7 @@ namespace ScpProfiler
 
         private void NewButton_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            _vm.CurrentProfile = new DualShockProfile();
         }
 
         private void EditButton_OnClick(object sender, RoutedEventArgs e)
@@ -111,6 +111,11 @@ namespace ScpProfiler
         private void Profiles_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             _vm.CurrentProfile = ((ComboBox) sender).SelectedItem as DualShockProfile;
+        }
+
+        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

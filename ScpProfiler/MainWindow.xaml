@@ -71,6 +71,7 @@
             <Button Margin="5" Click="NewButton_OnClick">New...</Button>
             <Button Margin="5" Click="EditButton_OnClick">Edit...</Button>
             <Button Margin="5" Click="SaveButton_Click">Save</Button>
+            <Button Margin="5" Click="DeleteButton_OnClick">Delete</Button>
         </DockPanel>
 
         <!-- Main area -->
