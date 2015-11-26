@@ -50,8 +50,12 @@ namespace ScpProfiler
 
         private void TargetTypeComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            var selectedItem = (EnumMetaData) ((ComboBox) sender).SelectedItem;
+
+            if (selectedItem == null) return;
+
             ButtonProfile.MappingTarget.CommandType =
-                ((CommandType) ((EnumMetaData) ((ComboBox) sender).SelectedItem).Value);
+                ((CommandType) selectedItem.Value);
 
             if (TargetCommandComboBox == null)
                 return;

@@ -35,6 +35,8 @@ namespace ScpProfiler
 
         private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)
         {
+            if (_vm.CurrentProfile == null) return;
+
             if(report.PadId != _currentPad) return;
 
             _vm.CurrentProfile.Model = report.Model;
@@ -94,13 +96,13 @@ namespace ScpProfiler
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _vm.CurrentProfile.Save(Path.Combine(GlobalConfiguration.AppDirectory, "Profiles",
-                _vm.CurrentProfile.FileName));
+            _vm.CurrentProfile.Save(_vm.CurrentProfile.FullPath);
         }
 
         private void NewButton_OnClick(object sender, RoutedEventArgs e)
         {
             _vm.CurrentProfile = new DualShockProfile();
+            EditProfileChildWindow.Show();
         }
 
         private void EditButton_OnClick(object sender, RoutedEventArgs e)
@@ -108,14 +110,14 @@ namespace ScpProfiler
             EditProfileChildWindow.Show();
         }
 
-        private void Profiles_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            _vm.CurrentProfile = ((ComboBox) sender).SelectedItem as DualShockProfile;
-        }
-
         private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            if (File.Exists(_vm.CurrentProfile.FullPath))
+            {
+                File.Delete(_vm.CurrentProfile.FullPath);
+            }
+
+            _vm.CurrentProfile = new DualShockProfile();
         }
     }
 }

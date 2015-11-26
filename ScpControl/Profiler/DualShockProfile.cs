@@ -202,6 +202,14 @@ namespace ScpControl.Profiler
             get { return string.Format("{0}.xml", Id.ToString("D")); }
         }
 
+        /// <summary>
+        ///     The absolute path to this file on the system.
+        /// </summary>
+        public string FullPath
+        {
+            get { return Path.Combine(DualShockProfileManager.ProfilesPath, FileName); }
+        }
+
         [DataMember]
         public DsPadId PadId { get; set; }
 

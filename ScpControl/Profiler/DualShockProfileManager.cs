@@ -34,28 +34,34 @@ namespace ScpControl.Profiler
 
         private void LoadProfiles()
         {
-            var profiles = new List<DualShockProfile>();
-
-            foreach (var file in Directory.GetFiles(ProfilesPath, ProfileFileFilter)
-                )
+            lock (this)
             {
-                Log.InfoFormat("Loading profile from file {0}", file);
+                var profiles = new List<DualShockProfile>();
 
-                var profile = DualShockProfile.Load(file);
-                profiles.Add(profile);
+                foreach (var file in Directory.GetFiles(ProfilesPath, ProfileFileFilter)
+                    )
+                {
+                    Log.InfoFormat("Loading profile from file {0}", file);
 
-                Log.InfoFormat("Successfully loaded profile {0}", profile.Name);
+                    var profile = DualShockProfile.Load(file);
+                    profiles.Add(profile);
+
+                    Log.InfoFormat("Successfully loaded profile {0}", profile.Name);
+                }
+
+                Profiles = profiles.AsReadOnly();
             }
-
-            Profiles = profiles.AsReadOnly();
         }
 
         private void FswProfileFilesOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
         {
-            // file might still be written to, just wait until it's handles are closed
-            while (FilesystemHelper.IsFileLocked(new FileInfo(fileSystemEventArgs.FullPath)))
+            if (fileSystemEventArgs.ChangeType != WatcherChangeTypes.Deleted)
             {
-                Thread.Sleep(100);
+                // file might still be written to, just wait until it's handles are closed
+                while (FilesystemHelper.IsFileLocked(new FileInfo(fileSystemEventArgs.FullPath)))
+                {
+                    Thread.Sleep(100);
+                }
             }
 
             LoadProfiles();

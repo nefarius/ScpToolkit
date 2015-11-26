@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
 
         <Grid.DataContext>
-            <scpProfiler:DualShockProfileViewModel/>
+            <scpProfiler:DualShockProfileViewModel />
         </Grid.DataContext>
 
         <Grid.Resources>
@@ -60,12 +60,9 @@
                       HorizontalAlignment="Left"
                       Margin="5"
                       Width="200"
-                      SelectedIndex="0"
-                      SelectionChanged="Profiles_OnSelectionChanged">
-                <ComboBox.ItemsSource>
-                    <Binding Source="{x:Static profiler:DualShockProfileManager.Instance}" Path="Profiles" />
-                </ComboBox.ItemsSource>
-            </ComboBox>
+                      ItemsSource="{Binding Source={x:Static profiler:DualShockProfileManager.Instance}, Path=Profiles, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                      DisplayMemberPath="Name"
+                      SelectedItem="{Binding Path=CurrentProfile, Mode=TwoWay}" />
 
             <!-- Actions -->
             <Button Margin="5" Click="NewButton_OnClick">New...</Button>
@@ -165,8 +162,8 @@
                           Background="#FF2B2B2B"
                           WindowBackground="#FF00AADE"
                           Left="150"
-                          Top="50" 
-                          HorizontalAlignment="Left" 
+                          Top="50"
+                          HorizontalAlignment="Left"
                           VerticalAlignment="Top">
             <!-- Profile Properties -->
             <GroupBox Header="Profile Properties" Margin="5">
