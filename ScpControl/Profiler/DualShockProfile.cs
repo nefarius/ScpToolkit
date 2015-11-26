@@ -99,6 +99,27 @@ namespace ScpControl.Profiler
         /// <param name="report">The report to manipulate.</param>
         public void Remap(ScpHidReport report)
         {
+            // determine if profile should be applied
+            switch (Match)
+            {
+                case DsMatch.Global:
+                    // always apply
+                    break;
+                case DsMatch.Mac:
+                    // applies of MAC address matches
+                    var reportMac = report.PadMacAddress.ToString();
+                    if (string.CompareOrdinal(MacAddress.Replace(":", string.Empty), reportMac) != 0) return;
+                    break;
+                case DsMatch.None:
+                    // never apply
+                    return;
+                case DsMatch.Pad:
+                    // applies if pad IDs match
+                    if (PadId != report.PadId) return;
+                    break;
+            }
+
+            // walk through all buttons
             foreach (var buttonProfile in Buttons)
             {
                 buttonProfile.Remap(report);
@@ -171,6 +192,9 @@ namespace ScpControl.Profiler
         [DataMember]
         public Guid Id { get; private set; }
 
+        /// <summary>
+        ///     The name of the file this profile is stored in on the system.
+        /// </summary>
         public string FileName
         {
             get { return string.Format("{0}.xml", Id.ToString("D")); }
