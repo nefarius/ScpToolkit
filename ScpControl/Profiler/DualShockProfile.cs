@@ -277,6 +277,9 @@ namespace ScpControl.Profiler
         #endregion
     }
 
+    /// <summary>
+    ///     Describes details about individual buttons.
+    /// </summary>
     [ImplementPropertyChanged]
     [DataContract]
     public class DsButtonProfile
