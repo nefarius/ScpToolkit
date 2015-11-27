@@ -60,9 +60,10 @@
                       HorizontalAlignment="Left"
                       Margin="5"
                       Width="200"
-                      ItemsSource="{Binding Source={x:Static profiler:DualShockProfileManager.Instance}, Path=Profiles, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                      ItemsSource="{Binding Path=Profiles}"
+                      IsSynchronizedWithCurrentItem="True"
                       DisplayMemberPath="Name"
-                      SelectedItem="{Binding Path=CurrentProfile, Mode=TwoWay}" />
+                      SelectedItem="{Binding Path=CurrentProfile, Mode=TwoWay}"/>
 
             <!-- Actions -->
             <Button Margin="5" Click="NewButton_OnClick">New...</Button>

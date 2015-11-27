@@ -1,4 +1,5 @@
-﻿using PropertyChanged;
+﻿using System.Collections.Generic;
+using PropertyChanged;
 using ScpControl.Profiler;
 
 namespace ScpProfiler
@@ -12,5 +13,10 @@ namespace ScpProfiler
         }
 
         public DualShockProfile CurrentProfile { get; set; }
+
+        public IReadOnlyList<DualShockProfile> Profiles
+        {
+            get { return DualShockProfileManager.Instance.Profiles; }
+        }
     }
 }
