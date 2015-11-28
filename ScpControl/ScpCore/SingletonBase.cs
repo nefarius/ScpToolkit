@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace ScpControl.ScpCore
 {
@@ -7,7 +6,6 @@ namespace ScpControl.ScpCore
     ///     A base class for the singleton design pattern.
     /// </summary>
     /// <typeparam name="T">Class type of the singleton</typeparam>
-    [DataContract]
     public abstract class SingletonBase<T> where T : class
     {
         #region Members
