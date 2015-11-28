@@ -198,7 +198,6 @@ namespace ScpControl
         /// </summary>
         /// <param name="inputReport">The <see cref="ScpHidReport"/> to translate.</param>
         /// <param name="output">The target Xbox data array.</param>
-        /// <param name="type"></param>
         public void Parse(ScpHidReport inputReport, byte[] output)
         {
             var input = inputReport.RawBytes;
