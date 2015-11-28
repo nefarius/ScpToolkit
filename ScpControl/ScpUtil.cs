@@ -11,36 +11,6 @@ using ScpControl.ScpCore;
 
 namespace ScpControl
 {
-    [Obsolete]
-    public class Ds3ButtonMap : SortedDictionary<Ds3Button, Ds3Button>
-    {
-    }
-
-    [Obsolete]
-    public class Ds3AxisMap : SortedDictionary<Ds3Axis, Ds3Axis>
-    {
-    }
-
-    [Obsolete]
-    public class Ds3ButtonAxisMap : SortedDictionary<Ds3Button, Ds3Axis>
-    {
-    }
-
-    [Obsolete]
-    public class Ds4ButtonMap : SortedDictionary<Ds4Button, Ds4Button>
-    {
-    }
-
-    [Obsolete]
-    public class Ds4AxisMap : SortedDictionary<Ds4Axis, Ds4Axis>
-    {
-    }
-
-    [Obsolete]
-    public class Ds4ButtonAxisMap : SortedDictionary<Ds4Button, Ds4Axis>
-    {
-    }
-
     public interface IDsDevice
     {
         DsPadId PadId { get; set; }

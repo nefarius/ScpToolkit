@@ -2,6 +2,7 @@
 
 namespace ScpControl.ScpCore
 {
+    [Obsolete]
     public class DsDetail
     {
         private readonly byte[] _localMac = new byte[6];

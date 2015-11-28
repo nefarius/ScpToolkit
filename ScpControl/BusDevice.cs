@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
-using Ds3Axis = ScpControl.Profiler.Ds3Axis;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
-using Ds4Axis = ScpControl.ScpCore.Ds4Axis;
-using Ds4Button = ScpControl.ScpCore.Ds4Button;
 
 namespace ScpControl
 {
@@ -239,14 +235,14 @@ namespace ScpControl
                         if (inputReport[Ds3Button.Circle].IsPressed) xButton |= X360Button.B;
                         if (inputReport[Ds3Button.Cross].IsPressed) xButton |= X360Button.A;
                         if (inputReport[Ds3Button.Square].IsPressed) xButton |= X360Button.X;
-                        
+
                         // PS/Guide
                         if (inputReport[Ds3Button.Ps].IsPressed) xButton |= X360Button.Guide;
-                        
+
                         // thumbs
                         if (inputReport[Ds3Button.L3].IsPressed) xButton |= X360Button.LS;
                         if (inputReport[Ds3Button.R3].IsPressed) xButton |= X360Button.RS;
-                        
+
                         output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
                         output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
 
@@ -288,40 +284,40 @@ namespace ScpControl
 
                     case DsModel.DS4:
                     {
-                        if (inputReport[Profiler.Ds4Button.Share].IsPressed) xButton |= X360Button.Back;
-                        if (inputReport[Profiler.Ds4Button.Options].IsPressed) xButton |= X360Button.Start;
+                        if (inputReport[Ds4Button.Share].IsPressed) xButton |= X360Button.Back;
+                        if (inputReport[Ds4Button.Options].IsPressed) xButton |= X360Button.Start;
 
-                        if (inputReport[Profiler.Ds4Button.Up].IsPressed) xButton |= X360Button.Up;
-                        if (inputReport[Profiler.Ds4Button.Right].IsPressed) xButton |= X360Button.Right;
-                        if (inputReport[Profiler.Ds4Button.Down].IsPressed) xButton |= X360Button.Down;
-                        if (inputReport[Profiler.Ds4Button.Left].IsPressed) xButton |= X360Button.Left;
+                        if (inputReport[Ds4Button.Up].IsPressed) xButton |= X360Button.Up;
+                        if (inputReport[Ds4Button.Right].IsPressed) xButton |= X360Button.Right;
+                        if (inputReport[Ds4Button.Down].IsPressed) xButton |= X360Button.Down;
+                        if (inputReport[Ds4Button.Left].IsPressed) xButton |= X360Button.Left;
 
-                        if (inputReport[Profiler.Ds4Button.L1].IsPressed) xButton |= X360Button.LB;
-                        if (inputReport[Profiler.Ds4Button.R1].IsPressed) xButton |= X360Button.RB;
+                        if (inputReport[Ds4Button.L1].IsPressed) xButton |= X360Button.LB;
+                        if (inputReport[Ds4Button.R1].IsPressed) xButton |= X360Button.RB;
 
-                        if (inputReport[Profiler.Ds4Button.Triangle].IsPressed) xButton |= X360Button.Y;
-                        if (inputReport[Profiler.Ds4Button.Circle].IsPressed) xButton |= X360Button.B;
-                        if (inputReport[Profiler.Ds4Button.Cross].IsPressed) xButton |= X360Button.A;
-                        if (inputReport[Profiler.Ds4Button.Square].IsPressed) xButton |= X360Button.X;
+                        if (inputReport[Ds4Button.Triangle].IsPressed) xButton |= X360Button.Y;
+                        if (inputReport[Ds4Button.Circle].IsPressed) xButton |= X360Button.B;
+                        if (inputReport[Ds4Button.Cross].IsPressed) xButton |= X360Button.A;
+                        if (inputReport[Ds4Button.Square].IsPressed) xButton |= X360Button.X;
 
-                        if (inputReport[Profiler.Ds4Button.Ps].IsPressed) xButton |= X360Button.Guide;
+                        if (inputReport[Ds4Button.Ps].IsPressed) xButton |= X360Button.Guide;
 
-                        if (inputReport[Profiler.Ds4Button.L3].IsPressed) xButton |= X360Button.LS;
-                        if (inputReport[Profiler.Ds4Button.R3].IsPressed) xButton |= X360Button.RS;
+                        if (inputReport[Ds4Button.L3].IsPressed) xButton |= X360Button.LS;
+                        if (inputReport[Ds4Button.R3].IsPressed) xButton |= X360Button.RS;
 
                         output[(uint) X360Axis.BT_Lo] = (byte) ((uint) xButton >> 0 & 0xFF);
                         output[(uint) X360Axis.BT_Hi] = (byte) ((uint) xButton >> 8 & 0xFF);
 
-                        output[(uint) X360Axis.LT] = inputReport[Profiler.Ds4Axis.L2].Value;
-                        output[(uint) X360Axis.RT] = inputReport[Profiler.Ds4Axis.R2].Value;
+                        output[(uint) X360Axis.LT] = inputReport[Ds4Axis.L2].Value;
+                        output[(uint) X360Axis.RT] = inputReport[Ds4Axis.R2].Value;
 
                         if (
-                            !DeadZone(GlobalConfiguration.Instance.DeadZoneL, inputReport[Profiler.Ds4Axis.Lx].Value,
-                                inputReport[Profiler.Ds4Axis.Ly].Value))
+                            !DeadZone(GlobalConfiguration.Instance.DeadZoneL, inputReport[Ds4Axis.Lx].Value,
+                                inputReport[Ds4Axis.Ly].Value))
                             // Left Stick DeadZone
                         {
-                            var thumbLx = +Scale(inputReport[Profiler.Ds4Axis.Lx].Value, GlobalConfiguration.Instance.FlipLX);
-                            var thumbLy = -Scale(inputReport[Profiler.Ds4Axis.Ly].Value, GlobalConfiguration.Instance.FlipLY);
+                            var thumbLx = +Scale(inputReport[Ds4Axis.Lx].Value, GlobalConfiguration.Instance.FlipLX);
+                            var thumbLy = -Scale(inputReport[Ds4Axis.Ly].Value, GlobalConfiguration.Instance.FlipLY);
 
                             output[(uint) X360Axis.LX_Lo] = (byte) ((thumbLx >> 0) & 0xFF); // LX
                             output[(uint) X360Axis.LX_Hi] = (byte) ((thumbLx >> 8) & 0xFF);
@@ -331,12 +327,12 @@ namespace ScpControl
                         }
 
                         if (
-                            !DeadZone(GlobalConfiguration.Instance.DeadZoneR, inputReport[Profiler.Ds4Axis.Rx].Value,
-                                inputReport[Profiler.Ds4Axis.Ry].Value))
+                            !DeadZone(GlobalConfiguration.Instance.DeadZoneR, inputReport[Ds4Axis.Rx].Value,
+                                inputReport[Ds4Axis.Ry].Value))
                             // Right Stick DeadZone
                         {
-                            var thumbRx = +Scale(inputReport[Profiler.Ds4Axis.Rx].Value, GlobalConfiguration.Instance.FlipRX);
-                            var thumbRy = -Scale(inputReport[Profiler.Ds4Axis.Ry].Value, GlobalConfiguration.Instance.FlipRY);
+                            var thumbRx = +Scale(inputReport[Ds4Axis.Rx].Value, GlobalConfiguration.Instance.FlipRX);
+                            var thumbRy = -Scale(inputReport[Ds4Axis.Ry].Value, GlobalConfiguration.Instance.FlipRY);
 
                             output[(uint) X360Axis.RX_Lo] = (byte) ((thumbRx >> 0) & 0xFF); // RX
                             output[(uint) X360Axis.RX_Hi] = (byte) ((thumbRx >> 8) & 0xFF);

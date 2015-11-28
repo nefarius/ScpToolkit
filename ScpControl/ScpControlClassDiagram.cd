@@ -63,7 +63,7 @@
   <Class Name="ScpControl.RootHub" Collapsed="true">
     <Position X="5.5" Y="12" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BgBgAACAJSEBogCAGgCAEAEGJIgQCCBYIAEAAAqgAAg=</HashCode>
+      <HashCode>AgBgAAAAJSEBIgCAGACAEAEGJIgQCCBQIAEAAAqAAAg=</HashCode>
       <FileName>RootHub.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -85,7 +85,7 @@
   <Class Name="ScpControl.ScpProxy" Collapsed="true">
     <Position X="35" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AiAAAMAAACABAsUAGBCAgAACAAgAACAAIAFASAIACCI=</HashCode>
+      <HashCode>AiAAAAAAACABAsUAEACAgAACAAgAAAAAIAFACAIACCI=</HashCode>
       <FileName>ScpProxy.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -94,48 +94,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAACAACAgAIAAAICAAAACAAAACAASIAAAAAAAQAE=</HashCode>
       <FileName>ScpTimer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Ds3ButtonMap" Collapsed="true">
-    <Position X="31.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpUtil.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Ds3AxisMap" Collapsed="true">
-    <Position X="28" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpUtil.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Ds3ButtonAxisMap" Collapsed="true">
-    <Position X="29.75" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpUtil.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Ds4ButtonMap" Collapsed="true">
-    <Position X="36.75" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpUtil.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Ds4AxisMap" Collapsed="true">
-    <Position X="33.25" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpUtil.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.Ds4ButtonAxisMap" Collapsed="true">
-    <Position X="35" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpUtil.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ScpControl.DsNull" Collapsed="true" BaseTypeListCollapsed="true">
@@ -281,13 +239,6 @@
       <FileName>ScpCore\DsDetail.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ScpControl.ScpCore.DsPacket" Collapsed="true">
-    <Position X="29.75" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AEEAgBAABAAAAQAAAAAAAAAAAAAgAIAAASAAAAAASAA=</HashCode>
-      <FileName>ScpCore\DsPacket.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="ScpControl.ScpCore.GlobalConfiguration" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="35" Y="3.5" Width="1.5" />
     <TypeIdentifier>
@@ -308,20 +259,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Bluetooth\L2CAP.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.ScpCore.ProfileCollection" Collapsed="true">
-    <Position X="29.75" Y="5.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ScpCore\Profile.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="ScpControl.ScpCore.Profile" Collapsed="true">
-    <Position X="28" Y="5.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAwAAAAgAAAAEiAABAAQEAAAACACAASAAAAAAAAA=</HashCode>
-      <FileName>ScpCore\Profile.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ScpControl.Sound.AudioPlayer" Collapsed="true">
@@ -639,13 +576,6 @@
       <FileName>Profiler\DualShockAxes.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="ScpControl.ScpPadState" Collapsed="true">
-    <Position X="33.25" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AFgAAAAECCAABoAAwAKAAABCCggEYBCQAAIgAAIEEAA=</HashCode>
-      <FileName>ScpPadState.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Struct Name="ScpControl.Driver.KISO_PACKET" Collapsed="true">
     <Position X="28" Y="8.75" Width="1.5" />
     <TypeIdentifier>
@@ -726,7 +656,7 @@
   <Interface Name="ScpControl.Wcf.IScpCommandService" Collapsed="true">
     <Position X="36.75" Y="10" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgAAAACAAAEAgAAAEgAAAAEAAAAAAAAIAAEAAAIgAAg=</HashCode>
+      <HashCode>AgAAAAAAAAEAAAAAEAAAAAEAAAAAAAAAAAEAAAIAAAg=</HashCode>
       <FileName>Wcf\IScpCommandService.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -888,34 +818,6 @@
     <Position X="36.75" Y="13.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAgIQAAABAAAAAAAABACAAAAAAAAACAAAAAAMAAEAA=</HashCode>
-      <FileName>ScpCore\GamePadEnums.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="ScpControl.ScpCore.Ds3Button" Collapsed="true">
-    <Position X="33.25" Y="11" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>CACAACIAACAAAAABAABAABAAAAggAAgACACgQAEAAAI=</HashCode>
-      <FileName>ScpCore\GamePadEnums.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="ScpControl.ScpCore.Ds3Axis" Collapsed="true">
-    <Position X="31.5" Y="11" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAIAAAFAAAABAABAABAAACggCAgACACgAAEAAAI=</HashCode>
-      <FileName>ScpCore\GamePadEnums.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="ScpControl.ScpCore.Ds4Button" Collapsed="true">
-    <Position X="36.75" Y="11" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>CICQACIAAAAAAAABAABAABAAAAggAAgACACgAAFAAAI=</HashCode>
-      <FileName>ScpCore\GamePadEnums.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
-  <Enum Name="ScpControl.ScpCore.Ds4Axis" Collapsed="true">
-    <Position X="35" Y="11" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAFAAAAAAABAABAAACAACAAAAAAAAAEAAAA=</HashCode>
       <FileName>ScpCore\GamePadEnums.cs</FileName>
     </TypeIdentifier>
   </Enum>

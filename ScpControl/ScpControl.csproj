@@ -187,9 +187,7 @@
     <Compile Include="Rx\IChannel.cs" />
     <Compile Include="Rx\ScpNativeFeedChannel.cs" />
     <Compile Include="ScpCore\DsDetail.cs" />
-    <Compile Include="ScpCore\DsPacket.cs" />
     <Compile Include="ScpCore\GamePadEnums.cs" />
-    <Compile Include="ScpCore\Profile.cs" />
     <Compile Include="ScpCore\SingletonBase.cs" />
     <Compile Include="Scripting.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />
@@ -242,12 +240,6 @@
     <Compile Include="Bluetooth\L2CAP.cs" />
     <Compile Include="ScpDevice.Interop.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ScpPadState.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ScpPadState.Designer.cs">
-      <DependentUpon>ScpPadState.cs</DependentUpon>
     </Compile>
     <Compile Include="ScpProxy.cs">
       <SubType>Component</SubType>
@@ -327,9 +319,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Bluetooth\BthDongle.resx">
       <DependentUpon>BthDongle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScpPadState.resx">
-      <DependentUpon>ScpPadState.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ScpProxy.resx">
       <DependentUpon>ScpProxy.cs</DependentUpon>
