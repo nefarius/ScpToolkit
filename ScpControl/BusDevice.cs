@@ -59,6 +59,11 @@ namespace ScpControl
 
         #region Private methods
 
+        /// <summary>
+        ///     Translates Pad ID to bus device offset.
+        /// </summary>
+        /// <param name="index">The Pad ID to translate.</param>
+        /// <returns>The bus device serial.</returns>
         private int IndexToSerial(byte index)
         {
             return index + m_Offset + 1;
