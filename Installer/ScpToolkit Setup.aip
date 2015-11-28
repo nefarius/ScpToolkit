@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{8E78BDE0-07D8-43D8-ABA5-6A5A452CED74} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{F54FD22B-9E26-4C68-86CB-CFEFCFE35193} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.147.15332" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.148.15332" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -624,8 +624,8 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="B63_41B8_9CB7_8C5E07C0FC18_Version" Prereq="B63_41B8_9CB7_8C5E07C0FC18_" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\10.0\red\amd64\1033\Version" VerMin="40219.325" Order="1" Property="PreReqSearch_B63_41B8_9CB7_8C5E07C0FC18_"/>
-    <ROW SearchKey="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4Version" Prereq="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DirectX\Version" VerMin="4.09.00.0904" Order="1" Property="PreReqSearch_BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" Platform="1"/>
-    <ROW SearchKey="CA62D813A4E74FA2AAE86A7D7B7B1493Version" Prereq="CA62D813A4E74FA2AAE86A7D7B7B1493" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_CA62D813A4E74FA2AAE86A7D7B7B1493" Platform="1"/>
+    <ROW SearchKey="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4Version" Prereq="BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DirectX\Version" VerMin="4.09.00.0904" Order="1" Property="PreReqSearch_BAEAC99E_37AC_4DB1_8AA2_D0B4B5C09ED4"/>
+    <ROW SearchKey="CA62D813A4E74FA2AAE86A7D7B7B1493Version" Prereq="CA62D813A4E74FA2AAE86A7D7B7B1493" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_CA62D813A4E74FA2AAE86A7D7B7B1493"/>
     <ROW SearchKey="CB585686_DAA3_4384_BDDF_08ABA631E9F3_Version" Prereq="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\10.0\red\x86\1033\Version" VerMin="40219.325" Order="1" Property="PreReqSearch_CB585686_DAA3_4384_BDDF_08ABA631E9F3_"/>
     <ROW SearchKey="D564007E3BBE4F85950A09B470A7CA65Version" Prereq="D564007E3BBE4F85950A09B470A7CA65" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_D564007E3BBE4F85950A09B470A7CA65"/>
     <ROW SearchKey="F7FB4AD7F09F46EF88CE1FACFB376EB1Release" Prereq="F7FB4AD7F09F46EF88CE1FACFB376EB1" SearchType="9" SearchString="HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\Release" RefContent="G378757" Order="1" Property="PreReqSearch_F7FB4AD7F09F46EF88CE1FACFB376EB1"/>

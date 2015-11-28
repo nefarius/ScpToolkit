@@ -389,7 +389,7 @@ namespace ScpControl.Profiler
 
         public object Clone()
         {
-            return MemberwiseClone();
+            return new ScpHidReport(RawBytes);
         }
 
         public ScpHidReport CopyHidReport()
