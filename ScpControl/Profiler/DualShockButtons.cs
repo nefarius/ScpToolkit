@@ -164,15 +164,15 @@ namespace ScpControl.Profiler
     {
         #region Properties
 
+        private static readonly Lazy<IEnumerable<Ds3Button>> Ds3Buttons =
+            new Lazy<IEnumerable<Ds3Button>>(() => typeof (Ds3Button).GetProperties(
+                BindingFlags.Public | BindingFlags.Static)
+                .Select(b => b.GetValue(null, null))
+                .Where(o => o.GetType() == typeof (Ds3Button)).Cast<Ds3Button>());
+
         public static IEnumerable<Ds3Button> Buttons
         {
-            get
-            {
-                return typeof (Ds3Button).GetProperties(
-                    BindingFlags.Public | BindingFlags.Static)
-                    .Select(b => b.GetValue(null, null))
-                    .Where(o => o.GetType() == typeof (Ds3Button)).Cast<Ds3Button>();
-            }
+            get { return Ds3Buttons.Value; }
         }
 
         #endregion
@@ -434,15 +434,15 @@ namespace ScpControl.Profiler
     {
         #region Properties
 
+        private static readonly Lazy<IEnumerable<Ds4Button>> Ds4Buttons =
+            new Lazy<IEnumerable<Ds4Button>>(() => typeof (Ds4Button).GetProperties(
+                BindingFlags.Public | BindingFlags.Static)
+                .Select(b => b.GetValue(null, null))
+                .Where(o => o.GetType() == typeof (Ds4Button)).Cast<Ds4Button>());
+
         public static IEnumerable<Ds4Button> Buttons
         {
-            get
-            {
-                return typeof (Ds4Button).GetProperties(
-                    BindingFlags.Public | BindingFlags.Static)
-                    .Select(b => b.GetValue(null, null))
-                    .Where(o => o.GetType() == typeof (Ds4Button)).Cast<Ds4Button>();
-            }
+            get { return Ds4Buttons.Value; }
         }
 
         #endregion
