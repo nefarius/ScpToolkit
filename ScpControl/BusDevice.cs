@@ -193,7 +193,13 @@ namespace ScpControl
             return Start();
         }
 
-        public int Parse(ScpHidReport inputReport, byte[] output, DsModel type = DsModel.DS3)
+        /// <summary>
+        ///     Translates an <see cref="ScpHidReport"/> to an Xbox 360 compatible byte array.
+        /// </summary>
+        /// <param name="inputReport">The <see cref="ScpHidReport"/> to translate.</param>
+        /// <param name="output">The target Xbox data array.</param>
+        /// <param name="type"></param>
+        public void Parse(ScpHidReport inputReport, byte[] output)
         {
             var input = inputReport.RawBytes;
 
@@ -212,7 +218,7 @@ namespace ScpControl
 
             if (inputReport.PadState == DsState.Connected) // Pad is active
             {
-                switch (type)
+                switch (inputReport.Model)
                 {
                     case DsModel.DS3:
                     {
@@ -250,9 +256,9 @@ namespace ScpControl
                         output[(uint) X360Axis.LT] = inputReport[Ds3Axis.L2].Value;
                         output[(uint) X360Axis.RT] = inputReport[Ds3Axis.R2].Value;
 
-                        if (
-                            !DeadZone(GlobalConfiguration.Instance.DeadZoneL, inputReport[Ds3Axis.Lx].Value,
-                                inputReport[Ds3Axis.Ly].Value))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, 
+                            inputReport[Ds3Axis.Lx].Value,
+                            inputReport[Ds3Axis.Ly].Value))
                             // Left Stick DeadZone
                         {
                             var thumbLx = +Scale(inputReport[Ds3Axis.Lx].Value, GlobalConfiguration.Instance.FlipLX);
@@ -265,9 +271,9 @@ namespace ScpControl
                             output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (
-                            !DeadZone(GlobalConfiguration.Instance.DeadZoneR, inputReport[Ds3Axis.Rx].Value,
-                                inputReport[Ds3Axis.Ry].Value))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR,
+                            inputReport[Ds3Axis.Rx].Value,
+                            inputReport[Ds3Axis.Ry].Value))
                             // Right Stick DeadZone
                         {
                             var thumbRx = +Scale(inputReport[Ds3Axis.Rx].Value, GlobalConfiguration.Instance.FlipRX);
@@ -311,9 +317,9 @@ namespace ScpControl
                         output[(uint) X360Axis.LT] = inputReport[Ds4Axis.L2].Value;
                         output[(uint) X360Axis.RT] = inputReport[Ds4Axis.R2].Value;
 
-                        if (
-                            !DeadZone(GlobalConfiguration.Instance.DeadZoneL, inputReport[Ds4Axis.Lx].Value,
-                                inputReport[Ds4Axis.Ly].Value))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneL, 
+                            inputReport[Ds4Axis.Lx].Value,
+                            inputReport[Ds4Axis.Ly].Value))
                             // Left Stick DeadZone
                         {
                             var thumbLx = +Scale(inputReport[Ds4Axis.Lx].Value, GlobalConfiguration.Instance.FlipLX);
@@ -326,9 +332,9 @@ namespace ScpControl
                             output[(uint) X360Axis.LY_Hi] = (byte) ((thumbLy >> 8) & 0xFF);
                         }
 
-                        if (
-                            !DeadZone(GlobalConfiguration.Instance.DeadZoneR, inputReport[Ds4Axis.Rx].Value,
-                                inputReport[Ds4Axis.Ry].Value))
+                        if (!DeadZone(GlobalConfiguration.Instance.DeadZoneR, 
+                            inputReport[Ds4Axis.Rx].Value,
+                            inputReport[Ds4Axis.Ry].Value))
                             // Right Stick DeadZone
                         {
                             var thumbRx = +Scale(inputReport[Ds4Axis.Rx].Value, GlobalConfiguration.Instance.FlipRX);
@@ -344,8 +350,6 @@ namespace ScpControl
                         break;
                 }
             }
-
-            return input[0];
         }
 
         public bool Plugin(int serial)
@@ -433,16 +437,13 @@ namespace ScpControl
 
         public bool Report(byte[] input, byte[] output)
         {
-            if (State == DsState.Connected)
-            {
-                var transfered = 0;
+            if (State != DsState.Connected) return false;
 
-                return
-                    DeviceIoControl(FileHandle, 0x2A400C, input, input.Length, output, output.Length, ref transfered,
-                        IntPtr.Zero) && transfered > 0;
-            }
+            var transfered = 0;
 
-            return false;
+            return
+                DeviceIoControl(FileHandle, 0x2A400C, input, input.Length, output, output.Length, ref transfered,
+                    IntPtr.Zero) && transfered > 0;
         }
 
         #endregion

@@ -547,7 +547,6 @@ namespace ScpControl
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
             var serial = (int) e.PadId;
-            var model = e.Model;
 
             var report = _mCache[serial].Report;
             var rumble = _mCache[serial].Rumble;
@@ -556,7 +555,7 @@ namespace ScpControl
 
             ScpMapperPlugins.Instance.Process(e);
 
-            _scpBus.Parse(e, report, model);
+            _scpBus.Parse(e, report);
 
             if (_scpBus.Report(report, rumble) && e.PadState == DsState.Connected)
             {
