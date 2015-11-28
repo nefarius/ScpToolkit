@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.144.15332</AssemblyVersion>
+    <AssemblyVersion>1.6.147.15332</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -169,7 +169,7 @@
     <Compile Include="Plugins\Mapper\RetroArchProfile.script.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
-    <Compile Include="Plugins\ScpPlugins.cs" />
+    <Compile Include="Plugins\ScpMapperPlugins.cs" />
     <Compile Include="Profiler\DualShockAxes.cs" />
     <Compile Include="Profiler\DualShockButtons.cs" />
     <Compile Include="Profiler\DualShockMotion.cs" />

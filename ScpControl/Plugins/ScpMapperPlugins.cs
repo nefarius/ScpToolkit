@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using CSScriptLibrary;
 using log4net;
@@ -10,17 +9,16 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Plugins
 {
-    public class ScpPlugins : SingletonBase<ScpPlugins>
+    public class ScpMapperPlugins : SingletonBase<ScpMapperPlugins>
     {
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly IList<IScpMapperProfile> MapperProfiles = new List<IScpMapperProfile>();
 
-        private ScpPlugins()
+        private ScpMapperPlugins()
         {
             #region Profile scripts
 
             Log.Debug("Initializing profile mapping scripts");
-
-            MapperProfiles = new List<IScpMapperProfile>();
 
             var mapperScriptsDir = Path.Combine(GlobalConfiguration.AppDirectory, @"Plugins\Mapper");
 
@@ -32,6 +30,8 @@ namespace ScpControl.Plugins
                 {
                     var plugin =
                         CSScript.Evaluator.LoadFile<IScpMapperProfile>(file).TryAlignToInterface<IScpMapperProfile>();
+
+                    if (!plugin.IsActive) continue;
 
                     MapperProfiles.Add(plugin);
 
@@ -46,11 +46,9 @@ namespace ScpControl.Plugins
             #endregion
         }
 
-        private IList<IScpMapperProfile> MapperProfiles { get; set; }
-
         public void Process(ScpHidReport report)
         {
-            foreach (var mapperProfile in MapperProfiles.Where(p => p.IsActive))
+            foreach (var mapperProfile in MapperProfiles)
             {
                 mapperProfile.Process(report);
             }

@@ -311,7 +311,7 @@ namespace ScpControl.Profiler
 
         #region Indexers
 
-        private readonly Lazy<IDsButtonState> _currentDsButtonState = new Lazy<IDsButtonState>(() => new DsButtonState());
+        private readonly IDsButtonState _currentDsButtonState = new DsButtonState();
 
         /// <summary>
         ///     Checks if a given button state is engaged in the current packet.
@@ -327,10 +327,10 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[10] << 0) | (RawBytes[11] << 8) | (RawBytes[12] << 16) | (RawBytes[13] << 24));
 
-                    _currentDsButtonState.Value.IsPressed = !button.Equals(Ds3Button.None) &&
-                                                            (buttons & button.Offset) == button.Offset;
+                    _currentDsButtonState.IsPressed = !button.Equals(Ds3Button.None) &&
+                                                      (buttons & button.Offset) == button.Offset;
 
-                    return _currentDsButtonState.Value;
+                    return _currentDsButtonState;
                 }
 
                 if (button is Ds4Button && Model == DsModel.DS4)
@@ -338,17 +338,17 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[13] << 0) | (RawBytes[14] << 8) | (RawBytes[15] << 16));
 
-                    _currentDsButtonState.Value.IsPressed = !button.Equals(Ds4Button.None) &&
-                                                            (buttons & button.Offset) == button.Offset;
+                    _currentDsButtonState.IsPressed = !button.Equals(Ds4Button.None) &&
+                                                      (buttons & button.Offset) == button.Offset;
 
-                    return _currentDsButtonState.Value;
+                    return _currentDsButtonState;
                 }
 
-                return _currentDsButtonState.Value;
+                return _currentDsButtonState;
             }
         }
 
-        private readonly Lazy<IDsAxisState> _currentDsAxisState = new Lazy<IDsAxisState>(() => new DsAxisState());
+        private readonly IDsAxisState _currentDsAxisState = new DsAxisState();
 
         /// <summary>
         ///     Gets the axis state of the current packet.
@@ -361,16 +361,16 @@ namespace ScpControl.Profiler
             {
                 if ((!(axis is Ds3Axis) || Model != DsModel.DS3) && (!(axis is Ds4Axis) || Model != DsModel.DS4))
                     // TODO: we shouldn't end up here
-                    return _currentDsAxisState.Value;
+                    return _currentDsAxisState;
 
                 if (axis.Equals(Ds3Axis.None) || axis.Equals(Ds4Axis.None))
                 {
-                    _currentDsAxisState.Value.IsEngaged = false;
-                    return _currentDsAxisState.Value;
+                    _currentDsAxisState.IsEngaged = false;
+                    return _currentDsAxisState;
                 }
 
-                _currentDsAxisState.Value.Value = RawBytes[axis.Offset];
-                _currentDsAxisState.Value.IsEngaged = axis.DefaultValue == 0x00
+                _currentDsAxisState.Value = RawBytes[axis.Offset];
+                _currentDsAxisState.IsEngaged = axis.DefaultValue == 0x00
                     ? axis.DefaultValue != RawBytes[axis.Offset]
                     /* 
                         * match a range for jitter compensation
@@ -379,7 +379,7 @@ namespace ScpControl.Profiler
                     : (axis.DefaultValue - 10 > RawBytes[axis.Offset])
                       || (axis.DefaultValue + 10 < RawBytes[axis.Offset]);
 
-                return _currentDsAxisState.Value;
+                return _currentDsAxisState;
             }
         }
 

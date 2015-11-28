@@ -554,7 +554,7 @@ namespace ScpControl
 
             DualShockProfileManager.Instance.PassThroughAllProfiles(e);
 
-            ScpPlugins.Instance.Process(e);
+            ScpMapperPlugins.Instance.Process(e);
 
             _scpBus.Parse(e, report, model);
 
