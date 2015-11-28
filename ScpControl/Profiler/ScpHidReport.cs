@@ -223,11 +223,11 @@ namespace ScpControl.Profiler
                         throw new NotImplementedException("DualShock 3 accelerometer readout not implemented yet.");
                         break;
                     case DsModel.DS4:
-                        return new DsAccelerometer()
+                        return new DsAccelerometer
                         {
-                            Y = (short)((RawBytes[22] << 8) | RawBytes[21]),
-                            X = (short)(-((RawBytes[24] << 8) | RawBytes[23])),
-                            Z = (short)(-((RawBytes[26] << 8) | RawBytes[25]))
+                            Y = (short) ((RawBytes[22] << 8) | RawBytes[21]),
+                            X = (short) -((RawBytes[24] << 8) | RawBytes[23]),
+                            Z = (short) -((RawBytes[26] << 8) | RawBytes[25])
                         };
                         break;
                 }
@@ -250,11 +250,11 @@ namespace ScpControl.Profiler
                         throw new NotImplementedException("DualShock 3 gyroscope readout not implemented yet.");
                         break;
                     case DsModel.DS4:
-                        return new DsGyroscope()
+                        return new DsGyroscope
                         {
-                            Roll = (short)(-((RawBytes[28] << 8) | RawBytes[27])),
-                            Yaw = (short)((RawBytes[30] << 8) | RawBytes[29]),
-                            Pitch = (short)((RawBytes[32] << 8) | RawBytes[31])
+                            Roll = (short) -((RawBytes[28] << 8) | RawBytes[27]),
+                            Yaw = (short) ((RawBytes[30] << 8) | RawBytes[29]),
+                            Pitch = (short) ((RawBytes[32] << 8) | RawBytes[31])
                         };
                         break;
                 }
@@ -280,7 +280,7 @@ namespace ScpControl.Profiler
                 return new DsTrackPadTouch
                 {
                     Id = RawBytes[43] & 0x7f,
-                    IsActive = (RawBytes[43] >> 7) == 0,
+                    IsActive = RawBytes[43] >> 7 == 0,
                     X = ((RawBytes[45] & 0x0f) << 8) | RawBytes[44],
                     Y = RawBytes[46] << 4 | ((RawBytes[45] & 0xf0) >> 4)
                 };
@@ -300,7 +300,7 @@ namespace ScpControl.Profiler
                 return new DsTrackPadTouch
                 {
                     Id = RawBytes[47] & 0x7f,
-                    IsActive = (RawBytes[47] >> 7) == 0,
+                    IsActive = RawBytes[47] >> 7 == 0,
                     X = ((RawBytes[49] & 0x0f) << 8) | RawBytes[48],
                     Y = RawBytes[50] << 4 | ((RawBytes[49] & 0xf0) >> 4)
                 };
@@ -310,6 +310,8 @@ namespace ScpControl.Profiler
         #endregion
 
         #region Indexers
+
+        private readonly Lazy<IDsButtonState> _currentDsButtonState = new Lazy<IDsButtonState>(() => new DsButtonState());
 
         /// <summary>
         ///     Checks if a given button state is engaged in the current packet.
@@ -325,10 +327,10 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[10] << 0) | (RawBytes[11] << 8) | (RawBytes[12] << 16) | (RawBytes[13] << 24));
 
-                    return new DsButtonState
-                    {
-                        IsPressed = (!button.Equals(Ds3Button.None)) && (buttons & button.Offset) == button.Offset
-                    };
+                    _currentDsButtonState.Value.IsPressed = !button.Equals(Ds3Button.None) &&
+                                                            (buttons & button.Offset) == button.Offset;
+
+                    return _currentDsButtonState.Value;
                 }
 
                 if (button is Ds4Button && Model == DsModel.DS4)
@@ -336,15 +338,17 @@ namespace ScpControl.Profiler
                     var buttons =
                         (uint) ((RawBytes[13] << 0) | (RawBytes[14] << 8) | (RawBytes[15] << 16));
 
-                    return new DsButtonState
-                    {
-                        IsPressed = (!button.Equals(Ds4Button.None)) && (buttons & button.Offset) == button.Offset
-                    };
+                    _currentDsButtonState.Value.IsPressed = !button.Equals(Ds4Button.None) &&
+                                                            (buttons & button.Offset) == button.Offset;
+
+                    return _currentDsButtonState.Value;
                 }
 
-                return new DsButtonState();
+                return _currentDsButtonState.Value;
             }
         }
+
+        private readonly Lazy<IDsAxisState> _currentDsAxisState = new Lazy<IDsAxisState>(() => new DsAxisState());
 
         /// <summary>
         ///     Gets the axis state of the current packet.
@@ -355,28 +359,27 @@ namespace ScpControl.Profiler
         {
             get
             {
-                if ((axis is Ds3Axis && Model == DsModel.DS3)
-                    || (axis is Ds4Axis && Model == DsModel.DS4))
-                {
-                    if (axis.Equals(Ds3Axis.None) || axis.Equals(Ds4Axis.None))
-                        return new DsAxisState {IsEngaged = false};
+                if ((!(axis is Ds3Axis) || Model != DsModel.DS3) && (!(axis is Ds4Axis) || Model != DsModel.DS4))
+                    // TODO: we shouldn't end up here
+                    return _currentDsAxisState.Value;
 
-                    return new DsAxisState
-                    {
-                        Value = RawBytes[axis.Offset],
-                        IsEngaged = (axis.DefaultValue == 0x00)
-                            ? (axis.DefaultValue != RawBytes[axis.Offset])
-                            /* 
-                             * match a range for jitter compensation
-                             * if axis value is between 117 and 137 it's not reported as engaged
-                             * */
-                            : (((axis.DefaultValue - 10) > RawBytes[axis.Offset])
-                               || ((axis.DefaultValue + 10) < RawBytes[axis.Offset]))
-                    };
+                if (axis.Equals(Ds3Axis.None) || axis.Equals(Ds4Axis.None))
+                {
+                    _currentDsAxisState.Value.IsEngaged = false;
+                    return _currentDsAxisState.Value;
                 }
 
-                // default is centered
-                return new DsAxisState();
+                _currentDsAxisState.Value.Value = RawBytes[axis.Offset];
+                _currentDsAxisState.Value.IsEngaged = axis.DefaultValue == 0x00
+                    ? axis.DefaultValue != RawBytes[axis.Offset]
+                    /* 
+                        * match a range for jitter compensation
+                        * if axis value is between 117 and 137 it's not reported as engaged
+                        * */
+                    : (axis.DefaultValue - 10 > RawBytes[axis.Offset])
+                      || (axis.DefaultValue + 10 < RawBytes[axis.Offset]);
+
+                return _currentDsAxisState.Value;
             }
         }
 
@@ -386,7 +389,7 @@ namespace ScpControl.Profiler
 
         public object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
 
         public ScpHidReport CopyHidReport()
