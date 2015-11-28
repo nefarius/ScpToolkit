@@ -558,7 +558,7 @@ namespace ScpControl
 
             _scpBus.Parse(e, report, model);
 
-            if (_scpBus.Report(report, rumble) && (DsState) e.RawBytes[1] == DsState.Connected)
+            if (_scpBus.Report(report, rumble) && e.PadState == DsState.Connected)
             {
                 var large = rumble[3];
                 var small = rumble[4];
@@ -572,7 +572,7 @@ namespace ScpControl
                 }
             }
 
-            if ((DsState) e.RawBytes[1] != DsState.Connected)
+            if (e.PadState != DsState.Connected)
             {
                 _mXInput[serial][0] = _mXInput[serial][1] = 0;
                 _mNative[serial][0] = _mNative[serial][1] = 0;
