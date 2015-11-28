@@ -55,6 +55,8 @@ namespace ScpService
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
+#if FIXME // TODO: this is currently broken, replace
+
             var installTask = Task.Factory.StartNew(() =>
             {
                 if (GlobalConfiguration.Instance.ForceBluetoothDriverReinstallation)
@@ -75,6 +77,8 @@ namespace ScpService
                 Log.FatalFormat("Error during driver installation: {0}", task.Exception);
                 Stop();
             }, TaskContinuationOptions.OnlyOnFaulted);
+
+#endif
 
             try
             {
