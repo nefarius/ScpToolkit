@@ -32,7 +32,7 @@ namespace ScpControl
 
         // Bluetooth hub
         private readonly BthHub _bthHub = new BthHub();
-        private readonly Cache[] _mCache = {new Cache(), new Cache(), new Cache(), new Cache()};
+        private readonly Cache[] _cache = {new Cache(), new Cache(), new Cache(), new Cache()};
 
         private readonly byte[][] _mNative =
         {
@@ -215,23 +215,17 @@ namespace ScpControl
 
         private class Cache
         {
-            private readonly byte[] m_Mapped = new byte[ScpHidReport.Length];
-            private readonly byte[] m_Report = new byte[BusDevice.ReportSize];
-            private readonly byte[] m_Rumble = new byte[BusDevice.RumbleSize];
+            private readonly byte[] _report = new byte[BusDevice.ReportSize];
+            private readonly byte[] _rumble = new byte[BusDevice.RumbleSize];
 
             public byte[] Report
             {
-                get { return m_Report; }
+                get { return _report; }
             }
 
             public byte[] Rumble
             {
-                get { return m_Rumble; }
-            }
-
-            public byte[] Mapped
-            {
-                get { return m_Mapped; }
+                get { return _rumble; }
             }
         }
 
@@ -548,8 +542,8 @@ namespace ScpControl
         {
             var serial = (int) e.PadId;
 
-            var report = _mCache[serial].Report;
-            var rumble = _mCache[serial].Rumble;
+            var report = _cache[serial].Report;
+            var rumble = _cache[serial].Rumble;
 
             DualShockProfileManager.Instance.PassThroughAllProfiles(e);
 
