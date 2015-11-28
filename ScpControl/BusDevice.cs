@@ -434,6 +434,12 @@ namespace ScpControl
             return retVal;
         }
 
+        /// <summary>
+        ///     Sends a supplied Xbox formatted report to the virtual bus.
+        /// </summary>
+        /// <param name="input">The data to send to the bus device.</param>
+        /// <param name="output">The data reported back by the bus device.</param>
+        /// <returns>True if the I/O request was successful, false otherwise.</returns>
         public bool Report(byte[] input, byte[] output)
         {
             if (State != DsState.Connected) return false;

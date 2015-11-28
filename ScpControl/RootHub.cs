@@ -540,16 +540,22 @@ namespace ScpControl
 
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
+            // get current pad ID
             var serial = (int) e.PadId;
 
+            // get cached status data
             var report = _cache[serial].Report;
             var rumble = _cache[serial].Rumble;
 
+            // pass current report through user profiles
             DualShockProfileManager.Instance.PassThroughAllProfiles(e);
 
+            // pass current report through user scripts
             ScpMapperPlugins.Instance.Process(e);
 
+            // translate current report to Xbox format
             _scpBus.Parse(e, report);
+
 
             if (_scpBus.Report(report, rumble) && e.PadState == DsState.Connected)
             {
