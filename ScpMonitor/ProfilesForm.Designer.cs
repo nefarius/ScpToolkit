@@ -56,16 +56,12 @@ namespace ScpMonitor
             this.rXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rYToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ttAxBar = new System.Windows.Forms.ToolTip(this.components);
-            this.cbProfile = new System.Windows.Forms.ComboBox();
             this.cbPad = new System.Windows.Forms.ComboBox();
             this.scpProxy = new ScpControl.ScpProxy(this.components);
-            this.btnView = new ScpMonitor.ScpButton();
             this.axL = new ScpMonitor.AxisControl();
             this.axD = new ScpMonitor.AxisControl();
             this.axR = new ScpMonitor.AxisControl();
             this.axU = new ScpMonitor.AxisControl();
-            this.btnDel = new ScpMonitor.ScpButton();
-            this.btnAdd = new ScpMonitor.ScpButton();
             this.axTP = new ScpMonitor.AxisControl();
             this.axPS = new ScpMonitor.AxisControl();
             this.axOP = new ScpMonitor.AxisControl();
@@ -76,9 +72,6 @@ namespace ScpMonitor
             this.axT = new ScpMonitor.AxisControl();
             this.axR3 = new ScpMonitor.AxisControl();
             this.axL3 = new ScpMonitor.AxisControl();
-            this.btnEdit = new ScpMonitor.ScpButton();
-            this.btnActivate = new ScpMonitor.ScpButton();
-            this.btnSave = new ScpMonitor.ScpButton();
             this.axR1 = new ScpMonitor.AxisControl();
             this.axL1 = new ScpMonitor.AxisControl();
             this.axR2 = new ScpMonitor.AxisControl();
@@ -254,17 +247,6 @@ namespace ScpMonitor
             this.ttAxBar.AutomaticDelay = 1000;
             this.ttAxBar.IsBalloon = true;
             // 
-            // cbProfile
-            // 
-            this.cbProfile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbProfile.FormattingEnabled = true;
-            this.cbProfile.Location = new System.Drawing.Point(187, 348);
-            this.cbProfile.Name = "cbProfile";
-            this.cbProfile.Size = new System.Drawing.Size(188, 21);
-            this.cbProfile.TabIndex = 27;
-            this.cbProfile.SelectedIndexChanged += new System.EventHandler(this.Profile_Selected);
-            // 
             // cbPad
             // 
             this.cbPad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -283,21 +265,7 @@ namespace ScpMonitor
             // 
             // scpProxy
             // 
-            this.scpProxy.NativeFeedReceived += new System.EventHandler<ScpHidReport>(this.Parse);
-            // 
-            // btnView
-            // 
-            this.btnView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnView.Glassy = true;
-            this.btnView.Location = new System.Drawing.Point(381, 348);
-            this.btnView.Name = "btnView";
-            this.btnView.Size = new System.Drawing.Size(30, 21);
-            this.btnView.TabIndex = 29;
-            this.btnView.Text = "?";
-            this.ttAxBar.SetToolTip(this.btnView, "View the current Profile.");
-            this.btnView.UseVisualStyleBackColor = true;
-            this.btnView.Visible = false;
-            this.btnView.Click += new System.EventHandler(this.btnView_Click);
+            this.scpProxy.NativeFeedReceived += new System.EventHandler<ScpControl.Profiler.ScpHidReport>(this.Parse);
             // 
             // axL
             // 
@@ -350,35 +318,6 @@ namespace ScpMonitor
             this.axU.TabIndex = 8;
             this.axU.Text = "U";
             this.axU.Value = ((byte)(0));
-            // 
-            // btnDel
-            // 
-            this.btnDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDel.Enabled = false;
-            this.btnDel.Glassy = true;
-            this.btnDel.Location = new System.Drawing.Point(151, 348);
-            this.btnDel.Name = "btnDel";
-            this.btnDel.Size = new System.Drawing.Size(30, 21);
-            this.btnDel.TabIndex = 25;
-            this.btnDel.Text = "-";
-            this.ttAxBar.SetToolTip(this.btnDel, "Delete the current Profile.");
-            this.btnDel.UseVisualStyleBackColor = true;
-            this.btnDel.Visible = false;
-            this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Glassy = true;
-            this.btnAdd.Location = new System.Drawing.Point(121, 348);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(30, 21);
-            this.btnAdd.TabIndex = 24;
-            this.btnAdd.Text = "+";
-            this.ttAxBar.SetToolTip(this.btnAdd, "Add a new Profile.");
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Visible = false;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // axTP
             // 
@@ -510,49 +449,6 @@ namespace ScpMonitor
             this.axL3.Text = "L3";
             this.axL3.Value = ((byte)(0));
             // 
-            // btnEdit
-            // 
-            this.btnEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEdit.Enabled = false;
-            this.btnEdit.Glassy = true;
-            this.btnEdit.Location = new System.Drawing.Point(411, 348);
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(30, 21);
-            this.btnEdit.TabIndex = 26;
-            this.btnEdit.Text = ">";
-            this.ttAxBar.SetToolTip(this.btnEdit, "Edit the current Profile.");
-            this.btnEdit.UseVisualStyleBackColor = true;
-            this.btnEdit.Visible = false;
-            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-            // 
-            // btnActivate
-            // 
-            this.btnActivate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnActivate.Glassy = true;
-            this.btnActivate.Location = new System.Drawing.Point(597, 348);
-            this.btnActivate.Name = "btnActivate";
-            this.btnActivate.Size = new System.Drawing.Size(75, 21);
-            this.btnActivate.TabIndex = 0;
-            this.btnActivate.Text = "Activate";
-            this.ttAxBar.SetToolTip(this.btnActivate, "Activate the current Profile on the Server.");
-            this.btnActivate.UseVisualStyleBackColor = true;
-            this.btnActivate.Visible = false;
-            this.btnActivate.Click += new System.EventHandler(this.btnActivate_Click);
-            // 
-            // btnSave
-            // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Glassy = true;
-            this.btnSave.Location = new System.Drawing.Point(522, 348);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 21);
-            this.btnSave.TabIndex = 28;
-            this.btnSave.Text = "Save";
-            this.ttAxBar.SetToolTip(this.btnSave, "Save the Profile Map to the Server.");
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Visible = false;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
             // axR1
             // 
             this.axR1.BackColor = System.Drawing.Color.Transparent;
@@ -671,15 +567,11 @@ namespace ScpMonitor
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.ClientSize = new System.Drawing.Size(684, 381);
-            this.Controls.Add(this.btnView);
             this.Controls.Add(this.axL);
             this.Controls.Add(this.axD);
             this.Controls.Add(this.axR);
             this.Controls.Add(this.axU);
-            this.Controls.Add(this.btnDel);
-            this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.cbPad);
-            this.Controls.Add(this.cbProfile);
             this.Controls.Add(this.axTP);
             this.Controls.Add(this.axPS);
             this.Controls.Add(this.axOP);
@@ -690,9 +582,6 @@ namespace ScpMonitor
             this.Controls.Add(this.axT);
             this.Controls.Add(this.axR3);
             this.Controls.Add(this.axL3);
-            this.Controls.Add(this.btnEdit);
-            this.Controls.Add(this.btnActivate);
-            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.tbOutput);
             this.Controls.Add(this.axR1);
             this.Controls.Add(this.axL1);
@@ -754,9 +643,6 @@ namespace ScpMonitor
         private System.Windows.Forms.ToolStripMenuItem rXToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rYToolStripMenuItem;
         private System.Windows.Forms.ToolTip ttAxBar;
-        private ScpButton btnSave;
-        private ScpButton btnActivate;
-        private ScpButton btnEdit;
         private AxisControl axL3;
         private AxisControl axR3;
         private AxisControl axS;
@@ -767,15 +653,11 @@ namespace ScpMonitor
         private AxisControl axOP;
         private AxisControl axPS;
         private AxisControl axTP;
-        private System.Windows.Forms.ComboBox cbProfile;
         private System.Windows.Forms.ComboBox cbPad;
-        private ScpButton btnAdd;
-        private ScpButton btnDel;
         private AxisControl axL;
         private AxisControl axD;
         private AxisControl axR;
         private AxisControl axU;
-        private ScpButton btnView;
     }
 }
 

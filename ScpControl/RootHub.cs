@@ -84,28 +84,6 @@ namespace ScpControl
             return !GlobalConfiguration.Instance.DisableNative;
         }
 
-        public string GetActiveProfile()
-        {
-            return scpMap.Active;
-        }
-
-        [Obsolete]
-        public string GetXml()
-        {
-            return scpMap.Xml;
-        }
-
-        [Obsolete]
-        public void SetXml(string xml)
-        {
-            scpMap.Xml = xml;
-        }
-
-        public void SetActiveProfile(Profile profile)
-        {
-            scpMap.Active = profile.Name;
-        }
-
         public DsDetail GetPadDetail(DsPadId pad)
         {
             var serial = (byte) pad;
@@ -142,11 +120,6 @@ namespace ScpControl
             }
 
             return false;
-        }
-
-        public IEnumerable<string> GetProfileList()
-        {
-            return scpMap.Profiles;
         }
 
         public IEnumerable<string> GetStatusData()
@@ -372,8 +345,6 @@ namespace ScpControl
 
             #endregion
 
-            scpMap.Open();
-
             opened |= _scpBus.Open(GlobalConfiguration.Instance.Bus);
             opened |= _usbHub.Open();
             opened |= _bthHub.Open();
@@ -420,8 +391,6 @@ namespace ScpControl
                 return false;
             }
 
-            scpMap.Start();
-
             m_Started |= _scpBus.Start();
             m_Started |= _usbHub.Start();
             m_Started |= _bthHub.Start();
@@ -451,7 +420,6 @@ namespace ScpControl
             if (_rxFeedServer != null)
                 _rxFeedServer.Dispose();
 
-            scpMap.Stop();
             _scpBus.Stop();
             _usbHub.Stop();
             _bthHub.Stop();

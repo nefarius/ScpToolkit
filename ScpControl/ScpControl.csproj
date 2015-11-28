@@ -243,12 +243,6 @@
     <Compile Include="ScpDevice.Interop.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ScpMapper.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ScpMapper.Designer.cs">
-      <DependentUpon>ScpMapper.cs</DependentUpon>
-    </Compile>
     <Compile Include="ScpPadState.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -325,12 +319,6 @@
     <Compile Include="Utilities\OsInfoHelper.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ThemeUtil.cs" />
-    <Compile Include="XmlMapper.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="XmlMapper.Designer.cs">
-      <DependentUpon>XmlMapper.cs</DependentUpon>
-    </Compile>
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
@@ -339,9 +327,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Bluetooth\BthDongle.resx">
       <DependentUpon>BthDongle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ScpMapper.resx">
-      <DependentUpon>ScpMapper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ScpPadState.resx">
       <DependentUpon>ScpPadState.cs</DependentUpon>
@@ -418,10 +403,6 @@
     </Content>
     <Content Include="Media\startup.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="ScpMapper.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </Content>
     <Content Include="System\ScpVBus.inf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

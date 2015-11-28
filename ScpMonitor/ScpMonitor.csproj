@@ -81,12 +81,6 @@
       <DependentUpon>AxisControl.cs</DependentUpon>
     </Compile>
     <Compile Include="CrossThreadHelper.cs" />
-    <Compile Include="ProfileProperties.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProfileProperties.Designer.cs">
-      <DependentUpon>ProfileProperties.cs</DependentUpon>
-    </Compile>
     <Compile Include="ProfilesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,9 +107,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AxisControl.resx">
       <DependentUpon>AxisControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProfileProperties.resx">
-      <DependentUpon>ProfileProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ProfilesForm.resx">
       <DependentUpon>ProfilesForm.cs</DependentUpon>

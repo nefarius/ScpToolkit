@@ -125,28 +125,11 @@ namespace ScpControl
 
         private IScpCommandService _rootHub;
 
-        [Obsolete]
-        private readonly XmlMapper _xmlMapper = new XmlMapper();
-
         #endregion
 
         #region Public properties
 
         public bool IsActive { get; private set; }
-
-        [Obsolete]
-        public XmlMapper Mapper
-        {
-            get { return _xmlMapper; }
-        }
-
-        /// <summary>
-        ///     Gets the currently active profile.
-        /// </summary>
-        public string ActiveProfile
-        {
-            get { return _rootHub.GetActiveProfile(); }
-        }
 
         /// <summary>
         ///     Checks if the native feed is available.
@@ -180,54 +163,6 @@ namespace ScpControl
             _rootHub.SubmitConfiguration(config);
         }
 
-        [Obsolete]
-        public bool Save()
-        {
-            var saved = false;
-
-            try
-            {
-                if (IsActive)
-                {
-                    if (_xmlMapper.Construct(ref _xmlMap))
-                    {
-                        _rootHub.SetXml(_xmlMap.InnerXml);
-
-                        saved = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return saved;
-        }
-
-        [Obsolete]
-        public bool Select(Profile target)
-        {
-            var selected = false;
-
-            try
-            {
-                if (IsActive)
-                {
-                    _rootHub.SetActiveProfile(target);
-
-                    SetDefault(target);
-                    selected = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return selected;
-        }
-
         /// <summary>
         ///     Receives details about the provided pad.
         /// </summary>
@@ -248,72 +183,6 @@ namespace ScpControl
         public bool Rumble(DsPadId pad, byte large, byte small)
         {
             return _rootHub.Rumble(pad, large, small);
-        }
-
-        [Obsolete]
-        public bool Remap(string target, DsPacket packet)
-        {
-            var remapped = false;
-
-            try
-            {
-                if (IsActive)
-                {
-                    if (!_xmlMapper.Map.Any())
-                        return false;
-
-                    var output = new byte[packet.Native.Length];
-
-                    switch (packet.Detail.Model)
-                    {
-                        case DsModel.DS3:
-                            if (_xmlMapper.RemapDs3(_xmlMapper.Map[target], packet.Native, output))
-                            {
-                                Array.Copy(output, packet.Native, output.Length);
-                                packet.Remapped();
-                            }
-                            break;
-                        case DsModel.DS4:
-                            if (_xmlMapper.RemapDs4(_xmlMapper.Map[target], packet.Native, output))
-                            {
-                                Array.Copy(output, packet.Native, output.Length);
-                                packet.Remapped();
-                            }
-                            break;
-                    }
-
-                    remapped = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return remapped;
-        }
-
-        [Obsolete]
-        public bool SetDefault(Profile profile)
-        {
-            var set = true;
-
-            try
-            {
-                foreach (var item in _xmlMapper.Map.Values)
-                {
-                    item.IsDefault = false;
-                }
-
-                profile.IsDefault = true;
-            }
-            catch (Exception ex)
-            {
-                set = false;
-                Log.ErrorFormat("Unexpected error: {0}", ex);
-            }
-
-            return set;
         }
 
         #endregion
@@ -354,16 +223,6 @@ namespace ScpControl
                     _rxFeedClient.ConnectAsync();
 
                     #endregion
-
-                    if (_rootHub != null)
-                    {
-                        _xmlMap.LoadXml(_rootHub.GetXml());
-                        _xmlMapper.Initialize(_xmlMap);
-                    }
-                    else
-                    {
-                        Log.Error("Couldn't initialize XML mapper");
-                    }
 
                     IsActive = true;
                 }

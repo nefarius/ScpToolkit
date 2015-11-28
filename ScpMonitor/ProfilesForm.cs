@@ -16,7 +16,6 @@ namespace ScpMonitor
         private const String Default = "Default";
         protected Boolean m_CanEdit, m_Editing, m_CanSave = true, m_PropsActive;
         protected DsDetail m_Detail;
-        protected ProfileProperties m_PropForm;
         protected Int32 m_SelectedPad;
         protected String m_SelectedProfile = Default, m_Active = Default;
 
@@ -37,12 +36,6 @@ namespace ScpMonitor
 
         public void Request()
         {
-            m_SelectedProfile = m_Active = scpProxy.ActiveProfile;
-
-            cbProfile.Items.Clear();
-            cbProfile.Items.AddRange(scpProxy.Mapper.Profiles);
-            cbProfile.SelectedItem = m_SelectedProfile;
-
             cbPad.SelectedIndex = m_SelectedPad = 0;
             m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
 
@@ -69,8 +62,6 @@ namespace ScpMonitor
                         ResetControls();
                         return;
                     }
-
-                    //scpProxy.Remap(m_SelectedProfile, e);
 
                     switch (e.Model)
                     {
@@ -162,26 +153,6 @@ namespace ScpMonitor
             if (!Visible)
             {
                 scpProxy.Stop();
-
-                if (m_PropsActive) m_PropForm.Close();
-            }
-        }
-
-        private void Profile_Selected(object sender, EventArgs e)
-        {
-            lock (this)
-            {
-                m_SelectedProfile = cbProfile.SelectedItem.ToString();
-
-                if (m_PropsActive)
-                {
-                    btnAdd.Enabled = btnDel.Enabled = btnEdit.Enabled = btnView.Enabled = false;
-                }
-                else
-                {
-                    btnView.Enabled = btnAdd.Enabled = true;
-                    btnEdit.Enabled = btnDel.Enabled = m_SelectedProfile != Default;
-                }
             }
         }
 
@@ -193,105 +164,6 @@ namespace ScpMonitor
                 m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
 
                 ResetControls();
-            }
-        }
-
-        private void btnActivate_Click(object sender, EventArgs e)
-        {
-            scpProxy.Select(scpProxy.Mapper.Map[m_SelectedProfile]);
-            m_Active = m_SelectedProfile;
-
-            btnDel.Enabled = btnEdit.Enabled = m_CanEdit = false;
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            scpProxy.Save();
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            var Profile = new Profile("<New Profile>");
-
-            m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
-            m_PropForm = new ProfileProperties(Profile, m_Detail.Pad, m_Detail.Local, true);
-
-            m_PropForm.FormClosed += Props_Close;
-            m_PropForm.VisibleChanged += Props_Visible;
-
-            m_PropForm.Show(this);
-        }
-
-        private void btnDel_Click(object sender, EventArgs e)
-        {
-            scpProxy.Mapper.Map.Remove(m_SelectedProfile);
-
-            var Index = cbProfile.SelectedIndex;
-
-            cbProfile.Items.Remove(m_SelectedProfile);
-
-            while (Index >= cbProfile.Items.Count) Index--;
-
-            cbProfile.SelectedIndex = Index;
-        }
-
-        private void btnView_Click(object sender, EventArgs e)
-        {
-            m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
-            m_PropForm = new ProfileProperties(scpProxy.Mapper.Map[m_SelectedProfile], m_Detail.Pad, m_Detail.Local,
-                false);
-
-            m_PropForm.FormClosed += Props_Close;
-            m_PropForm.VisibleChanged += Props_Visible;
-
-            m_PropForm.Show(this);
-        }
-
-        private void btnEdit_Click(object sender, EventArgs e)
-        {
-            m_Detail = scpProxy.Detail((DsPadId)m_SelectedPad);
-            m_PropForm = new ProfileProperties(scpProxy.Mapper.Map[m_SelectedProfile], m_Detail.Pad, m_Detail.Local,
-                true);
-
-            m_PropForm.FormClosed += Props_Close;
-            m_PropForm.VisibleChanged += Props_Visible;
-
-            m_PropForm.Show(this);
-        }
-
-        private void Props_Close(object sender, FormClosedEventArgs e)
-        {
-            if (m_PropForm.Saved)
-            {
-                var Profile = m_PropForm.Profile;
-
-                if (!scpProxy.Mapper.Map.ContainsKey(Profile.Name))
-                {
-                    cbProfile.Items.Add(Profile.Name);
-                }
-
-                scpProxy.Mapper.Map[Profile.Name] = Profile;
-                cbProfile.SelectedItem = Profile.Name;
-            }
-
-            m_PropsActive = false;
-
-            btnView.Enabled = btnAdd.Enabled = true;
-            btnEdit.Enabled = btnDel.Enabled = m_SelectedProfile != Default;
-        }
-
-        private void Props_Visible(object sender, EventArgs e)
-        {
-            m_PropsActive = m_PropForm.Visible;
-
-            if (m_PropsActive)
-            {
-                btnAdd.Enabled = btnDel.Enabled = btnEdit.Enabled = btnView.Enabled = false;
-            }
-            else
-            {
-                btnView.Enabled = btnAdd.Enabled = true;
-                btnEdit.Enabled = btnDel.Enabled = m_SelectedProfile != Default;
             }
         }
     }

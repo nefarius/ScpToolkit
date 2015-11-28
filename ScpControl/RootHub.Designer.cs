@@ -29,17 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.scpMap = new ScpControl.ScpMapper(this.components);
-            // 
-            // scpMap
-            // 
-            this.scpMap.Active = "";
-            this.scpMap.Xml = "";
-
         }
 
         #endregion
-
-        private ScpMapper scpMap;
     }
 }
