@@ -159,7 +159,7 @@
         <!-- New profile dialog -->
         <xctk:ChildWindow Grid.Row="1"
                           x:Name="EditProfileChildWindow"
-                          Width="457" Height="300"
+                          Width="700" Height="400"
                           Background="#FF2B2B2B"
                           WindowBackground="#FF00AADE"
                           Left="150"
@@ -167,77 +167,10 @@
                           HorizontalAlignment="Left"
                           VerticalAlignment="Top">
             <!-- Profile Properties -->
-            <GroupBox Header="Profile Properties" Margin="5">
-                <Grid Margin="5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="10" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-
-                    <!-- File Name -->
-                    <TextBlock Grid.Row="0" Grid.Column="0"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center">
-                        File name:
-                    </TextBlock>
-                    <TextBlock Grid.Row="0" Grid.Column="2"
-                               VerticalAlignment="Center"
-                               Text="{Binding Path=CurrentProfile.FileName}" />
-
-                    <!-- Pad ID -->
-                    <TextBlock Grid.Row="1" Grid.Column="0"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center">
-                        Pad ID:
-                    </TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="2"
-                               VerticalAlignment="Center"
-                               Text="{Binding Path=CurrentProfile.PadId}" />
-
-                    <!-- MAC address -->
-                    <TextBlock Grid.Row="2" Grid.Column="0"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center">
-                        MAC address:
-                    </TextBlock>
-                    <TextBlock Grid.Row="2" Grid.Column="2"
-                               VerticalAlignment="Center"
-                               Text="{Binding Path=CurrentProfile.MacAddress}" />
-
-                    <!-- Profile match -->
-                    <TextBlock Grid.Row="3" Grid.Column="0"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center">
-                        Profile match:
-                    </TextBlock>
-                    <ComboBox Grid.Row="3" Grid.Column="2"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Left"
-                              Margin="5" Width="100"
-                              ItemsSource="{Binding Source={StaticResource DsMatchEnum}}"
-                              SelectedItem="{Binding Path=CurrentProfile.Match, Mode=TwoWay}" />
-
-                    <!-- Profile name -->
-                    <TextBlock Grid.Row="4" Grid.Column="0"
-                               HorizontalAlignment="Right"
-                               VerticalAlignment="Center">
-                        Profile name:
-                    </TextBlock>
-                    <TextBox Grid.Row="4" Grid.Column="2"
-                             VerticalAlignment="Center"
-                             Margin="5"
-                             Text="{Binding Path=CurrentProfile.Name, Mode=TwoWay}" />
-                </Grid>
-            </GroupBox>
+            <xctk:CollectionControl x:Name="ProfilesCollectionControl"
+                                    ItemsSource="{Binding Path=Profiles}"
+                                    SelectedItem="{Binding Path=CurrentProfile}"
+                                    Margin="10"/>
         </xctk:ChildWindow>
     </Grid>
 </Window>

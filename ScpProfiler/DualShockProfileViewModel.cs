@@ -14,9 +14,6 @@ namespace ScpProfiler
 
         public DualShockProfile CurrentProfile { get; set; }
 
-        public IReadOnlyList<DualShockProfile> Profiles
-        {
-            get { return DualShockProfileManager.Instance.Profiles; }
-        }
+        public IReadOnlyList<DualShockProfile> Profiles { get; set; }
     }
 }

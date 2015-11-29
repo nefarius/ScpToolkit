@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -23,6 +24,8 @@ namespace ScpProfiler
         public MainWindow()
         {
             InitializeComponent();
+
+            ProfilesCollectionControl.NewItemTypes = new List<Type>() {typeof (DualShockProfile)};
         }
 
         private void Window_Initialized(object sender, EventArgs e)
@@ -31,6 +34,8 @@ namespace ScpProfiler
             _proxy.Start();
 
             MainGrid.DataContext = _vm;
+
+            _vm.Profiles = _proxy.GetProfiles().ToList();
         }
 
         private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)

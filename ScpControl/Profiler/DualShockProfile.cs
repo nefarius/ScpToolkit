@@ -50,6 +50,7 @@ namespace ScpControl.Profiler
     [KnownType(typeof (Ds3Button))]
     [KnownType(typeof (Ds4Button))]
     [KnownType(typeof (VirtualKeyCode))]
+    [DisplayName("DualShock Profile")]
     public class DualShockProfile
     {
         #region Ctor
@@ -189,14 +190,19 @@ namespace ScpControl.Profiler
         #region Properties
 
         [DataMember]
+        [Category("Main")]
+        [DisplayName("Profile name")]
         public string Name { get; set; }
 
         [DataMember]
+        [ReadOnly(true)]
         public Guid Id { get; private set; }
 
         /// <summary>
         ///     The name of the file this profile is stored in on the system.
         /// </summary>
+        [ReadOnly(true)]
+        [DisplayName("Profile file name")]
         public string FileName
         {
             get { return string.Format("{0}.xml", Id.ToString("D")); }
@@ -205,21 +211,30 @@ namespace ScpControl.Profiler
         /// <summary>
         ///     The absolute path to this file on the system.
         /// </summary>
+        [Obsolete]
+        [Browsable(false)]
         public string FullPath
         {
             get { return Path.Combine(DualShockProfileManager.ProfilesPath, FileName); }
         }
 
         [DataMember]
+        [ReadOnly(true)]
+        [DisplayName("Pad ID")]
         public DsPadId PadId { get; set; }
 
         [DataMember]
+        [ReadOnly(true)]
+        [DisplayName("MAC Address")]
         public string MacAddress { get; set; }
 
         [DataMember]
+        [ReadOnly(true)]
+        [DisplayName("Pad Model")]
         public DsModel Model { get; set; }
 
         [DataMember]
+        [DisplayName("Match profile on")]
         public DsMatch Match { get; set; }
 
         private IEnumerable<DsButtonProfile> Buttons
@@ -233,55 +248,72 @@ namespace ScpControl.Profiler
         }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Ps { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Circle { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Cross { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Square { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Triangle { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Select { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Start { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile LeftShoulder { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile RightShoulder { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile LeftTrigger { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile RightTrigger { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile LeftThumb { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile RightThumb { get; set; }
 
         // D-Pad
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Up { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Right { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Down { get; set; }
 
         [DataMember]
+        [Browsable(false)]
         public DsButtonProfile Left { get; set; }
 
         #endregion
