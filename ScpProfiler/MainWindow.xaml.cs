@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using ScpControl;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using Xceed.Wpf.Toolkit;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
 using Ds4Button = ScpControl.Profiler.Ds4Button;
 
@@ -101,13 +101,7 @@ namespace ScpProfiler
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            _vm.CurrentProfile.Save(_vm.CurrentProfile.FullPath);
-        }
-
-        private void NewButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            _vm.CurrentProfile = new DualShockProfile();
-            EditProfileChildWindow.Show();
+            _proxy.SubmitProfile(_vm.CurrentProfile);
         }
 
         private void EditButton_OnClick(object sender, RoutedEventArgs e)
@@ -115,14 +109,14 @@ namespace ScpProfiler
             EditProfileChildWindow.Show();
         }
 
-        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
+        private void ProfilesCollectionControl_OnItemAdded(object sender, ItemEventArgs e)
         {
-            if (File.Exists(_vm.CurrentProfile.FullPath))
-            {
-                File.Delete(_vm.CurrentProfile.FullPath);
-            }
+            _proxy.SubmitProfile(e.Item as DualShockProfile);
+        }
 
-            _vm.CurrentProfile = new DualShockProfile();
+        private void ProfilesCollectionControl_OnItemDeleted(object sender, ItemEventArgs e)
+        {
+            _proxy.RemoveProfile(e.Item as DualShockProfile);
         }
     }
 }

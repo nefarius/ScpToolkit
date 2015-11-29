@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using log4net;
@@ -88,7 +89,7 @@ namespace ScpControl.Profiler
         /// <param name="report">The extended HID report.</param>
         public void PassThroughAllProfiles(ScpHidReport report)
         {
-            foreach (var profile in Profiles)
+            foreach (var profile in Profiles.Where(p => p.IsActive))
             {
                 profile.Remap(report);
             }

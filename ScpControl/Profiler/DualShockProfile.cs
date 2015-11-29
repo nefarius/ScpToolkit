@@ -191,11 +191,19 @@ namespace ScpControl.Profiler
 
         [DataMember]
         [Category("Main")]
+        [DisplayName("Profile is active")]
+        [Description("If disabled, the entire profile will be ignored from processing.")]
+        public bool IsActive { get; set; }
+
+        [DataMember]
+        [Category("Main")]
         [DisplayName("Profile name")]
+        [Description("The friendly name of this profile.")]
         public string Name { get; set; }
 
         [DataMember]
         [ReadOnly(true)]
+        [Description("The unique identifier of this profile.")]
         public Guid Id { get; private set; }
 
         /// <summary>
@@ -203,6 +211,7 @@ namespace ScpControl.Profiler
         /// </summary>
         [ReadOnly(true)]
         [DisplayName("Profile file name")]
+        [Description("The local file name of this profile.")]
         public string FileName
         {
             get { return string.Format("{0}.xml", Id.ToString("D")); }
@@ -234,6 +243,7 @@ namespace ScpControl.Profiler
         public DsModel Model { get; set; }
 
         [DataMember]
+        [Category("Main")]
         [DisplayName("Match profile on")]
         public DsMatch Match { get; set; }
 
