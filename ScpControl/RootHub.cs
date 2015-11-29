@@ -598,5 +598,20 @@ namespace ScpControl
         }
 
         #endregion
+        
+        public IEnumerable<DualShockProfile> GetProfiles()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SubmitProfile(DualShockProfile profile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveProfile(DualShockProfile profile)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

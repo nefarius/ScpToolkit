@@ -185,6 +185,21 @@ namespace ScpControl
             return _rootHub.Rumble(pad, large, small);
         }
 
+        public IEnumerable<DualShockProfile> GetProfiles()
+        {
+            return _rootHub.GetProfiles();
+        }
+
+        public void SubmitProfile(DualShockProfile profile)
+        {
+            _rootHub.SubmitProfile(profile);
+        }
+
+        public void RemoveProfile(DualShockProfile profile)
+        {
+            _rootHub.RemoveProfile(profile);
+        }
+
         #endregion
 
         #region Component actions
