@@ -601,17 +601,17 @@ namespace ScpControl
         
         public IEnumerable<DualShockProfile> GetProfiles()
         {
-            throw new NotImplementedException();
+            return DualShockProfileManager.Instance.Profiles;
         }
 
         public void SubmitProfile(DualShockProfile profile)
         {
-            throw new NotImplementedException();
+            DualShockProfileManager.Instance.SubmitProfile(profile);
         }
 
         public void RemoveProfile(DualShockProfile profile)
         {
-            throw new NotImplementedException();
+            DualShockProfileManager.Instance.RemoveProfile(profile);
         }
     }
 }

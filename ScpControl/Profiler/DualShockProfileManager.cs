@@ -93,5 +93,23 @@ namespace ScpControl.Profiler
                 profile.Remap(report);
             }
         }
+
+        /// <summary>
+        ///     Stores a new <see cref="DualShockProfile"/> or overwrites an existing one.
+        /// </summary>
+        /// <param name="profile">The <see cref="DualShockProfile"/> to save.</param>
+        public void SubmitProfile(DualShockProfile profile)
+        {
+            profile.Save(Path.Combine(GlobalConfiguration.ProfilesPath, profile.FileName));
+        }
+
+        /// <summary>
+        ///     Removes a given <see cref="DualShockProfile"/>.
+        /// </summary>
+        /// <param name="profile">The <see cref="DualShockProfile"/>to remove.</param>
+        public void RemoveProfile(DualShockProfile profile)
+        {
+            File.Delete(Path.Combine(GlobalConfiguration.ProfilesPath, profile.FileName));
+        }
     }
 }
