@@ -84,7 +84,15 @@ namespace ScpControl.ScpCore
 
         #region Public properties
 
+        /// <summary>
+        ///     Gets the root directory of the ScpToolkit installation.
+        /// </summary>
         public static string AppDirectory { get { return WorkingDirectory; } }
+
+        /// <summary>
+        ///     Gets the local path to the XML-based profiles.
+        /// </summary>
+        public static string ProfilesPath { get { return Path.Combine(AppDirectory, "Profiles"); } }
 
         public bool FlipLX
         {
