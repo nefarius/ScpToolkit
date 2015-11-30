@@ -12,7 +12,7 @@ using MadMilkman.Ini;
 
 namespace ScpXInputBridge
 {
-    public partial class XInputDll : IDisposable
+    public partial class XInputDll
     {
         #region Private delegates
 
@@ -20,7 +20,7 @@ namespace ScpXInputBridge
             new Lazy<XInputEnableFunction>(() =>
             {
                 Initialize();
-                return (XInputEnableFunction) GetMethod<XInputEnableFunction>(_dll, "XInputEnable");
+                return (XInputEnableFunction) GetMethod<XInputEnableFunction>(NativeDllHandle, "XInputEnable");
             });
 
         private static readonly Lazy<XInputGetStateFunction> OriginalXInputGetStateFunction = new Lazy
@@ -28,7 +28,7 @@ namespace ScpXInputBridge
             () =>
             {
                 Initialize();
-                return (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(_dll, "XInputGetState");
+                return (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(NativeDllHandle, "XInputGetState");
             });
 
         private static readonly Lazy<XInputSetStateFunction> OriginalXInputSetStateFunction = new Lazy
@@ -36,7 +36,7 @@ namespace ScpXInputBridge
             () =>
             {
                 Initialize();
-                return (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(_dll, "XInputSetState");
+                return (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(NativeDllHandle, "XInputSetState");
             });
 
         private static readonly Lazy<XInputGetCapabilitiesFunction> OriginalXInputGetCapabilitiesFunction = new Lazy
@@ -46,7 +46,7 @@ namespace ScpXInputBridge
                 Initialize();
                 return
                     (XInputGetCapabilitiesFunction)
-                        GetMethod<XInputGetCapabilitiesFunction>(_dll, "XInputGetCapabilities");
+                        GetMethod<XInputGetCapabilitiesFunction>(NativeDllHandle, "XInputGetCapabilities");
             });
 
         private static readonly Lazy<XInputGetDSoundAudioDeviceGuidsFunction>
@@ -56,7 +56,7 @@ namespace ScpXInputBridge
                     Initialize();
                     return
                         (XInputGetDSoundAudioDeviceGuidsFunction)
-                            GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(_dll,
+                            GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(NativeDllHandle,
                                 "XInputGetDSoundAudioDeviceGuids");
                 });
 
@@ -66,7 +66,7 @@ namespace ScpXInputBridge
             {
                 Initialize();
                 return (XInputGetBatteryInformationFunction)
-                    GetMethod<XInputGetBatteryInformationFunction>(_dll, "XInputGetBatteryInformation");
+                    GetMethod<XInputGetBatteryInformationFunction>(NativeDllHandle, "XInputGetBatteryInformation");
             });
 
         private static readonly Lazy<XInputGetKeystrokeFunction> OriginalXInputGetKeystrokeFunction = new Lazy
@@ -74,24 +74,12 @@ namespace ScpXInputBridge
             () =>
             {
                 Initialize();
-                return (XInputGetKeystrokeFunction) GetMethod<XInputGetKeystrokeFunction>(_dll, "XInputGetKeystroke");
+                return (XInputGetKeystrokeFunction) GetMethod<XInputGetKeystrokeFunction>(NativeDllHandle, "XInputGetKeystroke");
             });
 
         #endregion
 
         #region Methods
-
-        /// <summary>
-        ///     Free resources.
-        /// </summary>
-        /// TODO: does this even get called?
-        public void Dispose()
-        {
-            if (_dll == IntPtr.Zero) return;
-
-            Kernel32Natives.FreeLibrary(_dll);
-            _isInitialized = false;
-        }
 
         /// <summary>
         ///     Translates a native method into a managed delegate.
@@ -105,38 +93,16 @@ namespace ScpXInputBridge
             return Marshal.GetDelegateForFunctionPointer(Kernel32Natives.GetProcAddress(module, methodName), typeof (T));
         }
 
-        /// <summary>
-        ///     Loads native dependencies.
-        /// </summary>
-        private static void Initialize()
+        static XInputDll()
         {
-            if (_isInitialized)
-                return;
+            Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-            #region Prepare logger
-
-            var hierarchy = (Hierarchy)LogManager.GetRepository();
-
-            var logFile = new FileAppender
-            {
-                AppendToFile = true,
-                File = string.Format("XInput1_3_{0}.log.xml", Environment.UserName),
-                Layout = new XmlLayoutSchemaLog4j(true)
-            };
-            logFile.ActivateOptions();
-            hierarchy.Root.AddAppender(logFile);
-
-            hierarchy.Root.Level = Level.Debug;
-            hierarchy.Configured = true;
-
-            #endregion
-
-            Log.InfoFormat("Library loaded by process {0} [{1}]", 
+            Log.InfoFormat("Library loaded by process {0} [{1}]",
                 Process.GetCurrentProcess().ProcessName,
                 Process.GetCurrentProcess().MainWindowTitle);
 
             Log.Info("Initializing library");
-            
+
             var iniOpts = new IniOptions
             {
                 CommentStarter = IniCommentStarter.Semicolon
@@ -162,13 +128,15 @@ namespace ScpXInputBridge
                 var binName = ini.Sections["ScpControl"].Keys["BinName"].Value;
                 Log.DebugFormat("ScpControl bin path: {0}", binName);
 
-                // load all assembly dependencies
+                // resolve assembly dependencies
                 AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
                 {
                     var asmName = new AssemblyName(args.Name).Name;
-                    Log.DebugFormat("Loading assembly: {0}", asmName);
+                    var asmPath = Path.Combine(basePath, string.Format("{0}.dll", asmName));
 
-                    return Assembly.LoadFrom(Path.Combine(basePath, string.Format("{0}.dll", asmName)));
+                    Log.DebugFormat("Loading assembly {0} from {1}", asmName, asmPath);
+
+                    return Assembly.LoadFrom(asmPath);
                 };
 
                 var scpControl = Assembly.LoadFrom(Path.Combine(basePath, binName));
@@ -190,24 +158,35 @@ namespace ScpXInputBridge
                 : Path.Combine(Environment.SystemDirectory, "xinput1_3.dll");
             Log.DebugFormat("Original XInput 1.3 DLL path: {0}", xinput13Path);
 
-            _dll = Kernel32Natives.LoadLibrary(xinput13Path);
+            NativeDllHandle = Kernel32Natives.LoadLibrary(xinput13Path);
 
-            if (_dll != IntPtr.Zero)
+            if (NativeDllHandle != IntPtr.Zero)
                 _isInitialized = true;
 
             Log.Info("Library initialized");
+        }
+
+        /// <summary>
+        ///     Loads native dependencies.
+        /// </summary>
+        private static void Initialize()
+        {
+            if (_isInitialized)
+                return;
+
+            
         }
 
         #endregion
 
         #region Private fields
 
-        private static IntPtr _dll = IntPtr.Zero;
+        private static readonly IntPtr NativeDllHandle = IntPtr.Zero;
         private static volatile bool _isInitialized;
         private static dynamic _scpProxy;
         private const string CfgFile = "ScpXInput.ini";
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log;
 
         #endregion
 
