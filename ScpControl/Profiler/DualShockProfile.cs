@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Xml;
 using WindowsInput.Native;
 using PropertyChanged;
 using ScpControl.ScpCore;
@@ -54,7 +53,7 @@ namespace ScpControl.Profiler
     public class DualShockProfile
     {
         #region Ctor
-        
+
         public DualShockProfile()
         {
             Id = Guid.NewGuid();
@@ -62,13 +61,16 @@ namespace ScpControl.Profiler
 
             OnCreated();
         }
-        
+
         [OnDeserializing]
         private void OnDeserializing(StreamingContext c)
         {
             OnCreated();
         }
 
+        /// <summary>
+        ///     Initialize buttons/axes.
+        /// </summary>
         private void OnCreated()
         {
             Ps = new DsButtonProfile(Ds3Button.Ps, Ds4Button.Ps);
@@ -129,45 +131,6 @@ namespace ScpControl.Profiler
             }
         }
 
-        /// <summary>
-        ///     Deserializes an object from the specified XML file.
-        /// </summary>
-        /// <param name="file">The path of the XML file.</param>
-        /// <returns>The retreived object.</returns>
-        /// TODO: add error handling
-        public static DualShockProfile Load(string file)
-        {
-            var serializer = new DataContractSerializer(typeof (DualShockProfile));
-
-            using (var fs = File.OpenText(file))
-            {
-                using (var xml = XmlReader.Create(fs))
-                {
-                    return (DualShockProfile) serializer.ReadObject(xml);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Serializes the current object to an XML file.
-        /// </summary>
-        /// <param name="file">The target XML file path.</param>
-        /// TODO: add error handling
-        public void Save(string file)
-        {
-            var serializer = new DataContractSerializer(typeof (DualShockProfile));
-
-            var path = Path.GetDirectoryName(file) ?? GlobalConfiguration.AppDirectory;
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            using (var xml = XmlWriter.Create(file, new XmlWriterSettings {Indent = true}))
-            {
-                serializer.WriteObject(xml, this);
-            }
-        }
-
         public override bool Equals(object obj)
         {
             var profile = obj as DualShockProfile;
@@ -177,7 +140,7 @@ namespace ScpControl.Profiler
 
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return Id.GetHashCode() ^ Name.GetHashCode();
         }
 
         public override string ToString()
@@ -350,40 +313,6 @@ namespace ScpControl.Profiler
 
         #endregion
 
-        #region Properties
-
-        [DataMember]
-        private IEnumerable<IDsButton> SourceButtons { get; set; }
-
-        [DataMember]
-        public DsButtonMappingTarget MappingTarget { get; private set; }
-
-        [DataMember]
-        public bool IsEnabled { get; set; }
-
-        [DataMember]
-        public DsButtonProfileTurboSetting Turbo { get; set; }
-
-        public byte CurrentValue { get; set; }
-
-        #endregion
-
-        #region Deserialization
-
-        private void OnCreated()
-        {
-            MappingTarget = new DsButtonMappingTarget();
-            Turbo = new DsButtonProfileTurboSetting();
-        }
-
-        [OnDeserializing]
-        private void OnDeserializing(StreamingContext c)
-        {
-            OnCreated();
-        }
-
-        #endregion
-
         #region Public methods
 
         /// <summary>
@@ -430,6 +359,40 @@ namespace ScpControl.Profiler
         }
 
         #endregion
+
+        #region Properties
+
+        [DataMember]
+        private IEnumerable<IDsButton> SourceButtons { get; set; }
+
+        [DataMember]
+        public DsButtonMappingTarget MappingTarget { get; private set; }
+
+        [DataMember]
+        public bool IsEnabled { get; set; }
+
+        [DataMember]
+        public DsButtonProfileTurboSetting Turbo { get; set; }
+
+        public byte CurrentValue { get; set; }
+
+        #endregion
+
+        #region Deserialization
+
+        private void OnCreated()
+        {
+            MappingTarget = new DsButtonMappingTarget();
+            Turbo = new DsButtonProfileTurboSetting();
+        }
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext c)
+        {
+            OnCreated();
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -439,15 +402,6 @@ namespace ScpControl.Profiler
     [DataContract]
     public class DsButtonProfileTurboSetting
     {
-        #region Private fields
-
-        private Stopwatch _delayedFrame = new Stopwatch();
-        private Stopwatch _engagedFrame = new Stopwatch();
-        private bool _isActive;
-        private Stopwatch _releasedFrame = new Stopwatch();
-
-        #endregion
-
         #region Ctor
 
         public DsButtonProfileTurboSetting()
@@ -456,6 +410,89 @@ namespace ScpControl.Profiler
             Interval = 50;
             Release = 100;
         }
+
+        #endregion
+
+        #region Public methods
+
+        /// <summary>
+        ///     Applies turbo algorithm for a specified <see cref="IDsButton" /> on a given <see cref="ScpHidReport" />.
+        /// </summary>
+        /// <param name="report">The HID report to manipulate.</param>
+        /// <param name="button">The button to trigger turbo on.</param>
+        public void ApplyOn(ScpHidReport report, IDsButton button)
+        {
+            // button type must match model, madness otherwise!
+            if ((report.Model != DsModel.DS3 || !(button is Ds3Button)) &&
+                (report.Model != DsModel.DS4 || !(button is Ds4Button))) return;
+
+            // if button got released...
+            if (_isActive && !report[button].IsPressed)
+            {
+                // ...disable, reset and return
+                _isActive = false;
+                _delayedFrame.Reset();
+                _engagedFrame.Reset();
+                _releasedFrame.Reset();
+                return;
+            }
+
+            // if turbo is enabled and button is pressed...
+            if (!_isActive && report[button].IsPressed)
+            {
+                // ...start calculating the activation delay...
+                if (!_delayedFrame.IsRunning) _delayedFrame.Restart();
+
+                // ...if we are still activating, don't do anything
+                if (_delayedFrame.ElapsedMilliseconds < Delay) return;
+
+                // time to activate!
+                _isActive = true;
+                _delayedFrame.Reset();
+            }
+
+            // if the button was released...
+            if (!report[button].IsPressed)
+            {
+                // ...restore default states and skip processing
+                _isActive = false;
+                return;
+            }
+
+            // reset engaged ("keep pressed") time frame...
+            if (!_engagedFrame.IsRunning) _engagedFrame.Restart();
+
+            // ...do not change state while within frame and button is still pressed, then skip
+            if (_engagedFrame.ElapsedMilliseconds < Interval && report[button].IsPressed) return;
+
+            // reset released time frame ("forecefully release") for button
+            if (!_releasedFrame.IsRunning) _releasedFrame.Restart();
+
+            // while we're still within the released time frame...
+            if (_releasedFrame.ElapsedMilliseconds < Release)
+            {
+                // ...re-set the button state to released
+                report.Unset(button);
+            }
+            else
+            {
+                // all frames passed, reset and start over
+                _isActive = false;
+
+                _delayedFrame.Stop();
+                _engagedFrame.Stop();
+                _releasedFrame.Stop();
+            }
+        }
+
+        #endregion
+
+        #region Private fields
+
+        private Stopwatch _delayedFrame = new Stopwatch();
+        private Stopwatch _engagedFrame = new Stopwatch();
+        private bool _isActive;
+        private Stopwatch _releasedFrame = new Stopwatch();
 
         #endregion
 
@@ -501,80 +538,6 @@ namespace ScpControl.Profiler
         private void OnDeserializing(StreamingContext c)
         {
             OnCreated();
-        }
-
-        #endregion
-
-        #region Public methods
-
-        /// <summary>
-        ///     Applies turbo algorithm for a specified <see cref="IDsButton"/> on a given <see cref="ScpHidReport"/>.
-        /// </summary>
-        /// <param name="report">The HID report to manipulate.</param>
-        /// <param name="button">The button to trigger turbo on.</param>
-        public void ApplyOn(ScpHidReport report, IDsButton button)
-        {
-            // button type must match model, madness otherwise!
-            if ((report.Model != DsModel.DS3 || !(button is Ds3Button)) &&
-                (report.Model != DsModel.DS4 || !(button is Ds4Button))) return;
-
-            // if button got released...
-            if (_isActive && !report[button].IsPressed)
-            {
-                // ...disable, reset and return
-                _isActive = false;
-                _delayedFrame.Reset();
-                _engagedFrame.Reset();
-                _releasedFrame.Reset();
-                return;
-            }
-
-            // if turbo is enabled and button is pressed...
-            if (!_isActive && report[button].IsPressed)
-            {
-                // ...start calculating the activation delay...
-                if (!_delayedFrame.IsRunning) _delayedFrame.Restart();
-
-                // ...if we are still activating, don't do anything
-                if (_delayedFrame.ElapsedMilliseconds < Delay) return;
-
-                // time to activate!
-                _isActive = true;
-                _delayedFrame.Reset();
-            }
-
-            // if the button was released...
-            if (!report[button].IsPressed)
-            {
-                // ...restore default states and skip processing
-                _isActive = false;
-                return;
-            }
-
-            // reset engaged ("keep pressed") time frame...
-            if (!_engagedFrame.IsRunning) _engagedFrame.Restart();
-            
-            // ...do not change state while within frame and button is still pressed, then skip
-            if (_engagedFrame.ElapsedMilliseconds < Interval && report[button].IsPressed) return;
-
-            // reset released time frame ("forecefully release") for button
-            if (!_releasedFrame.IsRunning) _releasedFrame.Restart();
-
-            // while we're still within the released time frame...
-            if (_releasedFrame.ElapsedMilliseconds < Release)
-            {
-                // ...re-set the button state to released
-                report.Unset(button);
-            }
-            else
-            {
-                // all frames passed, reset and start over
-                _isActive = false;
-
-                _delayedFrame.Stop();
-                _engagedFrame.Stop();
-                _releasedFrame.Stop();
-            }
         }
 
         #endregion

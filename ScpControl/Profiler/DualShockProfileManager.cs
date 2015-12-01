@@ -2,7 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
+using System.Xml;
 using log4net;
 using Libarius.Filesystem;
 using PropertyChanged;
@@ -44,7 +46,7 @@ namespace ScpControl.Profiler
                 {
                     Log.InfoFormat("Loading profile from file {0}", file);
 
-                    var profile = DualShockProfile.Load(file);
+                    var profile = Load(file);
                     profiles.Add(profile);
 
                     Log.InfoFormat("Successfully loaded profile {0}", profile.Name);
@@ -101,7 +103,7 @@ namespace ScpControl.Profiler
         /// <param name="profile">The <see cref="DualShockProfile"/> to save.</param>
         public void SubmitProfile(DualShockProfile profile)
         {
-            profile.Save(Path.Combine(GlobalConfiguration.ProfilesPath, profile.FileName));
+            Save(profile, Path.Combine(GlobalConfiguration.ProfilesPath, profile.FileName));
         }
 
         /// <summary>
@@ -111,6 +113,34 @@ namespace ScpControl.Profiler
         public void RemoveProfile(DualShockProfile profile)
         {
             File.Delete(Path.Combine(GlobalConfiguration.ProfilesPath, profile.FileName));
+        }
+
+        private static DualShockProfile Load(string file)
+        {
+            var serializer = new DataContractSerializer(typeof(DualShockProfile));
+
+            using (var fs = File.OpenText(file))
+            {
+                using (var xml = XmlReader.Create(fs))
+                {
+                    return (DualShockProfile)serializer.ReadObject(xml);
+                }
+            }
+        }
+
+        private static void Save(DualShockProfile profile, string file)
+        {
+            var serializer = new DataContractSerializer(profile.GetType());
+
+            var path = Path.GetDirectoryName(file) ?? GlobalConfiguration.AppDirectory;
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            using (var xml = XmlWriter.Create(file, new XmlWriterSettings { Indent = true }))
+            {
+                serializer.WriteObject(xml, profile);
+            }
         }
     }
 }
