@@ -109,6 +109,18 @@ namespace ScpControl
             return extended;
         }
 
+        public ScpHidReport GetReport(uint dwUserIndex)
+        {
+            try
+            {
+                return _packetCache[(DsPadId)dwUserIndex];
+            }
+            catch (KeyNotFoundException)
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region Private fields
