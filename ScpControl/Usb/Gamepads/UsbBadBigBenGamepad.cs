@@ -1,4 +1,5 @@
-﻿using ScpControl.ScpCore;
+﻿using ScpControl.Profiler;
+using ScpControl.ScpCore;
 using Ds3Button = ScpControl.Profiler.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads

@@ -8,6 +8,7 @@ using ScpControl;
 using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 using ScpControl.Usb;

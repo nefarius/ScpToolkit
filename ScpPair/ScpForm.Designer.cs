@@ -1,4 +1,5 @@
-﻿using ScpControl.Usb;
+﻿using ScpControl.Profiler;
+using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
 
 namespace ScpPair
@@ -45,7 +46,7 @@ namespace ScpPair
             // usbDevice
             // 
             this.usbDevice.IsShutdown = false;
-            this.usbDevice.PadId = ScpControl.ScpCore.DsPadId.One;
+            this.usbDevice.PadId = DsPadId.One;
             // 
             // tmEnable
             // 

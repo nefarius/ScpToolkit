@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AutoDependencyPropertyMarker;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 
 namespace ScpControlPanel.Controls

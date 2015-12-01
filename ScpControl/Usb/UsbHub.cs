@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using HidSharp;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Sound;
 using ScpControl.Usb.Ds3;

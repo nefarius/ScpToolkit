@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ScpControl;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Usb;
 using ScpControl.Usb.Ds3;

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ScpControl.Bluetooth;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 
 namespace ScpControl

@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Windows.Controls;
 using AutoDependencyPropertyMarker;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 
 namespace ScpControlPanel.Controls

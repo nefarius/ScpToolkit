@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
 

@@ -12,6 +12,7 @@ using ScpControl;
 using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.Exceptions;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;

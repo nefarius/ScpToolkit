@@ -26,7 +26,7 @@
             <ObjectDataProvider x:Key="DsMatchEnum" MethodName="GetValues"
                                 ObjectType="{x:Type system:Enum}">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="scpCore:DsMatch" />
+                    <x:Type TypeName="profiler:DsMatch" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
         </Grid.Resources>
@@ -44,11 +44,11 @@
                       Margin="5"
                       Width="100"
                       SelectedIndex="0" SelectionChanged="CurrentPad_SelectionChanged">
-                <scpCore:DsPadId>One</scpCore:DsPadId>
-                <scpCore:DsPadId>Two</scpCore:DsPadId>
-                <scpCore:DsPadId>Three</scpCore:DsPadId>
-                <scpCore:DsPadId>Four</scpCore:DsPadId>
-                <scpCore:DsPadId>All</scpCore:DsPadId>
+                <profiler:DsPadId>One</profiler:DsPadId>
+                <profiler:DsPadId>Two</profiler:DsPadId>
+                <profiler:DsPadId>Three</profiler:DsPadId>
+                <profiler:DsPadId>Four</profiler:DsPadId>
+                <profiler:DsPadId>All</profiler:DsPadId>
             </ComboBox>
 
             <!-- Actions -->

@@ -1,4 +1,5 @@
 ﻿using System.Net.NetworkInformation;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using Ds3Axis = ScpControl.Profiler.Ds3Axis;
 using Ds3Button = ScpControl.Profiler.Ds3Button;

@@ -187,7 +187,7 @@
     <Compile Include="Rx\IChannel.cs" />
     <Compile Include="Rx\ScpNativeFeedChannel.cs" />
     <Compile Include="ScpCore\DsDetail.cs" />
-    <Compile Include="ScpCore\GamePadEnums.cs" />
+    <Compile Include="Profiler\DualShockEnums.cs" />
     <Compile Include="ScpCore\SingletonBase.cs" />
     <Compile Include="Scripting.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />

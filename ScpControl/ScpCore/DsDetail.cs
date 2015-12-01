@@ -1,4 +1,5 @@
 ﻿using System;
+using ScpControl.Profiler;
 
 namespace ScpControl.ScpCore
 {

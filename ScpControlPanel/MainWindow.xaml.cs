@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControlPanel.Controls;
 
