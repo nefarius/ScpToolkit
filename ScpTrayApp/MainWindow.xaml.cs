@@ -1,28 +1,84 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Remoting;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Threading;
+using log4net;
+using log4net.Appender;
+using log4net.Config;
+using log4net.Core;
+using log4net.Plugin;
+using log4net.Repository.Hierarchy;
+using Mantin.Controls.Wpf.Notification;
+
+[assembly: XmlConfigurator]
 
 namespace ScpTrayApp
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IAppender
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof (MainWindow));
+
+        private readonly RemoteLoggingServerPlugin _plugin;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            // Configure remoting. This loads the TCP channel as specified in the .config file.
+            RemotingConfiguration.Configure(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile, false);
+
+            foreach (var currentLogger in LogManager.GetCurrentLoggers())
+            {
+                ((Logger) currentLogger.Logger).AddAppender(this);
+            }
+
+            _plugin = new RemoteLoggingServerPlugin("Log4netRemotingServerService");
+
+            // Publish the remote logging server. This is done using the log4net plugin.
+            LogManager.GetRepository().PluginMap.Add(_plugin);
+
+            //Get the logger repository hierarchy.  
+            var repository = LogManager.GetRepository() as Hierarchy;
+
+            //and add the appender to the root level  
+            //of the logging hierarchy  
+            repository.Root.AddAppender(this);
+
+            //configure the logging at the root.  
+            repository.Root.Level = Level.All;
+
+            //mark repository as configured and  
+            //notify that is has changed.  
+            repository.Configured = true;
+            repository.RaiseConfigurationChanged(EventArgs.Empty);
+        }
+
+        public void DoAppend(LoggingEvent loggingEvent)
+        {
+            if (loggingEvent.Level == Level.Info)
+            {
+                ShowPopup("Information", loggingEvent.RenderedMessage, NotificationType.Information);
+            }
+        }
+
+        private void ShowPopup(string title, string message, NotificationType type)
+        {
+            this.InvokeIfRequired(() =>
+            {
+                var popup = new ToastPopUp(title, message, type)
+                {
+                    Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x1B, 0x1B, 0x1B)),
+                    FontColor = Brushes.Bisque,
+                    FontFamily = FontFamily
+                };
+
+                popup.Show();
+            },
+                DispatcherPriority.Normal);
         }
     }
 }
