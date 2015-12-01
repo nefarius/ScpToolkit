@@ -125,15 +125,18 @@ namespace ScpXInputBridge
             }
 
             // if no custom path specified by user, use DLL in system32 dir
-            var xinput13Path = ini.Sections["xinput1_3"].Keys.Contains("OriginalFilePath")
-                ? ini.Sections["xinput1_3"].Keys["OriginalFilePath"].Value
+            var xinput13Path = ini.Sections["Original XInput DLL"].Keys.Contains("OriginalFilePath")
+                ? ini.Sections["Original XInput DLL"].Keys["OriginalFilePath"].Value
                 : Path.Combine(Environment.SystemDirectory, "xinput1_3.dll");
-            Log.DebugFormat("Original XInput 1.3 DLL path: {0}", xinput13Path);
+            Log.DebugFormat("Original XInput DLL path: {0}", xinput13Path);
 
             NativeDllHandle = Kernel32Natives.LoadLibrary(xinput13Path);
 
             if (NativeDllHandle != IntPtr.Zero)
-                _isInitialized = true;
+            {
+                Log.FatalFormat("Couldn't load native DLL");
+                return;
+            }
 
             Log.Info("Library initialized");
         }
