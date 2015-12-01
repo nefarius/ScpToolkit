@@ -77,7 +77,7 @@ namespace ScpControl.Profiler
 
         public byte SetBatteryStatus(DsBattery battery)
         {
-            return RawBytes[2] = (byte) battery;
+            return RawBytes[(int) DsOffset.Battery] = (byte) battery;
         }
 
         public void ZeroShoulderButtonsState()
@@ -155,8 +155,8 @@ namespace ScpControl.Profiler
 
         public DsState PadState
         {
-            get { return (DsState) RawBytes[1]; }
-            set { RawBytes[1] = (byte) value; }
+            get { return (DsState) RawBytes[(int) DsOffset.State]; }
+            set { RawBytes[(int)DsOffset.State] = (byte)value; }
         }
 
         public byte ReportId
@@ -173,8 +173,8 @@ namespace ScpControl.Profiler
 
         public byte BatteryStatus
         {
-            get { return RawBytes[2]; }
-            set { RawBytes[2] = value; }
+            get { return RawBytes[(int)DsOffset.Battery]; }
+            set { RawBytes[(int)DsOffset.Battery] = value; }
         }
 
         public bool IsPadActive
