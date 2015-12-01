@@ -13,65 +13,38 @@ namespace ScpXInputBridge
         #region Private delegates
 
         private static readonly Lazy<XInputEnableFunction> OriginalXInputEnableFunction =
-            new Lazy<XInputEnableFunction>(() =>
-            {
-                Initialize();
-                return (XInputEnableFunction) GetMethod<XInputEnableFunction>(NativeDllHandle, "XInputEnable");
-            });
+            new Lazy<XInputEnableFunction>(
+                () => (XInputEnableFunction) GetMethod<XInputEnableFunction>(NativeDllHandle, "XInputEnable"));
 
         private static readonly Lazy<XInputGetStateFunction> OriginalXInputGetStateFunction = new Lazy
             <XInputGetStateFunction>(
-            () =>
-            {
-                Initialize();
-                return (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(NativeDllHandle, "XInputGetState");
-            });
+            () => (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(NativeDllHandle, "XInputGetState"));
 
         private static readonly Lazy<XInputSetStateFunction> OriginalXInputSetStateFunction = new Lazy
             <XInputSetStateFunction>(
-            () =>
-            {
-                Initialize();
-                return (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(NativeDllHandle, "XInputSetState");
-            });
+            () => (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(NativeDllHandle, "XInputSetState"));
 
         private static readonly Lazy<XInputGetCapabilitiesFunction> OriginalXInputGetCapabilitiesFunction = new Lazy
             <XInputGetCapabilitiesFunction>(
-            () =>
-            {
-                Initialize();
-                return
-                    (XInputGetCapabilitiesFunction)
-                        GetMethod<XInputGetCapabilitiesFunction>(NativeDllHandle, "XInputGetCapabilities");
-            });
+            () => (XInputGetCapabilitiesFunction)
+                GetMethod<XInputGetCapabilitiesFunction>(NativeDllHandle, "XInputGetCapabilities"));
 
         private static readonly Lazy<XInputGetDSoundAudioDeviceGuidsFunction>
             OriginalXInputGetDSoundAudioDeviceGuidsFunction = new Lazy<XInputGetDSoundAudioDeviceGuidsFunction>(
-                () =>
-                {
-                    Initialize();
-                    return
-                        (XInputGetDSoundAudioDeviceGuidsFunction)
-                            GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(NativeDllHandle,
-                                "XInputGetDSoundAudioDeviceGuids");
-                });
+                () => (XInputGetDSoundAudioDeviceGuidsFunction)
+                    GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(NativeDllHandle,
+                        "XInputGetDSoundAudioDeviceGuids"));
 
         private static readonly Lazy<XInputGetBatteryInformationFunction> OriginalXInputGetBatteryInformationFunction = new Lazy
             <XInputGetBatteryInformationFunction>(
-            () =>
-            {
-                Initialize();
-                return (XInputGetBatteryInformationFunction)
-                    GetMethod<XInputGetBatteryInformationFunction>(NativeDllHandle, "XInputGetBatteryInformation");
-            });
+            () => (XInputGetBatteryInformationFunction)
+                GetMethod<XInputGetBatteryInformationFunction>(NativeDllHandle, "XInputGetBatteryInformation"));
 
         private static readonly Lazy<XInputGetKeystrokeFunction> OriginalXInputGetKeystrokeFunction = new Lazy
             <XInputGetKeystrokeFunction>(
             () =>
-            {
-                Initialize();
-                return (XInputGetKeystrokeFunction) GetMethod<XInputGetKeystrokeFunction>(NativeDllHandle, "XInputGetKeystroke");
-            });
+                (XInputGetKeystrokeFunction)
+                    GetMethod<XInputGetKeystrokeFunction>(NativeDllHandle, "XInputGetKeystroke"));
 
         #endregion
 
@@ -89,6 +62,9 @@ namespace ScpXInputBridge
             return Marshal.GetDelegateForFunctionPointer(Kernel32Natives.GetProcAddress(module, methodName), typeof (T));
         }
 
+        /// <summary>
+        ///     Initializes library.
+        /// </summary>
         static XInputDll()
         {
             Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -162,24 +138,13 @@ namespace ScpXInputBridge
             Log.Info("Library initialized");
         }
 
-        /// <summary>
-        ///     Loads native dependencies.
-        /// </summary>
-        private static void Initialize()
-        {
-            if (_isInitialized)
-                return;
-
-            
-        }
-
         #endregion
 
         #region Private fields
 
         private static readonly IntPtr NativeDllHandle = IntPtr.Zero;
         private static volatile bool _isInitialized;
-        private static dynamic _scpProxy;
+        private static readonly dynamic _scpProxy;
         private const string CfgFile = "ScpXInput.ini";
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log;
