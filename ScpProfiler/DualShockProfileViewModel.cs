@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using PropertyChanged;
-using ScpControl.Profiler;
+using ScpControl.Shared.Core;
 
 namespace ScpProfiler
 {

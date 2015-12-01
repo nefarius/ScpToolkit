@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HidSharp.ReportDescriptors.Parser;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Sound;
 using ScpControl.Utilities;
 

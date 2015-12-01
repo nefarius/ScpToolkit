@@ -4,6 +4,7 @@ using System.Linq;
 using HidSharp;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Sound;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;

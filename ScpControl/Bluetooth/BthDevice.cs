@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Sound;
 
 namespace ScpControl.Bluetooth

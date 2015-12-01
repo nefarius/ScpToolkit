@@ -2,9 +2,8 @@
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
-using ScpControl.ScpCore;
 
-namespace ScpControl.Profiler
+namespace ScpControl.Shared.Core
 {
     /// <summary>
     ///     Represents an extended HID Input Report ready to be sent to the virtual bus device.

@@ -52,9 +52,9 @@
     <ApplicationIcon>Resources\Scp_All.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=1.2.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <HintPath>..\packages\log4net.2.0.4\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -100,6 +100,10 @@
     <Content Include="Resources\Scp_All.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ScpControl.Shared\ScpControl.Shared.csproj">
+      <Project>{dcc3a7cd-b7f3-42f0-b1ab-c55ad82c4593}</Project>
+      <Name>ScpControl.Shared</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScpControl\ScpControl.csproj">
       <Project>{ddecf06e-be48-4610-8bf8-4ae5140d9f0c}</Project>
       <Name>ScpControl</Name>

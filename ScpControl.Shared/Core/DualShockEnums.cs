@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace ScpControl.Profiler
+namespace ScpControl.Shared.Core
 {
     public enum DsOffset
     {

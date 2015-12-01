@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ReactiveSockets;
 using ScpControl.Profiler;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Rx
 {

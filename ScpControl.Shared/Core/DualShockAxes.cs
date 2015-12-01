@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ScpControl.Profiler
+namespace ScpControl.Shared.Core
 {
     /// <summary>
     ///     Defines a DualShock axis state.

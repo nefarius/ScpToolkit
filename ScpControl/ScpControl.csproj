@@ -59,9 +59,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Libarius.1.14.1\lib\Libarius.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+    <Reference Include="log4net, Version=1.2.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <HintPath>..\packages\log4net.2.0.4\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="MadMilkman.Ini, Version=1.0.5.0, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -170,13 +170,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Plugins\ScpMapperPlugins.cs" />
-    <Compile Include="Profiler\DualShockAxes.cs" />
-    <Compile Include="Profiler\DualShockButtons.cs" />
-    <Compile Include="Profiler\DualShockMotion.cs" />
     <Compile Include="Profiler\DualShockProfileManager.cs" />
-    <Compile Include="Profiler\DualShockTrackPad.cs" />
-    <Compile Include="Profiler\ScpHidReport.cs" />
-    <Compile Include="Profiler\DualShockProfile.cs" />
     <Compile Include="Profiler\VirtualMouse.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -187,7 +181,6 @@
     <Compile Include="Rx\IChannel.cs" />
     <Compile Include="Rx\ScpNativeFeedChannel.cs" />
     <Compile Include="ScpCore\DsDetail.cs" />
-    <Compile Include="Profiler\DualShockEnums.cs" />
     <Compile Include="ScpCore\SingletonBase.cs" />
     <Compile Include="Scripting.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />

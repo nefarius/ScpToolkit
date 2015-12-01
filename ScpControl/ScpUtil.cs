@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using ScpControl.Bluetooth;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 
 namespace ScpControl
 {

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Bluetooth
 {
@@ -139,9 +140,9 @@ namespace ScpControl.Bluetooth
             var trigger = false;
 
             // Quick Disconnect
-            if (InputReport[Profiler.Ds3Button.L1].IsPressed
-                && InputReport[Profiler.Ds3Button.R1].IsPressed
-                && InputReport[Profiler.Ds3Button.Ps].IsPressed)
+            if (InputReport[Ds3Button.L1].IsPressed
+                && InputReport[Ds3Button.R1].IsPressed
+                && InputReport[Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
                 // unset PS button

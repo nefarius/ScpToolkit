@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Wcf
 {

@@ -4,11 +4,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using ScpControl;
-using ScpControl.Profiler;
-using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using Xceed.Wpf.Toolkit;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
-using Ds4Button = ScpControl.Profiler.Ds4Button;
+
 
 namespace ScpProfiler
 {

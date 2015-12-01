@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Utilities;
 
 namespace ScpControl.Usb.Ds3
@@ -225,9 +226,9 @@ namespace ScpControl.Usb.Ds3
             var trigger = false;
 
             // detect Quick Disconnect combo (L1, R1 and PS buttons pressed at the same time)
-            if (InputReport[Profiler.Ds3Button.L1].IsPressed
-                && InputReport[Profiler.Ds3Button.R1].IsPressed
-                && InputReport[Profiler.Ds3Button.Ps].IsPressed)
+            if (InputReport[Ds3Button.L1].IsPressed
+                && InputReport[Ds3Button.R1].IsPressed
+                && InputReport[Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
                 // unset PS button

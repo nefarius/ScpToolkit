@@ -1,4 +1,5 @@
 ﻿using ScpControl.Profiler;
+using ScpControl.Shared.Core;
 using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
 

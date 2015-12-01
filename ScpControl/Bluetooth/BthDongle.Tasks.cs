@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth

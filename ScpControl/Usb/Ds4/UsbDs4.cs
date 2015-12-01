@@ -2,7 +2,8 @@
 using System.ComponentModel;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
-using Ds4Button = ScpControl.Profiler.Ds4Button;
+using ScpControl.Shared.Core;
+using Ds4Button = ScpControl.Shared.Core.Ds4Button;
 
 namespace ScpControl.Usb.Ds4
 {

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using ScpControl.Profiler;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Plugins.Mapper
 {

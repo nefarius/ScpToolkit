@@ -4,15 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:profiler="clr-namespace:ScpControl.Profiler;assembly=ScpControl"
              xmlns:utilities="clr-namespace:ScpControl.Utilities;assembly=ScpControl"
+             xmlns:core="clr-namespace:ScpControl.Shared.Core;assembly=ScpControl.Shared"
              mc:Ignorable="d"
              MinHeight="48" MinWidth="600" Width="886">
     <UserControl.Resources>
         <ObjectDataProvider x:Key="MyCommandTypes" MethodName="GetValuesAndDescriptions"
                             ObjectType="utilities:EnumExtensions">
             <ObjectDataProvider.MethodParameters>
-                <x:TypeExtension TypeName="profiler:CommandType" />
+                <x:TypeExtension TypeName="core:CommandType" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>

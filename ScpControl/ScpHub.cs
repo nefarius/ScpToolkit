@@ -4,6 +4,7 @@ using System.Reflection;
 using log4net;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 
 namespace ScpControl
 {

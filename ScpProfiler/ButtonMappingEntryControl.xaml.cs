@@ -7,6 +7,7 @@ using WindowsInput;
 using WindowsInput.Native;
 using AutoDependencyPropertyMarker;
 using ScpControl.Profiler;
+using ScpControl.Shared.Core;
 using ScpControl.Utilities;
 
 namespace ScpProfiler

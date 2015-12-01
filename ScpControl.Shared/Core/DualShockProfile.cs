@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using WindowsInput.Native;
 using PropertyChanged;
-using ScpControl.ScpCore;
 
-namespace ScpControl.Profiler
+namespace ScpControl.Shared.Core
 {
     /// <summary>
     ///     Possible mapping target types (keystrokes, mouse movement etc.)
@@ -178,16 +176,6 @@ namespace ScpControl.Profiler
         public string FileName
         {
             get { return string.Format("{0}.xml", Id.ToString("D")); }
-        }
-
-        /// <summary>
-        ///     The absolute path to this file on the system.
-        /// </summary>
-        [Obsolete]
-        [Browsable(false)]
-        public string FullPath
-        {
-            get { return Path.Combine(DualShockProfileManager.ProfilesPath, FileName); }
         }
 
         [DataMember]

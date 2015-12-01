@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace ScpControl.Profiler
+namespace ScpControl.Shared.Core
 {
     #region Interfaces
 

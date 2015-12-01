@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,7 @@ using log4net;
 using Libarius.Filesystem;
 using PropertyChanged;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Profiler
 {
@@ -117,14 +119,24 @@ namespace ScpControl.Profiler
 
         private static DualShockProfile Load(string file)
         {
-            var serializer = new DataContractSerializer(typeof(DualShockProfile));
-
-            using (var fs = File.OpenText(file))
+            try
             {
-                using (var xml = XmlReader.Create(fs))
+                Log.DebugFormat("Loading profile from file: {0}", file);
+
+                var serializer = new DataContractSerializer(typeof (DualShockProfile));
+
+                using (var fs = File.OpenText(file))
                 {
-                    return (DualShockProfile)serializer.ReadObject(xml);
+                    using (var xml = XmlReader.Create(fs))
+                    {
+                        return (DualShockProfile) serializer.ReadObject(xml);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.FatalFormat("Couldn't load profile {0} due to an unexpected error: {1}", file, ex);
+                return null;
             }
         }
 

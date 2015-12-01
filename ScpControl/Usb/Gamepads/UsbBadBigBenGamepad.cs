@@ -1,6 +1,7 @@
 ﻿using ScpControl.Profiler;
 using ScpControl.ScpCore;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
+using ScpControl.Shared.Core;
+using Ds3Button = ScpControl.Shared.Core.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads
 {

@@ -15,6 +15,7 @@ using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Sound;
 using ScpControl.Usb;
 using ScpControl.Usb.Ds3;

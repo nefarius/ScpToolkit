@@ -14,12 +14,13 @@ using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Shared.XInput;
 using ScpControl.Wcf;
-using Ds3Axis = ScpControl.Profiler.Ds3Axis;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
-using Ds4Axis = ScpControl.Profiler.Ds4Axis;
-using Ds4Button = ScpControl.Profiler.Ds4Button;
+using Ds3Axis = ScpControl.Shared.Core.Ds3Axis;
+using Ds3Button = ScpControl.Shared.Core.Ds3Button;
+using Ds4Axis = ScpControl.Shared.Core.Ds4Axis;
+using Ds4Button = ScpControl.Shared.Core.Ds4Button;
 
 namespace ScpControl
 {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HidSharp;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpControl.Sound;
 using ScpControl.Utilities;
 

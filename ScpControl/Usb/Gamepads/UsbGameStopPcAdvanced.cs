@@ -1,8 +1,9 @@
 ﻿using System.Net.NetworkInformation;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
-using Ds3Axis = ScpControl.Profiler.Ds3Axis;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
+using ScpControl.Shared.Core;
+using Ds3Axis = ScpControl.Shared.Core.Ds3Axis;
+using Ds3Button = ScpControl.Shared.Core.Ds3Button;
 
 namespace ScpControl.Usb.Gamepads
 {

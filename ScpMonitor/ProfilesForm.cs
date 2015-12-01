@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
+using ScpControl.Shared.Core;
 using ScpMonitor.Properties;
-using Ds3Axis = ScpControl.Profiler.Ds3Axis;
-using Ds3Button = ScpControl.Profiler.Ds3Button;
-using Ds4Axis = ScpControl.Profiler.Ds4Axis;
-using Ds4Button = ScpControl.Profiler.Ds4Button;
 
 namespace ScpMonitor
 {

@@ -1,4 +1,5 @@
 ﻿using ScpControl.Profiler;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Usb.Ds3.Replica
 {

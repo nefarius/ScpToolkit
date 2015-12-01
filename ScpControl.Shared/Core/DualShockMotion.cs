@@ -1,4 +1,4 @@
-﻿namespace ScpControl.Profiler
+﻿namespace ScpControl.Shared.Core
 {
     public class DsAccelerometer
     {
