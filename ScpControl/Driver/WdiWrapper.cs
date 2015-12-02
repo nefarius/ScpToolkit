@@ -69,6 +69,159 @@ namespace ScpControl.Driver
 
         #endregion
 
+        #region Private methods
+
+        private static WdiDeviceInfo NativeToManagedWdiUsbDevice(wdi_device_info info)
+        {
+            // get raw bytes from description pointer
+            var descSize = 0;
+            while (Marshal.ReadByte(info.desc, descSize) != 0) ++descSize;
+            var descBytes = new byte[descSize];
+            Marshal.Copy(info.desc, descBytes, 0, descSize);
+
+            // put info in managed object
+            var wdiDevice = new WdiDeviceInfo
+            {
+                VendorId = info.vid,
+                ProductId = info.pid,
+                Description = Encoding.UTF8.GetString(descBytes),
+                DeviceId = info.device_id,
+                HardwareId = info.hardware_id,
+                CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
+            };
+
+            return wdiDevice;
+        }
+
+        private static WdiErrorCode InstallDeviceDriver(string hardwareId, string deviceGuid, string driverPath,
+            string infName,
+            IntPtr hwnd, bool force, WdiDriverType driverType)
+        {
+            // regex to extract vendor ID and product ID from hardware ID string
+            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
+            // matched groups
+            var matches = regex.Match(hardwareId).Groups;
+
+            // very basic check
+            if (matches.Count < 3)
+                throw new ArgumentException("Supplied Hardware-ID is malformed");
+
+            // get values
+            var vid = matches[1].Value.ToUpper();
+            var pid = matches[2].Value.ToUpper();
+
+            // default return value is no matching device found
+            var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
+            // pointer to write device list to
+            var pList = IntPtr.Zero;
+            // list all USB devices, not only driverless ones
+            var listOpts = new wdi_options_create_list
+            {
+                list_all = true,
+                list_hubs = false,
+                trim_whitespaces = false
+            };
+
+            // use WinUSB and overrride device GUID
+            var prepOpts = new wdi_options_prepare_driver
+            {
+                driver_type = driverType,
+                device_guid = deviceGuid,
+                vendor_name = "ScpToolkit compatible device"
+            };
+
+            // set parent window handle (may be IntPtr.Zero)
+            var intOpts = new wdi_options_install_driver {hWnd = hwnd};
+
+            // receive USB device list
+            wdi_create_list(ref pList, ref listOpts);
+            // save original pointer to free list
+            var devices = pList;
+
+            // loop through linked list until last element
+            while (pList != IntPtr.Zero)
+            {
+                // translate device info to managed object
+                var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
+                var deviceInfo = NativeToManagedWdiUsbDevice(info);
+
+                // extract VID and PID
+                var currentMatches = regex.Match(deviceInfo.HardwareId).Groups;
+                var currentVid = currentMatches[1].Value.ToUpper();
+                var currentPid = currentMatches[2].Value.ToUpper();
+
+                // does the HID of the current device match the desired HID
+                if (vid == currentVid && pid == currentPid)
+                {
+                    var driverName = driverType.ToDescription();
+
+                    // skip installation if device is currently using the desired driver
+                    if (string.CompareOrdinal(deviceInfo.CurrentDriver, driverName) == 0 && !force)
+                    {
+                        result = WdiErrorCode.WDI_ERROR_EXISTS;
+                        Log.WarnFormat("Device \"{0}\" ({1}) is already using {2}, installation aborted",
+                            deviceInfo.Description,
+                            hardwareId, driverName);
+                        break;
+                    }
+
+                    Log.InfoFormat(
+                        "Device with specified VID ({0}) and PID ({1}) found, preparing driver installation...",
+                        vid, pid);
+
+                    // prepare driver installation (generates the signed driver and installation helpers)
+                    if ((result = wdi_prepare_driver(pList, driverPath, infName, ref prepOpts)) ==
+                        WdiErrorCode.WDI_SUCCESS)
+                    {
+                        Log.InfoFormat("Driver \"{0}\" successfully created in directory \"{1}\"", infName, driverPath);
+
+                        // install/replace the current devices driver
+                        result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
+
+                        var resultLog = string.Format("Installation result: {0}",
+                            Enum.GetName(typeof (WdiErrorCode), result));
+
+                        if (result == WdiErrorCode.WDI_SUCCESS)
+                        {
+                            Log.Info(resultLog);
+                        }
+                        else
+                        {
+                            Log.Warn(resultLog);
+                        }
+                    }
+
+                    break;
+                }
+
+                // continue with next device
+                pList = info.next;
+            }
+
+            // free used memory
+            wdi_destroy_list(devices);
+
+            return result;
+        }
+
+        #endregion
+
+        #region Enums
+
+        /// <summary>
+        ///     The USB driver solution to install.
+        /// </summary>
+        private enum WdiDriverType
+        {
+            [Description("WinUSB")] WDI_WINUSB,
+            WDI_LIBUSB0,
+            [Description("libusbK")] WDI_LIBUSBK,
+            WDI_USER,
+            WDI_NB_DRIVERS
+        }
+
+        #endregion
+
         #region Public properties
 
         public static uint WmLibwdiLogger
@@ -81,11 +234,11 @@ namespace ScpControl.Driver
             get { return wdi_get_wdf_version(); }
         }
 
-        public IEnumerable<WdiUsbDevice> UsbDeviceList
+        public IEnumerable<WdiDeviceInfo> UsbDeviceList
         {
             get
             {
-                var wdiDevices = new List<WdiUsbDevice>();
+                var wdiDevices = new List<WdiDeviceInfo>();
 
                 // pointer to write device list to
                 var pList = IntPtr.Zero;
@@ -108,22 +261,7 @@ namespace ScpControl.Driver
                     // translate device info to managed object
                     var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
 
-                    // get raw bytes from description pointer
-                    var descSize = 0;
-                    while (Marshal.ReadByte(info.desc, descSize) != 0) ++descSize;
-                    var descBytes = new byte[descSize];
-                    Marshal.Copy(info.desc, descBytes, 0, descSize);
-
-                    // put info in managed object
-                    var wdiDevice = new WdiUsbDevice
-                    {
-                        VendorId = info.vid,
-                        ProductId = info.pid,
-                        Description = Encoding.UTF8.GetString(descBytes),
-                        DeviceId = info.device_id,
-                        HardwareId = info.hardware_id,
-                        CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
-                    };
+                    var wdiDevice = NativeToManagedWdiUsbDevice(info);
 
                     wdiDevices.Add(wdiDevice);
 
@@ -203,137 +341,6 @@ namespace ScpControl.Driver
         {
             var namePtr = wdi_get_vendor_name(vendorId);
             return Marshal.PtrToStringAnsi(namePtr);
-        }
-
-        #endregion
-
-        #region Private methods
-
-        private static WdiErrorCode InstallDeviceDriver(string hardwareId, string deviceGuid, string driverPath,
-            string infName,
-            IntPtr hwnd, bool force, WdiDriverType driverType)
-        {
-            // regex to extract vendor ID and product ID from hardware ID string
-            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
-            // matched groups
-            var matches = regex.Match(hardwareId).Groups;
-
-            // very basic check
-            if (matches.Count < 3)
-                throw new ArgumentException("Supplied Hardware-ID is malformed");
-
-            // get values
-            var vid = matches[1].Value.ToUpper();
-            var pid = matches[2].Value.ToUpper();
-
-            // default return value is no matching device found
-            var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
-            // pointer to write device list to
-            var pList = IntPtr.Zero;
-            // list all USB devices, not only driverless ones
-            var listOpts = new wdi_options_create_list
-            {
-                list_all = true,
-                list_hubs = false,
-                trim_whitespaces = false
-            };
-
-            // use WinUSB and overrride device GUID
-            var prepOpts = new wdi_options_prepare_driver
-            {
-                driver_type = driverType,
-                device_guid = deviceGuid,
-                vendor_name = "ScpToolkit compatible device"
-            };
-
-            // set parent window handle (may be IntPtr.Zero)
-            var intOpts = new wdi_options_install_driver {hWnd = hwnd};
-
-            // receive USB device list
-            wdi_create_list(ref pList, ref listOpts);
-            // save original pointer to free list
-            var devices = pList;
-
-            // loop through linked list until last element
-            while (pList != IntPtr.Zero)
-            {
-                // translate device info to managed object
-                var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
-                // get current driver name
-                var currentDriver = Marshal.PtrToStringAnsi(info.driver);
-
-                // extract VID and PID
-                var currentMatches = regex.Match(info.hardware_id).Groups;
-                var currentVid = currentMatches[1].Value.ToUpper();
-                var currentPid = currentMatches[2].Value.ToUpper();
-
-                // does the HID of the current device match the desired HID
-                if (vid == currentVid && pid == currentPid)
-                {
-                    var driverName = driverType.ToDescription();
-
-                    // skip installation if device is currently using the desired driver
-                    if (string.CompareOrdinal(currentDriver, driverName) == 0 && !force)
-                    {
-                        result = WdiErrorCode.WDI_ERROR_EXISTS;
-                        Log.WarnFormat("Device \"{0}\" ({1}) is already using {2}, installation aborted", info.desc,
-                            hardwareId, driverName);
-                        break;
-                    }
-
-                    Log.InfoFormat(
-                        "Device with specified VID ({0}) and PID ({1}) found, preparing driver installation...",
-                        vid, pid);
-
-                    // prepare driver installation (generates the signed driver and installation helpers)
-                    if ((result = wdi_prepare_driver(pList, driverPath, infName, ref prepOpts)) ==
-                        WdiErrorCode.WDI_SUCCESS)
-                    {
-                        Log.InfoFormat("Driver \"{0}\" successfully created in directory \"{1}\"", infName, driverPath);
-
-                        // install/replace the current devices driver
-                        result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
-
-                        var resultLog = string.Format("Installation result: {0}",
-                            Enum.GetName(typeof (WdiErrorCode), result));
-
-                        if (result == WdiErrorCode.WDI_SUCCESS)
-                        {
-                            Log.Info(resultLog);
-                        }
-                        else
-                        {
-                            Log.Warn(resultLog);
-                        }
-                    }
-
-                    break;
-                }
-
-                // continue with next device
-                pList = info.next;
-            }
-
-            // free used memory
-            wdi_destroy_list(devices);
-
-            return result;
-        }
-
-        #endregion
-
-        #region Enums
-
-        /// <summary>
-        ///     The USB driver solution to install.
-        /// </summary>
-        private enum WdiDriverType
-        {
-            [Description("WinUSB")] WDI_WINUSB,
-            WDI_LIBUSB0,
-            [Description("libusbK")] WDI_LIBUSBK,
-            WDI_USER,
-            WDI_NB_DRIVERS
         }
 
         #endregion
@@ -436,7 +443,7 @@ namespace ScpControl.Driver
     /// <summary>
     ///     Managed wrapper for USB device properties.
     /// </summary>
-    public class WdiUsbDevice
+    public class WdiDeviceInfo
     {
         public ushort VendorId { get; set; }
         public ushort ProductId { get; set; }

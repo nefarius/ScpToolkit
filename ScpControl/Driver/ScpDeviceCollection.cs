@@ -20,7 +20,7 @@ namespace ScpControl.Driver
 
         private const string XmlFile = "ScpDevices.xml";
         private static readonly string XmlFilePath = Path.Combine(GlobalConfiguration.AppDirectory, XmlFile);
-        private ObservableCollection<WdiUsbDevice> _collection;
+        private ObservableCollection<WdiDeviceInfo> _collection;
 
         #endregion
 
@@ -28,7 +28,7 @@ namespace ScpControl.Driver
 
         private ScpDeviceCollection()
         {
-            ScpDevices = new List<WdiUsbDevice>();
+            ScpDevices = new List<WdiDeviceInfo>();
         }
 
         #endregion
@@ -36,9 +36,9 @@ namespace ScpControl.Driver
         #region Properties
 
         [DataMember(Name = "ScpDevices")]
-        private List<WdiUsbDevice> ScpDevices { get; set; }
+        private List<WdiDeviceInfo> ScpDevices { get; set; }
 
-        public ObservableCollection<WdiUsbDevice> Devices
+        public ObservableCollection<WdiDeviceInfo> Devices
         {
             get { return Load(); }
         }
@@ -51,9 +51,9 @@ namespace ScpControl.Driver
         ///     Fetches objects from XML file.
         /// </summary>
         /// <returns>The object collection.</returns>
-        private ObservableCollection<WdiUsbDevice> Load()
+        private ObservableCollection<WdiDeviceInfo> Load()
         {
-            _collection = new ObservableCollection<WdiUsbDevice>();
+            _collection = new ObservableCollection<WdiDeviceInfo>();
 
             if (File.Exists(XmlFilePath))
             {
@@ -61,7 +61,7 @@ namespace ScpControl.Driver
                 using (var reader = XmlReader.Create(XmlFilePath))
                 {
                     ScpDevices = ((ScpDeviceCollection) serializer.ReadObject(reader)).ScpDevices;
-                    _collection = new ObservableCollection<WdiUsbDevice>(ScpDevices);
+                    _collection = new ObservableCollection<WdiDeviceInfo>(ScpDevices);
                 }
             }
 
@@ -70,10 +70,10 @@ namespace ScpControl.Driver
                 switch (args.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        ScpDevices.AddRange(args.NewItems.Cast<WdiUsbDevice>());
+                        ScpDevices.AddRange(args.NewItems.Cast<WdiDeviceInfo>());
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        foreach (var oldItem in args.OldItems.Cast<WdiUsbDevice>())
+                        foreach (var oldItem in args.OldItems.Cast<WdiDeviceInfo>())
                         {
                             ScpDevices.Remove(oldItem);
                         }

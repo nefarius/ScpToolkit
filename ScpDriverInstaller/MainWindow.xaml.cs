@@ -288,7 +288,7 @@ namespace ScpDriverInstaller
                 BluetoothStackPanel.Children.Cast<CheckBox>()
                     .Where(c => c.IsChecked == true)
                     .Select(c => c.Content)
-                    .Cast<WdiUsbDevice>()
+                    .Cast<WdiDeviceInfo>()
                     .ToList();
 
             if (_viewModel.InstallBluetoothDriver && !donglesToInstall.Any())
@@ -303,7 +303,7 @@ namespace ScpDriverInstaller
                 DualShock3StackPanel.Children.Cast<CheckBox>()
                     .Where(c => c.IsChecked == true)
                     .Select(c => c.Content)
-                    .Cast<WdiUsbDevice>()
+                    .Cast<WdiDeviceInfo>()
                     .ToList();
 
             if (_viewModel.InstallDualShock3Driver && !ds3SToInstall.Any())
@@ -318,7 +318,7 @@ namespace ScpDriverInstaller
                 DualShock4StackPanel.Children.Cast<CheckBox>()
                     .Where(c => c.IsChecked == true)
                     .Select(c => c.Content)
-                    .Cast<WdiUsbDevice>()
+                    .Cast<WdiDeviceInfo>()
                     .ToList();
 
             if (_viewModel.InstallDualShock4Driver && !ds4SToInstall.Any())

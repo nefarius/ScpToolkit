@@ -18,7 +18,7 @@ namespace ScpControl.Driver
 
         private static readonly string DriverDirectory = Path.Combine(GlobalConfiguration.AppDirectory, "Driver");
 
-        public static uint InstallBluetoothDongles(IEnumerable<WdiUsbDevice> usbDevices, IntPtr hWnd = default(IntPtr),
+        public static uint InstallBluetoothDongles(IEnumerable<WdiDeviceInfo> usbDevices, IntPtr hWnd = default(IntPtr),
             bool force = false)
         {
             // install compatible bluetooth dongles
@@ -83,7 +83,7 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
-        public static uint InstallDualShock3Controllers(IEnumerable<WdiUsbDevice> usbDevices,
+        public static uint InstallDualShock3Controllers(IEnumerable<WdiDeviceInfo> usbDevices,
             IntPtr hWnd = default(IntPtr),
             bool force = false)
         {
@@ -148,7 +148,7 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
-        public static uint InstallDualShock4Controllers(IEnumerable<WdiUsbDevice> usbDevices,
+        public static uint InstallDualShock4Controllers(IEnumerable<WdiDeviceInfo> usbDevices,
             IntPtr hWnd = default(IntPtr),
             bool force = false)
         {

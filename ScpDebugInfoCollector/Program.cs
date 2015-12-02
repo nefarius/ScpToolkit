@@ -52,7 +52,7 @@ namespace ScpDebugInfoCollector
                     {
                         csv.Configuration.Delimiter = ";";
 
-                        csv.WriteHeader<WdiUsbDevice>();
+                        csv.WriteHeader<WdiDeviceInfo>();
                         csv.WriteRecords(usbDevices);
                     }
                 }

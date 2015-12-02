@@ -25,7 +25,7 @@ namespace ScpControl.Bluetooth
 
             var transfered = 0;
 
-            Log.InfoFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", BulkIn, BulkOut);
+            Log.DebugFormat("-- Bluetooth  : L2CAP_Worker_Thread Starting (IN: {0:X2}, OUT: {1:X2})", BulkIn, BulkOut);
 
             // poll device buffer until cancellation requested
             while (!token.IsCancellationRequested)
@@ -929,7 +929,7 @@ namespace ScpControl.Bluetooth
 
                                     var name = nm.ToString();
 
-                                    Log.InfoFormat("-- Remote Name : {0} - {1}", bd, name);
+                                    Log.DebugFormat("-- Remote Name : {0} - {1}", bd, name);
 
                                     // extract MAC address
                                     Buffer.BlockCopy(buffer, 3, bdAddr, 0, 6);
