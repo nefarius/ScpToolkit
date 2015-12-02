@@ -50,17 +50,17 @@ namespace ScpTrayApp
         {
             if (loggingEvent.Level == Level.Info)
             {
-                ShowPopup("Information", loggingEvent.RenderedMessage, NotificationType.Information);
+                ShowPopup("ScpToolkit Information", loggingEvent.RenderedMessage, NotificationType.Information);
             }
 
             if (loggingEvent.Level == Level.Warn)
             {
-                ShowPopup("Warning", loggingEvent.RenderedMessage, NotificationType.Warning);
+                ShowPopup("ScpToolkit Warning", loggingEvent.RenderedMessage, NotificationType.Warning);
             }
 
             if (loggingEvent.Level == Level.Error || loggingEvent.Level == Level.Fatal)
             {
-                ShowPopup("Error", loggingEvent.RenderedMessage, NotificationType.Error);
+                ShowPopup("ScpToolkit Error", loggingEvent.RenderedMessage, NotificationType.Error);
             }
         }
 

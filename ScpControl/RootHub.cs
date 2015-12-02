@@ -534,7 +534,7 @@ namespace ScpControl
             {
                 _scpBus.Plugin((int) arrived.PadId + 1);
 
-                Log.InfoFormat("++ Plugin Port #{0} for [{1}]", (int) arrived.PadId + 1, arrived.Local);
+                Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int) arrived.PadId + 1, arrived.Local);
             }
             e.Handled = bFound;
         }

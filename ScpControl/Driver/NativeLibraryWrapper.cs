@@ -46,7 +46,7 @@ namespace ScpControl.Driver
             // preloading the library matching the current architecture
             if (Environment.Is64BitProcess)
             {
-                Log.InfoFormat("Running as 64-Bit process");
+                Log.DebugFormat("Called from 64-Bit process");
 
                 var lib64 = Path.Combine(GlobalConfiguration.AppDirectory, amd64Path);
                 Log.DebugFormat("{0} path: {1}", name, lib64);
@@ -57,7 +57,7 @@ namespace ScpControl.Driver
             }
             else
             {
-                Log.InfoFormat("Running as 32-Bit process");
+                Log.DebugFormat("Called from 32-Bit process");
 
                 var lib32 = Path.Combine(GlobalConfiguration.AppDirectory, x86Path);
                 Log.DebugFormat("{0} path: {1}", name, lib32);

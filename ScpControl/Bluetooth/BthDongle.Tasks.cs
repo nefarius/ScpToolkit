@@ -339,7 +339,7 @@ namespace ScpControl.Bluetooth
                                     break;
                                 case L2CAP.ConnectionResponseResult.ConnectionPending:
 
-                                    Log.InfoFormat("-- Connection pending for pad {0}",
+                                    Log.DebugFormat("-- Connection pending for pad {0}",
                                         connection.PadId.ToString().ToLower());
                                     break;
                                 case L2CAP.ConnectionResponseResult.ConnectionRefusedPsmNotNupported:
@@ -531,7 +531,7 @@ namespace ScpControl.Bluetooth
             var command = HCI.Command.HCI_Null;
             var connection = new BthConnection();
 
-            Log.InfoFormat("-- Bluetooth  : HCI_Worker_Thread Starting (IN: {0:X2})", IntIn);
+            Log.DebugFormat("Bluetooth Host Controller Interface Task starting on Interrupt Input Pipe: {0:X2}", IntIn);
 
             HCI_Reset();
 
@@ -629,7 +629,7 @@ namespace ScpControl.Bluetooth
                                         LmpVersion = string.Format("{0}.{1:X4}", buffer[9],
                                             buffer[13] << 8 | buffer[12]);
 
-                                        Log.InfoFormat("-- Master {0}, HCI_Version {1}, LMP_Version {2}", Local,
+                                        Log.InfoFormat("Initializing Bluetooth host {0} (HCI-Version: {1}, LMP-Version: {2})", Local,
                                             HciVersion, LmpVersion);
 
                                         /* analyzes Host Controller Interface (HCI) major version
@@ -868,7 +868,7 @@ namespace ScpControl.Bluetooth
                                     //buffer[2] contains the status of connection_complete_ev. it's always 0 if succeed
                                     if (buffer[2] == 0x00)
                                     {
-                                        Log.InfoFormat("-- HCI_Connection_Complete_EV OK, status: {0:X2}", buffer[2]);
+                                        Log.DebugFormat("-- HCI_Connection_Complete_EV OK, status: {0:X2}", buffer[2]);
 
                                         //saving the handle for later usage
                                         bdHandle[0] = buffer[3];
