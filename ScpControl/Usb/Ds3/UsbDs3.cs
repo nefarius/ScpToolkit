@@ -199,7 +199,7 @@ namespace ScpControl.Usb.Ds3
                 return true;
             }
 
-            Log.DebugFormat("++ Pair Failed [{0}]", Local);
+            Log.ErrorFormat("Pairing {0} to {1} failed", Local, Remote);
             return false;
         }
 
