@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
@@ -65,7 +64,7 @@ namespace ScpControl.Bluetooth
                 }
             }
 
-            Log.Info("-- Bluetooth  : L2CAP_Worker_Thread Exiting");
+            Log.Debug("-- Bluetooth  : L2CAP_Worker_Thread Exiting");
         }
 
         /// <summary>
@@ -959,17 +958,17 @@ namespace ScpControl.Bluetooth
                                             if (!hci.GenuineMacAddresses.Any(m => bd.StartsWith(m)))
                                             {
                                                 connection.IsFake = true;
-                                                Log.Warn("-- Fake DualShock 3 found. Workaround applied");
+                                                Log.Warn("Fake DualShock 3 found. Trying Workarounds...");
                                             }
                                             else
                                             {
                                                 connection.IsFake = false;
-                                                Log.Info("-- Genuine Sony DualShock 3 found");
+                                                Log.Info("Genuine Sony DualShock 3 found");
                                             }
                                         }
                                         else
                                         {
-                                            Log.Info("-- Sony DualShock 4 found");
+                                            Log.Info("Sony DualShock 4 found");
                                         }
 
                                         #endregion
@@ -1051,7 +1050,7 @@ namespace ScpControl.Bluetooth
 
             HCI_Reset();
 
-            Log.Info("-- Bluetooth  : HCI_Worker_Thread Exiting");
+            Log.Debug("-- Bluetooth  : HCI_Worker_Thread Exiting");
         }
 
         #endregion

@@ -52,6 +52,16 @@ namespace ScpTrayApp
             {
                 ShowPopup("Information", loggingEvent.RenderedMessage, NotificationType.Information);
             }
+
+            if (loggingEvent.Level == Level.Warn)
+            {
+                ShowPopup("Warning", loggingEvent.RenderedMessage, NotificationType.Warning);
+            }
+
+            if (loggingEvent.Level == Level.Error || loggingEvent.Level == Level.Fatal)
+            {
+                ShowPopup("Error", loggingEvent.RenderedMessage, NotificationType.Error);
+            }
         }
 
         private void ShowPopup(string title, string message, NotificationType type)

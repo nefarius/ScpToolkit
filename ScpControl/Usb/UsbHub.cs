@@ -209,7 +209,7 @@ namespace ScpControl.Usb
 
         public override DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
         {
-            Log.InfoFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, path);
+            Log.DebugFormat("++ Notify [{0}] [{1}] [{2}]", notification, Class, path);
 
             var classGuid = Guid.Parse(Class);
 
@@ -222,13 +222,13 @@ namespace ScpControl.Usb
                         if (classGuid == UsbDs3.DeviceClassGuid)
                         {
                             arrived = new UsbDs3();
-                            Log.Debug("-- DualShock 3 Arrival Event");
+                            Log.Info("DualShock 3 plugged in via USB");
                         }
 
                         if (classGuid == UsbDs4.DeviceClassGuid)
                         {
                             arrived = new UsbDs4();
-                            Log.Debug("-- DualShock 4 Arrival Event");
+                            Log.Info("DualShock 4 plugged in via USB");
                         }
 
                         if (classGuid == UsbGenericGamepad.DeviceClassGuid)
@@ -239,14 +239,14 @@ namespace ScpControl.Usb
                             if (arrived == null)
                                 break;
 
-                            Log.Debug("-- Generic Gamepad Arrival Event");
+                            Log.Debug("Generic Gamepad plugged in via USB");
                         }
 
-                        Log.InfoFormat("Arrival event for GUID {0} received", classGuid);
+                        Log.DebugFormat("Arrival event for GUID {0} received", classGuid);
 
                         if (arrived.Open(path))
                         {
-                            Log.InfoFormat("-- Device Arrival [{0}]", arrived.Local);
+                            Log.DebugFormat("Device MAC address: {0}", arrived.Local);
 
                             if (!Apply3RdPartyWorkaroundsForDs3(ref arrived, path: path)) break;
 
@@ -279,7 +279,7 @@ namespace ScpControl.Usb
                     {
                         foreach (var t in _devices.Where(t => t.State == DsState.Connected && path == t.Path))
                         {
-                            Log.InfoFormat("-- Device Removal [{0}]", t.Local);
+                            Log.InfoFormat("Device with MAC address {0} unplugged from USB", t.Local);
 
                             // play disconnect sound
                             if (GlobalConfiguration.Instance.IsUsbDisconnectSoundEnabled)
