@@ -10,17 +10,12 @@ using System.ServiceModel;
 using System.Xml;
 using log4net;
 using ReactiveSockets;
-using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.XInput;
 using ScpControl.Wcf;
-using Ds3Axis = ScpControl.Shared.Core.Ds3Axis;
-using Ds3Button = ScpControl.Shared.Core.Ds3Button;
-using Ds4Axis = ScpControl.Shared.Core.Ds4Axis;
-using Ds4Button = ScpControl.Shared.Core.Ds4Button;
 
 namespace ScpControl
 {
@@ -113,7 +108,7 @@ namespace ScpControl
         {
             try
             {
-                return _packetCache[(DsPadId)dwUserIndex];
+                return _packetCache[(DsPadId) dwUserIndex];
             }
             catch (KeyNotFoundException)
             {
@@ -131,10 +126,10 @@ namespace ScpControl
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         // caches the latest HID report for every pad in a thread-save dictionary
-        private readonly IDictionary<DsPadId, ScpHidReport> _packetCache = new ConcurrentDictionary<DsPadId, ScpHidReport>();
+        private readonly IDictionary<DsPadId, ScpHidReport> _packetCache =
+            new ConcurrentDictionary<DsPadId, ScpHidReport>();
 
-        [Obsolete]
-        private XmlDocument _xmlMap = new XmlDocument();
+        [Obsolete] private XmlDocument _xmlMap = new XmlDocument();
 
         private IScpCommandService _rootHub;
 
