@@ -182,7 +182,7 @@ namespace ScpService
 
                                         rootHub.Pad[(byte)pad].Pair(master);
 
-                                        Log.InfoFormat("Paired DS3 [{0}] To BTH Dongle [{1}]",
+                                        Log.InfoFormat("Paired DualShock Device {0} to Bluetooth host {1}",
                                             rootHub.Pad[(byte)pad].Local, rootHub.Master);
                                     }
                                 }
