@@ -132,7 +132,7 @@ namespace ScpXInputBridge
 
             NativeDllHandle = Kernel32Natives.LoadLibrary(xinput13Path);
 
-            if (NativeDllHandle != IntPtr.Zero)
+            if (NativeDllHandle == IntPtr.Zero)
             {
                 Log.FatalFormat("Couldn't load native DLL");
                 return;
