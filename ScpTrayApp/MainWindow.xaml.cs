@@ -20,10 +20,6 @@ namespace ScpTrayApp
     /// </summary>
     public partial class MainWindow : Window, IAppender
     {
-        private static readonly ILog _log = LogManager.GetLogger(typeof (MainWindow));
-
-        private readonly RemoteLoggingServerPlugin _plugin;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -31,15 +27,8 @@ namespace ScpTrayApp
             // Configure remoting. This loads the TCP channel as specified in the .config file.
             RemotingConfiguration.Configure(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile, false);
 
-            foreach (var currentLogger in LogManager.GetCurrentLoggers())
-            {
-                ((Logger) currentLogger.Logger).AddAppender(this);
-            }
-
-            _plugin = new RemoteLoggingServerPlugin("Log4netRemotingServerService");
-
             // Publish the remote logging server. This is done using the log4net plugin.
-            LogManager.GetRepository().PluginMap.Add(_plugin);
+            LogManager.GetRepository().PluginMap.Add(new RemoteLoggingServerPlugin("Log4netRemotingServerService"));
 
             //Get the logger repository hierarchy.  
             var repository = LogManager.GetRepository() as Hierarchy;
