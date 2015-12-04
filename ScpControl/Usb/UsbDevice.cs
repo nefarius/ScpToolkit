@@ -4,7 +4,6 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using HidSharp.ReportDescriptors.Parser;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Sound;
@@ -13,7 +12,7 @@ using ScpControl.Utilities;
 namespace ScpControl.Usb
 {
     /// <summary>
-    ///     Represents a generic USB device.
+    ///     Represents a generic Usb device.
     /// </summary>
     public partial class UsbDevice : ScpDevice, IDsDevice
     {
@@ -21,19 +20,19 @@ namespace ScpControl.Usb
 
         public override string ToString()
         {
-            switch (m_State)
+            switch (State)
             {
                 case DsState.Disconnected:
 
-                    return string.Format("Pad {0} : Disconnected", m_ControllerId + 1);
+                    return string.Format("Pad {0} : Disconnected", PadId);
 
                 case DsState.Reserved:
 
-                    return string.Format("Pad {0} : {1} {2} - Reserved", m_ControllerId + 1, Model, Local);
+                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, Local);
 
                 case DsState.Connected:
 
-                    return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", m_ControllerId + 1, Model,
+                    return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", PadId, Model,
                         Local,
                         Connection,
                         PacketCounter,
@@ -45,7 +44,7 @@ namespace ScpControl.Usb
         }
 
         /// <summary>
-        ///     Worker thread polling for incoming USB interrupts.
+        ///     Worker thread polling for incoming Usb interrupts.
         /// </summary>
         /// <param name="o">Task cancellation token.</param>
         private void HidWorker(object o)
@@ -54,7 +53,7 @@ namespace ScpControl.Usb
             var transfered = 0;
             var buffer = new byte[64];
 
-            Log.Debug("-- USB Device : HID_Worker_Thread Starting");
+            Log.Debug("-- Usb Device : HID_Worker_Thread Starting");
 
             while (!token.IsCancellationRequested)
             {
@@ -71,7 +70,7 @@ namespace ScpControl.Usb
                 }
             }
 
-            Log.Debug("-- USB Device : HID_Worker_Thread Exiting");
+            Log.Debug("-- Usb Device : HID_Worker_Thread Exiting");
         }
 
         private void On_Timer(object sender, EventArgs e)
@@ -87,17 +86,13 @@ namespace ScpControl.Usb
         protected byte m_BatteryStatus = 0;
         protected byte[] m_Buffer = new byte[64];
         protected byte m_CableStatus = 0;
-        protected byte m_ControllerId;
         protected string m_Instance = string.Empty, m_Mac = string.Empty;
-        protected bool m_IsDisconnect;
         protected DateTime m_Last = DateTime.Now, m_Tick = DateTime.Now, m_Disconnect = DateTime.Now;
         protected byte[] m_Local = new byte[6];
         protected byte[] m_Master = new byte[6];
-        protected byte m_Model = 0;
         protected uint PacketCounter;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
-        protected DsState m_State = DsState.Disconnected;
         protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
         protected PhysicalAddress DeviceMac;
 
@@ -138,35 +133,18 @@ namespace ScpControl.Usb
 
         #region Properties
 
-        public virtual bool IsShutdown
-        {
-            get { return m_IsDisconnect; }
-            set { m_IsDisconnect = value; }
-        }
+        public virtual bool IsShutdown { get; set; }
 
-        public virtual DsModel Model
-        {
-            get { return (DsModel)m_Model; }
-        }
+        public virtual DsModel Model { get; protected set; }
 
-        public virtual DsPadId PadId
-        {
-            get { return (DsPadId)m_ControllerId; }
-            set
-            {
-                m_ControllerId = (byte)value;
-            }
-        }
+        public virtual DsPadId PadId { get; set; }
 
         public virtual DsConnection Connection
         {
-            get { return DsConnection.USB; }
+            get { return DsConnection.Usb; }
         }
 
-        public virtual DsState State
-        {
-            get { return m_State; }
-        }
+        public virtual DsState State { get; protected set; }
 
         public virtual DsBattery Battery
         {
@@ -202,7 +180,7 @@ namespace ScpControl.Usb
 
             DeviceMac = new PhysicalAddress(m_Local);
 
-            m_State = DsState.Connected;
+            State = DsState.Connected;
             PacketCounter = 0;
 
             Task.Factory.StartNew(HidWorker, _hidCancellationTokenSource.Token);
@@ -272,7 +250,7 @@ namespace ScpControl.Usb
             if (IsActive)
             {
                 tmUpdate.Enabled = false;
-                m_State = DsState.Reserved;
+                State = DsState.Reserved;
 
                 _hidCancellationTokenSource.Cancel();
                 _hidCancellationTokenSource = new CancellationTokenSource();
@@ -290,7 +268,7 @@ namespace ScpControl.Usb
                 base.Close();
 
                 tmUpdate.Enabled = false;
-                m_State = DsState.Disconnected;
+                State = DsState.Disconnected;
 
                 OnHidReportReceived(NewHidReport());
             }
@@ -304,8 +282,8 @@ namespace ScpControl.Usb
         {
             return new ScpHidReport()
             {
-                PadId = (DsPadId)m_ControllerId,
-                PadState = m_State,
+                PadId = PadId,
+                PadState = State,
                 ConnectionType = Connection,
                 Model = Model,
                 PadMacAddress = DeviceMac

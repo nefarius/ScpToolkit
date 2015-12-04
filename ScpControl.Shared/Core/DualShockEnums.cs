@@ -30,10 +30,10 @@ namespace ScpControl.Shared.Core
     {
         [Description("None")]
         None = 0x00,
-        [Description("USB")]
-        USB = 0x01,
+        [Description("Usb")]
+        Usb = 0x01,
         [Description("Bluetooth")]
-        BTH = 0x02
+        Bluetooth = 0x02
     };
 
     /// <summary>

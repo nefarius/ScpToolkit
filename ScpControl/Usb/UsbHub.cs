@@ -13,7 +13,7 @@ using ScpControl.Usb.Gamepads;
 namespace ScpControl.Usb
 {
     /// <summary>
-    ///     Represents an USB hub.
+    ///     Represents an Usb hub.
     /// </summary>
     public partial class UsbHub : ScpHub
     {
@@ -222,13 +222,13 @@ namespace ScpControl.Usb
                         if (classGuid == UsbDs3.DeviceClassGuid)
                         {
                             arrived = new UsbDs3();
-                            Log.Info("DualShock 3 plugged in via USB");
+                            Log.Info("DualShock 3 plugged in via Usb");
                         }
 
                         if (classGuid == UsbDs4.DeviceClassGuid)
                         {
                             arrived = new UsbDs4();
-                            Log.Info("DualShock 4 plugged in via USB");
+                            Log.Info("DualShock 4 plugged in via Usb");
                         }
 
                         if (classGuid == UsbGenericGamepad.DeviceClassGuid)
@@ -239,7 +239,7 @@ namespace ScpControl.Usb
                             if (arrived == null)
                                 break;
 
-                            Log.Debug("Generic Gamepad plugged in via USB");
+                            Log.Debug("Generic Gamepad plugged in via Usb");
                         }
 
                         Log.DebugFormat("Arrival event for GUID {0} received", classGuid);
@@ -279,7 +279,7 @@ namespace ScpControl.Usb
                     {
                         foreach (var t in _devices.Where(t => t.State == DsState.Connected && path == t.Path))
                         {
-                            Log.InfoFormat("Device with MAC address {0} unplugged from USB", t.Local);
+                            Log.InfoFormat("Device with MAC address {0} unplugged from Usb", t.Local);
 
                             // play disconnect sound
                             if (GlobalConfiguration.Instance.IsUsbDisconnectSoundEnabled)

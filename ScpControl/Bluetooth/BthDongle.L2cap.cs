@@ -9,7 +9,7 @@ namespace ScpControl.Bluetooth
         /// <summary>
         ///     Writes a Logical Link Control and Adaption Layer Protocol command packet to a Bluetooth host device.
         /// </summary>
-        /// <param name="handle">The USB device handle.</param>
+        /// <param name="handle">The Usb device handle.</param>
         /// <param name="data">The payload (command) to send.</param>
         /// <returns></returns>
         private int L2CAP_Command(byte[] handle, byte[] data)

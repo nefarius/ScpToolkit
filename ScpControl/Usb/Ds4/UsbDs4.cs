@@ -8,7 +8,7 @@ using Ds4Button = ScpControl.Shared.Core.Ds4Button;
 namespace ScpControl.Usb.Ds4
 {
     /// <summary>
-    ///     Represents a DualShock 4 controller connected via USB.
+    ///     Represents a DualShock 4 controller connected via Usb.
     /// </summary>
     public sealed partial class UsbDs4 : UsbDevice
     {
@@ -62,47 +62,37 @@ namespace ScpControl.Usb.Ds4
             get { return Guid.Parse("{2ED90CE1-376F-4982-8F7F-E056CBC3CA71}"); }
         }
 
-        public override DsPadId PadId
+        public override DsPadId PadId { get; set; }
+
+        private void SetLightBarColor(DsPadId value)
         {
-            get { return (DsPadId) m_ControllerId; }
-            set
+            switch (value)
             {
-                if (GlobalConfiguration.Instance.IsLightBarDisabled)
-                {
-                    _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
-                    return;
-                }
-
-                m_ControllerId = (byte) value;
-
-                switch (value)
-                {
-                    case DsPadId.One: // Blue
-                        _hidReport[R] = 0x00;
-                        _hidReport[G] = 0x00;
-                        _hidReport[B] = _brightness;
-                        break;
-                    case DsPadId.Two: // Green
-                        _hidReport[R] = 0x00;
-                        _hidReport[G] = _brightness;
-                        _hidReport[B] = 0x00;
-                        break;
-                    case DsPadId.Three: // Yellow
-                        _hidReport[R] = _brightness;
-                        _hidReport[G] = _brightness;
-                        _hidReport[B] = 0x00;
-                        break;
-                    case DsPadId.Four: // Cyan
-                        _hidReport[R] = 0x00;
-                        _hidReport[G] = _brightness;
-                        _hidReport[B] = _brightness;
-                        break;
-                    case DsPadId.None: // Red
-                        _hidReport[R] = _brightness;
-                        _hidReport[G] = 0x00;
-                        _hidReport[B] = 0x00;
-                        break;
-                }
+                case DsPadId.One: // Blue
+                    _hidReport[R] = 0x00;
+                    _hidReport[G] = 0x00;
+                    _hidReport[B] = _brightness;
+                    break;
+                case DsPadId.Two: // Green
+                    _hidReport[R] = 0x00;
+                    _hidReport[G] = _brightness;
+                    _hidReport[B] = 0x00;
+                    break;
+                case DsPadId.Three: // Yellow
+                    _hidReport[R] = _brightness;
+                    _hidReport[G] = _brightness;
+                    _hidReport[B] = 0x00;
+                    break;
+                case DsPadId.Four: // Cyan
+                    _hidReport[R] = 0x00;
+                    _hidReport[G] = _brightness;
+                    _hidReport[B] = _brightness;
+                    break;
+                case DsPadId.None: // Red
+                    _hidReport[R] = _brightness;
+                    _hidReport[G] = 0x00;
+                    _hidReport[B] = 0x00;
+                    break;
             }
         }
 
@@ -141,7 +131,7 @@ namespace ScpControl.Usb.Ds4
         {
             if (base.Open(devicePath))
             {
-                m_State = DsState.Reserved;
+                State = DsState.Reserved;
                 GetDeviceInstance(ref m_Instance);
 
                 var transfered = 0;
@@ -163,7 +153,7 @@ namespace ScpControl.Usb.Ds4
 
         public override bool Start()
         {
-            m_Model = (byte) DsModel.DS4;
+            Model = DsModel.DS4;
 
             // skip repairing if disabled in global configuration
             if (!GlobalConfiguration.Instance.Repair) return base.Start();
@@ -319,13 +309,13 @@ namespace ScpControl.Usb.Ds4
                 if (GlobalConfiguration.Instance.Brightness != _brightness)
                 {
                     _brightness = GlobalConfiguration.Instance.Brightness;
-                    PadId = PadId;
+                    SetLightBarColor(PadId);
                 }
 
                 if (GlobalConfiguration.Instance.IsLightBarDisabled != _isLightBarDisabled)
                 {
                     _isLightBarDisabled = GlobalConfiguration.Instance.IsLightBarDisabled;
-                    PadId = PadId;
+                    SetLightBarColor(PadId);
                 }
 
                 WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);

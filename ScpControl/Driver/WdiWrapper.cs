@@ -114,7 +114,7 @@ namespace ScpControl.Driver
             var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
             // pointer to write device list to
             var pList = IntPtr.Zero;
-            // list all USB devices, not only driverless ones
+            // list all Usb devices, not only driverless ones
             var listOpts = new wdi_options_create_list
             {
                 list_all = true,
@@ -133,7 +133,7 @@ namespace ScpControl.Driver
             // set parent window handle (may be IntPtr.Zero)
             var intOpts = new wdi_options_install_driver {hWnd = hwnd};
 
-            // receive USB device list
+            // receive Usb device list
             wdi_create_list(ref pList, ref listOpts);
             // save original pointer to free list
             var devices = pList;
@@ -209,7 +209,7 @@ namespace ScpControl.Driver
         #region Enums
 
         /// <summary>
-        ///     The USB driver solution to install.
+        ///     The Usb driver solution to install.
         /// </summary>
         private enum WdiDriverType
         {
@@ -242,7 +242,7 @@ namespace ScpControl.Driver
 
                 // pointer to write device list to
                 var pList = IntPtr.Zero;
-                // list all USB devices, not only driverless ones
+                // list all Usb devices, not only driverless ones
                 var listOpts = new wdi_options_create_list
                 {
                     list_all = true,
@@ -250,7 +250,7 @@ namespace ScpControl.Driver
                     trim_whitespaces = false
                 };
 
-                // receive USB device list
+                // receive Usb device list
                 wdi_create_list(ref pList, ref listOpts);
                 // save original pointer to free list
                 var devices = pList;
@@ -441,7 +441,7 @@ namespace ScpControl.Driver
     }
 
     /// <summary>
-    ///     Managed wrapper for USB device properties.
+    ///     Managed wrapper for Usb device properties.
     /// </summary>
     public class WdiDeviceInfo
     {

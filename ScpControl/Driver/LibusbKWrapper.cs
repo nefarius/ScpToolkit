@@ -175,7 +175,7 @@ namespace ScpControl.Driver
 
         #endregion
 
-        #region USB Core
+        #region Usb Core
 
         [DllImport("libusbK.dll", SetLastError = true)]
         private static extern bool UsbK_GetPowerPolicy(KUSB_HANDLE InterfaceHandle,

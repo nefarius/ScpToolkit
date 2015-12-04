@@ -28,7 +28,7 @@ namespace ScpControl.Usb.Gamepads
         protected UsbGenericGamepad()
         {
             // TODO: Generic isn't currently supported by bus driver
-            m_Model = (byte) DsModel.DS3;
+            Model = DsModel.DS3;
         }
 
         #endregion
@@ -59,12 +59,12 @@ namespace ScpControl.Usb.Gamepads
 
             GetHardwareId(devicePath, out vid, out pid);
 
-            #region DragonRise Inc. USB Gamepad SNES
+            #region DragonRise Inc. Usb Gamepad SNES
 
             if (vid == 0x0079 && pid == 0x0011)
             {
                 Log.InfoFormat(
-                    "DragonRise Inc. USB Gamepad SNES detected [VID: {0:X4}] [PID: {1:X4}]",
+                    "DragonRise Inc. Usb Gamepad SNES detected [VID: {0:X4}] [PID: {1:X4}]",
                     vid, pid);
 
                 return new UsbSnesGamepad();
@@ -154,7 +154,7 @@ namespace ScpControl.Usb.Gamepads
             // TODO: remove duplicate code
             if (!IsActive) return State == DsState.Connected;
 
-            m_State = DsState.Connected;
+            State = DsState.Connected;
             PacketCounter = 0;
 
             Task.Factory.StartNew(MainHidInputReader, _cancellationTokenSource.Token);
@@ -173,7 +173,7 @@ namespace ScpControl.Usb.Gamepads
             _cancellationTokenSource = new CancellationTokenSource();
 
             // pad reservation not supported
-            m_State = DsState.Disconnected;
+            State = DsState.Disconnected;
 
             return true;
         }

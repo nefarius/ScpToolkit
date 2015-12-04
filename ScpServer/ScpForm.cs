@@ -225,10 +225,10 @@ namespace ScpServer
                 Pad[index].Checked = Pad[index].Enabled && Pad[index].Checked;
 
                 bSelected = bSelected || Pad[index].Checked;
-                bDisconnect = bDisconnect || rootHub.Pad[index].Connection == DsConnection.BTH;
+                bDisconnect = bDisconnect || rootHub.Pad[index].Connection == DsConnection.Bluetooth;
 
                 bPair = bPair ||
-                        (Pad[index].Checked && rootHub.Pad[index].Connection == DsConnection.USB &&
+                        (Pad[index].Checked && rootHub.Pad[index].Connection == DsConnection.Usb &&
                          rootHub.Master != rootHub.Pad[index].Remote);
             }
 

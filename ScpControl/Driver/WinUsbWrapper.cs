@@ -49,7 +49,7 @@ namespace ScpControl.Driver
     #endregion
 
     /// <summary>
-    ///     Abstracts calls to the underlying USB library functions.
+    ///     Abstracts calls to the underlying Usb library functions.
     /// </summary>
     public class WinUsbWrapper : NativeLibraryWrapper<WinUsbWrapper>
     {

@@ -67,7 +67,7 @@ namespace ScpMonitor
             }
 
             lblHost.Text = "Host Address : 00:00:00:00:00:00\r\n\r\n0\r\n\r\n0\r\n\r\n0";
-            lblPad_1.Text = "Pad 1 : DS3 00:00:00:00:00:00 - USB FFFFFFFF Charging";
+            lblPad_1.Text = "Pad 1 : DS3 00:00:00:00:00:00 - Usb FFFFFFFF Charging";
 
             var SizeX = 50 + lblHost.Width + lblPad_1.Width;
             var SizeY = 20 + lblHost.Height;

@@ -61,7 +61,7 @@ namespace ScpControl
 
         // virtual bus wrapper
         private readonly BusDevice _scpBus = new BusDevice();
-        // USB hub
+        // Usb hub
         private readonly UsbHub _usbHub = new UsbHub();
         // creates a system-wide mutex to check if the root hub has been instantiated already
         private LimitInstance _limitInstance;
@@ -496,12 +496,12 @@ namespace ScpControl
                     {
                         if (_pads[index].State == DsState.Connected)
                         {
-                            if (_pads[index].Connection == DsConnection.BTH)
+                            if (_pads[index].Connection == DsConnection.Bluetooth)
                             {
                                 _pads[index].Disconnect();
                             }
 
-                            if (_pads[index].Connection == DsConnection.USB)
+                            if (_pads[index].Connection == DsConnection.Usb)
                             {
                                 arrived.Disconnect();
 

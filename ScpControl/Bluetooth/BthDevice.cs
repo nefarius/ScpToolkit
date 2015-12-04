@@ -40,7 +40,7 @@ namespace ScpControl.Bluetooth
 
         public DsConnection Connection
         {
-            get { return DsConnection.BTH; }
+            get { return DsConnection.Bluetooth; }
         }
 
         public DsBattery Battery

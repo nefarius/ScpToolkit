@@ -17,7 +17,7 @@ namespace ScpControlPanel
 
             MainPadEntryCollectionControl.PadEntryCollection.Add(new PadEntryControl());
 
-            MainPadEntryCollectionControl.PadEntryCollection[0].ConnectionType = DsConnection.BTH;
+            MainPadEntryCollectionControl.PadEntryCollection[0].ConnectionType = DsConnection.Bluetooth;
             MainPadEntryCollectionControl.PadEntryCollection[0].PadId = DsPadId.One;
 
             MainPadEntryCollectionControl.PadEntryCollection.Add(new PadEntryControl() { PadId = DsPadId.Two });

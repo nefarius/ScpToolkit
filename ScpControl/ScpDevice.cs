@@ -11,7 +11,7 @@ using ScpControl.Usb;
 namespace ScpControl
 {
     /// <summary>
-    ///     Low-level representation of an Scp-compatible USB device.
+    ///     Low-level representation of an Scp-compatible Usb device.
     /// </summary>
     public partial class ScpDevice : Component
     {

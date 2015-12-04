@@ -8,7 +8,7 @@ using Ds3Button = ScpControl.Shared.Core.Ds3Button;
 namespace ScpControl.Usb.Gamepads
 {
     /// <summary>
-    ///     DragonRise Inc. USB Gamepad SNES
+    ///     DragonRise Inc. Usb Gamepad SNES
     /// </summary>
     public class UsbSnesGamepad : UsbGenericGamepad
     {
@@ -28,7 +28,7 @@ namespace ScpControl.Usb.Gamepads
 
             #region HID Report translation
 
-            // no battery state since the Gamepad is USB-powered
+            // no battery state since the Gamepad is Usb-powered
             m_BatteryStatus = inputReport.SetBatteryStatus(DsBattery.None);
 
             // packet counter

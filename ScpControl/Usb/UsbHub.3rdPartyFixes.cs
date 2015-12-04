@@ -6,7 +6,7 @@ namespace ScpControl.Usb
     public partial class UsbHub
     {
         /// <summary>
-        ///     Checks if the given USB device is a 3rd party device and applies common workarounds.
+        ///     Checks if the given Usb device is a 3rd party device and applies common workarounds.
         /// </summary>
         /// <param name="current">The device to check.</param>
         /// <param name="instance">The device instance.</param>

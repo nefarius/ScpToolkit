@@ -8,7 +8,7 @@ using ScpControl.Utilities;
 namespace ScpControl.Usb.Ds3
 {
     /// <summary>
-    ///     Represents a DualShock 3 controller connected via USB.
+    ///     Represents a DualShock 3 controller connected via Usb.
     /// </summary>
     public partial class UsbDs3 : UsbDevice
     {
@@ -67,16 +67,7 @@ namespace ScpControl.Usb.Ds3
 
         private bool IsFake { get; set; }
 
-        public override DsPadId PadId
-        {
-            get { return (DsPadId)m_ControllerId; }
-            set
-            {
-                m_ControllerId = (byte)value;
-
-                _hidReport[9] = _ledStatus;
-            }
-        }
+        public override DsPadId PadId { get; set; }
 
         #endregion
 
@@ -86,7 +77,7 @@ namespace ScpControl.Usb.Ds3
         {
             if (base.Open(devicePath))
             {
-                m_State = DsState.Reserved;
+                State = DsState.Reserved;
                 GetDeviceInstance(ref m_Instance);
 
                 var transfered = 0;
@@ -130,7 +121,7 @@ namespace ScpControl.Usb.Ds3
 
         public override bool Start()
         {
-            m_Model = (byte)DsModel.DS3;
+            Model = DsModel.DS3;
 
             if (IsActive)
             {
@@ -235,14 +226,14 @@ namespace ScpControl.Usb.Ds3
                 inputReport.RawBytes[12] ^= 0x01;
             }
             
-            if (trigger && !m_IsDisconnect)
+            if (trigger && !IsShutdown)
             {
-                m_IsDisconnect = true;
+                IsShutdown = true;
                 m_Disconnect = DateTime.Now;
             }
-            else if (!trigger && m_IsDisconnect)
+            else if (!trigger && IsShutdown)
             {
-                m_IsDisconnect = false;
+                IsShutdown = false;
             }
 
             OnHidReportReceived(inputReport);
@@ -256,7 +247,7 @@ namespace ScpControl.Usb.Ds3
         {
             lock (this)
             {
-                if (m_IsDisconnect)
+                if (IsShutdown)
                 {
                     if ((now - m_Disconnect).TotalMilliseconds >= 2000)
                     {
@@ -285,9 +276,9 @@ namespace ScpControl.Usb.Ds3
                                 _counterForLeds++;
                                 _counterForLeds %= 2;
                                 if (_counterForLeds == 1)
-                                    _ledStatus = _ledOffsets[m_ControllerId];
+                                    _ledStatus = _ledOffsets[(int) PadId];
                             }
-                            else _ledStatus = _ledOffsets[m_ControllerId];
+                            else _ledStatus = _ledOffsets[(int) PadId];
                             break;
                         case 2:
                             switch (Battery)
