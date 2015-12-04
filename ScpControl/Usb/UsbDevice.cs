@@ -134,17 +134,29 @@ namespace ScpControl.Usb
 
         public virtual bool IsShutdown { get; set; }
 
+        /// <summary>
+        ///     Controller model.
+        /// </summary>
         public virtual DsModel Model { get; protected set; }
 
         public virtual DsPadId PadId { get; set; }
 
+        /// <summary>
+        ///     Controller connection type.
+        /// </summary>
         public virtual DsConnection Connection
         {
             get { return DsConnection.Usb; }
         }
 
+        /// <summary>
+        ///     Controller connection state.
+        /// </summary>
         public virtual DsState State { get; protected set; }
 
+        /// <summary>
+        ///     Battery charging level.
+        /// </summary>
         public virtual DsBattery Battery { get; protected set; }
 
         public virtual byte[] BdAddress
