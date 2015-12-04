@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using ScpControl.ScpCore;
@@ -346,17 +347,17 @@ namespace ScpControl.Bluetooth
 
                                     Log.ErrorFormat(
                                         "Requested Protocol Service Multiplexer not supported on device {0}",
-                                        connection.Remote);
+                                        connection.HostAddress);
                                     break;
                                 case L2CAP.ConnectionResponseResult.ConnectionRefusedSecurityBlock:
 
                                     Log.ErrorFormat("Connection refused for security reasons on device {0}",
-                                        connection.Remote);
+                                        connection.HostAddress);
                                     break;
                                 case L2CAP.ConnectionResponseResult.ConnectionRefusedNoResourcesAvailable:
 
                                     Log.ErrorFormat("Connection failed for device {0}: no resources available",
-                                        connection.Remote);
+                                        connection.HostAddress);
                                     break;
 
                                 default:
@@ -603,8 +604,9 @@ namespace ScpControl.Bluetooth
 
                                     if (command == HCI.Command.HCI_Read_BD_ADDR && buffer[5] == 0)
                                     {
-                                        _localMac = new[]
-                                        {buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11]};
+                                        BluetoothHostAddress =
+                                            new PhysicalAddress(new[]
+                                            {buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11]});
 
                                         transfered = HCI_Read_Buffer_Size();
                                     }
@@ -629,7 +631,7 @@ namespace ScpControl.Bluetooth
                                         LmpVersion = string.Format("{0}.{1:X4}", buffer[9],
                                             buffer[13] << 8 | buffer[12]);
 
-                                        Log.InfoFormat("Initializing Bluetooth host {0} (HCI-Version: {1}, LMP-Version: {2})", Local,
+                                        Log.InfoFormat("Initializing Bluetooth host {0} (HCI-Version: {1}, LMP-Version: {2})", BluetoothHostAddress,
                                             HciVersion, LmpVersion);
 
                                         /* analyzes Host Controller Interface (HCI) major version

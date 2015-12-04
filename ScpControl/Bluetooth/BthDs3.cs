@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -80,7 +81,7 @@ namespace ScpControl.Bluetooth
             InitializeComponent();
         }
 
-        public BthDs3(IBthDevice device, byte[] master, byte lsb, byte msb)
+        public BthDs3(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
             : base(device, master, lsb, msb)
         {
         }

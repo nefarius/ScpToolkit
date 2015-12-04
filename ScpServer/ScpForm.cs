@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -127,15 +126,7 @@ namespace ScpServer
             {
                 if (Pad[Index].Checked)
                 {
-                    var Master = new byte[6];
-                    var Parts = rootHub.Master.Split(new[] {":"}, StringSplitOptions.RemoveEmptyEntries);
-
-                    for (var Part = 0; Part < Master.Length; Part++)
-                    {
-                        Master[Part] = byte.Parse(Parts[Part], NumberStyles.HexNumber);
-                    }
-
-                    rootHub.Pad[Index].Pair(Master);
+                    rootHub.Pad[Index].Pair(rootHub.BluetoothHostAddress);
                     break;
                 }
             }
@@ -229,7 +220,7 @@ namespace ScpServer
 
                 bPair = bPair ||
                         (Pad[index].Checked && rootHub.Pad[index].Connection == DsConnection.Usb &&
-                         rootHub.Master != rootHub.Pad[index].Remote);
+                         !rootHub.BluetoothHostAddress.Equals(rootHub.Pad[index].HostAddress));
             }
 
             btnBoth.Enabled = btnLeft.Enabled = btnRight.Enabled = btnOff.Enabled = bSelected && btnStop.Enabled;

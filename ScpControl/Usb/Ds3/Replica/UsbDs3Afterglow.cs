@@ -1,4 +1,5 @@
-﻿using ScpControl.Shared.Core;
+﻿using System.Net.NetworkInformation;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Usb.Ds3.Replica
 {
@@ -116,7 +117,7 @@ namespace ScpControl.Usb.Ds3.Replica
             OnHidReportReceived(inputReport);
         }
 
-        public override bool Pair(byte[] master)
+        public override bool Pair(PhysicalAddress master)
         {
             // controller uses it's own wireless protocol, pairing is not needed
             return true;

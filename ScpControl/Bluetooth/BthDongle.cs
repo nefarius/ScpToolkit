@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using ScpControl.Profiler;
@@ -50,7 +51,7 @@ namespace ScpControl.Bluetooth
                     {
                         return
                             string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}\n\nReserved",
-                                Local,
+                                BluetoothHostAddress,
                                 _hciVersion,
                                 _lmpVersion
                                 );
@@ -61,7 +62,7 @@ namespace ScpControl.Bluetooth
                     if (Initialised)
                     {
                         return string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}",
-                            Local,
+                            BluetoothHostAddress,
                             _hciVersion,
                             _lmpVersion
                             );
@@ -89,7 +90,6 @@ namespace ScpControl.Bluetooth
         private string _hciVersion = string.Empty;
         private byte _l2CapDataIdentifier = 0x01;
         private string _lmpVersion = string.Empty;
-        private byte[] _localMac = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
         private readonly ManualResetEvent _waitForConnectionComplete = new ManualResetEvent(false);
@@ -123,15 +123,7 @@ namespace ScpControl.Bluetooth
             get { return Guid.Parse("{2F87C733-60E0-4355-8515-95D6978418B2}"); }
         }
 
-        public string Local
-        {
-            get
-            {
-                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", _localMac[5], _localMac[4],
-                    _localMac[3],
-                    _localMac[2], _localMac[1], _localMac[0]);
-            }
-        }
+        public PhysicalAddress BluetoothHostAddress { get; protected set; }
 
         public string HciVersion
         {
@@ -234,9 +226,9 @@ namespace ScpControl.Bluetooth
             {
                 // TODO: weak check, maybe improve in future
                 if (name.Equals(BthDs4.GenuineProductName, StringComparison.OrdinalIgnoreCase))
-                    connection = new BthDs4(this, _localMac, lsb, msb);
+                    connection = new BthDs4(this, BluetoothHostAddress, lsb, msb);
                 else
-                    connection = new BthDs3(this, _localMac, lsb, msb);
+                    connection = new BthDs3(this, BluetoothHostAddress, lsb, msb);
 
                 _connected[connection.HciHandle] = connection;
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -139,8 +140,10 @@ namespace ScpControl.Usb.Ds4
                 if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x0312, m_Buffer,
                     ref transfered))
                 {
-                    m_Master = new[]
-                    {m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10]};
+                    HostAddress =
+                        new PhysicalAddress(new[]
+                        {m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10]});
+
                     m_Local = new[] {m_Buffer[6], m_Buffer[5], m_Buffer[4], m_Buffer[3], m_Buffer[2], m_Buffer[1]};
                 }
 
@@ -159,9 +162,12 @@ namespace ScpControl.Usb.Ds4
             if (!GlobalConfiguration.Instance.Repair) return base.Start();
 
             var transfered = 0;
+
+            var hostMac = HostAddress.GetAddressBytes();
+
             byte[] buffer =
             {
-                0x13, m_Master[5], m_Master[4], m_Master[3], m_Master[2], m_Master[1], m_Master[0],
+                0x13, hostMac[5], hostMac[4], hostMac[3], hostMac[2], hostMac[1], hostMac[0],
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
@@ -170,11 +176,11 @@ namespace ScpControl.Usb.Ds4
 
             if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {
-                Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, Remote);
+                Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, HostAddress);
             }
             else
             {
-                Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", Local, Remote);
+                Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", Local, HostAddress);
             }
 
             return base.Start();
@@ -199,12 +205,13 @@ namespace ScpControl.Usb.Ds4
             }
         }
 
-        public override bool Pair(byte[] master)
+        public override bool Pair(PhysicalAddress master)
         {
             var transfered = 0;
+            var host = master.GetAddressBytes();
             byte[] buffer =
             {
-                0x13, master[5], master[4], master[3], master[2], master[1], master[0], 0x00, 0x00, 0x00,
+                0x13, host[5], host[4], host[3], host[2], host[1], host[0], 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             };
 
@@ -213,12 +220,9 @@ namespace ScpControl.Usb.Ds4
 
             if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {
-                for (var index = 0; index < m_Master.Length; index++)
-                {
-                    m_Master[index] = master[index];
-                }
+                HostAddress = master;
 
-                Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", Local, Remote);
+                Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", Local, HostAddress);
                 return true;
             }
 

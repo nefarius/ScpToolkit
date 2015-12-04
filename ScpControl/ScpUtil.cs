@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ScpControl.Bluetooth;
@@ -29,11 +30,11 @@ namespace ScpControl
 
         string Local { get; }
 
-        string Remote { get; }
+        PhysicalAddress HostAddress { get; }
 
         bool Start();
         bool Rumble(byte large, byte small);
-        bool Pair(byte[] master);
+        bool Pair(PhysicalAddress master);
         bool Disconnect();
         ScpHidReport NewHidReport();
     }
@@ -83,22 +84,12 @@ namespace ScpControl
             get { return "00:00:00:00:00:00"; }
         }
 
-        public string Remote
-        {
-            get { return "00:00:00:00:00:00"; }
-        }
-
         public bool Start()
         {
             return true;
         }
 
         public bool Rumble(byte large, byte small)
-        {
-            return true;
-        }
-
-        public bool Pair(byte[] master)
         {
             return true;
         }
@@ -116,6 +107,16 @@ namespace ScpControl
         public ScpHidReport NewHidReport()
         {
             return new ScpHidReport();
+        }
+
+        public PhysicalAddress HostAddress
+        {
+            get { return PhysicalAddress.None; }
+        }
+        
+        public bool Pair(PhysicalAddress master)
+        {
+            return true;
         }
     }
 

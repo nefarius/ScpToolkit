@@ -30,7 +30,6 @@ namespace ScpControl.Bluetooth
         private bool m_Publish;
         protected uint m_Queued = 0;
         protected DsState m_State = DsState.Disconnected;
-        private readonly byte[] m_Master = new byte[6];
         protected PhysicalAddress DeviceMac;
 
         public DsState State
@@ -51,15 +50,6 @@ namespace ScpControl.Bluetooth
         public string Local
         {
             get { return MacDisplayName; }
-        }
-
-        public string Remote
-        {
-            get
-            {
-                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Master[0], m_Master[1], m_Master[2],
-                    m_Master[3], m_Master[4], m_Master[5]);
-            }
         }
 
         public virtual DsPadId PadId
@@ -86,7 +76,7 @@ namespace ScpControl.Bluetooth
             return false;
         }
 
-        public virtual bool Pair(byte[] master)
+        public virtual bool Pair(PhysicalAddress master)
         {
             return false;
         }
@@ -237,13 +227,13 @@ namespace ScpControl.Bluetooth
             InitializeComponent();
         }
 
-        public BthDevice(IBthDevice device, byte[] master, byte lsb, byte msb)
+        public BthDevice(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
             : base(new BthHandle(lsb, msb))
         {
             InitializeComponent();
 
             m_Device = device;
-            m_Master = master;
+            HostAddress = master;
         }
 
         #endregion
@@ -260,5 +250,7 @@ namespace ScpControl.Bluetooth
                 PadMacAddress = DeviceMac
             };
         }
+        
+        public PhysicalAddress HostAddress { get; protected set; }
     }
 }

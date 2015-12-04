@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.ServiceModel;
@@ -265,9 +266,9 @@ namespace ScpControl
             get { return _bthHub.Dongle; }
         }
 
-        public string Master
+        public PhysicalAddress BluetoothHostAddress
         {
-            get { return _bthHub.Master; }
+            get { return _bthHub.BluetoothHostAddress; }
         }
 
         public bool Pairable

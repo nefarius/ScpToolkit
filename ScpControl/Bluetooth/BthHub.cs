@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Net.NetworkInformation;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -28,7 +29,7 @@ namespace ScpControl.Bluetooth
 
                         if (arrived.Open(path))
                         {
-                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.Local);
+                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.BluetoothHostAddress);
 
                             _device.Close();
                             _device = arrived;
@@ -50,7 +51,7 @@ namespace ScpControl.Bluetooth
 
                     if (_device.Path == path)
                     {
-                        Log.DebugFormat("-- Device Removal [{0}]", _device.Local);
+                        Log.DebugFormat("-- Device Removal [{0}]", _device.BluetoothHostAddress);
 
                         _device.Stop();
                     }
@@ -85,9 +86,9 @@ namespace ScpControl.Bluetooth
             get { return _device != null ? _device.ToString() : "<UNKNOWN>"; }
         }
 
-        public string Master
+        public PhysicalAddress BluetoothHostAddress
         {
-            get { return _device.Local; }
+            get { return _device.BluetoothHostAddress; }
         }
 
         public bool Pairable

@@ -207,7 +207,7 @@ namespace ScpControl.Usb.Gamepads
             // ignore
         }
 
-        public override bool Pair(byte[] master)
+        public override bool Pair(PhysicalAddress master)
         {
             return false; // ignore
         }

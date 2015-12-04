@@ -169,21 +169,12 @@ namespace ScpService
 
                                 if (pad != DsPadId.None)
                                 {
-                                    if (rootHub.Pairable && (rootHub.Master != rootHub.Pad[(byte)pad].Remote))
+                                    if (rootHub.Pairable && !rootHub.BluetoothHostAddress.Equals(rootHub.Pad[(byte)pad].HostAddress))
                                     {
-                                        var master = new byte[6];
-                                        var parts = rootHub.Master.Split(new[] { ":" },
-                                            StringSplitOptions.RemoveEmptyEntries);
-
-                                        for (var Part = 0; Part < master.Length; Part++)
-                                        {
-                                            master[Part] = byte.Parse(parts[Part], NumberStyles.HexNumber);
-                                        }
-
-                                        rootHub.Pad[(byte)pad].Pair(master);
+                                        rootHub.Pad[(byte)pad].Pair(rootHub.BluetoothHostAddress);
 
                                         Log.InfoFormat("Paired DualShock Device {0} to Bluetooth host {1}",
-                                            rootHub.Pad[(byte)pad].Local, rootHub.Master);
+                                            rootHub.Pad[(byte)pad].Local, rootHub.BluetoothHostAddress);
                                     }
                                 }
                             }

@@ -88,7 +88,6 @@ namespace ScpControl.Usb
         protected string m_Instance = string.Empty, m_Mac = string.Empty;
         protected DateTime m_Last = DateTime.Now, m_Tick = DateTime.Now, m_Disconnect = DateTime.Now;
         protected byte[] m_Local = new byte[6];
-        protected byte[] m_Master = new byte[6];
         protected uint PacketCounter;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
@@ -169,14 +168,7 @@ namespace ScpControl.Usb
             get { return m_Mac; }
         }
 
-        public virtual string Remote
-        {
-            get
-            {
-                return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Master[0], m_Master[1], m_Master[2],
-                    m_Master[3], m_Master[4], m_Master[5]);
-            }
-        }
+        public virtual PhysicalAddress HostAddress { get; protected set; }
 
         #endregion
 
@@ -196,7 +188,7 @@ namespace ScpControl.Usb
             tmUpdate.Enabled = true;
 
             Rumble(0, 0);
-            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, Remote);
+            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, HostAddress);
 
             // connection sound
             if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
@@ -228,7 +220,7 @@ namespace ScpControl.Usb
             return false;
         }
 
-        public virtual bool Pair(byte[] master)
+        public virtual bool Pair(PhysicalAddress master)
         {
             return false;
         }
