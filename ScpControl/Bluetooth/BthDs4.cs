@@ -59,7 +59,6 @@ namespace ScpControl.Bluetooth
             set
             {
                 m_ControllerId = (byte) value;
-                InputReport.PadId = PadId;
 
                 switch (value)
                 {
@@ -120,9 +119,11 @@ namespace ScpControl.Bluetooth
         {
             m_Packet++;
 
-            InputReport.BatteryStatus = m_BatteryStatus = (byte) ((report[41] + 2)/2);
+            var inputReport = NewHidReport();
 
-            InputReport.PacketCounter = m_Packet;
+            inputReport.BatteryStatus = m_BatteryStatus = (byte) ((report[41] + 2)/2);
+
+            inputReport.PacketCounter = m_Packet;
 
             var buttons = ((report[16] << 0) | (report[17] << 8) | (report[18] << 16));
             var trigger = false;
@@ -160,22 +161,22 @@ namespace ScpControl.Bluetooth
             //--
 
             // copy controller data to report packet
-            Buffer.BlockCopy(report, 11, InputReport.RawBytes, 8, 76);
+            Buffer.BlockCopy(report, 11, inputReport.RawBytes, 8, 76);
 
             // set report ID
-            InputReport.RawBytes[8] = report[9];
+            inputReport.RawBytes[8] = report[9];
 
             // Quick Disconnect
-            if (InputReport[Ds4Button.L1].IsPressed
-                && InputReport[Ds4Button.R1].IsPressed
-                && InputReport[Ds4Button.Ps].IsPressed)
+            if (inputReport[Ds4Button.L1].IsPressed
+                && inputReport[Ds4Button.R1].IsPressed
+                && inputReport[Ds4Button.Ps].IsPressed)
             {
                 trigger = true;
                 // unset PS button
-                InputReport.RawBytes[15] ^= 0x01;
+                inputReport.Unset(Ds4Button.Ps);
             }
 
-            if (InputReport.IsPadActive)
+            if (inputReport.IsPadActive)
             {
                 m_IsIdle = false;
             }
@@ -195,7 +196,7 @@ namespace ScpControl.Bluetooth
                 m_IsDisconnect = false;
             }
 
-            OnHidReportReceived();
+            OnHidReportReceived(inputReport);
         }
 
         /// <summary>

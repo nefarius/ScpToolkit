@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using HidSharp.ReportDescriptors.Parser;
@@ -49,7 +50,7 @@ namespace ScpControl.Usb
         /// <param name="o">Task cancellation token.</param>
         private void HidWorker(object o)
         {
-            var token = (CancellationToken) o;
+            var token = (CancellationToken)o;
             var transfered = 0;
             var buffer = new byte[64];
 
@@ -96,9 +97,9 @@ namespace ScpControl.Usb
         protected uint PacketCounter;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
-        protected readonly ScpHidReport InputReport = new ScpHidReport();
         protected DsState m_State = DsState.Disconnected;
         protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
+        protected PhysicalAddress DeviceMac;
 
         #endregion
 
@@ -106,12 +107,9 @@ namespace ScpControl.Usb
 
         public event EventHandler<ScpHidReport> HidReportReceived;
 
-        protected virtual void OnHidReportReceived()
+        protected virtual void OnHidReportReceived(ScpHidReport report)
         {
-            InputReport.PadId = (DsPadId)m_ControllerId;
-            InputReport.PadState = m_State;
-
-            if (HidReportReceived != null) HidReportReceived(this, InputReport);
+            if (HidReportReceived != null) HidReportReceived(this, report);
         }
 
         #endregion
@@ -148,17 +146,15 @@ namespace ScpControl.Usb
 
         public virtual DsModel Model
         {
-            get { return (DsModel) m_Model; }
+            get { return (DsModel)m_Model; }
         }
 
         public virtual DsPadId PadId
         {
-            get { return (DsPadId) m_ControllerId; }
+            get { return (DsPadId)m_ControllerId; }
             set
             {
-                m_ControllerId = (byte) value;
-
-                InputReport.PadId = PadId;
+                m_ControllerId = (byte)value;
             }
         }
 
@@ -174,7 +170,7 @@ namespace ScpControl.Usb
 
         public virtual DsBattery Battery
         {
-            get { return (DsBattery) m_BatteryStatus; }
+            get { return (DsBattery)m_BatteryStatus; }
         }
 
         public virtual byte[] BdAddress
@@ -204,10 +200,7 @@ namespace ScpControl.Usb
         {
             if (!IsActive) return State == DsState.Connected;
 
-            Buffer.BlockCopy(m_Local, 0, InputReport.RawBytes, (int) DsOffset.Address, m_Local.Length);
-
-            InputReport.ConnectionType = Connection;
-            InputReport.Model = Model;
+            DeviceMac = new PhysicalAddress(m_Local);
 
             m_State = DsState.Connected;
             PacketCounter = 0;
@@ -284,7 +277,7 @@ namespace ScpControl.Usb
                 _hidCancellationTokenSource.Cancel();
                 _hidCancellationTokenSource = new CancellationTokenSource();
 
-                OnHidReportReceived();
+                OnHidReportReceived(NewHidReport());
             }
 
             return base.Stop();
@@ -299,12 +292,24 @@ namespace ScpControl.Usb
                 tmUpdate.Enabled = false;
                 m_State = DsState.Disconnected;
 
-                OnHidReportReceived();
+                OnHidReportReceived(NewHidReport());
             }
 
             return !IsActive;
         }
 
         #endregion
+        
+        public ScpHidReport NewHidReport()
+        {
+            return new ScpHidReport()
+            {
+                PadId = (DsPadId)m_ControllerId,
+                PadState = m_State,
+                ConnectionType = Connection,
+                Model = Model,
+                PadMacAddress = DeviceMac
+            };
+        }
     }
 }

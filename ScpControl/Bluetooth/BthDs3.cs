@@ -96,7 +96,6 @@ namespace ScpControl.Bluetooth
             set
             {
                 m_ControllerId = (byte)value;
-                InputReport.PadId = PadId;
 
                 _hidOutputReport[11] = ledStatus;
             }
@@ -130,26 +129,28 @@ namespace ScpControl.Bluetooth
             if (m_Packet == 0) Rumble(0, 0);
             m_Packet++;
 
-            InputReport.BatteryStatus = m_BatteryStatus;
+            var inputReport = NewHidReport();
 
-            InputReport.PacketCounter = m_Packet;
+            inputReport.BatteryStatus = m_BatteryStatus;
+
+            inputReport.PacketCounter = m_Packet;
 
             // copy controller data to report packet
-            Buffer.BlockCopy(report, 9, InputReport.RawBytes, 8, 49);
+            Buffer.BlockCopy(report, 9, inputReport.RawBytes, 8, 49);
             
             var trigger = false;
 
             // Quick Disconnect
-            if (InputReport[Ds3Button.L1].IsPressed
-                && InputReport[Ds3Button.R1].IsPressed
-                && InputReport[Ds3Button.Ps].IsPressed)
+            if (inputReport[Ds3Button.L1].IsPressed
+                && inputReport[Ds3Button.R1].IsPressed
+                && inputReport[Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
                 // unset PS button
-                InputReport.RawBytes[12] ^= 0x01;
+                inputReport.Unset(Ds3Button.Ps);
             }
 
-            if (InputReport.IsPadActive)
+            if (inputReport.IsPadActive)
             {
                 m_IsIdle = false;
             }
@@ -169,7 +170,7 @@ namespace ScpControl.Bluetooth
                 m_IsDisconnect = false;
             }
 
-            OnHidReportReceived();
+            OnHidReportReceived(inputReport);
         }
 
         /// <summary>

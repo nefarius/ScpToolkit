@@ -24,46 +24,48 @@ namespace ScpControl.Usb.Gamepads
 
             PacketCounter++;
 
+            var inputReport = NewHidReport();
+
             #region HID Report translation
 
             // no battery state since the Gamepad is USB-powered
-            m_BatteryStatus = InputReport.SetBatteryStatus(DsBattery.None);
+            m_BatteryStatus = inputReport.SetBatteryStatus(DsBattery.None);
 
             // packet counter
-            InputReport.PacketCounter = PacketCounter;
+            inputReport.PacketCounter = PacketCounter;
 
             // set fake MAC address
-            InputReport.PadMacAddress = PhysicalAddress.Parse(m_Mac.Replace(":", string.Empty));
+            inputReport.PadMacAddress = PhysicalAddress.Parse(m_Mac.Replace(":", string.Empty));
 
             // reset buttons
-            InputReport.ZeroSelectStartButtonsState();
-            InputReport.ZeroShoulderButtonsState();
+            inputReport.ZeroSelectStartButtonsState();
+            inputReport.ZeroShoulderButtonsState();
 
-            InputReport.Set(Ds3Button.Select, IsBitSet(report[7], 4)); // Select
-            InputReport.Set(Ds3Button.Start, IsBitSet(report[7], 5)); // Start
+            inputReport.Set(Ds3Button.Select, IsBitSet(report[7], 4)); // Select
+            inputReport.Set(Ds3Button.Start, IsBitSet(report[7], 5)); // Start
             
-            InputReport.Set(Ds3Button.L1, IsBitSet(report[7], 0)); // L1 (button)
-            InputReport.Set(Ds3Button.R1, IsBitSet(report[7], 2)); // R1 (button)
+            inputReport.Set(Ds3Button.L1, IsBitSet(report[7], 0)); // L1 (button)
+            inputReport.Set(Ds3Button.R1, IsBitSet(report[7], 2)); // R1 (button)
 
-            InputReport.Set(Ds3Button.Triangle, IsBitSet(report[6], 4)); // Triangle (button)
-            InputReport.Set(Ds3Button.Circle, IsBitSet(report[6], 5)); // Circle (button)
-            InputReport.Set(Ds3Button.Cross, IsBitSet(report[6], 6)); // Cross (button)
-            InputReport.Set(Ds3Button.Square, IsBitSet(report[6], 7)); // Square (button)
+            inputReport.Set(Ds3Button.Triangle, IsBitSet(report[6], 4)); // Triangle (button)
+            inputReport.Set(Ds3Button.Circle, IsBitSet(report[6], 5)); // Circle (button)
+            inputReport.Set(Ds3Button.Cross, IsBitSet(report[6], 6)); // Cross (button)
+            inputReport.Set(Ds3Button.Square, IsBitSet(report[6], 7)); // Square (button)
 
-            InputReport.Set(Ds3Button.Right, (report[4] == 0xFF)); // D-Pad right
-            InputReport.Set(Ds3Button.Left, (report[4] == 0x00)); // D-Pad left
-            InputReport.Set(Ds3Button.Up, (report[5] == 0x00)); // D-Pad up
-            InputReport.Set(Ds3Button.Down, (report[5] == 0xFF)); // D-Pad down
+            inputReport.Set(Ds3Button.Right, (report[4] == 0xFF)); // D-Pad right
+            inputReport.Set(Ds3Button.Left, (report[4] == 0x00)); // D-Pad left
+            inputReport.Set(Ds3Button.Up, (report[5] == 0x00)); // D-Pad up
+            inputReport.Set(Ds3Button.Down, (report[5] == 0xFF)); // D-Pad down
 
             // This device has no thumb sticks, center axes
-            InputReport.Set(Ds3Axis.Lx, 0x80);
-            InputReport.Set(Ds3Axis.Ly, 0x80);
-            InputReport.Set(Ds3Axis.Rx, 0x80);
-            InputReport.Set(Ds3Axis.Ry, 0x80);
+            inputReport.Set(Ds3Axis.Lx, 0x80);
+            inputReport.Set(Ds3Axis.Ly, 0x80);
+            inputReport.Set(Ds3Axis.Rx, 0x80);
+            inputReport.Set(Ds3Axis.Ry, 0x80);
 
             #endregion
 
-            OnHidReportReceived();
+            OnHidReportReceived(inputReport);
         }
     }
 }

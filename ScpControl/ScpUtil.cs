@@ -35,6 +35,7 @@ namespace ScpControl
         bool Rumble(byte large, byte small);
         bool Pair(byte[] master);
         bool Disconnect();
+        ScpHidReport NewHidReport();
     }
 
     public interface IBthDevice
@@ -110,6 +111,11 @@ namespace ScpControl
         public override string ToString()
         {
             return string.Format("Pad {0} : {1}", 1 + (int) PadId, DsState.Disconnected);
+        }
+        
+        public ScpHidReport NewHidReport()
+        {
+            return new ScpHidReport();
         }
     }
 

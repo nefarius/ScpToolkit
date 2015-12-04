@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -28,9 +29,9 @@ namespace ScpControl.Bluetooth
         protected byte m_PlugStatus = 0;
         private bool m_Publish;
         protected uint m_Queued = 0;
-        protected readonly ScpHidReport InputReport = new ScpHidReport();
         protected DsState m_State = DsState.Disconnected;
         private readonly byte[] m_Master = new byte[6];
+        protected PhysicalAddress DeviceMac;
 
         public DsState State
         {
@@ -69,10 +70,7 @@ namespace ScpControl.Bluetooth
 
         public virtual bool Start()
         {
-            Buffer.BlockCopy(LocalMac, 0, InputReport.RawBytes, (int) DsOffset.Address, LocalMac.Length);
-
-            InputReport.ConnectionType = Connection;
-            InputReport.Model = Model;
+            DeviceMac = new PhysicalAddress(LocalMac);
 
             tmUpdate.Enabled = true;
 
@@ -101,12 +99,9 @@ namespace ScpControl.Bluetooth
 
         public event EventHandler<ScpHidReport> HidReportReceived;
 
-        protected virtual void OnHidReportReceived()
+        protected virtual void OnHidReportReceived(ScpHidReport report)
         {
-            InputReport.PadId = (DsPadId)m_ControllerId;
-            InputReport.PadState = m_State;
-
-            if (HidReportReceived != null) HidReportReceived(this, InputReport);
+            if (HidReportReceived != null) HidReportReceived(this, report);
         }
 
         public virtual bool Stop()
@@ -119,7 +114,7 @@ namespace ScpControl.Bluetooth
                 m_Packet = 0;
 
                 m_Publish = false;
-                OnHidReportReceived();
+                OnHidReportReceived(NewHidReport());
 
                 // play disconnect sound
                 if(GlobalConfiguration.Instance.IsBluetoothDisconnectSoundEnabled)
@@ -139,7 +134,7 @@ namespace ScpControl.Bluetooth
                 m_Packet = 0;
 
                 m_Publish = false;
-                OnHidReportReceived();
+                OnHidReportReceived(NewHidReport());
             }
 
             return m_State == DsState.Disconnected;
@@ -252,5 +247,18 @@ namespace ScpControl.Bluetooth
         }
 
         #endregion
+
+
+        public ScpHidReport NewHidReport()
+        {
+            return new ScpHidReport()
+            {
+                PadId = (DsPadId)m_ControllerId,
+                PadState = m_State,
+                ConnectionType = Connection,
+                Model = Model,
+                PadMacAddress = DeviceMac
+            };
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
@@ -74,7 +73,6 @@ namespace ScpControl.Usb.Ds3
             set
             {
                 m_ControllerId = (byte)value;
-                InputReport.PadId = PadId;
 
                 _hidReport[9] = _ledStatus;
             }
@@ -214,25 +212,27 @@ namespace ScpControl.Usb.Ds3
 
             PacketCounter++;
 
+            var inputReport = NewHidReport();
+
             // set battery level
-            m_BatteryStatus = InputReport.BatteryStatus = report[30];
+            m_BatteryStatus = inputReport.BatteryStatus = report[30];
 
             // set packet counter
-            InputReport.PacketCounter = PacketCounter;
+            inputReport.PacketCounter = PacketCounter;
 
             // copy controller data to report packet
-            Buffer.BlockCopy(report, 0, InputReport.RawBytes, 8, 49);
+            Buffer.BlockCopy(report, 0, inputReport.RawBytes, 8, 49);
 
             var trigger = false;
 
             // detect Quick Disconnect combo (L1, R1 and PS buttons pressed at the same time)
-            if (InputReport[Ds3Button.L1].IsPressed
-                && InputReport[Ds3Button.R1].IsPressed
-                && InputReport[Ds3Button.Ps].IsPressed)
+            if (inputReport[Ds3Button.L1].IsPressed
+                && inputReport[Ds3Button.R1].IsPressed
+                && inputReport[Ds3Button.Ps].IsPressed)
             {
                 trigger = true;
                 // unset PS button
-                InputReport.RawBytes[12] ^= 0x01;
+                inputReport.RawBytes[12] ^= 0x01;
             }
             
             if (trigger && !m_IsDisconnect)
@@ -245,7 +245,7 @@ namespace ScpControl.Usb.Ds3
                 m_IsDisconnect = false;
             }
 
-            OnHidReportReceived();
+            OnHidReportReceived(inputReport);
         }
 
         /// <summary>

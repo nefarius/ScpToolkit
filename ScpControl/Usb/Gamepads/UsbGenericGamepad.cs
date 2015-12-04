@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using HidSharp;
@@ -140,6 +141,7 @@ namespace ScpControl.Usb.Gamepads
 
             // since these devices have no MAC address, generate one
             m_Mac = MacAddressGenerator.NewMacAddress;
+            DeviceMac = PhysicalAddress.Parse(m_Mac);
 
             IsActive = true;
             Path = devicePath;
@@ -151,11 +153,6 @@ namespace ScpControl.Usb.Gamepads
         {
             // TODO: remove duplicate code
             if (!IsActive) return State == DsState.Connected;
-
-            Buffer.BlockCopy(m_Local, 0, InputReport.RawBytes, (int) DsOffset.Address, m_Local.Length);
-
-            InputReport.ConnectionType = Connection;
-            InputReport.Model = Model;
 
             m_State = DsState.Connected;
             PacketCounter = 0;

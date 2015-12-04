@@ -74,7 +74,6 @@ namespace ScpControl.Usb.Ds4
                 }
 
                 m_ControllerId = (byte) value;
-                InputReport.PadId = PadId;
 
                 switch (value)
                 {
@@ -247,9 +246,11 @@ namespace ScpControl.Usb.Ds4
 
             PacketCounter++;
 
-            m_BatteryStatus = InputReport.SetBatteryStatus((DsBattery) MapBattery(report[30]));
+            var inputReport = NewHidReport();
 
-            InputReport.PacketCounter = PacketCounter;
+            m_BatteryStatus = inputReport.SetBatteryStatus((DsBattery) MapBattery(report[30]));
+
+            inputReport.PacketCounter = PacketCounter;
 
             var buttons = ((report[5] << 0) | (report[6] << 8) | (report[7] << 16));
 
@@ -288,9 +289,9 @@ namespace ScpControl.Usb.Ds4
             #endregion
 
             // copy controller data to report packet
-            Buffer.BlockCopy(report, 0, InputReport.RawBytes, 8, 64);
+            Buffer.BlockCopy(report, 0, inputReport.RawBytes, 8, 64);
 
-            OnHidReportReceived();
+            OnHidReportReceived(inputReport);
         }
 
         protected override void Process(DateTime now)
