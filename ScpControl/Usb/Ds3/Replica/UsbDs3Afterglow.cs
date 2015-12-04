@@ -15,7 +15,7 @@ namespace ScpControl.Usb.Ds3.Replica
             #region HID Report translation
 
             // battery
-            m_BatteryStatus = inputReport.BatteryStatus = report[30];
+            Battery = (DsBattery) report[30];
 
             // packet counter
             inputReport.PacketCounter = PacketCounter;

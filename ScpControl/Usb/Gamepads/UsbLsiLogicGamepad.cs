@@ -27,7 +27,7 @@ namespace ScpControl.Usb.Gamepads
             #region HID Report translation
 
             // no battery state since the Gamepad is Usb-powered
-            m_BatteryStatus = inputReport.SetBatteryStatus(DsBattery.None);
+            Battery = DsBattery.None;
 
             // packet counter
             inputReport.PacketCounter = PacketCounter;

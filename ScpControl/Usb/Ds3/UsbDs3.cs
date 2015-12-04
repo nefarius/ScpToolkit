@@ -206,7 +206,7 @@ namespace ScpControl.Usb.Ds3
             var inputReport = NewHidReport();
 
             // set battery level
-            m_BatteryStatus = inputReport.BatteryStatus = report[30];
+            Battery = (DsBattery) report[30];
 
             // set packet counter
             inputReport.PacketCounter = PacketCounter;

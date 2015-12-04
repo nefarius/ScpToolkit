@@ -238,7 +238,7 @@ namespace ScpControl.Usb.Ds4
 
             var inputReport = NewHidReport();
 
-            m_BatteryStatus = inputReport.SetBatteryStatus((DsBattery) MapBattery(report[30]));
+            Battery = (DsBattery) MapBattery(report[30]);
 
             inputReport.PacketCounter = PacketCounter;
 

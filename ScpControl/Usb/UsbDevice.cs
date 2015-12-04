@@ -83,7 +83,6 @@ namespace ScpControl.Usb
 
         #region Protected fields
 
-        protected byte m_BatteryStatus = 0;
         protected byte[] m_Buffer = new byte[64];
         protected byte m_CableStatus = 0;
         protected string m_Instance = string.Empty, m_Mac = string.Empty;
@@ -146,10 +145,7 @@ namespace ScpControl.Usb
 
         public virtual DsState State { get; protected set; }
 
-        public virtual DsBattery Battery
-        {
-            get { return (DsBattery)m_BatteryStatus; }
-        }
+        public virtual DsBattery Battery { get; protected set; }
 
         public virtual byte[] BdAddress
         {
@@ -286,7 +282,8 @@ namespace ScpControl.Usb
                 PadState = State,
                 ConnectionType = Connection,
                 Model = Model,
-                PadMacAddress = DeviceMac
+                PadMacAddress = DeviceMac,
+                BatteryStatus = (byte) Battery
             };
         }
     }
