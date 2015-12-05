@@ -30,54 +30,6 @@ namespace ScpControl
     [ServiceBehavior(IncludeExceptionDetailInFaults = false, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
-        public IEnumerable<DualShockProfile> GetProfiles()
-        {
-            return DualShockProfileManager.Instance.Profiles;
-        }
-
-        public void SubmitProfile(DualShockProfile profile)
-        {
-            DualShockProfileManager.Instance.SubmitProfile(profile);
-        }
-
-        public void RemoveProfile(DualShockProfile profile)
-        {
-            DualShockProfileManager.Instance.RemoveProfile(profile);
-        }
-
-        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
-        {
-            if (_mSuspended) return DsPadId.None;
-
-            var classGuid = Guid.Parse(Class);
-
-            // forward message for wired DS4 to usb hub
-            if (classGuid == UsbDs4.DeviceClassGuid)
-            {
-                return _usbHub.Notify(notification, Class, path);
-            }
-
-            // forward message for wired DS3 to usb hub
-            if (classGuid == UsbDs3.DeviceClassGuid)
-            {
-                return _usbHub.Notify(notification, Class, path);
-            }
-
-            // forward message for wired Generic Gamepad to usb hub
-            if (classGuid == UsbGenericGamepad.DeviceClassGuid)
-            {
-                return _usbHub.Notify(notification, Class, path);
-            }
-
-            // forward message for any wireless device to bluetooth hub
-            if (classGuid == BthDongle.DeviceClassGuid)
-            {
-                _bthHub.Notify(notification, Class, path);
-            }
-
-            return DsPadId.None;
-        }
-
         #region Internal helpers
 
         private class Cache
@@ -175,7 +127,7 @@ namespace ScpControl
         public bool Rumble(DsPadId pad, byte large, byte small)
         {
             var serial = (byte) pad;
-            
+
             if (Pads[serial].State != DsState.Connected) return false;
 
             if (large == _mNative[serial][0] && small == _mNative[serial][1]) return false;
@@ -241,6 +193,21 @@ namespace ScpControl
             GlobalConfiguration.Save();
         }
 
+        public IEnumerable<DualShockProfile> GetProfiles()
+        {
+            return DualShockProfileManager.Instance.Profiles;
+        }
+
+        public void SubmitProfile(DualShockProfile profile)
+        {
+            DualShockProfileManager.Instance.SubmitProfile(profile);
+        }
+
+        public void RemoveProfile(DualShockProfile profile)
+        {
+            DualShockProfileManager.Instance.RemoveProfile(profile);
+        }
+
         #endregion
 
         #region Ctors
@@ -249,6 +216,7 @@ namespace ScpControl
         {
             InitializeComponent();
 
+            // prepare "empty" pad list
             Pads = new List<IDsDevice>
             {
                 new DsNull(DsPadId.One),
@@ -257,9 +225,11 @@ namespace ScpControl
                 new DsNull(DsPadId.Four)
             };
 
+            // subscribe to device plug-in events
             _bthHub.Arrival += OnDeviceArrival;
             _usbHub.Arrival += OnDeviceArrival;
 
+            // subscribe to incoming HID reports
             _bthHub.Report += OnHidReportReceived;
             _usbHub.Report += OnHidReportReceived;
         }
@@ -274,13 +244,20 @@ namespace ScpControl
 
         #region Properties
 
+        /// <summary>
+        ///     A collection of currently connected game pads.
+        /// </summary>
         public IList<IDsDevice> Pads { get; private set; }
 
+        [Obsolete]
         public string Dongle
         {
             get { return _bthHub.Dongle; }
         }
 
+        /// <summary>
+        ///     The MAC address of the current Bluetooth host.
+        /// </summary>
         public PhysicalAddress BluetoothHostAddress
         {
             get { return _bthHub.BluetoothHostAddress; }
@@ -421,7 +398,7 @@ namespace ScpControl
         /// <returns>True on success, false otherwise.</returns>
         public override bool Stop()
         {
-            Log.Info("Root hub stop requested");
+            Log.Debug("Root hub stop requested");
 
             _serviceStarted = false;
 
@@ -500,6 +477,47 @@ namespace ScpControl
 
         #region Events
 
+        /// <summary>
+        ///     Gets called when a device was plugged in.
+        /// </summary>
+        /// <param name="notification">The <see cref="ScpDevice.Notified"/> type.</param>
+        /// <param name="Class">The device class of the currently affected device.</param>
+        /// <param name="path">The device path of the currently affected device.</param>
+        /// <returns></returns>
+        public override DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
+        {
+            // ignore while component is in sleep mode
+            if (_mSuspended) return DsPadId.None;
+
+            var classGuid = Guid.Parse(Class);
+
+            // forward message for wired DS4 to usb hub
+            if (classGuid == UsbDs4.DeviceClassGuid)
+            {
+                return _usbHub.Notify(notification, Class, path);
+            }
+
+            // forward message for wired DS3 to usb hub
+            if (classGuid == UsbDs3.DeviceClassGuid)
+            {
+                return _usbHub.Notify(notification, Class, path);
+            }
+
+            // forward message for wired Generic Gamepad to usb hub
+            if (classGuid == UsbGenericGamepad.DeviceClassGuid)
+            {
+                return _usbHub.Notify(notification, Class, path);
+            }
+
+            // forward message for any wireless device to bluetooth hub
+            if (classGuid == BthDongle.DeviceClassGuid)
+            {
+                _bthHub.Notify(notification, Class, path);
+            }
+
+            return DsPadId.None;
+        }
+
         protected override void OnDeviceArrival(object sender, ArrivalEventArgs e)
         {
             var bFound = false;
@@ -574,7 +592,6 @@ namespace ScpControl
 
             // translate current report to Xbox format
             _scpBus.Parse(e, report);
-
 
             if (_scpBus.Report(report, rumble) && e.PadState == DsState.Connected)
             {
