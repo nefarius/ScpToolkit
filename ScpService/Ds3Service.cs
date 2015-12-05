@@ -174,7 +174,7 @@ namespace ScpService
                                         rootHub.Pad[(byte)pad].Pair(rootHub.BluetoothHostAddress);
 
                                         Log.InfoFormat("Paired DualShock Device {0} to Bluetooth host {1}",
-                                            rootHub.Pad[(byte)pad].Local, rootHub.BluetoothHostAddress);
+                                            rootHub.Pad[(byte)pad].DeviceAddress, rootHub.BluetoothHostAddress);
                                     }
                                 }
                             }

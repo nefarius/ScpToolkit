@@ -92,20 +92,22 @@ namespace ScpControl.Usb.Ds3
 
                 if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x03F2, m_Buffer, ref transfered))
                 {
-                    m_Local = new[] { m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7], m_Buffer[8], m_Buffer[9] };
+                    DeviceAddress =
+                        new PhysicalAddress(new[]
+                        {m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7], m_Buffer[8], m_Buffer[9]});
                 }
 
-                m_Mac = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
-                    m_Local[3], m_Local[4], m_Local[5]);
+                Log.InfoFormat("Successfully opened device with MAC address {0}", DeviceAddress);
 
-                Log.InfoFormat("Successfully opened device with MAC address {0}", m_Mac);
-
-                if (!IniConfig.Instance.Hci.GenuineMacAddresses.Any(m => m_Mac.StartsWith(m)))
+                if (!IniConfig.Instance.Hci.GenuineMacAddresses.Any(m => DeviceAddress.ToString().StartsWith(m.Replace(":", string.Empty))))
                 {
-                    Log.InfoFormat("-- Fake DualShock detected [{0}]", m_Mac);
+                    Log.InfoFormat("-- Fake DualShock detected [{0}]", DeviceAddress);
 
                     var bthCompany = IniConfig.Instance.BthChipManufacturers.FirstOrDefault(
-                        m => m_Mac.ToUpper().StartsWith(m.PartialMacAddress.ToUpper()));
+                        m =>
+                            DeviceAddress.ToString()
+                                .ToUpper()
+                                .StartsWith(m.PartialMacAddress.ToUpper().Replace(":", string.Empty)));
 
                     if (bthCompany != null && bthCompany.Name.Equals("AirohaTechnologyCorp"))
                     {
@@ -185,11 +187,11 @@ namespace ScpControl.Usb.Ds3
             {
                 HostAddress = master;
                 
-                Log.DebugFormat("++ Paired DS3 [{0}] To BTH Dongle [{1}]", Local, HostAddress);
+                Log.DebugFormat("++ Paired DS3 [{0}] To BTH Dongle [{1}]", DeviceAddress, HostAddress);
                 return true;
             }
 
-            Log.ErrorFormat("Pairing {0} to {1} failed", Local, HostAddress);
+            Log.ErrorFormat("Pairing {0} to {1} failed", DeviceAddress, HostAddress);
             return false;
         }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
@@ -8,8 +7,6 @@ using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ScpControl.Bluetooth;
-using ScpControl.Profiler;
-using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
 namespace ScpControl
@@ -26,9 +23,7 @@ namespace ScpControl
 
         DsModel Model { get; }
 
-        byte[] BdAddress { get; }
-
-        string Local { get; }
+        PhysicalAddress DeviceAddress { get; }
 
         PhysicalAddress HostAddress { get; }
 
@@ -79,9 +74,9 @@ namespace ScpControl
             get { return new byte[6]; }
         }
 
-        public string Local
+        public PhysicalAddress DeviceAddress
         {
-            get { return "00:00:00:00:00:00"; }
+            get { return PhysicalAddress.None; }
         }
 
         public bool Start()

@@ -28,12 +28,12 @@ namespace ScpControl.Usb
 
                 case DsState.Reserved:
 
-                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, Local);
+                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, DeviceAddress);
 
                 case DsState.Connected:
 
                     return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", PadId, Model,
-                        Local,
+                        DeviceAddress,
                         Connection,
                         PacketCounter,
                         Battery
@@ -85,14 +85,12 @@ namespace ScpControl.Usb
 
         protected byte[] m_Buffer = new byte[64];
         protected byte m_CableStatus = 0;
-        protected string m_Instance = string.Empty, m_Mac = string.Empty;
+        protected string m_Instance = string.Empty;
         protected DateTime m_Last = DateTime.Now, m_Tick = DateTime.Now, m_Disconnect = DateTime.Now;
-        protected byte[] m_Local = new byte[6];
         protected uint PacketCounter;
         protected byte m_PlugStatus = 0;
         protected bool m_Publish = false;
         protected readonly ReportDescriptorParser ReportDescriptor = new ReportDescriptorParser();
-        protected PhysicalAddress DeviceMac;
 
         #endregion
 
@@ -158,15 +156,7 @@ namespace ScpControl.Usb
         /// </summary>
         public virtual DsBattery Battery { get; protected set; }
 
-        public virtual byte[] BdAddress
-        {
-            get { return m_Local; }
-        }
-
-        public virtual string Local
-        {
-            get { return m_Mac; }
-        }
+        public virtual PhysicalAddress DeviceAddress { get; protected set; }
 
         public virtual PhysicalAddress HostAddress { get; protected set; }
 
@@ -178,8 +168,6 @@ namespace ScpControl.Usb
         {
             if (!IsActive) return State == DsState.Connected;
 
-            DeviceMac = new PhysicalAddress(m_Local);
-
             State = DsState.Connected;
             PacketCounter = 0;
 
@@ -188,7 +176,7 @@ namespace ScpControl.Usb
             tmUpdate.Enabled = true;
 
             Rumble(0, 0);
-            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, Local, HostAddress);
+            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, DeviceAddress, HostAddress);
 
             // connection sound
             if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)
@@ -286,7 +274,7 @@ namespace ScpControl.Usb
                 PadState = State,
                 ConnectionType = Connection,
                 Model = Model,
-                PadMacAddress = DeviceMac,
+                PadMacAddress = DeviceAddress,
                 BatteryStatus = (byte) Battery
             };
         }

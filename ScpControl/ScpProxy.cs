@@ -176,7 +176,7 @@ namespace ScpControl
         /// </summary>
         /// <param name="pad">The pad ID to query details for.</param>
         /// <returns>The pad details returned from the root hub.</returns>
-        public DsDetail Detail(DsPadId pad)
+        public DualShockPadMeta Detail(DsPadId pad)
         {
             return _rootHub.GetPadDetail(pad);
         }
@@ -266,6 +266,7 @@ namespace ScpControl
                 if (IsActive)
                 {
                     IsActive = false;
+                    //_rxFeedClient.Disconnect();
                 }
             }
             catch (Exception ex)

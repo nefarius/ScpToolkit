@@ -34,9 +34,6 @@ namespace ScpControl.Usb.Gamepads
             // packet counter
             inputReport.PacketCounter = PacketCounter;
 
-            // set fake MAC address
-            inputReport.PadMacAddress = PhysicalAddress.Parse(m_Mac.Replace(":", string.Empty));
-
             // reset buttons
             inputReport.ZeroSelectStartButtonsState();
             inputReport.ZeroShoulderButtonsState();

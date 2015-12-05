@@ -47,10 +47,7 @@ namespace ScpControl.Bluetooth
             get { return (DsBattery) m_BatteryStatus; }
         }
 
-        public string Local
-        {
-            get { return MacDisplayName; }
-        }
+        public PhysicalAddress DeviceAddress { get; protected set; }
 
         public virtual DsPadId PadId
         {
@@ -149,12 +146,12 @@ namespace ScpControl.Bluetooth
 
                 case DsState.Reserved:
 
-                    return string.Format("Pad {0} : {1} {2} - Reserved", m_ControllerId + 1, Model, Local);
+                    return string.Format("Pad {0} : {1} {2} - Reserved", m_ControllerId + 1, Model, DeviceAddress);
 
                 case DsState.Connected:
 
                     return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", m_ControllerId + 1, Model,
-                        Local,
+                        DeviceAddress,
                         Connection,
                         m_Packet,
                         Battery

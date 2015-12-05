@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpMonitor.Properties;
 
@@ -11,7 +10,7 @@ namespace ScpMonitor
     {
         private const String Default = "Default";
         protected Boolean m_CanEdit, m_Editing, m_CanSave = true, m_PropsActive;
-        protected DsDetail m_Detail;
+        protected DualShockPadMeta m_Detail;
         protected Int32 m_SelectedPad;
         protected String m_SelectedProfile = Default, m_Active = Default;
 

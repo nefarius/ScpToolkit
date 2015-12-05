@@ -144,11 +144,10 @@ namespace ScpControl.Usb.Ds4
                         new PhysicalAddress(new[]
                         {m_Buffer[15], m_Buffer[14], m_Buffer[13], m_Buffer[12], m_Buffer[11], m_Buffer[10]});
 
-                    m_Local = new[] {m_Buffer[6], m_Buffer[5], m_Buffer[4], m_Buffer[3], m_Buffer[2], m_Buffer[1]};
+                    DeviceAddress =
+                        new PhysicalAddress(new[]
+                        {m_Buffer[6], m_Buffer[5], m_Buffer[4], m_Buffer[3], m_Buffer[2], m_Buffer[1]});
                 }
-
-                m_Mac = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", m_Local[0], m_Local[1], m_Local[2],
-                    m_Local[3], m_Local[4], m_Local[5]);
             }
 
             return State == DsState.Reserved;
@@ -176,11 +175,11 @@ namespace ScpControl.Usb.Ds4
 
             if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {
-                Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", Local, HostAddress);
+                Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", DeviceAddress, HostAddress);
             }
             else
             {
-                Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", Local, HostAddress);
+                Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", DeviceAddress, HostAddress);
             }
 
             return base.Start();
@@ -222,11 +221,11 @@ namespace ScpControl.Usb.Ds4
             {
                 HostAddress = master;
 
-                Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", Local, HostAddress);
+                Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", DeviceAddress, HostAddress);
                 return true;
             }
 
-            Log.DebugFormat("++ Pair Failed [{0}]", Local);
+            Log.DebugFormat("++ Pair Failed [{0}]", DeviceAddress);
             return false;
         }
 

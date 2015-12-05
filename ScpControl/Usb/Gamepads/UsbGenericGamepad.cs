@@ -140,8 +140,7 @@ namespace ScpControl.Usb.Gamepads
             }
 
             // since these devices have no MAC address, generate one
-            m_Mac = MacAddressGenerator.NewMacAddress;
-            DeviceMac = PhysicalAddress.Parse(m_Mac);
+            DeviceAddress = PhysicalAddress.Parse(MacAddressGenerator.NewMacAddress);
 
             IsActive = true;
             Path = devicePath;

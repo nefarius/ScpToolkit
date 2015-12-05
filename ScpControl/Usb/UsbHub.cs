@@ -246,7 +246,7 @@ namespace ScpControl.Usb
 
                         if (arrived.Open(path))
                         {
-                            Log.DebugFormat("Device MAC address: {0}", arrived.Local);
+                            Log.DebugFormat("Device MAC address: {0}", arrived.DeviceAddress);
 
                             if (!Apply3RdPartyWorkaroundsForDs3(ref arrived, path: path)) break;
 
@@ -279,7 +279,7 @@ namespace ScpControl.Usb
                     {
                         foreach (var t in _devices.Where(t => t.State == DsState.Connected && path == t.Path))
                         {
-                            Log.InfoFormat("Device with MAC address {0} unplugged from Usb", t.Local);
+                            Log.InfoFormat("Device with MAC address {0} unplugged from Usb", t.DeviceAddress);
 
                             // play disconnect sound
                             if (GlobalConfiguration.Instance.IsUsbDisconnectSoundEnabled)

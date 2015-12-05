@@ -34,7 +34,7 @@ namespace ScpControl
 
         // Bluetooth hub
         private readonly BthHub _bthHub = new BthHub();
-        private readonly Cache[] _cache = {new Cache(), new Cache(), new Cache(), new Cache()};
+        private readonly Cache[] _cache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
         private readonly byte[][] _mNative =
         {
@@ -42,7 +42,11 @@ namespace ScpControl
             new byte[2] {0, 0}
         };
 
-        private readonly string[] _mReserved = {string.Empty, string.Empty, string.Empty, string.Empty};
+        private readonly PhysicalAddress[] _mReserved =
+        {
+            PhysicalAddress.None, PhysicalAddress.None,
+            PhysicalAddress.None, PhysicalAddress.None
+        };
 
         private readonly byte[][] _mXInput =
         {
@@ -86,30 +90,29 @@ namespace ScpControl
             return !GlobalConfiguration.Instance.DisableNative;
         }
 
-        public DsDetail GetPadDetail(DsPadId pad)
+        public DualShockPadMeta GetPadDetail(DsPadId pad)
         {
-            var serial = (byte) pad;
+            var serial = (byte)pad;
 
-            var data = new byte[11];
+            lock (_pads)
+            {
+                var current = _pads[serial];
 
-            Log.DebugFormat("Requested Pads local MAC = {0}", _pads[serial].Local);
-
-            data[0] = serial;
-            data[1] = (byte) _pads[serial].State;
-            data[2] = (byte) _pads[serial].Model;
-            data[3] = (byte) _pads[serial].Connection;
-            data[4] = (byte) _pads[serial].Battery;
-
-            Buffer.BlockCopy(_pads[serial].BdAddress, 0, data, 5, _pads[serial].BdAddress.Length);
-
-            return new DsDetail((DsPadId) data[0], (DsState) data[1], (DsModel) data[2],
-                _pads[serial].Local.ToBytes().ToArray(),
-                (DsConnection) data[3], (DsBattery) data[4]);
+                return new DualShockPadMeta()
+                {
+                    BatteryStatus = (byte) current.Battery,
+                    ConnectionType = current.Connection,
+                    Model = current.Model,
+                    PadId = current.PadId,
+                    PadMacAddress = current.DeviceAddress,
+                    PadState = current.State
+                };
+            }
         }
 
         public bool Rumble(DsPadId pad, byte large, byte small)
         {
-            var serial = (byte) pad;
+            var serial = (byte)pad;
             if (Pad[serial].State == DsState.Connected)
             {
                 if (large != _mNative[serial][0] || small != _mNative[serial][1])
@@ -151,11 +154,11 @@ namespace ScpControl
                 Pad[target] = Pad[target - 1];
                 Pad[target - 1] = swap;
 
-                Pad[target].PadId = (DsPadId) (target);
-                Pad[target - 1].PadId = (DsPadId) (target - 1);
+                Pad[target].PadId = (DsPadId)(target);
+                Pad[target - 1].PadId = (DsPadId)(target - 1);
 
-                _mReserved[target] = Pad[target].Local;
-                _mReserved[target - 1] = Pad[target - 1].Local;
+                _mReserved[target] = Pad[target].DeviceAddress;
+                _mReserved[target - 1] = Pad[target - 1].DeviceAddress;
             }
         }
 
@@ -288,7 +291,7 @@ namespace ScpControl
         {
             var opened = false;
 
-            Log.Info("Initializing root hub");
+            Log.Debug("Initializing root hub");
 
             _limitInstance = new LimitInstance(@"Global\ScpDsxRootHub");
 
@@ -314,16 +317,16 @@ namespace ScpControl
 
             _rxFeedServer.Connections.Subscribe(socket =>
             {
-                Log.InfoFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
+                Log.DebugFormat("Client connected on native feed channel: {0}", socket.GetHashCode());
                 var protocol = new ScpNativeFeedChannel(socket);
 
                 _nativeFeedSubscribers.Add(socket.GetHashCode(), protocol);
 
-                protocol.Receiver.Subscribe(packet => { Log.Debug("Uuuhh how did we end up here?!"); });
+                protocol.Receiver.Subscribe(packet => { Log.Warn("Uuuhh how did we end up here?!"); });
 
                 socket.Disconnected += (sender, e) =>
                 {
-                    Log.InfoFormat(
+                    Log.DebugFormat(
                         "Client disconnected from native feed channel {0}",
                         sender.GetHashCode());
 
@@ -332,7 +335,7 @@ namespace ScpControl
 
                 socket.Disposed += (sender, e) =>
                 {
-                    Log.InfoFormat("Client disposed from native feed channel {0}",
+                    Log.DebugFormat("Client disposed from native feed channel {0}",
                         sender.GetHashCode());
 
                     _nativeFeedSubscribers.Remove(socket.GetHashCode());
@@ -357,7 +360,7 @@ namespace ScpControl
         {
             if (m_Started) return m_Started;
 
-            Log.Info("Starting root hub");
+            Log.Debug("Starting root hub");
 
             if (!_serviceStarted)
             {
@@ -366,11 +369,11 @@ namespace ScpControl
                 var binding = new NetTcpBinding
                 {
                     TransferMode = TransferMode.Streamed,
-                    Security = new NetTcpSecurity {Mode = SecurityMode.None}
+                    Security = new NetTcpSecurity { Mode = SecurityMode.None }
                 };
 
                 _rootHubServiceHost = new ServiceHost(this, baseAddress);
-                _rootHubServiceHost.AddServiceEndpoint(typeof (IScpCommandService), binding, baseAddress);
+                _rootHubServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
 
                 _rootHubServiceHost.Open();
 
@@ -391,7 +394,7 @@ namespace ScpControl
             m_Started |= _usbHub.Start();
             m_Started |= _bthHub.Start();
 
-            Log.Info("Root hub started");
+            Log.Debug("Root hub started");
 
             // make some noise =)
             if (GlobalConfiguration.Instance.IsStartupSoundEnabled)
@@ -422,7 +425,7 @@ namespace ScpControl
 
             m_Started = !m_Started;
 
-            Log.Info("Root hub stopped");
+            Log.Debug("Root hub stopped");
 
             _limitInstance.Dispose();
 
@@ -493,7 +496,7 @@ namespace ScpControl
             {
                 for (var index = 0; index < _pads.Length && !bFound; index++)
                 {
-                    if (arrived.Local == _mReserved[index])
+                    if (arrived.DeviceAddress == _mReserved[index])
                     {
                         if (_pads[index].State == DsState.Connected)
                         {
@@ -513,7 +516,7 @@ namespace ScpControl
 
                         bFound = true;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         _pads[index] = arrived;
                     }
                 }
@@ -523,9 +526,9 @@ namespace ScpControl
                     if (_pads[index].State == DsState.Disconnected)
                     {
                         bFound = true;
-                        _mReserved[index] = arrived.Local;
+                        _mReserved[index] = arrived.DeviceAddress;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         _pads[index] = arrived;
                     }
                 }
@@ -533,9 +536,9 @@ namespace ScpControl
 
             if (bFound)
             {
-                _scpBus.Plugin((int) arrived.PadId + 1);
+                _scpBus.Plugin((int)arrived.PadId + 1);
 
-                Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int) arrived.PadId + 1, arrived.Local);
+                Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int)arrived.PadId + 1, arrived.DeviceAddress);
             }
             e.Handled = bFound;
         }
@@ -543,7 +546,7 @@ namespace ScpControl
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
             // get current pad ID
-            var serial = (int) e.PadId;
+            var serial = (int)e.PadId;
 
             // get cached status data
             var report = _cache[serial].Report;
@@ -600,7 +603,7 @@ namespace ScpControl
         }
 
         #endregion
-        
+
         public IEnumerable<DualShockProfile> GetProfiles()
         {
             return DualShockProfileManager.Instance.Profiles;

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
@@ -13,7 +12,7 @@ namespace ScpControl.Wcf
         bool IsNativeFeedAvailable();
 
         [OperationContract]
-        DsDetail GetPadDetail(DsPadId pad);
+        DualShockPadMeta GetPadDetail(DsPadId pad);
 
         [OperationContract]
         bool Rumble(DsPadId pad, byte large, byte small);

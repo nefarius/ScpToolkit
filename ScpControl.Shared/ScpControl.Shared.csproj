@@ -54,6 +54,7 @@
     <Compile Include="Core\DualShockButtons.cs" />
     <Compile Include="Core\DualShockEnums.cs" />
     <Compile Include="Core\DualShockMotion.cs" />
+    <Compile Include="Core\DualShockPadMeta.cs" />
     <Compile Include="Core\DualShockProfile.cs" />
     <Compile Include="Core\DualShockTrackPad.cs" />
     <Compile Include="Core\ScpHidReport.cs" />
