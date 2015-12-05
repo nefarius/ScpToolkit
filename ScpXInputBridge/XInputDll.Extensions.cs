@@ -14,7 +14,7 @@ namespace ScpXInputBridge
         {
             try
             {
-                pPressure = _scpProxy.GetExtended(dwUserIndex);
+                pPressure = Proxy.GetExtended(dwUserIndex);
             }
             catch (Exception ex)
             {

@@ -73,7 +73,9 @@ namespace ScpXInputBridge
                 Process.GetCurrentProcess().ProcessName,
                 Process.GetCurrentProcess().MainWindowTitle);
 
-            Log.Info("Initializing library");
+            var myself = Assembly.GetExecutingAssembly().GetName();
+
+            Log.InfoFormat("Initializing library {0} [{1}]", myself.Name, myself.Version);
 
             var iniOpts = new IniOptions
             {
@@ -114,9 +116,9 @@ namespace ScpXInputBridge
                 var scpControl = Assembly.LoadFrom(Path.Combine(basePath, binName));
                 var scpProxyType = scpControl.GetType("ScpControl.ScpProxy");
 
-                _scpProxy = Activator.CreateInstance(scpProxyType);
+                Proxy = Activator.CreateInstance(scpProxyType);
 
-                _scpProxy.Start();
+                Proxy.Start();
             }
             catch (Exception ex)
             {
@@ -146,8 +148,7 @@ namespace ScpXInputBridge
         #region Private fields
 
         private static readonly IntPtr NativeDllHandle = IntPtr.Zero;
-        private static volatile bool _isInitialized;
-        private static readonly dynamic _scpProxy;
+        private static readonly dynamic Proxy;
         private const string CfgFile = "ScpXInput.ini";
         private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static readonly ILog Log;
