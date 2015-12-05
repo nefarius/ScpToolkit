@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
-using ScpControl.Profiler;
+using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
-using Ds4Button = ScpControl.Shared.Core.Ds4Button;
 
 namespace ScpControl.Bluetooth
 {
@@ -54,49 +53,43 @@ namespace ScpControl.Bluetooth
             get { return "Wireless Controller"; }
         }
 
-        public override DsPadId PadId
+        private void SetLightBarColor(DsPadId value)
         {
-            get { return (DsPadId) m_ControllerId; }
-            set
+            switch (value)
             {
-                m_ControllerId = (byte) value;
-
-                switch (value)
-                {
-                    case DsPadId.One: // Blue
-                        _hidReport[R] = 0x00;
-                        _hidReport[G] = 0x00;
-                        _hidReport[B] = _mBrightness;
-                        break;
-                    case DsPadId.Two: // Green
-                        _hidReport[R] = 0x00;
-                        _hidReport[G] = _mBrightness;
-                        _hidReport[B] = 0x00;
-                        break;
-                    case DsPadId.Three: // Yellow
-                        _hidReport[R] = _mBrightness;
-                        _hidReport[G] = _mBrightness;
-                        _hidReport[B] = 0x00;
-                        break;
-                    case DsPadId.Four: // Cyan
-                        _hidReport[R] = 0x00;
-                        _hidReport[G] = _mBrightness;
-                        _hidReport[B] = _mBrightness;
-                        break;
-                    case DsPadId.None: // Red
-                        _hidReport[R] = _mBrightness;
-                        _hidReport[G] = 0x00;
-                        _hidReport[B] = 0x00;
-                        break;
-                }
-
-                if (GlobalConfiguration.Instance.IsLightBarDisabled)
-                {
-                    _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
-                }
-
-                m_Queued = 1;
+                case DsPadId.One: // Blue
+                    _hidReport[R] = 0x00;
+                    _hidReport[G] = 0x00;
+                    _hidReport[B] = _mBrightness;
+                    break;
+                case DsPadId.Two: // Green
+                    _hidReport[R] = 0x00;
+                    _hidReport[G] = _mBrightness;
+                    _hidReport[B] = 0x00;
+                    break;
+                case DsPadId.Three: // Yellow
+                    _hidReport[R] = _mBrightness;
+                    _hidReport[G] = _mBrightness;
+                    _hidReport[B] = 0x00;
+                    break;
+                case DsPadId.Four: // Cyan
+                    _hidReport[R] = 0x00;
+                    _hidReport[G] = _mBrightness;
+                    _hidReport[B] = _mBrightness;
+                    break;
+                case DsPadId.None: // Red
+                    _hidReport[R] = _mBrightness;
+                    _hidReport[G] = 0x00;
+                    _hidReport[B] = 0x00;
+                    break;
             }
+
+            if (GlobalConfiguration.Instance.IsLightBarDisabled)
+            {
+                _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
+            }
+
+            m_Queued = 1;
         }
 
         public override bool Start()
@@ -126,7 +119,7 @@ namespace ScpControl.Bluetooth
 
             inputReport.PacketCounter = m_Packet;
 
-            var buttons = ((report[16] << 0) | (report[17] << 8) | (report[18] << 16));
+            var buttons = (report[16] << 0) | (report[17] << 8) | (report[18] << 16);
             var trigger = false;
 
             //++ Convert HAT to DPAD
@@ -153,7 +146,7 @@ namespace ScpControl.Bluetooth
                     report[16] |= (byte) (Ds4Button.Down.Offset | Ds4Button.Left.Offset);
                     break;
                 case 6:
-                    report[16] |= (byte) (Ds4Button.Left.Offset);
+                    report[16] |= (byte) Ds4Button.Left.Offset;
                     break;
                 case 7:
                     report[16] |= (byte) (Ds4Button.Left.Offset | Ds4Button.Up.Offset);
@@ -255,63 +248,70 @@ namespace ScpControl.Bluetooth
 
         protected override void Process(DateTime now)
         {
-            lock (this)
+            if (!Monitor.TryEnter(_hidReport) || m_State != DsState.Connected) return;
+
+            try
             {
-                if (m_State == DsState.Connected)
+                #region Light bar manipulation
+
+                if (!GlobalConfiguration.Instance.IsLightBarDisabled)
                 {
-                    if (!GlobalConfiguration.Instance.IsLightBarDisabled)
+                    if (Battery < DsBattery.Medium)
                     {
-                        if (Battery < DsBattery.Medium)
+                        if (!_mFlash)
                         {
-                            if (!_mFlash)
-                            {
-                                _hidReport[12] = _hidReport[13] = 0x40;
+                            _hidReport[12] = _hidReport[13] = 0x40;
 
-                                _mFlash = true;
-                                m_Queued = 1;
-                            }
-                        }
-                        else
-                        {
-                            if (_mFlash)
-                            {
-                                _hidReport[12] = _hidReport[13] = 0x00;
-
-                                _mFlash = false;
-                                m_Queued = 1;
-                            }
-                        }
-                    }
-
-                    if (GlobalConfiguration.Instance.Brightness != _mBrightness)
-                    {
-                        _mBrightness = GlobalConfiguration.Instance.Brightness;
-                        PadId = PadId;
-                    }
-
-                    if (GlobalConfiguration.Instance.IsLightBarDisabled != _mDisableLightBar)
-                    {
-                        _mDisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
-                        PadId = PadId;
-                    }
-
-                    if ((now - m_Last).TotalMilliseconds >= 500)
-                    {
-                        if (_hidReport[7] > 0x00 || _hidReport[8] > 0x00)
-                        {
+                            _mFlash = true;
                             m_Queued = 1;
                         }
                     }
-
-                    if (!m_Blocked && m_Queued > 0)
+                    else
                     {
-                        m_Last = now;
-                        m_Blocked = true;
-                        m_Queued--;
+                        if (_mFlash)
+                        {
+                            _hidReport[12] = _hidReport[13] = 0x00;
 
-                        m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
+                            _mFlash = false;
+                            m_Queued = 1;
+                        }
                     }
                 }
+
+                if (GlobalConfiguration.Instance.Brightness != _mBrightness)
+                {
+                    _mBrightness = GlobalConfiguration.Instance.Brightness;
+                    SetLightBarColor(PadId);
+                }
+
+                if (GlobalConfiguration.Instance.IsLightBarDisabled != _mDisableLightBar)
+                {
+                    _mDisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
+                    SetLightBarColor(PadId);
+                }
+
+                #endregion
+
+                if ((now - m_Last).TotalMilliseconds >= 500)
+                {
+                    if (_hidReport[7] > 0x00 || _hidReport[8] > 0x00)
+                    {
+                        m_Queued = 1;
+                    }
+                }
+
+                if (!m_Blocked && m_Queued > 0)
+                {
+                    m_Last = now;
+                    m_Blocked = true;
+                    m_Queued--;
+
+                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
+                }
+            }
+            finally
+            {
+                Monitor.Exit(_hidReport);
             }
         }
 

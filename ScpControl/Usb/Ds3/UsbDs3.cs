@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
@@ -61,6 +62,9 @@ namespace ScpControl.Usb.Ds3
 
         #region Properties
 
+        /// <summary>
+        ///     Device class GUID for DualShock 3 devices.
+        /// </summary>
         public static Guid DeviceClassGuid
         {
             get { return Guid.Parse("{E2824A09-DBAA-4407-85CA-C8E8FF5F6FFA}"); }
@@ -166,6 +170,7 @@ namespace ScpControl.Usb.Ds3
 
                 _hidReport[9] = _ledStatus;
 
+                // TODO: this is a blocking call in a locked region, fix
                 return SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport,
                     ToValue(UsbHidReportRequestType.Output, UsbHidReportRequestId.One),
                     _hidReport, ref transfered);
@@ -248,8 +253,12 @@ namespace ScpControl.Usb.Ds3
         /// <param name="now">The current timestamp.</param>
         protected override void Process(DateTime now)
         {
-            lock (this)
+            if (!Monitor.TryEnter(_hidReport)) return;
+
+            try
             {
+                #region Quick Disconnect handling
+
                 if (IsShutdown)
                 {
                     if ((now - m_Disconnect).TotalMilliseconds >= 2000)
@@ -261,9 +270,12 @@ namespace ScpControl.Usb.Ds3
                     }
                 }
 
+                #endregion
+
                 #region LED control
 
-                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod && PacketCounter > 0)
+                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod &&
+                    PacketCounter > 0)
                 {
                     m_Last = now;
                     _ledStatus = 0;
@@ -274,7 +286,8 @@ namespace ScpControl.Usb.Ds3
                             _ledStatus = 0;
                             break;
                         case 1:
-                            if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging && Battery == DsBattery.Charging)
+                            if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging &&
+                                Battery == DsBattery.Charging)
                             {
                                 _counterForLeds++;
                                 _counterForLeds %= 2;
@@ -291,14 +304,16 @@ namespace ScpControl.Usb.Ds3
                                     break;
                                 case DsBattery.Charging:
                                     _counterForLeds++;
-                                    _counterForLeds %= (byte)_ledOffsets.Length;
+                                    _counterForLeds %= (byte) _ledOffsets.Length;
                                     for (byte i = 0; i <= _counterForLeds; i++)
                                         _ledStatus |= _ledOffsets[i];
                                     break;
                                 case DsBattery.Charged:
-                                    _ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
+                                    _ledStatus =
+                                        (byte) (_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
                                     break;
-                                default: ;
+                                default:
+                                    ;
                                     break;
                             }
                             break;
@@ -342,6 +357,10 @@ namespace ScpControl.Usb.Ds3
                 }
 
                 #endregion
+            }
+            finally
+            {
+                Monitor.Exit(_hidReport);
             }
         }
 

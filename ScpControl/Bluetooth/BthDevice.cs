@@ -15,7 +15,6 @@ namespace ScpControl.Bluetooth
         protected byte m_BatteryStatus = 0;
         protected bool m_Blocked, m_IsIdle = true, m_IsDisconnect;
         protected byte m_CableStatus = 0;
-        protected byte m_ControllerId;
         protected IBthDevice m_Device;
         protected byte m_Init = 0;
 
@@ -47,11 +46,7 @@ namespace ScpControl.Bluetooth
 
         public PhysicalAddress HostAddress { get; protected set; }
 
-        public virtual DsPadId PadId
-        {
-            get { return (DsPadId) m_ControllerId; }
-            set { m_ControllerId = (byte) value; }
-        }
+        public virtual DsPadId PadId { get; set; }
 
         public virtual bool Start()
         {
@@ -79,12 +74,12 @@ namespace ScpControl.Bluetooth
             m_Publish = false;
             return m_Device.HCI_Disconnect(HciHandle) > 0;
         }
-        
+
         public ScpHidReport NewHidReport()
         {
             return new ScpHidReport
             {
-                PadId = (DsPadId) m_ControllerId,
+                PadId = PadId,
                 PadState = m_State,
                 ConnectionType = Connection,
                 Model = Model,
@@ -150,15 +145,15 @@ namespace ScpControl.Bluetooth
             {
                 case DsState.Disconnected:
 
-                    return string.Format("Pad {0} : Disconnected", m_ControllerId + 1);
+                    return string.Format("Pad {0} : Disconnected", PadId);
 
                 case DsState.Reserved:
 
-                    return string.Format("Pad {0} : {1} {2} - Reserved", m_ControllerId + 1, Model, DeviceAddress);
+                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, DeviceAddress);
 
                 case DsState.Connected:
 
-                    return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", m_ControllerId + 1, Model,
+                    return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", PadId, Model,
                         DeviceAddress,
                         Connection,
                         m_Packet,
@@ -183,39 +178,42 @@ namespace ScpControl.Bluetooth
 
         protected virtual void On_Timer(object sender, EventArgs e)
         {
-            if (m_State == DsState.Connected)
+            if (m_State != DsState.Connected) return;
+
+            #region Calculate and trigger idle auto-disconnect
+
+            var now = DateTime.Now;
+
+            if (m_IsIdle && GlobalConfiguration.Instance.IdleDisconnect)
             {
-                var now = DateTime.Now;
-
-                if (m_IsIdle && GlobalConfiguration.Instance.IdleDisconnect)
+                if ((now - m_Idle).TotalMilliseconds >= GlobalConfiguration.Instance.IdleTimeout)
                 {
-                    if ((now - m_Idle).TotalMilliseconds >= GlobalConfiguration.Instance.IdleTimeout)
-                    {
-                        Log.Debug("++ Idle Disconnect Triggered");
+                    Log.Debug("++ Idle Disconnect Triggered");
 
-                        m_IsDisconnect = false;
-                        m_IsIdle = false;
+                    m_IsDisconnect = false;
+                    m_IsIdle = false;
 
-                        Disconnect();
-                        return;
-                    }
+                    Disconnect();
+                    return;
                 }
-                else if (m_IsDisconnect)
-                {
-                    if ((now - m_Disconnect).TotalMilliseconds >= 2000)
-                    {
-                        Log.Debug("++ Quick Disconnect Triggered");
-
-                        m_IsDisconnect = false;
-                        m_IsIdle = false;
-
-                        Disconnect();
-                        return;
-                    }
-                }
-
-                Process(now);
             }
+            else if (m_IsDisconnect)
+            {
+                if ((now - m_Disconnect).TotalMilliseconds >= 2000)
+                {
+                    Log.Debug("++ Quick Disconnect Triggered");
+
+                    m_IsDisconnect = false;
+                    m_IsIdle = false;
+
+                    Disconnect();
+                    return;
+                }
+            }
+
+            #endregion
+
+            Process(now);
         }
 
         #region Ctors

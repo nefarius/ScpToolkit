@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
-using ScpControl.Profiler;
+using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
-using Ds4Button = ScpControl.Shared.Core.Ds4Button;
 
 namespace ScpControl.Usb.Ds4
 {
@@ -200,6 +199,7 @@ namespace ScpControl.Usb.Ds4
                 _hidReport[4] = small;
                 _hidReport[5] = large;
 
+                // TODO: this is a blocking call in a locked region, fix
                 return WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);
             }
         }
@@ -245,7 +245,7 @@ namespace ScpControl.Usb.Ds4
 
             inputReport.PacketCounter = PacketCounter;
 
-            var buttons = ((report[5] << 0) | (report[6] << 8) | (report[7] << 16));
+            var buttons = (report[5] << 0) | (report[6] << 8) | (report[7] << 16);
 
             #region Convert HAT to DPAD
 
@@ -266,7 +266,7 @@ namespace ScpControl.Usb.Ds4
                     report[5] |= (byte) (Ds4Button.Right.Offset | Ds4Button.Down.Offset);
                     break;
                 case 4:
-                    report[5] |= (byte) (Ds4Button.Down.Offset);
+                    report[5] |= (byte) Ds4Button.Down.Offset;
                     break;
                 case 5:
                     report[5] |= (byte) (Ds4Button.Down.Offset | Ds4Button.Left.Offset);
@@ -289,7 +289,9 @@ namespace ScpControl.Usb.Ds4
 
         protected override void Process(DateTime now)
         {
-            lock (this)
+            if (!Monitor.TryEnter(_hidReport)) return;
+
+            try
             {
                 if (!((now - m_Last).TotalMilliseconds >= 500)) return;
 
@@ -322,6 +324,10 @@ namespace ScpControl.Usb.Ds4
                 }
 
                 WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);
+            }
+            finally
+            {
+                Monitor.Exit(_hidReport);
             }
         }
 

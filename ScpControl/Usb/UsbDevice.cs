@@ -75,17 +75,7 @@ namespace ScpControl.Usb
 
         private void On_Timer(object sender, EventArgs e)
         {
-            if (Monitor.TryEnter(this))
-            {
-                try
-                {
-                    Process(DateTime.Now);
-                }
-                finally
-                {
-                    Monitor.Exit(this);
-                }
-            }
+            Process(DateTime.Now);
         }
 
         #region Protected fields
@@ -272,7 +262,7 @@ namespace ScpControl.Usb
         }
 
         #endregion
-        
+
         public ScpHidReport NewHidReport()
         {
             return new ScpHidReport()
@@ -282,7 +272,7 @@ namespace ScpControl.Usb
                 ConnectionType = Connection,
                 Model = Model,
                 PadMacAddress = DeviceAddress,
-                BatteryStatus = (byte) Battery
+                BatteryStatus = (byte)Battery
             };
         }
     }

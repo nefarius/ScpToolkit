@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
+using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
@@ -11,93 +12,9 @@ namespace ScpControl.Bluetooth
     /// </summary>
     public partial class BthDs3 : BthDevice
     {
-        #region HID Reports
+        private byte counterForLeds;
 
-        private readonly byte[] _hidCommandEnable = { 0x53, 0xF4, 0x42, 0x03, 0x00, 0x00 };
-
-        private readonly byte[][] _hidInitReport =
-        {
-            new byte[] {0x02, 0x00, 0x0F, 0x00, 0x08, 0x35, 0x03, 0x19, 0x12, 0x00, 0x00, 0x03, 0x00},
-            new byte[]
-            {
-                0x04, 0x00, 0x10, 0x00, 0x0F, 0x00, 0x01, 0x00, 0x01, 0x00, 0x10, 0x35, 0x06, 0x09, 0x02, 0x01, 0x09, 0x02,
-                0x02, 0x00
-            },
-            new byte[]
-            {0x06, 0x00, 0x11, 0x00, 0x0D, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06, 0x00},
-            new byte[]
-            {
-                0x06, 0x00, 0x12, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06, 0x02,
-                0x00, 0x7F
-            },
-            new byte[]
-            {
-                0x06, 0x00, 0x13, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06, 0x02,
-                0x00, 0x59
-            },
-            new byte[]
-            {
-                0x06, 0x00, 0x14, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x80, 0x35, 0x03, 0x09, 0x02, 0x06, 0x02,
-                0x00, 0x33
-            },
-            new byte[]
-            {
-                0x06, 0x00, 0x15, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06, 0x02,
-                0x00, 0x0D
-            }
-        };
-
-        private readonly byte[] _ledOffsets = { 0x02, 0x04, 0x08, 0x10 };
-
-        private readonly byte[] _hidOutputReport =
-        {
-            0x52, 0x01,
-            0x00, 0xFF, 0x00, 0xFF, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00,
-            0xFF, 0x27, 0x10, 0x00, 0x32,
-            0xFF, 0x27, 0x10, 0x00, 0x32,
-            0xFF, 0x27, 0x10, 0x00, 0x32,
-            0xFF, 0x27, 0x10, 0x00, 0x32,
-            0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00, 0x00, 0x00,
-            0x00, 0x00, 0x00
-        };
-
-        #endregion
-
-        #region Ctors
-
-        public BthDs3()
-        {
-            InitializeComponent();
-        }
-
-        public BthDs3(IContainer container) : this()
-        {
-            container.Add(this);
-        }
-
-        public BthDs3(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
-            : base(device, master, lsb, msb)
-        {
-        }
-
-        #endregion
-
-        private byte ledStatus = 0;
-        private byte counterForLeds = 0;
-
-        public override DsPadId PadId
-        {
-            get { return (DsPadId)m_ControllerId; }
-            set
-            {
-                m_ControllerId = (byte)value;
-
-                _hidOutputReport[11] = ledStatus;
-            }
-        }
+        private byte ledStatus;
 
         public override bool Start()
         {
@@ -135,7 +52,7 @@ namespace ScpControl.Bluetooth
 
             // copy controller data to report packet
             Buffer.BlockCopy(report, 9, inputReport.RawBytes, 8, 49);
-            
+
             var trigger = false;
 
             // Quick Disconnect
@@ -188,7 +105,7 @@ namespace ScpControl.Bluetooth
                 }
                 else
                 {
-                    _hidOutputReport[4] = (byte)(small > 0 ? 0x01 : 0x00);
+                    _hidOutputReport[4] = (byte) (small > 0 ? 0x01 : 0x00);
                     _hidOutputReport[6] = large;
                 }
 
@@ -226,77 +143,80 @@ namespace ScpControl.Bluetooth
 
         protected override void Process(DateTime now)
         {
-            lock (this)
+            if (!Monitor.TryEnter(_hidOutputReport) || m_State != DsState.Connected) return;
+
+            try
             {
-                if (m_State != DsState.Connected) return;
+                #region LED manipulation
 
                 if ((now - m_Tick).TotalMilliseconds >= 500 && m_Packet > 0)
                 {
                     m_Tick = now;
 
-                        if (m_Queued == 0) m_Queued = 1;
+                    if (m_Queued == 0) m_Queued = 1;
 
-                        ledStatus = 0;
+                    ledStatus = 0;
 
-                        switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
-                        {
-                            case 0:
-                                ledStatus = 0;
-                                break;
-                            case 1:
-                                if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging && Battery == DsBattery.Low)
-                                {
+                    switch (GlobalConfiguration.Instance.Ds3LEDsFunc)
+                    {
+                        case 0:
+                            ledStatus = 0;
+                            break;
+                        case 1:
+                            if (GlobalConfiguration.Instance.Ds3PadIDLEDsFlashCharging && Battery == DsBattery.Low)
+                            {
+                                counterForLeds++;
+                                counterForLeds %= 2;
+                                if (counterForLeds == 1)
+                                    ledStatus = _ledOffsets[(int) PadId];
+                            }
+                            else ledStatus = _ledOffsets[(int) PadId];
+                            break;
+                        case 2:
+                            switch (Battery)
+                            {
+                                case DsBattery.None:
+                                    ledStatus = (byte) (_ledOffsets[0] | _ledOffsets[3]);
+                                    break;
+                                case DsBattery.Dying:
+                                    ledStatus = (byte) (_ledOffsets[1] | _ledOffsets[2]);
+                                    break;
+                                case DsBattery.Low:
                                     counterForLeds++;
                                     counterForLeds %= 2;
                                     if (counterForLeds == 1)
-                                        ledStatus = _ledOffsets[m_ControllerId];
-                                }
-                                else ledStatus = _ledOffsets[m_ControllerId];
-                                break;
-                            case 2:
-                                switch (Battery)
-                                {
-                                    case DsBattery.None:
-                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[3]);
-                                        break;
-                                    case DsBattery.Dying:
-                                        ledStatus = (byte)(_ledOffsets[1] | _ledOffsets[2]);
-                                        break;
-                                    case DsBattery.Low:
-                                        counterForLeds++;
-                                        counterForLeds %= 2;
-                                        if (counterForLeds == 1)
-                                            ledStatus = _ledOffsets[0];
-                                        break;
-                                    case DsBattery.Medium:
-                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1]);
-                                        break;
-                                    case DsBattery.High:
-                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2]);
-                                        break;
-                                    case DsBattery.Full:
-                                        ledStatus = (byte)(_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
-                                        break;
-                                    default: ;
-                                        break;
-                                }
-                                break;
-                            case 3:
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _ledOffsets[0];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _ledOffsets[1];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _ledOffsets[2];
-                                if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _ledOffsets[3];
-                                break;
-                            default:
-                                ledStatus = 0;
-                                break;
-                        }
-
-                        _hidOutputReport[11] = ledStatus;
-
+                                        ledStatus = _ledOffsets[0];
+                                    break;
+                                case DsBattery.Medium:
+                                    ledStatus = (byte) (_ledOffsets[0] | _ledOffsets[1]);
+                                    break;
+                                case DsBattery.High:
+                                    ledStatus = (byte) (_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2]);
+                                    break;
+                                case DsBattery.Full:
+                                    ledStatus =
+                                        (byte) (_ledOffsets[0] | _ledOffsets[1] | _ledOffsets[2] | _ledOffsets[3]);
+                                    break;
+                                default:
+                                    ;
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom1) ledStatus |= _ledOffsets[0];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom2) ledStatus |= _ledOffsets[1];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom3) ledStatus |= _ledOffsets[2];
+                            if (GlobalConfiguration.Instance.Ds3LEDsCustom4) ledStatus |= _ledOffsets[3];
+                            break;
+                        default:
+                            ledStatus = 0;
+                            break;
                     }
 
+                    _hidOutputReport[11] = ledStatus;
                 }
+
+                #endregion
 
                 #region Fake DS3 workaround
 
@@ -318,7 +238,91 @@ namespace ScpControl.Bluetooth
                 m_Queued--;
 
                 m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidOutputReport);
-            
+            }
+            finally
+            {
+                Monitor.Exit(_hidOutputReport);
+            }
         }
+
+        #region HID Reports
+
+        private readonly byte[] _hidCommandEnable = {0x53, 0xF4, 0x42, 0x03, 0x00, 0x00};
+
+        private readonly byte[][] _hidInitReport =
+        {
+            new byte[] {0x02, 0x00, 0x0F, 0x00, 0x08, 0x35, 0x03, 0x19, 0x12, 0x00, 0x00, 0x03, 0x00},
+            new byte[]
+            {
+                0x04, 0x00, 0x10, 0x00, 0x0F, 0x00, 0x01, 0x00, 0x01, 0x00, 0x10, 0x35, 0x06, 0x09, 0x02, 0x01, 0x09,
+                0x02,
+                0x02, 0x00
+            },
+            new byte[]
+            {0x06, 0x00, 0x11, 0x00, 0x0D, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06, 0x00},
+            new byte[]
+            {
+                0x06, 0x00, 0x12, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06,
+                0x02,
+                0x00, 0x7F
+            },
+            new byte[]
+            {
+                0x06, 0x00, 0x13, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06,
+                0x02,
+                0x00, 0x59
+            },
+            new byte[]
+            {
+                0x06, 0x00, 0x14, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x80, 0x35, 0x03, 0x09, 0x02, 0x06,
+                0x02,
+                0x00, 0x33
+            },
+            new byte[]
+            {
+                0x06, 0x00, 0x15, 0x00, 0x0F, 0x35, 0x03, 0x19, 0x11, 0x24, 0x01, 0x90, 0x35, 0x03, 0x09, 0x02, 0x06,
+                0x02,
+                0x00, 0x0D
+            }
+        };
+
+        private readonly byte[] _ledOffsets = {0x02, 0x04, 0x08, 0x10};
+
+        private readonly byte[] _hidOutputReport =
+        {
+            0x52, 0x01,
+            0x00, 0xFF, 0x00, 0xFF, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00,
+            0xFF, 0x27, 0x10, 0x00, 0x32,
+            0xFF, 0x27, 0x10, 0x00, 0x32,
+            0xFF, 0x27, 0x10, 0x00, 0x32,
+            0xFF, 0x27, 0x10, 0x00, 0x32,
+            0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00
+        };
+
+        #endregion
+
+        #region Ctors
+
+        public BthDs3()
+        {
+            InitializeComponent();
+        }
+
+        public BthDs3(IContainer container)
+            : this()
+        {
+            container.Add(this);
+        }
+
+        public BthDs3(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
+            : base(device, master, lsb, msb)
+        {
+        }
+
+        #endregion
     }
 }
