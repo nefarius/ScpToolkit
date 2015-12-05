@@ -22,6 +22,8 @@ namespace ScpControl.Profiler
 
         private DualShockProfileManager()
         {
+            Profiles = new List<DualShockProfile>();
+
             LoadProfiles();
 
             _fswProfileFiles.Changed += FswProfileFilesOnChanged;
@@ -48,11 +50,21 @@ namespace ScpControl.Profiler
                 {
                     Log.InfoFormat("Loading profile from file {0}", file);
 
-                    var profile = Load(file);
-                    profiles.Add(profile);
+                    try
+                    {
+                        var profile = Load(file);
+                        profiles.Add(profile);
 
-                    Log.InfoFormat("Successfully loaded profile {0}", profile.Name);
+                        Log.InfoFormat("Successfully loaded profile {0}", profile.Name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.ErrorFormat("Couldn't load profile from file {0}, maybe it's damaged or outdated", file);
+                        Log.DebugFormat("Profile load error: {0}", ex);
+                    }
                 }
+
+                if (!profiles.Any()) return;
 
                 Profiles = profiles.AsReadOnly();
             }
