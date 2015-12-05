@@ -69,11 +69,6 @@ namespace ScpControl
             get { return DsModel.None; }
         }
 
-        public byte[] BdAddress
-        {
-            get { return new byte[6]; }
-        }
-
         public PhysicalAddress DeviceAddress
         {
             get { return PhysicalAddress.None; }
