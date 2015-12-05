@@ -51,6 +51,10 @@ namespace ScpGamepadAnalyzer
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+            MessageBox.Show(
+                "Hold it right there! You don't need this tool if you have a DualShock controller! Seek help on the forums if your're not sure what to do next.",
+                "Wait a sec'", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
             const string messageTitle = "Press button or engage axis";
             const string messageTemplate = "Please press and hold {0} now and click Capture";
 
