@@ -220,11 +220,12 @@ namespace ScpControl.Bluetooth
 
                 #region Fake DS3 workaround
 
+                // TODO: this works for some but breaks others, so... dafuq >_<
                 if (IsFake)
                 {
-                    _hidOutputReport[0] = 0xA2;
-                    _hidOutputReport[3] = 0xFF;
-                    _hidOutputReport[5] = 0x00;
+                    //_hidOutputReport[0] = 0xA2;
+                    //_hidOutputReport[3] = 0xFF;
+                    //_hidOutputReport[5] = 0x00;
                 }
 
                 #endregion
