@@ -96,7 +96,7 @@ namespace ScpControl.Bluetooth
         public override bool Start()
         {
             CanStartHid = false;
-            m_State = DsState.Connected;
+            State = DsState.Connected;
 
             _hidReport[2] = (byte) GlobalConfiguration.Instance.Ds4InputUpdateDelay;
 
@@ -116,7 +116,7 @@ namespace ScpControl.Bluetooth
 
             var inputReport = NewHidReport();
 
-            inputReport.BatteryStatus = m_BatteryStatus = (byte) ((report[41] + 2)/2);
+            Battery = (DsBattery) ((byte) ((report[41] + 2)/2));
 
             inputReport.PacketCounter = m_Packet;
 
@@ -219,7 +219,7 @@ namespace ScpControl.Bluetooth
                 {
                     m_Last = DateTime.Now;
                     m_Blocked = true;
-                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
+                    BluetoothDevice.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
                 }
                 else
                 {
@@ -236,7 +236,7 @@ namespace ScpControl.Bluetooth
 
             if (m_Init < _hidInitReport.Length)
             {
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), _hidInitReport[m_Init++]);
+                BluetoothDevice.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), _hidInitReport[m_Init++]);
             }
             else if (m_Init == _hidInitReport.Length)
             {
@@ -249,7 +249,7 @@ namespace ScpControl.Bluetooth
 
         protected override void Process(DateTime now)
         {
-            if (!Monitor.TryEnter(_hidReport) || m_State != DsState.Connected) return;
+            if (!Monitor.TryEnter(_hidReport) || State != DsState.Connected) return;
 
             try
             {
@@ -302,7 +302,7 @@ namespace ScpControl.Bluetooth
                     m_Blocked = true;
                     m_Queued--;
 
-                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
+                    BluetoothDevice.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidReport);
                 }
             }
             finally

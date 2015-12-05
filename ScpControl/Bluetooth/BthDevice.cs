@@ -12,10 +12,9 @@ namespace ScpControl.Bluetooth
     /// </summary>
     public partial class BthDevice : BthConnection, IDsDevice
     {
-        protected byte m_BatteryStatus = 0;
         protected bool m_Blocked, m_IsIdle = true, m_IsDisconnect;
         protected byte m_CableStatus = 0;
-        protected IBthDevice m_Device;
+        protected readonly IBthDevice BluetoothDevice;
         protected byte m_Init = 0;
 
         protected DateTime m_Last = DateTime.Now,
@@ -27,24 +26,17 @@ namespace ScpControl.Bluetooth
         protected byte m_PlugStatus = 0;
         private bool m_Publish;
         protected uint m_Queued = 0;
-        protected DsState m_State = DsState.Disconnected;
 
-        public DsState State
-        {
-            get { return m_State; }
-        }
+        public DsState State { get; protected set; }
 
         public DsConnection Connection
         {
             get { return DsConnection.Bluetooth; }
         }
 
-        public DsBattery Battery
-        {
-            get { return (DsBattery) m_BatteryStatus; }
-        }
+        public DsBattery Battery { get; protected set; }
 
-        public PhysicalAddress HostAddress { get; protected set; }
+        public PhysicalAddress HostAddress { get; private set; }
 
         public virtual DsPadId PadId { get; set; }
 
@@ -56,7 +48,7 @@ namespace ScpControl.Bluetooth
             if (GlobalConfiguration.Instance.IsBluetoothConnectSoundEnabled)
                 AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothConnectSoundFile);
 
-            return m_State == DsState.Connected;
+            return State == DsState.Connected;
         }
 
         public virtual bool Rumble(byte large, byte small)
@@ -72,7 +64,7 @@ namespace ScpControl.Bluetooth
         public virtual bool Disconnect()
         {
             m_Publish = false;
-            return m_Device.HCI_Disconnect(HciHandle) > 0;
+            return BluetoothDevice.HCI_Disconnect(HciHandle) > 0;
         }
 
         public ScpHidReport NewHidReport()
@@ -80,10 +72,11 @@ namespace ScpControl.Bluetooth
             return new ScpHidReport
             {
                 PadId = PadId,
-                PadState = m_State,
+                PadState = State,
                 ConnectionType = Connection,
                 Model = Model,
-                PadMacAddress = DeviceAddress
+                PadMacAddress = DeviceAddress,
+                BatteryStatus = (byte) Battery
             };
         }
 
@@ -96,11 +89,11 @@ namespace ScpControl.Bluetooth
 
         public virtual bool Stop()
         {
-            if (m_State == DsState.Connected)
+            if (State == DsState.Connected)
             {
                 tmUpdate.Enabled = false;
 
-                m_State = DsState.Reserved;
+                State = DsState.Reserved;
                 m_Packet = 0;
 
                 m_Publish = false;
@@ -111,23 +104,23 @@ namespace ScpControl.Bluetooth
                     AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothDisconnectSoundFile);
             }
 
-            return m_State == DsState.Reserved;
+            return State == DsState.Reserved;
         }
 
         public virtual bool Close()
         {
             Stop();
 
-            if (m_State == DsState.Reserved)
+            if (State == DsState.Reserved)
             {
-                m_State = DsState.Disconnected;
+                State = DsState.Disconnected;
                 m_Packet = 0;
 
                 m_Publish = false;
                 OnHidReportReceived(NewHidReport());
             }
 
-            return m_State == DsState.Disconnected;
+            return State == DsState.Disconnected;
         }
 
         public virtual void ParseHidReport(byte[] report)
@@ -141,7 +134,7 @@ namespace ScpControl.Bluetooth
 
         public override string ToString()
         {
-            switch (m_State)
+            switch (State)
             {
                 case DsState.Disconnected:
 
@@ -178,7 +171,7 @@ namespace ScpControl.Bluetooth
 
         protected virtual void On_Timer(object sender, EventArgs e)
         {
-            if (m_State != DsState.Connected) return;
+            if (State != DsState.Connected) return;
 
             #region Calculate and trigger idle auto-disconnect
 
@@ -236,7 +229,7 @@ namespace ScpControl.Bluetooth
         {
             InitializeComponent();
 
-            m_Device = device;
+            BluetoothDevice = device;
             HostAddress = master;
         }
 

@@ -19,12 +19,12 @@ namespace ScpControl.Bluetooth
         public override bool Start()
         {
             CanStartHid = false;
-            m_State = DsState.Connected;
+            State = DsState.Connected;
 
             m_Queued = 1;
             m_Blocked = true;
             m_Last = DateTime.Now;
-            m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidCommandEnable);
+            BluetoothDevice.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidCommandEnable);
 
             return base.Start();
         }
@@ -38,16 +38,14 @@ namespace ScpControl.Bluetooth
             if (report[10] == 0xFF) return;
 
             m_PlugStatus = report[38];
-            m_BatteryStatus = report[39];
+            Battery = (DsBattery) report[39];
             m_CableStatus = report[40];
 
             if (m_Packet == 0) Rumble(0, 0);
             m_Packet++;
 
             var inputReport = NewHidReport();
-
-            inputReport.BatteryStatus = m_BatteryStatus;
-
+            
             inputReport.PacketCounter = m_Packet;
 
             // copy controller data to report packet
@@ -114,7 +112,7 @@ namespace ScpControl.Bluetooth
                     m_Last = DateTime.Now;
                     m_Blocked = true;
 
-                    m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidOutputReport);
+                    BluetoothDevice.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidOutputReport);
                 }
                 else
                 {
@@ -130,7 +128,7 @@ namespace ScpControl.Bluetooth
 
             if (m_Init < _hidInitReport.Length)
             {
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), _hidInitReport[m_Init++]);
+                BluetoothDevice.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Service), _hidInitReport[m_Init++]);
             }
             else if (m_Init == _hidInitReport.Length)
             {
@@ -143,7 +141,7 @@ namespace ScpControl.Bluetooth
 
         protected override void Process(DateTime now)
         {
-            if (!Monitor.TryEnter(_hidOutputReport) || m_State != DsState.Connected) return;
+            if (!Monitor.TryEnter(_hidOutputReport) || State != DsState.Connected) return;
 
             try
             {
@@ -238,7 +236,7 @@ namespace ScpControl.Bluetooth
                 m_Blocked = true;
                 m_Queued--;
 
-                m_Device.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidOutputReport);
+                BluetoothDevice.HID_Command(HciHandle.Bytes, Get_SCID(L2CAP.PSM.HID_Command), _hidOutputReport);
             }
             finally
             {
