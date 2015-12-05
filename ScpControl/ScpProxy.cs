@@ -306,7 +306,7 @@ namespace ScpControl
 
         private void OnFeedPacketReceived(ScpHidReport data)
         {
-            _packetCache[data.PadId] = data.CopyHidReport();
+            _packetCache[data.PadId] = data;
 
             if (NativeFeedReceived != null)
             {

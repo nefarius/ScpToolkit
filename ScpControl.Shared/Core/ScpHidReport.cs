@@ -8,7 +8,7 @@ namespace ScpControl.Shared.Core
     /// <summary>
     ///     Represents an extended HID Input Report ready to be sent to the virtual bus device.
     /// </summary>
-    public class ScpHidReport : EventArgs, ICloneable
+    public class ScpHidReport : EventArgs
     {
         /// <summary>
         ///     Report bytes count.
@@ -359,8 +359,7 @@ namespace ScpControl.Shared.Core
             get
             {
                 if ((!(axis is Ds3Axis) || Model != DsModel.DS3) && (!(axis is Ds4Axis) || Model != DsModel.DS4))
-                    // TODO: we shouldn't end up here
-                    return _currentDsAxisState;
+                    throw new NotImplementedException();
 
                 if (axis.Equals(Ds3Axis.None) || axis.Equals(Ds4Axis.None))
                 {
@@ -380,20 +379,6 @@ namespace ScpControl.Shared.Core
 
                 return _currentDsAxisState;
             }
-        }
-
-        #endregion
-
-        #region ICloneable
-
-        public object Clone()
-        {
-            return new ScpHidReport(RawBytes);
-        }
-
-        public ScpHidReport CopyHidReport()
-        {
-            return (ScpHidReport) Clone();
         }
 
         #endregion
