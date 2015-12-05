@@ -5,8 +5,6 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
-using ScpControl.Profiler;
-using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
 namespace ScpControl.Bluetooth

@@ -24,11 +24,17 @@ namespace ScpControl.Bluetooth
     /// </summary>
     public partial class BthDs4 : BthDevice
     {
+        #region Private fields
+
         private const int R = 9; // Led Offsets
         private const int G = 10; // Led Offsets
         private const int B = 11; // Led Offsets
         private byte _mBrightness = GlobalConfiguration.Instance.Brightness;
         private bool _mFlash;
+
+        #endregion
+
+        #region Public properties
 
         /// <summary>
         ///     Supported HID input update rates.
@@ -47,10 +53,17 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        /// <summary>
+        ///     Product name of the Sony DualShock 4 controller.
+        /// </summary>
         public static string GenuineProductName
         {
             get { return "Wireless Controller"; }
         }
+
+        #endregion
+
+        #region Private methods
 
         private void SetLightBarColor(DsPadId value)
         {
@@ -92,6 +105,10 @@ namespace ScpControl.Bluetooth
 
             m_Queued = 1;
         }
+
+        #endregion
+
+        #region Public methods
 
         public override bool Start()
         {
@@ -247,6 +264,10 @@ namespace ScpControl.Bluetooth
             return retVal;
         }
 
+        #endregion
+
+        #region Protected methods
+
         protected override void Process(DateTime now)
         {
             if (!Monitor.TryEnter(_hidReport) || State != DsState.Connected) return;
@@ -310,6 +331,8 @@ namespace ScpControl.Bluetooth
                 Monitor.Exit(_hidReport);
             }
         }
+
+        #endregion
 
         #region HID Reports
 
