@@ -188,16 +188,12 @@ namespace ScpControl.Usb.Ds3
             var host = master.GetAddressBytes();
             byte[] buffer = { 0x00, 0x00, host[0], host[1], host[2], host[3], host[4], host[5] };
 
-            if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x03F5, buffer, ref transfered))
-            {
-                HostAddress = master;
-                
-                Log.DebugFormat("++ Paired DS3 [{0}] To BTH Dongle [{1}]", DeviceAddress, HostAddress);
-                return true;
-            }
+            if (!SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x03F5, buffer, ref transfered))
+                return false;
 
-            Log.ErrorFormat("Pairing {0} to {1} failed", DeviceAddress, HostAddress);
-            return false;
+            HostAddress = master;
+
+            return true;
         }
 
         /// <summary>
