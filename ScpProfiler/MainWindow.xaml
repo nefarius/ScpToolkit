@@ -21,15 +21,6 @@
             <scpProfiler:DualShockProfileViewModel />
         </Grid.DataContext>
 
-        <Grid.Resources>
-            <ObjectDataProvider x:Key="DsMatchEnum" MethodName="GetValues"
-                                ObjectType="{x:Type system:Enum}">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="core:DsMatch" />
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
-        </Grid.Resources>
-
         <!-- Top navigation -->
         <DockPanel Grid.Row="0" LastChildFill="False">
 
@@ -143,7 +134,7 @@
         <xctk:ChildWindow Grid.Row="1"
                           Caption="Add, modify or remove mapping profiles"
                           x:Name="EditProfileChildWindow"
-                          Width="700" Height="400"
+                          Width="700" Height="450"
                           Background="#FF2B2B2B"
                           WindowBackground="#FF00AADE"
                           Left="150"
