@@ -977,8 +977,10 @@ namespace ScpControl.Bluetooth
 
                                         connection.RemoteName = nameList[bd];
                                         nameList.Remove(bd);
-                                        connection.BdAddress = new[]
-                                        {buffer[8], buffer[7], buffer[6], buffer[5], buffer[4], buffer[3]};
+
+                                        connection.DeviceAddress =
+                                            new PhysicalAddress(new[]
+                                            {buffer[8], buffer[7], buffer[6], buffer[5], buffer[4], buffer[3]});
                                     }
                                     else
                                     {

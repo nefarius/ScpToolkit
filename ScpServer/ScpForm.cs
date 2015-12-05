@@ -115,7 +115,7 @@ namespace ScpServer
             {
                 if (Pad[Index].Enabled && Pad[Index].Checked)
                 {
-                    rootHub.Pad[Index].Rumble(Left, Right);
+                    rootHub.Pads[Index].Rumble(Left, Right);
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace ScpServer
             {
                 if (Pad[Index].Checked)
                 {
-                    rootHub.Pad[Index].Pair(rootHub.BluetoothHostAddress);
+                    rootHub.Pads[Index].Pair(rootHub.BluetoothHostAddress);
                     break;
                 }
             }
@@ -138,7 +138,7 @@ namespace ScpServer
             {
                 if (Pad[index].Checked)
                 {
-                    rootHub.Pad[index].Disconnect();
+                    rootHub.Pads[index].Disconnect();
                     break;
                 }
             }
@@ -211,16 +211,16 @@ namespace ScpServer
 
             for (var index = 0; index < Pad.Length; index++)
             {
-                Pad[index].Text = rootHub.Pad[index].ToString();
-                Pad[index].Enabled = rootHub.Pad[index].State == DsState.Connected;
+                Pad[index].Text = rootHub.Pads[index].ToString();
+                Pad[index].Enabled = rootHub.Pads[index].State == DsState.Connected;
                 Pad[index].Checked = Pad[index].Enabled && Pad[index].Checked;
 
                 bSelected = bSelected || Pad[index].Checked;
-                bDisconnect = bDisconnect || rootHub.Pad[index].Connection == DsConnection.Bluetooth;
+                bDisconnect = bDisconnect || rootHub.Pads[index].Connection == DsConnection.Bluetooth;
 
                 bPair = bPair ||
-                        (Pad[index].Checked && rootHub.Pad[index].Connection == DsConnection.Usb &&
-                         !rootHub.BluetoothHostAddress.Equals(rootHub.Pad[index].HostAddress));
+                        (Pad[index].Checked && rootHub.Pads[index].Connection == DsConnection.Usb &&
+                         !rootHub.BluetoothHostAddress.Equals(rootHub.Pads[index].HostAddress));
             }
 
             btnBoth.Enabled = btnLeft.Enabled = btnRight.Enabled = btnOff.Enabled = bSelected && btnStop.Enabled;

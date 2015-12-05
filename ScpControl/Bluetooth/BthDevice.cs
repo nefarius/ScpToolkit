@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Sound;
@@ -30,7 +29,6 @@ namespace ScpControl.Bluetooth
         private bool m_Publish;
         protected uint m_Queued = 0;
         protected DsState m_State = DsState.Disconnected;
-        protected PhysicalAddress DeviceMac;
 
         public DsState State
         {
@@ -47,7 +45,7 @@ namespace ScpControl.Bluetooth
             get { return (DsBattery) m_BatteryStatus; }
         }
 
-        public PhysicalAddress DeviceAddress { get; protected set; }
+        public PhysicalAddress HostAddress { get; protected set; }
 
         public virtual DsPadId PadId
         {
@@ -57,12 +55,10 @@ namespace ScpControl.Bluetooth
 
         public virtual bool Start()
         {
-            DeviceMac = new PhysicalAddress(LocalMac);
-
             tmUpdate.Enabled = true;
 
             // play connection sound
-            if(GlobalConfiguration.Instance.IsBluetoothConnectSoundEnabled)
+            if (GlobalConfiguration.Instance.IsBluetoothConnectSoundEnabled)
                 AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothConnectSoundFile);
 
             return m_State == DsState.Connected;
@@ -82,6 +78,18 @@ namespace ScpControl.Bluetooth
         {
             m_Publish = false;
             return m_Device.HCI_Disconnect(HciHandle) > 0;
+        }
+        
+        public ScpHidReport NewHidReport()
+        {
+            return new ScpHidReport
+            {
+                PadId = (DsPadId) m_ControllerId,
+                PadState = m_State,
+                ConnectionType = Connection,
+                Model = Model,
+                PadMacAddress = DeviceAddress
+            };
         }
 
         public event EventHandler<ScpHidReport> HidReportReceived;
@@ -104,7 +112,7 @@ namespace ScpControl.Bluetooth
                 OnHidReportReceived(NewHidReport());
 
                 // play disconnect sound
-                if(GlobalConfiguration.Instance.IsBluetoothDisconnectSoundEnabled)
+                if (GlobalConfiguration.Instance.IsBluetoothDisconnectSoundEnabled)
                     AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothDisconnectSoundFile);
             }
 
@@ -215,13 +223,14 @@ namespace ScpControl.Bluetooth
         public BthDevice()
         {
             InitializeComponent();
+
+            DeviceAddress = PhysicalAddress.None;
+            HostAddress = PhysicalAddress.None;
         }
 
-        public BthDevice(IContainer container)
+        public BthDevice(IContainer container) : this()
         {
             container.Add(this);
-
-            InitializeComponent();
         }
 
         public BthDevice(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
@@ -234,20 +243,5 @@ namespace ScpControl.Bluetooth
         }
 
         #endregion
-
-
-        public ScpHidReport NewHidReport()
-        {
-            return new ScpHidReport()
-            {
-                PadId = (DsPadId)m_ControllerId,
-                PadState = m_State,
-                ConnectionType = Connection,
-                Model = Model,
-                PadMacAddress = DeviceMac
-            };
-        }
-        
-        public PhysicalAddress HostAddress { get; protected set; }
     }
 }

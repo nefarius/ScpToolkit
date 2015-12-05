@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using log4net;
 using ScpControl.Profiler;
@@ -62,15 +63,7 @@ namespace ScpControl.Bluetooth
 
         public override string ToString()
         {
-            return string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2} - {6}",
-                LocalMac[5],
-                LocalMac[4],
-                LocalMac[3],
-                LocalMac[2],
-                LocalMac[1],
-                LocalMac[0],
-                _remoteName
-                );
+            return string.Format("{0} - {1}", DeviceAddress, _remoteName);
         }
 
         #endregion
@@ -84,8 +77,6 @@ namespace ScpControl.Bluetooth
         private readonly BthHandle[] _l2CapServiceHandle = new BthHandle[2];
         private DsModel _model = DsModel.DS3;
         private string _remoteName = string.Empty;
-        protected byte[] LocalMac = new byte[6] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-        protected string MacDisplayName = string.Empty;
 
         #endregion
 
@@ -108,6 +99,7 @@ namespace ScpControl.Bluetooth
             InitializeComponent();
 
             HciHandle = hciHandle;
+            DeviceAddress = PhysicalAddress.None;
         }
 
         #endregion
@@ -116,17 +108,7 @@ namespace ScpControl.Bluetooth
 
         public BthHandle HciHandle { get; private set; }
 
-        public virtual byte[] BdAddress
-        {
-            get { return LocalMac; }
-            set
-            {
-                LocalMac = value;
-                MacDisplayName = string.Format("{0:X2}:{1:X2}:{2:X2}:{3:X2}:{4:X2}:{5:X2}", LocalMac[0], LocalMac[1],
-                    LocalMac[2],
-                    LocalMac[3], LocalMac[4], LocalMac[5]);
-            }
-        }
+        public PhysicalAddress DeviceAddress { get; set; }
 
         public virtual string RemoteName
         {

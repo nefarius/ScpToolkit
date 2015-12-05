@@ -30,158 +30,20 @@ namespace ScpControl
     [ServiceBehavior(IncludeExceptionDetailInFaults = false, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
-        #region Private fields
-
-        // Bluetooth hub
-        private readonly BthHub _bthHub = new BthHub();
-        private readonly Cache[] _cache = { new Cache(), new Cache(), new Cache(), new Cache() };
-
-        private readonly byte[][] _mNative =
+        public IEnumerable<DualShockProfile> GetProfiles()
         {
-            new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
-            new byte[2] {0, 0}
-        };
-
-        private readonly PhysicalAddress[] _mReserved =
-        {
-            PhysicalAddress.None, PhysicalAddress.None,
-            PhysicalAddress.None, PhysicalAddress.None
-        };
-
-        private readonly byte[][] _mXInput =
-        {
-            new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
-            new byte[2] {0, 0}
-        };
-
-        // subscribed clients who receive the native stream
-        private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers =
-            new ConcurrentDictionary<int, ScpNativeFeedChannel>();
-
-        private readonly IDsDevice[] _pads =
-        {
-            new DsNull(DsPadId.One), new DsNull(DsPadId.Two), new DsNull(DsPadId.Three),
-            new DsNull(DsPadId.Four)
-        };
-
-        // virtual bus wrapper
-        private readonly BusDevice _scpBus = new BusDevice();
-        // Usb hub
-        private readonly UsbHub _usbHub = new UsbHub();
-        // creates a system-wide mutex to check if the root hub has been instantiated already
-        private LimitInstance _limitInstance;
-        private volatile bool _mSuspended;
-        // the WCF service host
-        private ServiceHost _rootHubServiceHost;
-        // server to broadcast native byte stream
-        private ReactiveListener _rxFeedServer;
-        private bool _serviceStarted;
-
-        #endregion
-
-        #region IScpCommandService methods
-
-        /// <summary>
-        ///     Checks if the native stream is available or disabled in configuration.
-        /// </summary>
-        /// <returns>True if feed is available, false otherwise.</returns>
-        public bool IsNativeFeedAvailable()
-        {
-            return !GlobalConfiguration.Instance.DisableNative;
+            return DualShockProfileManager.Instance.Profiles;
         }
 
-        public DualShockPadMeta GetPadDetail(DsPadId pad)
+        public void SubmitProfile(DualShockProfile profile)
         {
-            var serial = (byte)pad;
-
-            lock (_pads)
-            {
-                var current = _pads[serial];
-
-                return new DualShockPadMeta()
-                {
-                    BatteryStatus = (byte) current.Battery,
-                    ConnectionType = current.Connection,
-                    Model = current.Model,
-                    PadId = current.PadId,
-                    PadMacAddress = current.DeviceAddress,
-                    PadState = current.State
-                };
-            }
+            DualShockProfileManager.Instance.SubmitProfile(profile);
         }
 
-        public bool Rumble(DsPadId pad, byte large, byte small)
+        public void RemoveProfile(DualShockProfile profile)
         {
-            var serial = (byte)pad;
-            if (Pad[serial].State == DsState.Connected)
-            {
-                if (large != _mNative[serial][0] || small != _mNative[serial][1])
-                {
-                    _mNative[serial][0] = large;
-                    _mNative[serial][1] = small;
-
-                    Pad[serial].Rumble(large, small);
-                }
-            }
-
-            return false;
+            DualShockProfileManager.Instance.RemoveProfile(profile);
         }
-
-        public IEnumerable<string> GetStatusData()
-        {
-            if (!_serviceStarted)
-                return default(IEnumerable<string>);
-
-            var list = new List<string>
-            {
-                Dongle,
-                Pad[0].ToString(),
-                Pad[1].ToString(),
-                Pad[2].ToString(),
-                Pad[3].ToString()
-            };
-
-            return list;
-        }
-
-        public void PromotePad(byte pad)
-        {
-            int target = pad;
-
-            if (Pad[target].State != DsState.Disconnected)
-            {
-                var swap = Pad[target];
-                Pad[target] = Pad[target - 1];
-                Pad[target - 1] = swap;
-
-                Pad[target].PadId = (DsPadId)(target);
-                Pad[target - 1].PadId = (DsPadId)(target - 1);
-
-                _mReserved[target] = Pad[target].DeviceAddress;
-                _mReserved[target - 1] = Pad[target - 1].DeviceAddress;
-            }
-        }
-
-        /// <summary>
-        ///     Requests the currently active configuration set from the root hub.
-        /// </summary>
-        /// <returns>Returns the global configuration object.</returns>
-        public GlobalConfiguration RequestConfiguration()
-        {
-            return GlobalConfiguration.Request();
-        }
-
-        /// <summary>
-        ///     Submits an altered copy of the global configuration to the root hub and saves it.
-        /// </summary>
-        /// <param name="configuration">The global configuration object.</param>
-        public void SubmitConfiguration(GlobalConfiguration configuration)
-        {
-            GlobalConfiguration.Submit(configuration);
-            GlobalConfiguration.Save();
-        }
-
-        #endregion
 
         public override DsPadId Notify(ScpDevice.Notified notification, string Class, string path)
         {
@@ -236,11 +98,164 @@ namespace ScpControl
 
         #endregion
 
+        #region Private fields
+
+        // Bluetooth hub
+        private readonly BthHub _bthHub = new BthHub();
+        private readonly Cache[] _cache = {new Cache(), new Cache(), new Cache(), new Cache()};
+
+        private readonly byte[][] _mNative =
+        {
+            new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
+            new byte[2] {0, 0}
+        };
+
+        private readonly PhysicalAddress[] _reservedPads =
+        {
+            PhysicalAddress.None, PhysicalAddress.None,
+            PhysicalAddress.None, PhysicalAddress.None
+        };
+
+        private readonly byte[][] _mXInput =
+        {
+            new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
+            new byte[2] {0, 0}
+        };
+
+        // subscribed clients who receive the native stream
+        private readonly IDictionary<int, ScpNativeFeedChannel> _nativeFeedSubscribers =
+            new ConcurrentDictionary<int, ScpNativeFeedChannel>();
+
+        // virtual bus wrapper
+        private readonly BusDevice _scpBus = new BusDevice();
+        // Usb hub
+        private readonly UsbHub _usbHub = new UsbHub();
+        // creates a system-wide mutex to check if the root hub has been instantiated already
+        private LimitInstance _limitInstance;
+        private volatile bool _mSuspended;
+        // the WCF service host
+        private ServiceHost _rootHubServiceHost;
+        // server to broadcast native byte stream
+        private ReactiveListener _rxFeedServer;
+        private bool _serviceStarted;
+
+        #endregion
+
+        #region IScpCommandService methods
+
+        /// <summary>
+        ///     Checks if the native stream is available or disabled in configuration.
+        /// </summary>
+        /// <returns>True if feed is available, false otherwise.</returns>
+        public bool IsNativeFeedAvailable()
+        {
+            return !GlobalConfiguration.Instance.DisableNative;
+        }
+
+        public DualShockPadMeta GetPadDetail(DsPadId pad)
+        {
+            var serial = (byte) pad;
+
+            lock (Pads)
+            {
+                var current = Pads[serial];
+
+                return new DualShockPadMeta
+                {
+                    BatteryStatus = (byte) current.Battery,
+                    ConnectionType = current.Connection,
+                    Model = current.Model,
+                    PadId = current.PadId,
+                    PadMacAddress = current.DeviceAddress,
+                    PadState = current.State
+                };
+            }
+        }
+
+        public bool Rumble(DsPadId pad, byte large, byte small)
+        {
+            var serial = (byte) pad;
+            
+            if (Pads[serial].State != DsState.Connected) return false;
+
+            if (large == _mNative[serial][0] && small == _mNative[serial][1]) return false;
+
+            _mNative[serial][0] = large;
+            _mNative[serial][1] = small;
+
+            Pads[serial].Rumble(large, small);
+
+            return true;
+        }
+
+        public IEnumerable<string> GetStatusData()
+        {
+            if (!_serviceStarted)
+                return default(IEnumerable<string>);
+
+            var list = new List<string>
+            {
+                Dongle,
+                Pads[0].ToString(),
+                Pads[1].ToString(),
+                Pads[2].ToString(),
+                Pads[3].ToString()
+            };
+
+            return list;
+        }
+
+        public void PromotePad(byte pad)
+        {
+            int target = pad;
+
+            if (Pads[target].State == DsState.Disconnected) return;
+
+            var swap = Pads[target];
+            Pads[target] = Pads[target - 1];
+            Pads[target - 1] = swap;
+
+            Pads[target].PadId = (DsPadId) target;
+            Pads[target - 1].PadId = (DsPadId) (target - 1);
+
+            _reservedPads[target] = Pads[target].DeviceAddress;
+            _reservedPads[target - 1] = Pads[target - 1].DeviceAddress;
+        }
+
+        /// <summary>
+        ///     Requests the currently active configuration set from the root hub.
+        /// </summary>
+        /// <returns>Returns the global configuration object.</returns>
+        public GlobalConfiguration RequestConfiguration()
+        {
+            return GlobalConfiguration.Request();
+        }
+
+        /// <summary>
+        ///     Submits an altered copy of the global configuration to the root hub and saves it.
+        /// </summary>
+        /// <param name="configuration">The global configuration object.</param>
+        public void SubmitConfiguration(GlobalConfiguration configuration)
+        {
+            GlobalConfiguration.Submit(configuration);
+            GlobalConfiguration.Save();
+        }
+
+        #endregion
+
         #region Ctors
 
         public RootHub()
         {
             InitializeComponent();
+
+            Pads = new List<IDsDevice>
+            {
+                new DsNull(DsPadId.One),
+                new DsNull(DsPadId.Two),
+                new DsNull(DsPadId.Three),
+                new DsNull(DsPadId.Four)
+            };
 
             _bthHub.Arrival += OnDeviceArrival;
             _usbHub.Arrival += OnDeviceArrival;
@@ -259,10 +274,7 @@ namespace ScpControl
 
         #region Properties
 
-        public IDsDevice[] Pad
-        {
-            get { return _pads; }
-        }
+        public IList<IDsDevice> Pads { get; private set; }
 
         public string Dongle
         {
@@ -369,11 +381,11 @@ namespace ScpControl
                 var binding = new NetTcpBinding
                 {
                     TransferMode = TransferMode.Streamed,
-                    Security = new NetTcpSecurity { Mode = SecurityMode.None }
+                    Security = new NetTcpSecurity {Mode = SecurityMode.None}
                 };
 
                 _rootHubServiceHost = new ServiceHost(this, baseAddress);
-                _rootHubServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
+                _rootHubServiceHost.AddServiceEndpoint(typeof (IScpCommandService), binding, baseAddress);
 
                 _rootHubServiceHost.Open();
 
@@ -449,9 +461,9 @@ namespace ScpControl
         {
             _mSuspended = true;
 
-            lock (_pads)
+            lock (Pads)
             {
-                foreach (var t in _pads)
+                foreach (var t in Pads)
                     t.Disconnect();
             }
 
@@ -468,9 +480,10 @@ namespace ScpControl
             Log.Debug("++ Resumed");
 
             _scpBus.Resume();
-            for (var index = 0; index < _pads.Length; index++)
+
+            for (var index = 0; index < Pads.Count; index++)
             {
-                if (_pads[index].State != DsState.Disconnected)
+                if (Pads[index].State != DsState.Disconnected)
                 {
                     _scpBus.Plugin(index + 1);
                 }
@@ -492,20 +505,20 @@ namespace ScpControl
             var bFound = false;
             var arrived = e.Device;
 
-            lock (_pads)
+            lock (Pads)
             {
-                for (var index = 0; index < _pads.Length && !bFound; index++)
+                for (var index = 0; index < Pads.Count && !bFound; index++)
                 {
-                    if (arrived.DeviceAddress == _mReserved[index])
+                    if (arrived.DeviceAddress.Equals(_reservedPads[index]))
                     {
-                        if (_pads[index].State == DsState.Connected)
+                        if (Pads[index].State == DsState.Connected)
                         {
-                            if (_pads[index].Connection == DsConnection.Bluetooth)
+                            if (Pads[index].Connection == DsConnection.Bluetooth)
                             {
-                                _pads[index].Disconnect();
+                                Pads[index].Disconnect();
                             }
 
-                            if (_pads[index].Connection == DsConnection.Usb)
+                            if (Pads[index].Connection == DsConnection.Usb)
                             {
                                 arrived.Disconnect();
 
@@ -516,29 +529,30 @@ namespace ScpControl
 
                         bFound = true;
 
-                        arrived.PadId = (DsPadId)index;
-                        _pads[index] = arrived;
+                        arrived.PadId = (DsPadId) index;
+                        Pads[index] = arrived;
                     }
                 }
 
-                for (var index = 0; index < _pads.Length && !bFound; index++)
+                for (var index = 0; index < Pads.Count && !bFound; index++)
                 {
-                    if (_pads[index].State == DsState.Disconnected)
+                    if (Pads[index].State == DsState.Disconnected)
                     {
                         bFound = true;
-                        _mReserved[index] = arrived.DeviceAddress;
+                        _reservedPads[index] = arrived.DeviceAddress;
 
-                        arrived.PadId = (DsPadId)index;
-                        _pads[index] = arrived;
+                        arrived.PadId = (DsPadId) index;
+                        Pads[index] = arrived;
                     }
                 }
             }
 
             if (bFound)
             {
-                _scpBus.Plugin((int)arrived.PadId + 1);
+                _scpBus.Plugin((int) arrived.PadId + 1);
 
-                Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int)arrived.PadId + 1, arrived.DeviceAddress);
+                Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int) arrived.PadId + 1,
+                    arrived.DeviceAddress);
             }
             e.Handled = bFound;
         }
@@ -546,7 +560,7 @@ namespace ScpControl
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
             // get current pad ID
-            var serial = (int)e.PadId;
+            var serial = (int) e.PadId;
 
             // get cached status data
             var report = _cache[serial].Report;
@@ -572,7 +586,7 @@ namespace ScpControl
                     _mXInput[serial][0] = large;
                     _mXInput[serial][1] = small;
 
-                    Pad[serial].Rumble(large, small);
+                    Pads[serial].Rumble(large, small);
                 }
             }
 
@@ -603,20 +617,5 @@ namespace ScpControl
         }
 
         #endregion
-
-        public IEnumerable<DualShockProfile> GetProfiles()
-        {
-            return DualShockProfileManager.Instance.Profiles;
-        }
-
-        public void SubmitProfile(DualShockProfile profile)
-        {
-            DualShockProfileManager.Instance.SubmitProfile(profile);
-        }
-
-        public void RemoveProfile(DualShockProfile profile)
-        {
-            DualShockProfileManager.Instance.RemoveProfile(profile);
-        }
     }
 }
