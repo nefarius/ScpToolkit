@@ -269,7 +269,7 @@ namespace ScpControl.Bluetooth
 
                         case L2CAP.Code.L2CAP_Connection_Request:
 
-                            Log.DebugFormat(">> {0} with PSM [{1}] [CID: {2}]", Event, 
+                            Log.DebugFormat(">> {0} with PSM [{1}] [CID: {2}]", Event,
                                 packet.ProtocolServiceMultiplexer,
                                 packet.ChannelId);
 
@@ -631,7 +631,9 @@ namespace ScpControl.Bluetooth
                                         LmpVersion = string.Format("{0}.{1:X4}", buffer[9],
                                             buffer[13] << 8 | buffer[12]);
 
-                                        Log.InfoFormat("Initializing Bluetooth host {0} (HCI-Version: {1}, LMP-Version: {2})", BluetoothHostAddress,
+                                        Log.InfoFormat(
+                                            "Initializing Bluetooth host {0} (HCI-Version: {1}, LMP-Version: {2})",
+                                            BluetoothHostAddress,
                                             HciVersion, LmpVersion);
 
                                         /* analyzes Host Controller Interface (HCI) major version
