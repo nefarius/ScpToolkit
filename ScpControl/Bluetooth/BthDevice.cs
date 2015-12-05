@@ -12,6 +12,8 @@ namespace ScpControl.Bluetooth
     /// </summary>
     public partial class BthDevice : BthConnection, IDsDevice
     {
+        #region Protected fields
+
         protected bool m_Blocked, m_IsIdle = true, m_IsDisconnect;
         protected byte m_CableStatus = 0;
         protected readonly IBthDevice BluetoothDevice;
@@ -27,6 +29,10 @@ namespace ScpControl.Bluetooth
         private bool m_Publish;
         protected uint m_Queued = 0;
 
+        #endregion
+
+        #region Public properties
+
         public DsState State { get; protected set; }
 
         public DsConnection Connection
@@ -39,6 +45,10 @@ namespace ScpControl.Bluetooth
         public PhysicalAddress HostAddress { get; private set; }
 
         public virtual DsPadId PadId { get; set; }
+
+        #endregion
+
+        #region Public methods
 
         public virtual bool Start()
         {
@@ -78,13 +88,6 @@ namespace ScpControl.Bluetooth
                 PadMacAddress = DeviceAddress,
                 BatteryStatus = (byte) Battery
             };
-        }
-
-        public event EventHandler<ScpHidReport> HidReportReceived;
-
-        protected virtual void OnHidReportReceived(ScpHidReport report)
-        {
-            if (HidReportReceived != null) HidReportReceived(this, report);
         }
 
         public virtual bool Stop()
@@ -165,6 +168,21 @@ namespace ScpControl.Bluetooth
             }
         }
 
+        #endregion
+
+        #region Events
+
+        public event EventHandler<ScpHidReport> HidReportReceived;
+
+        protected virtual void OnHidReportReceived(ScpHidReport report)
+        {
+            if (HidReportReceived != null) HidReportReceived(this, report);
+        }
+
+        #endregion
+
+        #region Protected methods
+
         protected virtual void Process(DateTime now)
         {
         }
@@ -208,6 +226,8 @@ namespace ScpControl.Bluetooth
 
             Process(now);
         }
+
+        #endregion
 
         #region Ctors
 
