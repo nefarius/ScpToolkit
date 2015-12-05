@@ -9,6 +9,13 @@
         AllowsTransparency="True">
     <Grid>
         <tb:TaskbarIcon Visibility="Visible"
-                        IconSource="Dual Shock 3.ico"/>
+                        IconSource="Dual Shock 3.ico"
+                        ToolTip="ScpToolkit Tray Notifications">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Exit" Click="MenuItemExit_OnClick"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
     </Grid>
 </Window>

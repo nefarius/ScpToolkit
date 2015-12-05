@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.170.15339</AssemblyVersion>
+    <AssemblyVersion>1.6.171.15339</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -299,7 +299,6 @@
     <Compile Include="Utilities\ControlExtensions.cs" />
     <Compile Include="Utilities\ILogExtensions.cs" />
     <Compile Include="Utilities\IniConfig.cs" />
-    <Compile Include="Utilities\KbmPost.cs" />
     <Compile Include="Utilities\OsInfoHelper.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ThemeUtil.cs" />

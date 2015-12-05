@@ -79,5 +79,10 @@ namespace ScpTrayApp
             },
                 DispatcherPriority.Normal);
         }
+
+        private void MenuItemExit_OnClick(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }
