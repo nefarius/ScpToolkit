@@ -75,9 +75,16 @@ namespace ScpControl.Usb
 
         private void On_Timer(object sender, EventArgs e)
         {
-            lock (this)
+            if (Monitor.TryEnter(this))
             {
-                Process(DateTime.Now);
+                try
+                {
+                    Process(DateTime.Now);
+                }
+                finally
+                {
+                    Monitor.Exit(this);
+                }
             }
         }
 
