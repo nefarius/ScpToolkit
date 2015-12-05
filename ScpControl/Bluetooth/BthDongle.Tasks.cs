@@ -606,7 +606,7 @@ namespace ScpControl.Bluetooth
                                     {
                                         BluetoothHostAddress =
                                             new PhysicalAddress(new[]
-                                            {buffer[6], buffer[7], buffer[8], buffer[9], buffer[10], buffer[11]});
+                                            {buffer[11], buffer[10], buffer[9], buffer[8], buffer[7], buffer[6]});
 
                                         transfered = HCI_Read_Buffer_Size();
                                     }
