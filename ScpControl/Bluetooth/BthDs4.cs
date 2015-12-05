@@ -28,7 +28,6 @@ namespace ScpControl.Bluetooth
         private const int G = 10; // Led Offsets
         private const int B = 11; // Led Offsets
         private byte _mBrightness = GlobalConfiguration.Instance.Brightness;
-        private bool _mDisableLightBar;
         private bool _mFlash;
 
         /// <summary>
@@ -55,38 +54,40 @@ namespace ScpControl.Bluetooth
 
         private void SetLightBarColor(DsPadId value)
         {
-            switch (value)
-            {
-                case DsPadId.One: // Blue
-                    _hidReport[R] = 0x00;
-                    _hidReport[G] = 0x00;
-                    _hidReport[B] = _mBrightness;
-                    break;
-                case DsPadId.Two: // Green
-                    _hidReport[R] = 0x00;
-                    _hidReport[G] = _mBrightness;
-                    _hidReport[B] = 0x00;
-                    break;
-                case DsPadId.Three: // Yellow
-                    _hidReport[R] = _mBrightness;
-                    _hidReport[G] = _mBrightness;
-                    _hidReport[B] = 0x00;
-                    break;
-                case DsPadId.Four: // Cyan
-                    _hidReport[R] = 0x00;
-                    _hidReport[G] = _mBrightness;
-                    _hidReport[B] = _mBrightness;
-                    break;
-                case DsPadId.None: // Red
-                    _hidReport[R] = _mBrightness;
-                    _hidReport[G] = 0x00;
-                    _hidReport[B] = 0x00;
-                    break;
-            }
-
             if (GlobalConfiguration.Instance.IsLightBarDisabled)
             {
                 _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
+            }
+            else
+            {
+                switch (value)
+                {
+                    case DsPadId.One: // Blue
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = 0x00;
+                        _hidReport[B] = _mBrightness;
+                        break;
+                    case DsPadId.Two: // Green
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = _mBrightness;
+                        _hidReport[B] = 0x00;
+                        break;
+                    case DsPadId.Three: // Yellow
+                        _hidReport[R] = _mBrightness;
+                        _hidReport[G] = _mBrightness;
+                        _hidReport[B] = 0x00;
+                        break;
+                    case DsPadId.Four: // Cyan
+                        _hidReport[R] = 0x00;
+                        _hidReport[G] = _mBrightness;
+                        _hidReport[B] = _mBrightness;
+                        break;
+                    case DsPadId.None: // Red
+                        _hidReport[R] = _mBrightness;
+                        _hidReport[G] = 0x00;
+                        _hidReport[B] = 0x00;
+                        break;
+                }
             }
 
             m_Queued = 1;
@@ -281,14 +282,9 @@ namespace ScpControl.Bluetooth
                 if (GlobalConfiguration.Instance.Brightness != _mBrightness)
                 {
                     _mBrightness = GlobalConfiguration.Instance.Brightness;
-                    SetLightBarColor(PadId);
                 }
 
-                if (GlobalConfiguration.Instance.IsLightBarDisabled != _mDisableLightBar)
-                {
-                    _mDisableLightBar = GlobalConfiguration.Instance.IsLightBarDisabled;
-                    SetLightBarColor(PadId);
-                }
+                SetLightBarColor(PadId);
 
                 #endregion
 
