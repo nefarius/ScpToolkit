@@ -1,0 +1,160 @@
+﻿<UserControl x:Class="ScpProfiler.AxisMappingEntryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:utilities="clr-namespace:ScpControl.Utilities;assembly=ScpControl"
+             xmlns:core="clr-namespace:ScpControl.Shared.Core;assembly=ScpControl.Shared"
+             mc:Ignorable="d"
+             MinHeight="48" MinWidth="600" Width="886">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="MyCommandTypes" MethodName="GetValuesAndDescriptions"
+                            ObjectType="utilities:EnumExtensions">
+            <ObjectDataProvider.MethodParameters>
+                <x:TypeExtension TypeName="core:CommandType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="180" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="250" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Button Icon -->
+        <Image Grid.Column="0"
+               Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=IconSource}"
+               ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=IconToolTip}"
+               Width="48"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Top" />
+
+        <!-- Button/Axis signal strength -->
+        <ProgressBar Grid.Column="1"
+                     ToolTip="Signal strength"
+                     VerticalAlignment="Top"
+                     HorizontalAlignment="Stretch"
+                     Height="16" Margin="5,16"
+                     Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.CurrentValue}" />
+
+        <!-- Type of target command -->
+        <ComboBox Grid.Column="2"
+                  ToolTip="Target command type"
+                  VerticalAlignment="Top"
+                  VerticalContentAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                  Margin="10,9"
+                  ItemsSource="{Binding Source={StaticResource MyCommandTypes}}"
+                  SelectedValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.MappingTarget.CommandType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  DisplayMemberPath="Description"
+                  SelectedValuePath="Value"
+                  SelectionChanged="TargetTypeComboBox_OnSelectionChanged"
+                  Height="30" />
+
+        <!-- Target command -->
+        <ComboBox Grid.Column="3"
+                  ToolTip="Action target"
+                  x:Name="TargetCommandComboBox"
+                  VerticalAlignment="Top"
+                  VerticalContentAlignment="Center"
+                  HorizontalAlignment="Stretch"
+                  Margin="10,9"
+                  SelectedIndex="0"
+                  Height="30"
+                  SelectionChanged="TargetCommandComboBox_SelectionChanged" />
+
+        <!-- Mapping enabled? -->
+        <CheckBox Grid.Column="4"
+                  ToolTip="Enable/Disable mapping"
+                  Content="Enabled"
+                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.IsEnabled}"
+                  VerticalAlignment="Top"
+                  VerticalContentAlignment="Center"
+                  HorizontalAlignment="Left" Height="30" Margin="0,9" Width="88" />
+
+        <!-- Advanced settings -->
+        <Expander Grid.Column="5"
+                  Header="Advanced"
+                  IsExpanded="False"
+                  Margin="5"
+                  VerticalAlignment="Top">
+            <StackPanel Margin="0,5,0,0">
+                <!-- Turbo -->
+                <GroupBox>
+                    <!-- Turbo checkbox -->
+                    <GroupBox.Header>
+                        <CheckBox x:Name="TurboCheckBox"
+                                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.IsEnabled}"
+                                  Content="Turbo" />
+                    </GroupBox.Header>
+
+                    <!-- Turbo settings -->
+                    <Grid IsEnabled="{Binding ElementName=TurboCheckBox, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center">
+                            Delay:
+                        </Label>
+                        <Label Grid.Row="1" Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center">
+                            Interval:
+                        </Label>
+                        <Label Grid.Row="2" Grid.Column="0"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center">
+                            Release:
+                        </Label>
+
+                        <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1"
+                                            Margin="5"
+                                            FormatString="N"
+                                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.Delay}" />
+                        <xctk:DecimalUpDown Grid.Row="1" Grid.Column="1"
+                                            Margin="5"
+                                            FormatString="N"
+                                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.Interval}" />
+                        <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1"
+                                            Margin="5"
+                                            FormatString="N"
+                                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.Turbo.Release}" />
+
+                        <Label Grid.Row="0" Grid.Column="2"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center">
+                            ms
+                        </Label>
+                        <Label Grid.Row="1" Grid.Column="2"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center">
+                            ms
+                        </Label>
+                        <Label Grid.Row="2" Grid.Column="2"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center">
+                            ms
+                        </Label>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </Expander>
+    </Grid>
+</UserControl>

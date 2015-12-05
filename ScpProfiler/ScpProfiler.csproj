@@ -90,6 +90,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AxisMappingEntryControl.xaml.cs">
+      <DependentUpon>AxisMappingEntryControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DpadAxisControl.xaml.cs">
       <DependentUpon>DpadAxisControl.xaml</DependentUpon>
     </Compile>
@@ -98,6 +101,10 @@
     <Compile Include="ThumbStickAxisControl.xaml.cs">
       <DependentUpon>ThumbStickAxisControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="AxisMappingEntryControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="ButtonMappingEntryControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
