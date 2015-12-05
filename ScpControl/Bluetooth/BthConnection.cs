@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using log4net;
-using ScpControl.Profiler;
-using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
 namespace ScpControl.Bluetooth
@@ -53,7 +51,7 @@ namespace ScpControl.Bluetooth
                     return _l2CapServiceHandle[1].Bytes;
             }
 
-            throw new Exception("Invalid L2CAP Connection Type");
+            throw new ArgumentException("Invalid L2CAP Connection Type");
         }
 
         public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte[] handle)
