@@ -259,7 +259,7 @@ namespace ScpControl.Usb.Ds3
                 {
                     if ((now - m_Disconnect).TotalMilliseconds >= 2000)
                     {
-                        Log.Debug("++ Quick Disconnect Triggered");
+                        Log.InfoFormat("Pad {0} disconnected due to quick disconnect combo", PadId);
 
                         Shutdown();
                         return;

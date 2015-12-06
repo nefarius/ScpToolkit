@@ -47,7 +47,7 @@ namespace ScpService
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
                     Assembly.GetExecutingAssembly().GetName().Version);
 
-            Log.InfoFormat("Setting working directory to {0}", GlobalConfiguration.AppDirectory);
+            Log.DebugFormat("Setting working directory to {0}", GlobalConfiguration.AppDirectory);
             Directory.SetCurrentDirectory(GlobalConfiguration.AppDirectory);
 
             _mControlHandler = ServiceControlHandler;

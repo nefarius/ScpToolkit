@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Media;
@@ -9,6 +10,7 @@ using log4net.Config;
 using log4net.Core;
 using log4net.Plugin;
 using log4net.Repository.Hierarchy;
+using Libarius.System;
 using Mantin.Controls.Wpf.Notification;
 
 [assembly: XmlConfigurator]
@@ -20,30 +22,39 @@ namespace ScpTrayApp
     /// </summary>
     public partial class MainWindow : Window, IAppender
     {
+        private static readonly LimitInstance ThisInstance = new LimitInstance(Assembly.GetExecutingAssembly().FullName);
+
         public MainWindow()
         {
             InitializeComponent();
 
-            // Configure remoting. This loads the TCP channel as specified in the .config file.
-            RemotingConfiguration.Configure(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile, false);
+            if (ThisInstance.IsOnlyInstance)
+            {
+                // Configure remoting. This loads the TCP channel as specified in the .config file.
+                RemotingConfiguration.Configure(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile, false);
 
-            // Publish the remote logging server. This is done using the log4net plugin.
-            LogManager.GetRepository().PluginMap.Add(new RemoteLoggingServerPlugin("Log4netRemotingServerService"));
+                // Publish the remote logging server. This is done using the log4net plugin.
+                LogManager.GetRepository().PluginMap.Add(new RemoteLoggingServerPlugin("Log4netRemotingServerService"));
 
-            //Get the logger repository hierarchy.  
-            var repository = LogManager.GetRepository() as Hierarchy;
+                //Get the logger repository hierarchy.  
+                var repository = LogManager.GetRepository() as Hierarchy;
 
-            //and add the appender to the root level  
-            //of the logging hierarchy  
-            repository.Root.AddAppender(this);
+                //and add the appender to the root level  
+                //of the logging hierarchy  
+                repository.Root.AddAppender(this);
 
-            //configure the logging at the root.  
-            repository.Root.Level = Level.All;
+                //configure the logging at the root.  
+                repository.Root.Level = Level.All;
 
-            //mark repository as configured and  
-            //notify that is has changed.  
-            repository.Configured = true;
-            repository.RaiseConfigurationChanged(EventArgs.Empty);
+                //mark repository as configured and  
+                //notify that is has changed.  
+                repository.Configured = true;
+                repository.RaiseConfigurationChanged(EventArgs.Empty);
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
         }
 
         public void DoAppend(LoggingEvent loggingEvent)

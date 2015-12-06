@@ -199,7 +199,7 @@ namespace ScpControl.Bluetooth
             {
                 if ((now - m_Idle).TotalMilliseconds >= GlobalConfiguration.Instance.IdleTimeout)
                 {
-                    Log.Debug("++ Idle Disconnect Triggered");
+                    Log.InfoFormat("Pad {0} disconnected due to idle timeout", PadId);
 
                     m_IsDisconnect = false;
                     m_IsIdle = false;
@@ -212,7 +212,7 @@ namespace ScpControl.Bluetooth
             {
                 if ((now - m_Disconnect).TotalMilliseconds >= 2000)
                 {
-                    Log.Debug("++ Quick Disconnect Triggered");
+                    Log.InfoFormat("Pad {0} disconnected due to quick disconnect combo", PadId);
 
                     m_IsDisconnect = false;
                     m_IsIdle = false;
