@@ -1,4 +1,4 @@
-# ScpServer
+# ScpToolkit
 Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
 ## Credits
