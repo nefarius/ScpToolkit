@@ -24,6 +24,10 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * `ScpCleanWipe` uses code from [DriverStore Explorer](https://driverstoreexplorer.codeplex.com/)
  * [AutoDependencyProperty.Fody](http://blog.angeloflogic.com/2014/12/no-more-dependencyproperty-with.html)
  * [HIDSharp library](http://www.zer7.com/software/hidsharp)
+ * [Windows Input Simulator](http://inputsimulator.codeplex.com/)
+ * [AutoDependencyProperty.Fody](http://blog.angeloflogic.com/2014/12/no-more-dependencyproperty-with.html)
+ * [LoadAssembliesOnStartup](https://github.com/Fody/LoadAssembliesOnStartup)
+ * [Costura](https://github.com/Fody/Costura/)
 
 ## Installation requirements
  * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
