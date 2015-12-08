@@ -27,13 +27,10 @@ namespace ScpControl.Driver
 
             foreach (var usbDevice in from usbDevice in usbDevices
                 let result = WdiWrapper.Instance.InstallLibusbKDriver(usbDevice.HardwareId, bthDrivers.DeviceGuid,
-                    "Driver", string.Format("BthDongle_{0}.inf", Guid.NewGuid()), hWnd, force)
+                    DriverDirectory, string.Format("BthDongle_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
-                usbDevice.DeviceType = WdiUsbDeviceType.BluetoothHost;
-                ScpDeviceCollection.Instance.Devices.Add(usbDevice);
-
                 installed++;
                 Log.InfoFormat("Installed driver for Bluetooth dongle {0}", usbDevice);
             }
@@ -48,9 +45,10 @@ namespace ScpControl.Driver
             uint installed = 0;
 
             foreach (var hardwareId in from hardwareId in bthDrivers.HardwareIds
-                let result = WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, bthDrivers.DeviceGuid, "Driver",
-                    string.Format("BthDongle_{0}.inf", Guid.NewGuid()),
-                    hWnd, force)
+                let result =
+                    WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, bthDrivers.DeviceGuid, DriverDirectory,
+                        string.Format("BthDongle_{0}.inf", Guid.NewGuid()),
+                        hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {
@@ -93,13 +91,10 @@ namespace ScpControl.Driver
 
             foreach (var usbDevice in from usbDevice in usbDevices
                 let result = WdiWrapper.Instance.InstallLibusbKDriver(usbDevice.HardwareId, ds3Drivers.DeviceGuid,
-                    "Driver", string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
+                    DriverDirectory, string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
-                usbDevice.DeviceType = WdiUsbDeviceType.DualShock3;
-                ScpDeviceCollection.Instance.Devices.Add(usbDevice);
-
                 installed++;
                 Log.InfoFormat("Installed driver for DualShock 3 controller {0}", usbDevice);
             }
@@ -114,8 +109,9 @@ namespace ScpControl.Driver
             uint installed = 0;
 
             foreach (var hardwareId in from hardwareId in ds3Drivers.HardwareIds
-                let result = WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, ds3Drivers.DeviceGuid, "Driver",
-                    string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
+                let result =
+                    WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, ds3Drivers.DeviceGuid, DriverDirectory,
+                        string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {
@@ -158,13 +154,10 @@ namespace ScpControl.Driver
 
             foreach (var usbDevice in from usbDevice in usbDevices
                 let result = WdiWrapper.Instance.InstallLibusbKDriver(usbDevice.HardwareId, ds4Drivers.DeviceGuid,
-                    "Driver", string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
+                    DriverDirectory, string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
-                usbDevice.DeviceType = WdiUsbDeviceType.DualSHock4;
-                ScpDeviceCollection.Instance.Devices.Add(usbDevice);
-
                 installed++;
                 Log.InfoFormat("Installed driver for DualShock 4 controller {0}", usbDevice);
             }
@@ -179,8 +172,9 @@ namespace ScpControl.Driver
             uint installed = 0;
 
             foreach (var hardwareId in from hardwareId in ds4Drivers.HardwareIds
-                let result = WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, ds4Drivers.DeviceGuid, "Driver",
-                    string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
+                let result =
+                    WdiWrapper.Instance.InstallLibusbKDriver(hardwareId, ds4Drivers.DeviceGuid, DriverDirectory,
+                        string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select hardwareId)
             {

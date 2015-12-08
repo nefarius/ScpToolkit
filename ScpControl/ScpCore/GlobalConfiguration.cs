@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using PropertyChanged;
 using ScpControl.Bluetooth;
 using ScpControl.Properties;
@@ -12,7 +13,7 @@ namespace ScpControl.ScpCore
     {
         #region Private fields
 
-        private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        private static readonly string WorkingDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
         private static readonly Lazy<GlobalConfiguration> LazyInstance =
             new Lazy<GlobalConfiguration>(() => new GlobalConfiguration());

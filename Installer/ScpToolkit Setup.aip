@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="12.4.2" version="12.5.1" Modules="enterprise" RootPath="." Language="en" Id="{4A610BC3-7F32-44FC-9153-310AC8708D94}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="12.4.2" version="12.6" Modules="enterprise" RootPath="." Language="en" Id="{4A610BC3-7F32-44FC-9153-310AC8708D94}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="SerValComponent;AutorunComponent;MultipleInstancesComponent;MsiJavaComponent;MsiRegsComponent;MsiExtComponent;MsiDriverPackagesComponent;AnalyticsComponent;ActSyncAppComponent;MsiMergeModsComponent;DictionaryComponent;MsiEnvComponent;ScheduledTasksComponent;CPLAppletComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;WebApplicationsComponent;MsiOdbcDataSrcComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent;MsiDirectEditorComponent"/>
   </COMPONENT>
@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{880AD315-9F9E-42D0-B76E-2E9B2DBEDED1} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{9670F390-8750-42CE-A024-A76C2124ECC7} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.183.15340" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.186.15342" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -557,18 +557,18 @@
     <ROW ServiceInstall="ScpService.exe" Name="Ds3Service" DisplayName="SCP DSx Service" ServiceType="16" StartType="2" ErrorControl="32769" Dependencies="ScpVBus" Component_="ScpService.exe" Description="Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="ScpCleanWipe.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~1|ScpToolkit Clean Wipe Utility" Component_="ScpCleanWipe.exe" Target="[#ScpCleanWipe.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
-    <ROW Shortcut="ScpDriverInstaller.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~6|ScpToolkit Driver Installer" Component_="ScpDriverInstaller.exe" Target="[#ScpDriverInstaller.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
-    <ROW Shortcut="ScpGamepadAnalyzer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~5|ScpToolkit Gamepad Analyzer" Component_="ScpGamepadAnalyzer.exe" Target="[#ScpGamepadAnalyzer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
-    <ROW Shortcut="ScpMonitor.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
-    <ROW Shortcut="ScpServer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~3|ScpToolkit Stand-alone Server (legacy)" Component_="ScpServer.exe" Target="[#ScpServer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
-    <ROW Shortcut="ScpSettings.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~2|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="ScpCleanWipe.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~1|ScpToolkit Clean Wipe Utility" Component_="ScpCleanWipe.exe" Target="[#ScpCleanWipe.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpDriverInstaller.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~6|ScpToolkit Driver Installer" Component_="ScpDriverInstaller.exe" Target="[#ScpDriverInstaller.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpGamepadAnalyzer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~5|ScpToolkit Gamepad Analyzer" Component_="ScpGamepadAnalyzer.exe" Target="[#ScpGamepadAnalyzer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpMonitor.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpServer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~3|ScpToolkit Stand-alone Server (legacy)" Component_="ScpServer.exe" Target="[#ScpServer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpSettings.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~2|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitDebugInfoCollector" Directory_="SHORTCUTDIR" Name="SCPTOO~7|ScpToolkit Debug Info Collector" Component_="ScpDebugInfoCollector.exe" Target="[#ScpDebugInfoCollector.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitDriverInstaller" Directory_="DesktopFolder" Name="SCPTOO~2|ScpToolkit Driver Installer" Component_="ScpDriverInstaller.exe" Target="[#ScpDriverInstaller.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
-    <ROW Shortcut="ScpToolkitMonitorlegacy" Directory_="DesktopFolder" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="ScpToolkitDriverInstaller" Directory_="DesktopFolder" Name="SCPTOO~2|ScpToolkit Driver Installer" Component_="ScpDriverInstaller.exe" Target="[#ScpDriverInstaller.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitMonitorlegacy" Directory_="DesktopFolder" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitProfilemanager" Directory_="DesktopFolder" Name="SCPTOO~1|ScpToolkit Profile Manager" Component_="ScpProfiler.exe" Target="[#ScpProfiler.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitProfilemanager_1" Directory_="SHORTCUTDIR" Name="SCPTOO~8|ScpToolkit Profile Manager" Component_="ScpProfiler.exe" Target="[#ScpProfiler.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitSettingsManager" Directory_="DesktopFolder" Name="SCPTOO~5|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
+    <ROW Shortcut="ScpToolkitSettingsManager" Directory_="DesktopFolder" Name="SCPTOO~5|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitTrayNotifications" Directory_="SHORTCUTDIR" Name="SCPTOO~9|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitTrayNotifications_1" Directory_="StartupFolder" Name="SCPTOO~1|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>

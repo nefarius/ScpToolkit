@@ -37,7 +37,7 @@ namespace ScpDriverInstaller.View_Models
             InstallBluetoothDriver = true;
             InstallDualShock3Driver = true;
             InstallDualShock4Driver = true;
-            InstallXbox360Driver = true;
+            InstallXbox360Driver = IsXbox360DriverNeeded;
 
             _canExecute = true;
         }
