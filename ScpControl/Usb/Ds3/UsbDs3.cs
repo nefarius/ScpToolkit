@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -87,18 +88,34 @@ namespace ScpControl.Usb.Ds3
 
                 var transfered = 0;
 
-                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x03F5, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x03F5, m_Buffer,
+                    ref transfered))
                 {
                     HostAddress =
                         new PhysicalAddress(new[]
                         {m_Buffer[2], m_Buffer[3], m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7]});
                 }
+                else
+                {
+                    Log.ErrorFormat("Couldn't request Bluetooth host address for device {0}, error: {1}", devicePath,
+                        new Win32Exception(Marshal.GetLastWin32Error()));
+                    State = DsState.Disconnected;
+                    return false;
+                }
 
-                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x03F2, m_Buffer, ref transfered))
+                if (SendTransfer(UsbHidRequestType.DeviceToHost, UsbHidRequest.GetReport, 0x03F2, m_Buffer,
+                    ref transfered))
                 {
                     DeviceAddress =
                         new PhysicalAddress(new[]
                         {m_Buffer[4], m_Buffer[5], m_Buffer[6], m_Buffer[7], m_Buffer[8], m_Buffer[9]});
+                }
+                else
+                {
+                    Log.ErrorFormat("Couldn't request Bluetooth device address for device {0}, error: {1}", devicePath,
+                        new Win32Exception(Marshal.GetLastWin32Error()));
+                    State = DsState.Disconnected;
+                    return false;
                 }
 
                 Log.InfoFormat("Successfully opened device with MAC address {0}", DeviceAddress);

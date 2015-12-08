@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using HidSharp;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Sound;
@@ -252,23 +250,27 @@ namespace ScpControl.Usb
 
                             if (LogArrival(arrived))
                             {
-                                if (_devices[(byte)arrived.PadId].IsShutdown)
+                                if (_devices[(byte) arrived.PadId].IsShutdown)
                                 {
-                                    _devices[(byte)arrived.PadId].IsShutdown = false;
+                                    _devices[(byte) arrived.PadId].IsShutdown = false;
 
-                                    _devices[(byte)arrived.PadId].Close();
-                                    _devices[(byte)arrived.PadId] = arrived;
+                                    _devices[(byte) arrived.PadId].Close();
+                                    _devices[(byte) arrived.PadId] = arrived;
 
                                     return arrived.PadId;
                                 }
                                 arrived.HidReportReceived += OnHidReportReceived;
 
-                                _devices[(byte)arrived.PadId].Close();
-                                _devices[(byte)arrived.PadId] = arrived;
+                                _devices[(byte) arrived.PadId].Close();
+                                _devices[(byte) arrived.PadId] = arrived;
 
                                 if (m_Started) arrived.Start();
                                 return arrived.PadId;
                             }
+                        }
+                        else
+                        {
+                            Log.FatalFormat("Couldn't open device {0}", path);
                         }
 
                         arrived.Close();
