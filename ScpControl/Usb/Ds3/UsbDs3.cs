@@ -157,6 +157,12 @@ namespace ScpControl.Usb.Ds3
                 {
                     base.Start();
                 }
+                else
+                {
+                    Log.ErrorFormat("Couldn't send control request to device {0}, error: {1}", DeviceAddress,
+                        new Win32Exception(Marshal.GetLastWin32Error()));
+                    return false;
+                }
             }
 
             return State == DsState.Connected;
