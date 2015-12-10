@@ -35,7 +35,7 @@
             return r * r >= x * x + y * y;
         }
 
-        public static float ClampAxis(float value) { if (value > 1.0f) return 1.0f; else if (value < -1.0f) return -1.0f; else return value; }
+        private static float ClampAxis(float value) { if (value > 1.0f) return 1.0f; else if (value < -1.0f) return -1.0f; else return value; }
 
         public static float ToAxis(byte value) { return ClampAxis(value / 32767.0f); }
     }

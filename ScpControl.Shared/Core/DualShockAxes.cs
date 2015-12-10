@@ -1,5 +1,4 @@
 ﻿using System;
-using ScpControl.Shared.Utilities;
 
 namespace ScpControl.Shared.Core
 {
@@ -11,7 +10,6 @@ namespace ScpControl.Shared.Core
         byte Value { get; set; }
         bool IsEngaged { get; set; }
         float Pressure { get; }
-        float Axis { get; }
     }
 
     /// <summary>
@@ -44,8 +42,6 @@ namespace ScpControl.Shared.Core
                 return (Value & 0xFF) / 255.0f;
             }
         }
-
-        public float Axis { get { return DsMath.ToAxis(Value);} }
     }
 
     /// <summary>
