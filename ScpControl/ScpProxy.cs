@@ -7,7 +7,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.ServiceModel;
-using System.Xml;
 using log4net;
 using ReactiveSockets;
 using ScpControl.Properties;
@@ -128,8 +127,6 @@ namespace ScpControl
         // caches the latest HID report for every pad in a thread-save dictionary
         private readonly IDictionary<DsPadId, ScpHidReport> _packetCache =
             new ConcurrentDictionary<DsPadId, ScpHidReport>();
-
-        [Obsolete] private XmlDocument _xmlMap = new XmlDocument();
 
         private IScpCommandService _rootHub;
 
