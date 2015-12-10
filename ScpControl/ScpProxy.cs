@@ -13,6 +13,7 @@ using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
+using ScpControl.Shared.Utilities;
 using ScpControl.Shared.XInput;
 using ScpControl.Wcf;
 
@@ -53,13 +54,13 @@ namespace ScpControl
                         SCP_RIGHT = inputReport[Ds3Axis.Right].Pressure,
                         SCP_DOWN = inputReport[Ds3Axis.Down].Pressure,
                         SCP_LEFT = inputReport[Ds3Axis.Left].Pressure,
-                        SCP_LX = inputReport[Ds3Axis.Lx].Value,
-                        SCP_LY = inputReport[Ds3Axis.Ly].Value,
+                        SCP_LX = inputReport[Ds3Axis.Lx].Axis,
+                        SCP_LY = inputReport[Ds3Axis.Ly].Axis,
                         SCP_L1 = inputReport[Ds3Axis.L1].Pressure,
                         SCP_L2 = inputReport[Ds3Axis.L2].Pressure,
                         SCP_L3 = inputReport[Ds3Button.L3].Pressure,
-                        SCP_RX = inputReport[Ds3Axis.Rx].Value,
-                        SCP_RY = inputReport[Ds3Axis.Ry].Value,
+                        SCP_RX = inputReport[Ds3Axis.Rx].Axis,
+                        SCP_RY = inputReport[Ds3Axis.Ry].Axis,
                         SCP_R1 = inputReport[Ds3Axis.R1].Pressure,
                         SCP_R2 = inputReport[Ds3Axis.R2].Pressure,
                         SCP_R3 = inputReport[Ds3Button.R3].Pressure,

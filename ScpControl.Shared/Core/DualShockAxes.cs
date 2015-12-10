@@ -1,4 +1,5 @@
 ﻿using System;
+using ScpControl.Shared.Utilities;
 
 namespace ScpControl.Shared.Core
 {
@@ -10,6 +11,9 @@ namespace ScpControl.Shared.Core
         byte Value { get; set; }
         bool IsEngaged { get; set; }
         float Pressure { get; }
+        float Axis { get; }
+        bool Flip { get; set; }
+        void ToX360Axis(ref byte xLow, ref byte xHigh, ref byte yLow, ref byte yHigh);
     }
 
     /// <summary>
@@ -41,6 +45,15 @@ namespace ScpControl.Shared.Core
             {
                 return (Value & 0xFF) / 255.0f;
             }
+        }
+
+        public float Axis { get { return DsMath.ToAxis(Value);} }
+
+        public bool Flip { get; set; }
+
+        public void ToX360Axis(ref byte xLow, ref byte xHigh, ref byte yLow, ref byte yHigh)
+        {
+            throw new NotImplementedException();
         }
     }
 
