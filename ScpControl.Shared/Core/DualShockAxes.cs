@@ -12,8 +12,6 @@ namespace ScpControl.Shared.Core
         bool IsEngaged { get; set; }
         float Pressure { get; }
         float Axis { get; }
-        bool Flip { get; set; }
-        void ToX360Axis(ref byte xLow, ref byte xHigh, ref byte yLow, ref byte yHigh);
     }
 
     /// <summary>
@@ -48,13 +46,6 @@ namespace ScpControl.Shared.Core
         }
 
         public float Axis { get { return DsMath.ToAxis(Value);} }
-
-        public bool Flip { get; set; }
-
-        public void ToX360Axis(ref byte xLow, ref byte xHigh, ref byte yLow, ref byte yHigh)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     /// <summary>
