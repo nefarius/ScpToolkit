@@ -111,6 +111,13 @@ namespace ScpSettings
             var pluginsDir = Path.Combine(rootDir, "Plugins");
             const string modFileName = "LilyPad-Scp-r5875.dll";
 
+            if (!Directory.Exists(pluginsDir))
+            {
+                MessageBox.Show("Please set the path to PCSX2!", "Path empty",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             try
             {
                 var lilypadOrig = Directory.GetFiles(pluginsDir, "*.dll").FirstOrDefault(f => f.Contains("lilypad"));
@@ -161,6 +168,10 @@ namespace ScpSettings
         {
             var rootDir = _config.Pcsx2RootPath;
             var pluginsDir = Path.Combine(rootDir, "Plugins");
+
+            if (!Directory.Exists(pluginsDir))
+                return;
+
             const string modFileName = "LilyPad-Scp-r5875.dll";
 
             File.Delete(Path.Combine(rootDir, "XInput1_3.dll"));
