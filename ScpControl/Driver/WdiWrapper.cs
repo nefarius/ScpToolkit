@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using ScpControl.Utilities;
 
 namespace ScpControl.Driver
@@ -93,23 +92,10 @@ namespace ScpControl.Driver
             return wdiDevice;
         }
 
-        private static WdiErrorCode InstallDeviceDriver(string hardwareId, string deviceGuid, string driverPath,
+        private static WdiErrorCode InstallDeviceDriver(string deviceId, string deviceGuid, string driverPath,
             string infName,
             IntPtr hwnd, bool force, WdiDriverType driverType)
         {
-            // regex to extract vendor ID and product ID from hardware ID string
-            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
-            // matched groups
-            var matches = regex.Match(hardwareId).Groups;
-
-            // very basic check
-            if (matches.Count < 3)
-                throw new ArgumentException("Supplied Hardware-ID is malformed");
-
-            // get values
-            var vid = matches[1].Value.ToUpper();
-            var pid = matches[2].Value.ToUpper();
-
             // default return value is no matching device found
             var result = WdiErrorCode.WDI_ERROR_NO_DEVICE;
             // pointer to write device list to
@@ -145,13 +131,8 @@ namespace ScpControl.Driver
                 var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
                 var deviceInfo = NativeToManagedWdiUsbDevice(info);
 
-                // extract VID and PID
-                var currentMatches = regex.Match(deviceInfo.HardwareId).Groups;
-                var currentVid = currentMatches[1].Value.ToUpper();
-                var currentPid = currentMatches[2].Value.ToUpper();
-
                 // does the HID of the current device match the desired HID
-                if (vid == currentVid && pid == currentPid)
+                if (deviceInfo.DeviceId.Equals(deviceId))
                 {
                     var driverName = driverType.ToDescription();
 
@@ -161,13 +142,11 @@ namespace ScpControl.Driver
                         result = WdiErrorCode.WDI_ERROR_EXISTS;
                         Log.WarnFormat("Device \"{0}\" ({1}) is already using {2}, installation aborted",
                             deviceInfo.Description,
-                            hardwareId, driverName);
+                            deviceId, driverName);
                         break;
                     }
 
-                    Log.InfoFormat(
-                        "Device with specified VID ({0}) and PID ({1}) found, preparing driver installation...",
-                        vid, pid);
+                    Log.InfoFormat("Device {0} found, preparing driver installation...", deviceId);
 
                     // prepare driver installation (generates the signed driver and installation helpers)
                     if ((result = wdi_prepare_driver(pList, driverPath, infName, ref prepOpts)) ==
@@ -283,51 +262,51 @@ namespace ScpControl.Driver
         /// <summary>
         ///     Replaces the device driver of given device with WinUSB.
         /// </summary>
-        /// <param name="hardwareId">Hardware-ID of the device to change the driver for.</param>
+        /// <param name="deviceId">Hardware-ID of the device to change the driver for.</param>
         /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
         /// <param name="driverPath">Temporary path for driver auto-creation.</param>
         /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
         /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
         /// <param name="force">Force driver installation even if the device is already using WinUSB.</param>
         /// <returns>The error code returned by libwdi.</returns>
-        public WdiErrorCode InstallWinUsbDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
+        public WdiErrorCode InstallWinUsbDriver(string deviceId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
-            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force,
+            return InstallDeviceDriver(deviceId, deviceGuid, driverPath, infName, hwnd, force,
                 WdiDriverType.WDI_WINUSB);
         }
 
         /// <summary>
         ///     Replaces the device driver of given device with libusbK.
         /// </summary>
-        /// <param name="hardwareId">Hardware-ID of the device to change the driver for.</param>
+        /// <param name="deviceId">Hardware-ID of the device to change the driver for.</param>
         /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
         /// <param name="driverPath">Temporary path for driver auto-creation.</param>
         /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
         /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
         /// <param name="force">Force driver installation even if the device is already using libusbK.</param>
         /// <returns>The error code returned by libwdi.</returns>
-        public WdiErrorCode InstallLibusbKDriver(string hardwareId, Guid deviceGuid, string driverPath, string infName,
+        public WdiErrorCode InstallLibusbKDriver(string deviceId, Guid deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
-            return InstallDeviceDriver(hardwareId, deviceGuid.ToString("B"), driverPath, infName, hwnd, force,
+            return InstallDeviceDriver(deviceId, deviceGuid.ToString("B"), driverPath, infName, hwnd, force,
                 WdiDriverType.WDI_LIBUSBK);
         }
 
         /// <summary>
         ///     Replaces the device driver of given device with libusbK.
         /// </summary>
-        /// <param name="hardwareId">Hardware-ID of the device to change the driver for.</param>
+        /// <param name="deviceId">Hardware-ID of the device to change the driver for.</param>
         /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
         /// <param name="driverPath">Temporary path for driver auto-creation.</param>
         /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
         /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
         /// <param name="force">Force driver installation even if the device is already using libusbK.</param>
         /// <returns>The error code returned by libwdi.</returns>
-        public WdiErrorCode InstallLibusbKDriver(string hardwareId, string deviceGuid, string driverPath, string infName,
+        public WdiErrorCode InstallLibusbKDriver(string deviceId, string deviceGuid, string driverPath, string infName,
             IntPtr hwnd, bool force = false)
         {
-            return InstallDeviceDriver(hardwareId, deviceGuid, driverPath, infName, hwnd, force,
+            return InstallDeviceDriver(deviceId, deviceGuid, driverPath, infName, hwnd, force,
                 WdiDriverType.WDI_LIBUSBK);
         }
 

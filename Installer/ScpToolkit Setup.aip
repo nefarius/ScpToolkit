@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{9987C266-5DE3-4ADE-8638-C20B1E707444} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{6112B36A-FBD4-4515-A137-2F5E2AC1B160} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.194.15344" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.196.15346" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -326,7 +326,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiAssemblyNameComponent">
     <ROW Component_="ScpService.exe" Name="Name" Value="ScpService" Sync="false"/>
     <ROW Component_="ScpService.exe" Name="Culture" Value="neutral" Sync="false"/>
-    <ROW Component_="ScpService.exe" Name="Version" Value="1.6.191.15344" Sync="true"/>
+    <ROW Component_="ScpService.exe" Name="Version" Value="1.6.195.15344" Sync="true"/>
     <ROW Component_="ScpService.exe" Name="ProcessorArchitecture" Value="MSIL" Sync="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
