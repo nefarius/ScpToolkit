@@ -7,7 +7,8 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [Original PCSX2 forums thread](http://forums.pcsx2.net/Thread-XInput-Wrapper-for-DS3-and-Play-com-USB-Dual-DS2-Controller)
 
 ### Sponsors
- * ScpToolkit's Setup is created with [Advanced Installer](http://www.advancedinstaller.com/), a feature-rich and yet easy to learn installation package creation framework for the Windows platform.
+ * ScpToolkits Setup is created with [Advanced Installer](http://www.advancedinstaller.com/), a feature-rich and yet easy to learn installation package creation framework for the Windows platform.
+ * Development is assisted by [JetBrains ReSharper Ultimate](https://www.jetbrains.com/dotnet/) tool collection, a must-have for every serious .NET developer.
 
 ### Used libraries and other 3rd party code
  * [MadMilkman.Ini parsing library by Mario Z.](https://github.com/MarioZ/MadMilkman.Ini)
