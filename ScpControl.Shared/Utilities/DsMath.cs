@@ -37,6 +37,6 @@
 
         private static float ClampAxis(float value) { if (value > 1.0f) return 1.0f; else if (value < -1.0f) return -1.0f; else return value; }
 
-        public static float ToAxis(byte value) { return ClampAxis(value / 32767.0f); }
+        public static float ToAxis(byte value) { return ClampAxis((((value & 0xFF) - 0x7F) * 2) / 254.0f); }
     }
 }
