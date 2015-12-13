@@ -120,15 +120,13 @@ namespace ScpControl.Usb.Ds3
 
                 Log.InfoFormat("Successfully opened device with MAC address {0}", DeviceAddress);
 
-                if (!IniConfig.Instance.Hci.GenuineMacAddresses.Any(m => DeviceAddress.ToString().StartsWith(m.Replace(":", string.Empty))))
+                if (!IniConfig.Instance.Hci.GenuineMacAddresses.Any(m => DeviceAddress.AsFriendlyName().StartsWith(m)))
                 {
                     Log.WarnFormat("Fake DualShock 3 detected [{0}]", DeviceAddress);
 
                     var bthCompany = IniConfig.Instance.BthChipManufacturers.FirstOrDefault(
                         m =>
-                            DeviceAddress.ToString()
-                                .ToUpper()
-                                .StartsWith(m.PartialMacAddress.ToUpper().Replace(":", string.Empty)));
+                            DeviceAddress.AsFriendlyName().StartsWith(m.PartialMacAddress.ToUpper()));
 
                     if (bthCompany != null && bthCompany.Name.Equals("AirohaTechnologyCorp"))
                     {
@@ -139,6 +137,10 @@ namespace ScpControl.Usb.Ds3
                     {
                         IsFake = true;
                     }
+                }
+                else
+                {
+                    Log.Info("Genuine Sony DualShock 3 detected");
                 }
             }
 
