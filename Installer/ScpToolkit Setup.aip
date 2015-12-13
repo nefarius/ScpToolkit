@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{F367A4A9-D383-41C3-9AED-C63E12F2A16D} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{9C888058-EC7E-42B5-BD13-82B9FCEE385A} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.200.15347" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.201.15347" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -102,27 +102,30 @@
     <ROW Component="ReactiveSockets.xml" ComponentId="{7107712D-57FA-4C38-8CCE-0F33AD6B28B1}" Directory_="APPDIR" Attributes="0" KeyPath="ReactiveSockets.xml"/>
     <ROW Component="RetroArchProfile.script.cs" ComponentId="{4AC77166-DA87-4377-AE1B-84BEE6EAB28F}" Directory_="Mapper_Dir" Attributes="0" KeyPath="RetroArchProfile.script.cs" Type="0"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{95EFCF24-37FC-47D8-A17C-BB18A6DF9F8E}" Directory_="SHORTCUTDIR" Attributes="0"/>
-    <ROW Component="ScpCleanWipe.exe" ComponentId="{FB4E91DF-7840-4319-91CD-D14E5D3ED579}" Directory_="APPDIR" Attributes="0" KeyPath="ScpCleanWipe.exe"/>
     <ROW Component="ScpCleanWipe.exe.config" ComponentId="{7AA12DC2-7E63-4E9C-AC9F-DF4237B9C304}" Directory_="APPDIR" Attributes="0" KeyPath="ScpCleanWipe.exe.config"/>
+    <ROW Component="ScpCleanWipe.exe_1" ComponentId="{97BC2050-332D-482C-A334-CD35C01046F4}" Directory_="APPDIR" Attributes="0" KeyPath="ScpCleanWipe.exe"/>
     <ROW Component="ScpControl.dll.config" ComponentId="{A3490246-439D-4A6E-8DE8-EAE0A6E4BE6C}" Directory_="APPDIR" Attributes="0" KeyPath="ScpControl.dll.config"/>
     <ROW Component="ScpControl.ini" ComponentId="{B2F11098-6DA8-43D3-B7F1-2D7A922B6D12}" Directory_="APPDIR" Attributes="0" KeyPath="ScpControl.ini"/>
-    <ROW Component="ScpDebugInfoCollector.exe" ComponentId="{4E8414DC-D7DF-4FEF-AE99-FB730558B6F6}" Directory_="APPDIR" Attributes="0" KeyPath="ScpDebugInfoCollector.exe"/>
+    <ROW Component="ScpDebugInfoCollector.exe.config" ComponentId="{01333054-D2BA-4256-9D4A-DD0ACD354BAE}" Directory_="APPDIR" Attributes="0" KeyPath="ScpDebugInfoCollector.exe.config"/>
+    <ROW Component="ScpDebugInfoCollector.exe_1" ComponentId="{8324EBD3-1F59-4B6F-ADED-B3F1EAE36BF3}" Directory_="APPDIR" Attributes="0" KeyPath="ScpDebugInfoCollector.exe"/>
     <ROW Component="ScpDriverInstaller.exe" ComponentId="{FA239BEF-C1FA-4774-ADAA-60CD60F37F16}" Directory_="APPDIR" Attributes="0" KeyPath="ScpDriverInstaller.exe"/>
     <ROW Component="ScpDriverInstaller.exe.config" ComponentId="{F60C5123-D9AB-42E3-8B16-B60E673F5BC7}" Directory_="APPDIR" Attributes="0" KeyPath="ScpDriverInstaller.exe.config"/>
-    <ROW Component="ScpGamepadAnalyzer.exe" ComponentId="{1B473168-B2FE-45C8-8BFD-1D1842ED9879}" Directory_="APPDIR" Attributes="0" KeyPath="ScpGamepadAnalyzer.exe"/>
     <ROW Component="ScpGamepadAnalyzer.exe.config" ComponentId="{5D44C5C3-3B13-406F-8EC3-88786BFED348}" Directory_="APPDIR" Attributes="0" KeyPath="ScpGamepadAnalyzer.exe.config"/>
-    <ROW Component="ScpMonitor.exe" ComponentId="{4D81EB99-47F3-4922-8D87-2D5403F11389}" Directory_="APPDIR" Attributes="0" KeyPath="ScpMonitor.exe"/>
+    <ROW Component="ScpGamepadAnalyzer.exe_1" ComponentId="{7685C53C-3950-40E1-93BE-BA4B4D006E66}" Directory_="APPDIR" Attributes="0" KeyPath="ScpGamepadAnalyzer.exe"/>
     <ROW Component="ScpMonitor.exe.config" ComponentId="{CF1CB11D-00DC-4CCE-912F-41BEDBB435CD}" Directory_="APPDIR" Attributes="0" KeyPath="ScpMonitor.exe.config"/>
+    <ROW Component="ScpMonitor.exe_1" ComponentId="{47B847CC-120C-4270-8C1E-BAB9871F8DC5}" Directory_="APPDIR" Attributes="0" KeyPath="ScpMonitor.exe"/>
     <ROW Component="ScpPair.exe" ComponentId="{CA9E44E5-9495-4689-AF26-D3ECA9FEBA4F}" Directory_="APPDIR" Attributes="0" KeyPath="ScpPair.exe"/>
     <ROW Component="ScpPair.exe.config" ComponentId="{1C971B7E-4560-4EDE-996F-C72A012B48E1}" Directory_="APPDIR" Attributes="0" KeyPath="ScpPair.exe.config"/>
-    <ROW Component="ScpProfiler.exe" ComponentId="{8F482388-4B5B-4832-BF85-F308AE495653}" Directory_="APPDIR" Attributes="0" KeyPath="ScpProfiler.exe"/>
-    <ROW Component="ScpServer.exe" ComponentId="{FFE86F24-6111-49B9-9427-C87E80C78485}" Directory_="APPDIR" Attributes="0" KeyPath="ScpServer.exe"/>
+    <ROW Component="ScpProfiler.exe.config" ComponentId="{256DC3C0-3418-475D-BD48-9B55B8879FA6}" Directory_="APPDIR" Attributes="0" KeyPath="ScpProfiler.exe.config"/>
+    <ROW Component="ScpProfiler.exe_1" ComponentId="{30B72555-8AF4-4A6E-8310-9EF53016A690}" Directory_="APPDIR" Attributes="0" KeyPath="ScpProfiler.exe"/>
     <ROW Component="ScpServer.exe.config" ComponentId="{5E7F810E-94C3-4A3A-A737-F66FA7ECB302}" Directory_="APPDIR" Attributes="0" KeyPath="ScpServer.exe.config"/>
+    <ROW Component="ScpServer.exe_1" ComponentId="{7943AAE4-993D-4F8A-867C-8E7E696AD301}" Directory_="APPDIR" Attributes="0" KeyPath="ScpServer.exe"/>
     <ROW Component="ScpService.exe" ComponentId="{F481666A-2F28-4B43-9B97-531E66986568}" Directory_="APPDIR" Attributes="0" KeyPath="ScpService.exe"/>
     <ROW Component="ScpService.exe.config" ComponentId="{F6A54570-A322-4A2F-A4A8-48241B41A116}" Directory_="APPDIR" Attributes="0" KeyPath="ScpService.exe.config"/>
     <ROW Component="ScpSettings.exe" ComponentId="{EB6D9415-4F54-47E5-8607-B9A827463F4E}" Directory_="APPDIR" Attributes="0" KeyPath="ScpSettings.exe"/>
     <ROW Component="ScpSettings.exe.config" ComponentId="{56E7ECBB-E60C-47F5-B2F0-88528E304BA9}" Directory_="APPDIR" Attributes="0" KeyPath="ScpSettings.exe.config"/>
-    <ROW Component="ScpTrayApp.exe" ComponentId="{E0218713-CD8E-4820-9A7F-704D3A6A3D2E}" Directory_="APPDIR" Attributes="0" KeyPath="ScpTrayApp.exe"/>
+    <ROW Component="ScpTrayApp.exe.config" ComponentId="{9B26584A-6032-4D34-BD26-35ADDCEB0F99}" Directory_="APPDIR" Attributes="0" KeyPath="ScpTrayApp.exe.config"/>
+    <ROW Component="ScpTrayApp.exe_1" ComponentId="{E7B4C5FC-6CEC-4878-8CE6-0E798B4CCFE5}" Directory_="APPDIR" Attributes="0" KeyPath="ScpTrayApp.exe"/>
     <ROW Component="ScpVBus.inf" ComponentId="{0D5DEE7E-5756-4C48-91A9-8F922573D49A}" Directory_="System_Dir" Attributes="0" Condition="VersionNT &gt;= 500" KeyPath="ScpVBus.inf"/>
     <ROW Component="ScpVBus.inf_1" ComponentId="{AEBEF725-9693-41F4-A831-259C6FD5461C}" Directory_="ScpVBus_Dir" Attributes="0" Condition="VersionNT &gt;= 500" KeyPath="ScpVBus.inf_1"/>
     <ROW Component="ScpVBus.inf_2" ComponentId="{108087AF-9DF4-4DB2-99C0-FCB209C5A01C}" Directory_="ScpVBus_Dir" Attributes="0" Condition="VersionNT &gt;= 500" KeyPath="ScpVBus.cat_1"/>
@@ -175,16 +178,26 @@
     <ROW Component="xusb21.sys_3" ComponentId="{C098FF14-6FAE-4328-9F26-C65C7B7E1E1C}" Directory_="x86_7_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="xusb21.sys_3"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="AI32BitFiles" Title="32-bit" Description="32-bit Executables and Libraries" Display="5" Level="1" Directory_="APPDIR" Attributes="0"/>
-    <ROW Feature="AI64BitFiles" Title="64-bit" Description="64-bit Executables and Libraries" Display="3" Level="1" Directory_="APPDIR" Attributes="0"/>
-    <ROW Feature="AIOtherFiles" Title="Common" Description="Shared Resource and Regular Files" Display="7" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_ExePath CSScriptLibrary.dll CSScriptLibrary.xml CsvHelper.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll HidSharp.xml LilyPad LilyPadScpr5875.dll Logs MadMilkman.Ini.xml Mapper Mono.CSharp.dll Ookii.Dialogs.Wpf.xml Plugins Profiles ReactiveSockets.xml RetroArchProfile.script.cs SHORTCUTDIR ScpCleanWipe.exe ScpCleanWipe.exe.config ScpControl.dll.config ScpControl.ini ScpDebugInfoCollector.exe ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpGamepadAnalyzer.exe ScpGamepadAnalyzer.exe.config ScpMonitor.exe ScpMonitor.exe.config ScpProfiler.exe ScpServer.exe ScpServer.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpTrayApp.exe ScpVBus.inf ScpVBus.inf_1 ScpVBus.inf_2 ScpVBus.inf_3 ScpVBus.sys ScpVBus.sys_1 ScpXInput.ini System.Reactive.Core.xml System.Reactive.Interfaces.xml System.Reactive.Linq.xml System.Reactive.PlatformServices.xml Trinet.Core.IO.Ntfs.dll Trinet.Core.IO.Ntfs.xml WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libusb0.dll libusb0.dll_1 libusbK.dll libusbK.dll_1 libwdi.dll libwdi.dll_1 log4net.xml startup.ogg wdfcoinstaller01007.dll wdfcoinstaller01007.dll_1 wdfcoinstaller01009.dll wdfcoinstaller01009.dll_1 x64 x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1 xusb21.sys xusb21.sys_1 xusb21.sys_2 xusb21.sys_3"/>
-    <ROW Feature="B63_41B8_9CB7_8C5E07C0FC18_" Title="Visual C++ 2010 SP1 x64 (MFC Security Update)" Description="Visual C++ 2010 SP1 x64 (MFC Security Update)" Display="11" Level="1" Attributes="0"/>
-    <ROW Feature="CA62D813A4E74FA2AAE86A7D7B7B1493" Title="Visual C++ Redistributable for Visual Studio 2013 x64" Description="Visual C++ Redistributable for Visual Studio 2013 x64" Display="15" Level="1" Attributes="0"/>
-    <ROW Feature="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" Title="Visual C++ 2010 SP1 x86 (MFC Security Update)" Description="Visual C++ 2010 SP1 x86 (MFC Security Update)" Display="13" Level="1" Attributes="0"/>
-    <ROW Feature="D564007E3BBE4F85950A09B470A7CA65" Title="Visual C++ Redistributable for Visual Studio 2013 x86" Description="Visual C++ Redistributable for Visual Studio 2013 x86" Display="17" Level="1" Attributes="0"/>
-    <ROW Feature="FED9133B924D06BFC714B05D58F4C5" Title="DirectX 9.0c Runtime (web installer)" Description="DirectX 9.0c Runtime (web installer)" Display="9" Level="1" Attributes="0"/>
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="ProductInformation"/>
-    <ROW Feature="ScpPair" Feature_Parent="AIOtherFiles" Title="ScpPair" Description="ScpToolkit Bluetooth Pair Utility" Display="19" Level="4" Directory_="APPDIR" Attributes="0" Components="ScpPair.exe ScpPair.exe.config"/>
+    <ROW Feature="AI32BitFiles" Title="32-bit" Description="32-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16"/>
+    <ROW Feature="AI64BitFiles" Title="64-bit" Description="64-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16"/>
+    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CSScriptLibrary.xml CsvHelper.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll HidSharp.xml LilyPad LilyPadScpr5875.dll Logs MadMilkman.Ini.xml Mapper Mono.CSharp.dll Ookii.Dialogs.Wpf.xml Plugins Profiles ReactiveSockets.xml RetroArchProfile.script.cs SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpVBus.inf ScpVBus.inf_1 ScpVBus.inf_2 ScpVBus.inf_3 ScpVBus.sys ScpVBus.sys_1 ScpXInput.ini System.Reactive.Core.xml System.Reactive.Interfaces.xml System.Reactive.Linq.xml System.Reactive.PlatformServices.xml Trinet.Core.IO.Ntfs.dll Trinet.Core.IO.Ntfs.xml WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libusb0.dll libusb0.dll_1 libusbK.dll libusbK.dll_1 libwdi.dll libwdi.dll_1 log4net.xml startup.ogg wdfcoinstaller01007.dll wdfcoinstaller01007.dll_1 wdfcoinstaller01009.dll wdfcoinstaller01009.dll_1 x64 x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1 xusb21.sys xusb21.sys_1 xusb21.sys_2 xusb21.sys_3"/>
+    <ROW Feature="B63_41B8_9CB7_8C5E07C0FC18_" Title="Visual C++ 2010 SP1 x64 (MFC Security Update)" Description="Visual C++ 2010 SP1 x64 (MFC Security Update)" Display="0" Level="1" Attributes="16"/>
+    <ROW Feature="CA62D813A4E74FA2AAE86A7D7B7B1493" Title="Visual C++ Redistributable for Visual Studio 2013 x64" Description="Visual C++ Redistributable for Visual Studio 2013 x64" Display="0" Level="1" Attributes="16"/>
+    <ROW Feature="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" Title="Visual C++ 2010 SP1 x86 (MFC Security Update)" Description="Visual C++ 2010 SP1 x86 (MFC Security Update)" Display="0" Level="1" Attributes="16"/>
+    <ROW Feature="D564007E3BBE4F85950A09B470A7CA65" Title="Visual C++ Redistributable for Visual Studio 2013 x86" Description="Visual C++ Redistributable for Visual Studio 2013 x86" Display="0" Level="1" Attributes="16"/>
+    <ROW Feature="FED9133B924D06BFC714B05D58F4C5" Title="DirectX 9.0c Runtime (web installer)" Description="DirectX 9.0c Runtime (web installer)" Display="0" Level="1" Attributes="16"/>
+    <ROW Feature="GamePadAnalyzer" Feature_Parent="TestingTroubleshooting" Title="ScpToolkit Gamepad Analyzer" Description="DescriptionScpToolkit Gamepad Analyzer" Display="3" Level="4" Directory_="APPDIR" Attributes="0" Components="ScpGamepadAnalyzer.exe.config ScpGamepadAnalyzer.exe_1"/>
+    <ROW Feature="LegacyComponents" Feature_Parent="AIOtherFiles" Title="Legacy Components" Description="Legacy Components" Display="7" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="0" Level="1" Directory_="APPDIR" Attributes="0" Components="ProductInformation"/>
+    <ROW Feature="ProfileManager" Feature_Parent="UnstableComponents" Title="ScpToolkit Profile Manager" Description="ScpToolkit Profile Manager" Display="3" Level="4" Directory_="APPDIR" Attributes="0" Components="ScpProfiler.exe.config ScpProfiler.exe_1"/>
+    <ROW Feature="ScpPair" Feature_Parent="LegacyComponents" Title="ScpToolkit Bluetooth Pair Utility" Description="ScpToolkit Bluetooth Pair Utility" Display="3" Level="4" Directory_="APPDIR" Attributes="0" Components="ScpPair.exe ScpPair.exe.config"/>
+    <ROW Feature="ScpToolkitCleanWipeUtility" Feature_Parent="AIOtherFiles" Title="ScpToolkit Clean Wipe Utility" Description="ScpToolkit Clean Wipe Utility" Display="5" Level="1" Directory_="APPDIR" Attributes="0" Components="ScpCleanWipe.exe.config ScpCleanWipe.exe_1"/>
+    <ROW Feature="ScpToolkitDebugInfoCollector" Feature_Parent="TestingTroubleshooting" Title="ScpToolkit Debug Info Collector" Description="ScpToolkit Debug Info Collector" Display="35" Level="1" Directory_="APPDIR" Attributes="0" Components="ScpDebugInfoCollector.exe.config ScpDebugInfoCollector.exe_1"/>
+    <ROW Feature="ScpToolkitMonitor" Feature_Parent="LegacyComponents" Title="ScpToolkit Monitor" Description="ScpToolkit Monitor" Display="29" Level="1" Directory_="APPDIR" Attributes="0" Components="ScpMonitor.exe.config ScpMonitor.exe_1"/>
+    <ROW Feature="ScpToolkitServer" Feature_Parent="LegacyComponents" Title="ScpToolkit Stand-alone Server" Description="ScpToolkit Stand-alone Server" Display="31" Level="1" Directory_="APPDIR" Attributes="0" Components="ScpServer.exe.config ScpServer.exe_1"/>
+    <ROW Feature="ScpToolkitTrayNotifications" Feature_Parent="AIOtherFiles" Title="ScpToolkit Tray Notifications" Description="ScpToolkit Tray Notifications" Display="3" Level="1" Directory_="APPDIR" Attributes="0" Components="ScpTrayApp.exe.config ScpTrayApp.exe_1"/>
+    <ROW Feature="TestingTroubleshooting" Feature_Parent="AIOtherFiles" Title="Testing &amp; Troubleshooting" Description="Testing &amp; Troubleshooting" Display="9" Level="1" Directory_="APPDIR" Attributes="0"/>
+    <ROW Feature="UnstableComponents" Feature_Parent="AIOtherFiles" Title="Unstable Components" Description="Unstable Components" Display="11" Level="1" Directory_="APPDIR" Attributes="0"/>
     <ATTRIBUTE name="CurrentFeature" value="AIOtherFiles"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -207,31 +220,32 @@
     <ROW File="ReactiveSockets.dll" Component_="ScpService.exe" FileName="REACTI~1.DLL|ReactiveSockets.dll" Attributes="0" SourcePath="..\..\bin\ReactiveSockets.dll" SelfReg="false" NextFile="ScpControl.dll"/>
     <ROW File="ReactiveSockets.xml" Component_="ReactiveSockets.xml" FileName="REACTI~1.XML|ReactiveSockets.xml" Attributes="0" SourcePath="..\..\bin\ReactiveSockets.xml" SelfReg="false" NextFile="ScpCleanWipe.exe.config"/>
     <ROW File="RetroArchProfile.script.cs" Component_="RetroArchProfile.script.cs" FileName="RETROA~1.CS|RetroArchProfile.script.cs" Attributes="0" SourcePath="..\..\bin\Plugins\Mapper\RetroArchProfile.script.cs" SelfReg="false" NextFile="ScpProfiler.exe"/>
-    <ROW File="ScpCleanWipe.exe" Component_="ScpCleanWipe.exe" FileName="SCPCLE~1.EXE|ScpCleanWipe.exe" Attributes="0" SourcePath="..\..\bin\ScpCleanWipe.exe" SelfReg="false" NextFile="ScpDriverInstaller.exe" DigSign="true"/>
+    <ROW File="ScpCleanWipe.exe" Component_="ScpCleanWipe.exe_1" FileName="SCPCLE~1.EXE|ScpCleanWipe.exe" Attributes="0" SourcePath="..\..\bin\ScpCleanWipe.exe" SelfReg="false" NextFile="ScpDriverInstaller.exe" DigSign="true"/>
     <ROW File="ScpCleanWipe.exe.config" Component_="ScpCleanWipe.exe.config" FileName="SCPCLE~1.CON|ScpCleanWipe.exe.config" Attributes="0" SourcePath="..\..\bin\ScpCleanWipe.exe.config" SelfReg="false" NextFile="ScpControl.dll.config"/>
     <ROW File="ScpControl.Shared.dll_1" Component_="ScpService.exe" FileName="SCPCON~2.DLL|ScpControl.Shared.dll" Attributes="0" SourcePath="..\..\bin\ScpControl.Shared.dll" SelfReg="false" NextFile="System.Reactive.Core.dll"/>
     <ROW File="ScpControl.dll" Component_="ScpService.exe" FileName="SCPCON~1.DLL|ScpControl.dll" Attributes="0" SourcePath="..\..\bin\ScpControl.dll" SelfReg="false" NextFile="ScpControl.Shared.dll_1"/>
     <ROW File="ScpControl.dll.config" Component_="ScpControl.dll.config" FileName="SCPCON~1.CON|ScpControl.dll.config" Attributes="0" SourcePath="..\..\bin\ScpControl.dll.config" SelfReg="false" NextFile="ScpControl.ini"/>
     <ROW File="ScpControl.ini" Component_="ScpControl.ini" FileName="SCPCON~1.INI|ScpControl.ini" Attributes="0" SourcePath="..\..\bin\ScpControl.ini" SelfReg="false" NextFile="ScpDriverInstaller.exe.config"/>
-    <ROW File="ScpDebugInfoCollector.exe" Component_="ScpDebugInfoCollector.exe" FileName="SCPDEB~1.EXE|ScpDebugInfoCollector.exe" Attributes="0" SourcePath="..\..\bin\ScpDebugInfoCollector.exe" SelfReg="false" NextFile="CsvHelper.dll" DigSign="true"/>
+    <ROW File="ScpDebugInfoCollector.exe" Component_="ScpDebugInfoCollector.exe_1" FileName="SCPDEB~1.EXE|ScpDebugInfoCollector.exe" Attributes="0" SourcePath="..\..\bin\ScpDebugInfoCollector.exe" SelfReg="false" NextFile="CsvHelper.dll" DigSign="true"/>
+    <ROW File="ScpDebugInfoCollector.exe.config" Component_="ScpDebugInfoCollector.exe.config" FileName="SCPDEB~1.CON|ScpDebugInfoCollector.exe.config" Attributes="0" SourcePath="..\..\bin\ScpDebugInfoCollector.exe.config" SelfReg="false"/>
     <ROW File="ScpDriverInstaller.exe" Component_="ScpDriverInstaller.exe" FileName="SCPDRI~1.EXE|ScpDriverInstaller.exe" Attributes="0" SourcePath="..\..\bin\ScpDriverInstaller.exe" SelfReg="false" NextFile="ScpGamepadAnalyzer.exe" DigSign="true"/>
     <ROW File="ScpDriverInstaller.exe.config" Component_="ScpDriverInstaller.exe.config" FileName="SCPDRI~1.CON|ScpDriverInstaller.exe.config" Attributes="0" SourcePath="..\..\bin\ScpDriverInstaller.exe.config" SelfReg="false" NextFile="ScpGamepadAnalyzer.exe.config"/>
-    <ROW File="ScpGamepadAnalyzer.exe" Component_="ScpGamepadAnalyzer.exe" FileName="SCPGAM~1.EXE|ScpGamepadAnalyzer.exe" Attributes="0" SourcePath="..\..\bin\ScpGamepadAnalyzer.exe" SelfReg="false" NextFile="ScpMonitor.exe" DigSign="true"/>
+    <ROW File="ScpGamepadAnalyzer.exe" Component_="ScpGamepadAnalyzer.exe_1" FileName="SCPGAM~1.EXE|ScpGamepadAnalyzer.exe" Attributes="0" SourcePath="..\..\bin\ScpGamepadAnalyzer.exe" SelfReg="false" NextFile="ScpMonitor.exe" DigSign="true"/>
     <ROW File="ScpGamepadAnalyzer.exe.config" Component_="ScpGamepadAnalyzer.exe.config" FileName="SCPGAM~1.CON|ScpGamepadAnalyzer.exe.config" Attributes="0" SourcePath="..\..\bin\ScpGamepadAnalyzer.exe.config" SelfReg="false" NextFile="ScpMonitor.exe.config"/>
-    <ROW File="ScpMonitor.exe" Component_="ScpMonitor.exe" FileName="SCPMON~1.EXE|ScpMonitor.exe" Attributes="0" SourcePath="..\..\bin\ScpMonitor.exe" SelfReg="false" NextFile="ScpServer.exe" DigSign="true"/>
+    <ROW File="ScpMonitor.exe" Component_="ScpMonitor.exe_1" FileName="SCPMON~1.EXE|ScpMonitor.exe" Attributes="0" SourcePath="..\..\bin\ScpMonitor.exe" SelfReg="false" NextFile="ScpServer.exe" DigSign="true"/>
     <ROW File="ScpMonitor.exe.config" Component_="ScpMonitor.exe.config" FileName="SCPMON~1.CON|ScpMonitor.exe.config" Attributes="0" SourcePath="..\..\bin\ScpMonitor.exe.config" SelfReg="false" NextFile="ScpServer.exe.config"/>
     <ROW File="ScpPair.exe" Component_="ScpPair.exe" FileName="ScpPair.exe" Attributes="0" SourcePath="..\..\bin\ScpPair.exe" SelfReg="false" NextFile="ScpPair.exe.config" DigSign="true"/>
-    <ROW File="ScpPair.exe.config" Component_="ScpPair.exe.config" FileName="SCPPAI~1.CON|ScpPair.exe.config" Attributes="0" SourcePath="..\..\bin\ScpPair.exe.config" SelfReg="false"/>
-    <ROW File="ScpProfiler.exe" Component_="ScpProfiler.exe" FileName="SCPPRO~1.EXE|ScpProfiler.exe" Attributes="0" SourcePath="..\..\bin\ScpProfiler.exe" SelfReg="false" NextFile="Xceed.Wpf.Toolkit.dll" DigSign="true"/>
-    <ROW File="ScpProfiler.exe.config" Component_="CSScriptLibrary.xml" FileName="SCPPRO~1.CON|ScpProfiler.exe.config" Attributes="0" SourcePath="..\..\bin\ScpProfiler.exe.config" SelfReg="false" NextFile="Hardcodet.Wpf.TaskbarNotification.dll"/>
-    <ROW File="ScpServer.exe" Component_="ScpServer.exe" FileName="SCPSER~1.EXE|ScpServer.exe" Attributes="0" SourcePath="..\..\bin\ScpServer.exe" SelfReg="false" NextFile="ScpService.exe" DigSign="true"/>
+    <ROW File="ScpPair.exe.config" Component_="ScpPair.exe.config" FileName="SCPPAI~1.CON|ScpPair.exe.config" Attributes="0" SourcePath="..\..\bin\ScpPair.exe.config" SelfReg="false" NextFile="ScpDebugInfoCollector.exe.config"/>
+    <ROW File="ScpProfiler.exe" Component_="ScpProfiler.exe_1" FileName="SCPPRO~1.EXE|ScpProfiler.exe" Attributes="0" SourcePath="..\..\bin\ScpProfiler.exe" SelfReg="false" NextFile="Xceed.Wpf.Toolkit.dll" DigSign="true"/>
+    <ROW File="ScpProfiler.exe.config" Component_="ScpProfiler.exe.config" FileName="SCPPRO~1.CON|ScpProfiler.exe.config" Attributes="0" SourcePath="..\..\bin\ScpProfiler.exe.config" SelfReg="false" NextFile="Hardcodet.Wpf.TaskbarNotification.dll"/>
+    <ROW File="ScpServer.exe" Component_="ScpServer.exe_1" FileName="SCPSER~1.EXE|ScpServer.exe" Attributes="0" SourcePath="..\..\bin\ScpServer.exe" SelfReg="false" NextFile="ScpService.exe" DigSign="true"/>
     <ROW File="ScpServer.exe.config" Component_="ScpServer.exe.config" FileName="SCPSER~1.CON|ScpServer.exe.config" Attributes="0" SourcePath="..\..\bin\ScpServer.exe.config" SelfReg="false" NextFile="ScpService.exe.config"/>
     <ROW File="ScpService.exe" Component_="ScpService.exe" FileName="SCPSER~2.EXE|ScpService.exe" Attributes="0" SourcePath="..\..\bin\ScpService.exe" SelfReg="false" NextFile="ScpSettings.exe" DigSign="true"/>
     <ROW File="ScpService.exe.config" Component_="ScpService.exe.config" FileName="SCPSER~2.CON|ScpService.exe.config" Attributes="0" SourcePath="..\..\bin\ScpService.exe.config" SelfReg="false" NextFile="ScpSettings.exe.config"/>
     <ROW File="ScpSettings.exe" Component_="ScpSettings.exe" FileName="SCPSET~1.EXE|ScpSettings.exe" Attributes="0" SourcePath="..\..\bin\ScpSettings.exe" SelfReg="false" NextFile="DIFxAPI.dll_1" DigSign="true"/>
     <ROW File="ScpSettings.exe.config" Component_="ScpSettings.exe.config" FileName="SCPSET~1.CON|ScpSettings.exe.config" Attributes="0" SourcePath="..\..\bin\ScpSettings.exe.config" SelfReg="false" NextFile="System.Reactive.Core.xml"/>
-    <ROW File="ScpTrayApp.exe" Component_="ScpTrayApp.exe" FileName="SCPTRA~1.EXE|ScpTrayApp.exe" Attributes="0" SourcePath="..\..\bin\ScpTrayApp.exe" SelfReg="false" NextFile="ScpTrayApp.exe.config" DigSign="true"/>
-    <ROW File="ScpTrayApp.exe.config" Component_="CSScriptLibrary.xml" FileName="SCPTRA~1.CON|ScpTrayApp.exe.config" Attributes="0" SourcePath="..\..\bin\ScpTrayApp.exe.config" SelfReg="false" NextFile="ScpPair.exe"/>
+    <ROW File="ScpTrayApp.exe" Component_="ScpTrayApp.exe_1" FileName="SCPTRA~1.EXE|ScpTrayApp.exe" Attributes="0" SourcePath="..\..\bin\ScpTrayApp.exe" SelfReg="false" NextFile="ScpTrayApp.exe.config" DigSign="true"/>
+    <ROW File="ScpTrayApp.exe.config" Component_="ScpTrayApp.exe.config" FileName="SCPTRA~1.CON|ScpTrayApp.exe.config" Attributes="0" SourcePath="..\..\bin\ScpTrayApp.exe.config" SelfReg="false" NextFile="ScpPair.exe"/>
     <ROW File="ScpVBus.cat" Component_="ScpVBus.inf_3" FileName="ScpVBus.cat" Attributes="0" SourcePath="..\..\bin\System\ScpVBus.cat" SelfReg="false" NextFile="ScpVBus.inf"/>
     <ROW File="ScpVBus.cat_1" Component_="ScpVBus.inf_2" FileName="ScpVBus.cat" Attributes="0" SourcePath="..\..\bin\System\ScpVBus.cat" SelfReg="false" NextFile="HidSharp.dll"/>
     <ROW File="ScpVBus.inf" Component_="ScpVBus.inf" FileName="ScpVBus.inf" Attributes="0" SourcePath="..\..\bin\System\ScpVBus.inf" SelfReg="false" NextFile="xusb21.cat"/>
@@ -300,7 +314,10 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
     <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="ConfigureDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\ConfigureDlg.aip"/>
+    <ROW Fragment="CustomizePage.aip" Path="&lt;AI_THEMES&gt;surface\fragments\CustomizePage.aip"/>
     <ROW Fragment="DirectX9.0cRuntime.aip" Path="&lt;AI_REPOSITORY&gt;Prerequisites\DirectX 9.0c Runtime\DirectX 9.0c Runtime.aip"/>
+    <ROW Fragment="FolderPage.aip" Path="&lt;AI_THEMES&gt;surface\fragments\FolderPage.aip"/>
     <ROW Fragment="InstallDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\InstallDlg.aip"/>
     <ROW Fragment="LicenseAgreementDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\LicenseAgreementDlg.aip"/>
     <ROW Fragment="MaintenanceTypeDlg.aip" Path="&lt;AI_THEMES&gt;surface\fragments\MaintenanceTypeDlg.aip"/>
@@ -343,6 +360,8 @@
     <ROW Feature_="AI32BitFiles" Level="0" Condition="VersionNT64"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ROW Dialog_="ConfigureDlg" Control="ConfigureDlgDialogInitializer" Type="DialogInitializer" X="0" Y="0" Width="0" Height="0" Attributes="0" Order="-1" TextLocId="-" HelpLocId="-" ExtDataLocId="-"/>
+    <ROW Dialog_="ConfigureDlg" Control="Cancel" Type="ImageButton" X="163" Y="359" Width="78" Height="28" Attributes="2" Text="[NextCancelButtons]" TextStyle="[MetroButtonText]" Order="100" MsiKey="ConfigureDlg#Cancel" Options="1" ExtType="ImageButton" ExtData="[ButtonText_Cancel]" ExtDataLocId="-"/>
     <ROW Dialog_="CustomizeDlg" Control="CustomizeDlgDialogInitializer" Type="DialogInitializer" X="0" Y="0" Width="0" Height="0" Attributes="0" Order="-1" TextLocId="-" HelpLocId="-" ExtDataLocId="-"/>
     <ROW Dialog_="ExitDialog" Control="RunLabel" Type="Text" X="182" Y="278" Width="107" Height="16" Attributes="196611" Text="Run Driver Installer" Order="1400" TextLocId="Metro.Control.Text.ExitDialog#Run" MsiKey="ExitDialog#RunLabel"/>
     <ROW Dialog_="LicenseAgreementDlg" Control="AgreementText" Type="ScrollableText" X="17" Y="106" Width="312" Height="243" Attributes="3" Property="EulaRead" Text="GPLv3.rtf" Order="600" TextLocId="Control.Text.LicenseAgreementDlg#AgreementText_2" MsiKey="LicenseAgreementDlg#AgreementText"/>
@@ -365,10 +384,10 @@
     <ROW Dialog_="VerifyRepairDlg" Control="Cancel" Type="ImageButton" X="163" Y="359" Width="78" Height="28" Attributes="2" Text="[NextCancelButtons]" TextStyle="[MetroButtonText]" Order="200" MsiKey="VerifyRepairDlg#Cancel" Options="1" ExtType="ImageButton" ExtData="[ButtonText_Cancel]" ExtDataLocId="-"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
-    <ROW Dialog_="InstallDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="301"/>
+    <ROW Dialog_="InstallDlg" Control_="Next" Event="NewDialog" Argument="ConfigureDlg" Condition="AI_INSTALL" Ordering="301"/>
     <ROW Dialog_="InstallDlg" Control_="YouMustAgreeCtrl" Event="NewDialog" Argument="LicenseAgreementDlg" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="301"/>
     <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="NewDialog" Argument="InstallDlg" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="1"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="101"/>
+    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="NewDialog" Argument="ConfigureDlg" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="101"/>
     <ROW Dialog_="MaintenanceTypeDlg" Control_="ChangeButton" Event="NewDialog" Argument="CustomizeDlg" Condition="AI_MAINT" Ordering="501"/>
     <ROW Dialog_="MaintenanceTypeDlg" Control_="RemoveButton" Event="NewDialog" Argument="VerifyRemoveDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="699"/>
     <ROW Dialog_="VerifyRemoveDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT AND InstallMode=&quot;Remove&quot;" Ordering="1"/>
@@ -380,26 +399,6 @@
     <ROW Dialog_="CustomizeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="1"/>
     <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_PATCH" Ordering="201"/>
     <ROW Dialog_="ResumeDlg" Control_="Install" Event="EndDialog" Argument="Return" Condition="AI_RESUME" Ordering="99"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_INSTALL AND AiLicenseAgreement AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="102" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="EnableRollback" Argument="False" Condition="AI_INSTALL AND AiLicenseAgreement AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="103" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_INSTALL AND AiLicenseAgreement AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="104" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="101" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="102" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="103" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="LicenseAgreementDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="104" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="2" Options="2"/>
-    <ROW Dialog_="LicenseAgreementDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="3" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_INSTALL AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="302" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="Next" Event="EnableRollback" Argument="False" Condition="AI_INSTALL AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="303" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_INSTALL AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="304" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_INSTALL" Ordering="101" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_INSTALL" Ordering="102" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_INSTALL" Ordering="103" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="InstallDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_INSTALL" Ordering="104" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="YouMustAgreeCtrl" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_INSTALL" Ordering="302" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="YouMustAgreeCtrl" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_INSTALL" Ordering="303" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_INSTALL" Ordering="0" Options="2"/>
-    <ROW Dialog_="InstallDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_INSTALL" Ordering="1" Options="2"/>
     <ROW Dialog_="CustomizeDlg" Control_="Modify" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_MAINT AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="102" Options="2"/>
     <ROW Dialog_="CustomizeDlg" Control_="Modify" Event="EnableRollback" Argument="False" Condition="AI_MAINT AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="103" Options="2"/>
     <ROW Dialog_="CustomizeDlg" Control_="Modify" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_MAINT AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="104" Options="2"/>
@@ -418,6 +417,20 @@
     <ROW Dialog_="PatchWelcomeDlg" Control_="PatchWelcomeDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_PATCH" Ordering="3" Options="2"/>
     <ROW Dialog_="PatchWelcomeDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_PATCH" Ordering="0" Options="2"/>
     <ROW Dialog_="PatchWelcomeDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_PATCH" Ordering="1" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Next" Event="EndDialog" Argument="Return" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Back" Event="NewDialog" Argument="InstallDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Back" Event="NewDialog" Argument="LicenseAgreementDlg" Condition="AI_INSTALL AND AiLicenseAgreement" Ordering="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfRbDiskDlg" Condition="AI_INSTALL AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND (PROMPTROLLBACKCOST=&quot;P&quot; OR NOT PROMPTROLLBACKCOST)" Ordering="2" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Next" Event="EnableRollback" Argument="False" Condition="AI_INSTALL AND OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 0 AND PROMPTROLLBACKCOST=&quot;D&quot;" Ordering="3" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Next" Event="SpawnDialog" Argument="OutOfDiskDlg" Condition="AI_INSTALL AND ( (OutOfDiskSpace = 1 AND OutOfNoRbDiskSpace = 1) OR (OutOfDiskSpace = 1 AND PROMPTROLLBACKCOST=&quot;F&quot;) )" Ordering="4" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="ConfigureDlgDialogInitializer" Event="[AI_ButtonText_Next_Orig]" Argument="[ButtonText_Next]" Condition="AI_INSTALL" Ordering="0" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="ConfigureDlgDialogInitializer" Event="[ButtonText_Next]" Argument="[[AI_CommitButton]]" Condition="AI_INSTALL" Ordering="1" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="ConfigureDlgDialogInitializer" Event="[AI_Text_Next_Orig]" Argument="[Text_Next]" Condition="AI_INSTALL" Ordering="2" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="ConfigureDlgDialogInitializer" Event="[Text_Next]" Argument="[Text_Install]" Condition="AI_INSTALL" Ordering="3" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Back" Event="[ButtonText_Next]" Argument="[AI_ButtonText_Next_Orig]" Condition="AI_INSTALL" Ordering="3" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Back" Event="[Text_Next]" Argument="[AI_Text_Next_Orig]" Condition="AI_INSTALL" Ordering="4" Options="2"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Tab" Event="SpawnDialog" Argument="CustomizePage" Condition="( AiTabPage ) AND ( 1 )" Ordering="0"/>
+    <ROW Dialog_="ConfigureDlg" Control_="Tab" Event="SpawnDialog" Argument="FolderPage" Condition="( AiTabPage ) AND ( NOT Installed )" Ordering="1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
     <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR" ManualDelete="false"/>
@@ -556,20 +569,21 @@
     <ROW ServiceInstall="ScpService.exe" Name="Ds3Service" DisplayName="SCP DSx Service" ServiceType="16" StartType="2" ErrorControl="32769" Dependencies="ScpVBus" Component_="ScpService.exe" Description="Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="ScpCleanWipe.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~1|ScpToolkit Clean Wipe Utility" Component_="ScpCleanWipe.exe" Target="[#ScpCleanWipe.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpCleanWipe.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~1|ScpToolkit Clean Wipe Utility" Component_="ScpCleanWipe.exe_1" Target="[#ScpCleanWipe.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpDriverInstaller.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~6|ScpToolkit Driver Installer" Component_="ScpDriverInstaller.exe" Target="[#ScpDriverInstaller.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpGamepadAnalyzer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~5|ScpToolkit Gamepad Analyzer" Component_="ScpGamepadAnalyzer.exe" Target="[#ScpGamepadAnalyzer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpMonitor.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpServer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~3|ScpToolkit Stand-alone Server (legacy)" Component_="ScpServer.exe" Target="[#ScpServer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpGamepadAnalyzer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~5|ScpToolkit Gamepad Analyzer" Component_="ScpGamepadAnalyzer.exe_1" Target="[#ScpGamepadAnalyzer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpMonitor.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe_1" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpServer.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~3|ScpToolkit Stand-alone Server (legacy)" Component_="ScpServer.exe_1" Target="[#ScpServer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpSettings.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~2|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitDebugInfoCollector" Directory_="SHORTCUTDIR" Name="SCPTOO~7|ScpToolkit Debug Info Collector" Component_="ScpDebugInfoCollector.exe" Target="[#ScpDebugInfoCollector.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitBluetoothPairUtilitylegacy" Directory_="SHORTCUTDIR" Name="SCPTO~10|ScpToolkit Bluetooth Pair Utility (legacy)" Component_="ScpPair.exe" Target="[#ScpPair.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitDebugInfoCollector" Directory_="SHORTCUTDIR" Name="SCPTOO~7|ScpToolkit Debug Info Collector" Component_="ScpDebugInfoCollector.exe_1" Target="[#ScpDebugInfoCollector.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitDriverInstaller" Directory_="DesktopFolder" Name="SCPTOO~2|ScpToolkit Driver Installer" Component_="ScpDriverInstaller.exe" Target="[#ScpDriverInstaller.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitMonitorlegacy" Directory_="DesktopFolder" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitProfilemanager" Directory_="DesktopFolder" Name="SCPTOO~1|ScpToolkit Profile Manager" Component_="ScpProfiler.exe" Target="[#ScpProfiler.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitProfilemanager_1" Directory_="SHORTCUTDIR" Name="SCPTOO~8|ScpToolkit Profile Manager" Component_="ScpProfiler.exe" Target="[#ScpProfiler.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitMonitorlegacy" Directory_="DesktopFolder" Name="SCPTOO~4|ScpToolkit Monitor (legacy)" Component_="ScpMonitor.exe_1" Target="[#ScpMonitor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitProfilemanager" Directory_="DesktopFolder" Name="SCPTOO~1|ScpToolkit Profile Manager" Component_="ScpProfiler.exe_1" Target="[#ScpProfiler.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitProfilemanager_1" Directory_="SHORTCUTDIR" Name="SCPTOO~8|ScpToolkit Profile Manager" Component_="ScpProfiler.exe_1" Target="[#ScpProfiler.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitSettingsManager" Directory_="DesktopFolder" Name="SCPTOO~5|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitTrayNotifications" Directory_="SHORTCUTDIR" Name="SCPTOO~9|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitTrayNotifications_1" Directory_="StartupFolder" Name="SCPTOO~1|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitTrayNotifications" Directory_="SHORTCUTDIR" Name="SCPTOO~9|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe_1" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitTrayNotifications_1" Directory_="StartupFolder" Name="SCPTOO~1|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe_1" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="surface"/>
