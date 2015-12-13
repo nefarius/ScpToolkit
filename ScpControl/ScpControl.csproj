@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.199.15346</AssemblyVersion>
+    <AssemblyVersion>1.6.200.15347</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -223,6 +223,7 @@
     <Compile Include="Utilities\GenericGamepadConfig.cs" />
     <Compile Include="Utilities\MacAddressGenerator.cs" />
     <Compile Include="Utilities\OSVersionInfoClass.cs" />
+    <Compile Include="Utilities\PhysicalAddressExtensions.cs" />
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
     <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
     <Compile Include="Value Converters\RadioBoolToIntConverter.cs" />
