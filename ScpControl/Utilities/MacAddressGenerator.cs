@@ -22,34 +22,13 @@ namespace ScpControl.Utilities
                     var b = Convert.ToByte(number);
                     if (i == 0)
                     {
-                        b = SetBit(b, 6); //--> set locally administered
-                        b = UnsetBit(b, 7); // --> set unicast 
+                        b = (byte) ((b & 0xFE) | 0x02); //-->set locally administered and unicast
                     }
-                    sBuilder.Append(string.Format("{0}:", number.ToString("X2")));
+                    sBuilder.Append(string.Format("{0}", number.ToString("X2")));
                 }
 
-                return sBuilder.ToString().ToUpper().TrimEnd(':');
+                return sBuilder.ToString();
             }
-        }
-
-        private static byte SetBit(byte b, int bitNumber)
-        {
-            if (bitNumber < 8 && bitNumber > -1)
-            {
-                return (byte) (b | (byte) (0x01 << bitNumber));
-            }
-
-            throw new ArgumentOutOfRangeException(bitNumber.ToString());
-        }
-
-        private static byte UnsetBit(byte b, int bitNumber)
-        {
-            if (bitNumber < 8 && bitNumber > -1)
-            {
-                return (byte) (b | (byte) (0x00 << bitNumber));
-            }
-
-            throw new ArgumentOutOfRangeException(bitNumber.ToString());
         }
     }
 }
