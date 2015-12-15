@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
+using ScpControl.Utilities;
 
 namespace ScpControl.Usb.Ds4
 {
@@ -174,11 +175,11 @@ namespace ScpControl.Usb.Ds4
 
             if (SendTransfer(UsbHidRequestType.HostToDevice, UsbHidRequest.SetReport, 0x0313, buffer, ref transfered))
             {
-                Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", DeviceAddress, HostAddress);
+                Log.DebugFormat("++ Repaired DS4 [{0}] Link Key For BTH Dongle [{1}]", DeviceAddress.AsFriendlyName(), HostAddress.AsFriendlyName());
             }
             else
             {
-                Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", DeviceAddress, HostAddress);
+                Log.DebugFormat("++ Repair DS4 [{0}] Link Key For BTH Dongle [{1}] Failed!", DeviceAddress.AsFriendlyName(), HostAddress.AsFriendlyName());
             }
 
             return base.Start();
@@ -221,11 +222,11 @@ namespace ScpControl.Usb.Ds4
             {
                 HostAddress = master;
 
-                Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", DeviceAddress, HostAddress);
+                Log.DebugFormat("++ Paired DS4 [{0}] To BTH Dongle [{1}]", DeviceAddress.AsFriendlyName(), HostAddress.AsFriendlyName());
                 return true;
             }
 
-            Log.DebugFormat("++ Pair Failed [{0}]", DeviceAddress);
+            Log.DebugFormat("++ Pair Failed [{0}]", DeviceAddress.AsFriendlyName());
             return false;
         }
 

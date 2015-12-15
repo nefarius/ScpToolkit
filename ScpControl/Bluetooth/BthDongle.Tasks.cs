@@ -633,7 +633,7 @@ namespace ScpControl.Bluetooth
 
                                         Log.InfoFormat(
                                             "Initializing Bluetooth host {0} (HCI-Version: {1}, LMP-Version: {2})",
-                                            BluetoothHostAddress,
+                                            BluetoothHostAddress.AsFriendlyName(),
                                             HciVersion, LmpVersion);
 
                                         /* analyzes Host Controller Interface (HCI) major version

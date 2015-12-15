@@ -570,7 +570,7 @@ namespace ScpControl
                 _scpBus.Plugin((int) arrived.PadId + 1);
 
                 Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int) arrived.PadId + 1,
-                    arrived.DeviceAddress);
+                    arrived.DeviceAddress.AsFriendlyName());
             }
             e.Handled = bFound;
         }

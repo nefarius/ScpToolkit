@@ -3,6 +3,7 @@ using System.Net.NetworkInformation;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
+using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
@@ -29,7 +30,7 @@ namespace ScpControl.Bluetooth
 
                         if (arrived.Open(path))
                         {
-                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.BluetoothHostAddress);
+                            Log.DebugFormat("-- Device Arrival [{0}]", arrived.BluetoothHostAddress.AsFriendlyName());
 
                             _device.Close();
                             _device = arrived;
@@ -51,7 +52,7 @@ namespace ScpControl.Bluetooth
 
                     if (_device.Path == path)
                     {
-                        Log.DebugFormat("-- Device Removal [{0}]", _device.BluetoothHostAddress);
+                        Log.DebugFormat("-- Device Removal [{0}]", _device.BluetoothHostAddress.AsFriendlyName());
 
                         _device.Stop();
                     }

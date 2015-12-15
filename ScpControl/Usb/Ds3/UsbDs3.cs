@@ -118,11 +118,11 @@ namespace ScpControl.Usb.Ds3
                     return false;
                 }
 
-                Log.InfoFormat("Successfully opened device with MAC address {0}", DeviceAddress);
+                Log.InfoFormat("Successfully opened device with MAC address {0}", DeviceAddress.AsFriendlyName());
 
                 if (!IniConfig.Instance.Hci.GenuineMacAddresses.Any(m => DeviceAddress.AsFriendlyName().StartsWith(m)))
                 {
-                    Log.WarnFormat("Fake DualShock 3 detected [{0}]", DeviceAddress);
+                    Log.WarnFormat("Fake DualShock 3 detected [{0}]", DeviceAddress.AsFriendlyName());
 
                     var bthCompany = IniConfig.Instance.BthChipManufacturers.FirstOrDefault(
                         m =>
@@ -161,7 +161,7 @@ namespace ScpControl.Usb.Ds3
                 }
                 else
                 {
-                    Log.ErrorFormat("Couldn't send control request to device {0}, error: {1}", DeviceAddress,
+                    Log.ErrorFormat("Couldn't send control request to device {0}, error: {1}", DeviceAddress.AsFriendlyName(),
                         new Win32Exception(Marshal.GetLastWin32Error()));
                     return false;
                 }

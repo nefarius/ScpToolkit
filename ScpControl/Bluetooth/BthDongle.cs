@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using ScpControl.Shared.Core;
+using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
@@ -49,7 +50,7 @@ namespace ScpControl.Bluetooth
                     {
                         return
                             string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}\n\nReserved",
-                                BluetoothHostAddress,
+                                BluetoothHostAddress.AsFriendlyName(),
                                 _hciVersion,
                                 _lmpVersion
                                 );
@@ -60,7 +61,7 @@ namespace ScpControl.Bluetooth
                     if (Initialised)
                     {
                         return string.Format("Host Address : {0}\n\nHCI Version  : {1}\n\nLMP Version  : {2}",
-                            BluetoothHostAddress,
+                            BluetoothHostAddress.AsFriendlyName(),
                             _hciVersion,
                             _lmpVersion
                             );

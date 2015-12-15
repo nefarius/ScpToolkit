@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Xml;
 using log4net;
@@ -44,7 +45,15 @@ namespace ScpControl.Profiler
 
         public static string ProfilesPath
         {
-            get { return Path.Combine(GlobalConfiguration.AppDirectory, "Profiles"); }
+            get
+            {
+                var profiles = Path.Combine(GlobalConfiguration.AppDirectory, "Profiles");
+
+                if (!Directory.Exists(profiles))
+                    Directory.CreateDirectory(profiles);
+
+                return profiles;
+            }
         }
 
         /// <summary>

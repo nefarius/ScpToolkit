@@ -28,12 +28,12 @@ namespace ScpControl.Usb
 
                 case DsState.Reserved:
 
-                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, DeviceAddress);
+                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, DeviceAddress.AsFriendlyName());
 
                 case DsState.Connected:
 
                     return string.Format("Pad {0} : {1} {2} - {3} {4:X8} {5}", PadId, Model,
-                        DeviceAddress,
+                        DeviceAddress.AsFriendlyName(),
                         Connection,
                         PacketCounter,
                         Battery
@@ -173,7 +173,8 @@ namespace ScpControl.Usb
             tmUpdate.Enabled = true;
 
             Rumble(0, 0);
-            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance, DeviceAddress, HostAddress);
+            Log.DebugFormat("-- Started Device Instance [{0}] Local [{1}] Remote [{2}]", m_Instance,
+                DeviceAddress.AsFriendlyName(), HostAddress.AsFriendlyName());
 
             // connection sound
             if (GlobalConfiguration.Instance.IsUsbConnectSoundEnabled)

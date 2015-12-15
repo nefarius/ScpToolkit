@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Sound;
+using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
@@ -145,7 +146,7 @@ namespace ScpControl.Bluetooth
 
                 case DsState.Reserved:
 
-                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, DeviceAddress);
+                    return string.Format("Pad {0} : {1} {2} - Reserved", PadId, Model, DeviceAddress.AsFriendlyName());
 
                 case DsState.Connected:
 

@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using log4net;
 using ScpControl.Shared.Core;
+using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
@@ -61,7 +62,7 @@ namespace ScpControl.Bluetooth
 
         public override string ToString()
         {
-            return string.Format("{0} - {1}", DeviceAddress, _remoteName);
+            return string.Format("{0} - {1}", DeviceAddress.AsFriendlyName(), _remoteName);
         }
 
         #endregion
