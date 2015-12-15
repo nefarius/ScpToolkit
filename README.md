@@ -63,9 +63,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 ![Install Screenshot](http://nefarius.at/wp-content/uploads/2013/12/31-10-_2015_13-27-55.png "Install Screenshot")
 
 ## To-Do list
- * Increase supported controller count from 4 to 8
  * Rewrite profile manager
- * Add Turbo option
  * Add support for fake PANHAI DS3 controllers
  * Implement gyroscope and accelerometer readout for DS3 and DS4
  * Implement touchpad readout for DS4
