@@ -192,7 +192,7 @@ namespace ScpControl.Usb.Ds4
         /// <returns>Always true.</returns>
         public override bool Rumble(byte large, byte small)
         {
-            lock (this)
+            lock (_hidReport)
             {
                 var transfered = 0;
 

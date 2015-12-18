@@ -99,7 +99,7 @@ namespace ScpControl.Bluetooth
         /// <returns></returns>
         public override bool Rumble(byte large, byte small)
         {
-            lock (this)
+            lock (_hidOutputReport)
             {
                 if (GlobalConfiguration.Instance.DisableRumble)
                 {

@@ -178,7 +178,7 @@ namespace ScpControl.Usb.Ds3
         /// <returns>The result of the send request, true if sent successfully, false otherwise.</returns>
         public override bool Rumble(byte large, byte small)
         {
-            lock (this)
+            lock (_hidReport)
             {
                 var transfered = 0;
 
