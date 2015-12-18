@@ -36,7 +36,6 @@ namespace ScpControl.Usb.Ds4
         private const int B = 8; // Led Offsets
 
         private byte _brightness = GlobalConfiguration.Instance.Brightness;
-        private bool _isLightBarDisabled;
 
         #endregion
 
@@ -300,8 +299,16 @@ namespace ScpControl.Usb.Ds4
 
                 m_Last = now;
 
+                // skip enabling charging animation if bar is disabled
                 if (!GlobalConfiguration.Instance.IsLightBarDisabled)
                 {
+                    // if current brightness doesn't match global value, overwrite
+                    if (GlobalConfiguration.Instance.Brightness != _brightness)
+                    {
+                        _brightness = GlobalConfiguration.Instance.Brightness;
+                    }
+
+                    // enable/disable charging animation (flash)
                     if (Battery != DsBattery.Charged)
                     {
                         _hidReport[9] = _hidReport[10] = 0x80;
@@ -311,19 +318,15 @@ namespace ScpControl.Usb.Ds4
                         _hidReport[9] = _hidReport[10] = 0x00;
                     }
                 }
-
-                if (GlobalConfiguration.Instance.Brightness != _brightness)
+                else
                 {
-                    _brightness = GlobalConfiguration.Instance.Brightness;
-                    SetLightBarColor(PadId);
+                    _brightness = 0x00;
                 }
 
-                if (GlobalConfiguration.Instance.IsLightBarDisabled != _isLightBarDisabled)
-                {
-                    _isLightBarDisabled = GlobalConfiguration.Instance.IsLightBarDisabled;
-                    SetLightBarColor(PadId);
-                }
+                // set light bar color reflecting pad ID
+                SetLightBarColor(PadId);
 
+                // send report to controller
                 WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);
             }
             finally
