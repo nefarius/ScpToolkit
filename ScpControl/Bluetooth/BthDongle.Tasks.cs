@@ -33,30 +33,25 @@ namespace ScpControl.Bluetooth
                 try
                 {
                     // communication channels use the bulk pipe
-                    if (ReadBulkPipe(buffer, buffer.Length, ref transfered) && transfered > 0)
+                    if (!ReadBulkPipe(buffer, buffer.Length, ref transfered) || transfered <= 0) continue;
+
+                    var packet = new L2CapDataPacket(buffer);
+
+                    var connection = GetConnection(packet);
+
+                    if (connection == null)
                     {
-                        // this prevents a race condition where the connection could be null
-                        // TODO: causes a short hickup on all connections, improve
-                        _waitForConnectionComplete.WaitOne();
+                        Log.DebugFormat("Couldn't get connection handle [{0:X2}, {1:X2}]", buffer[0], buffer[1]);
+                        continue;
+                    }
 
-                        var packet = new L2CapDataPacket(buffer);
-
-                        var connection = GetConnection(packet);
-
-                        if (connection == null)
-                        {
-                            Log.WarnFormat("Couldn't get connection handle [{0:X2}, {1:X2}]", buffer[0], buffer[1]);
-                            continue;
-                        }
-
-                        if (connection.Model == DsModel.DS4)
-                        {
-                            ParseBufferDs4(connection, buffer, transfered);
-                        }
-                        else
-                        {
-                            ParseBufferDs3(connection, packet);
-                        }
+                    if (connection.Model == DsModel.DS4)
+                    {
+                        ParseBufferDs4(connection, buffer, transfered);
+                    }
+                    else
+                    {
+                        ParseBufferDs3(connection, packet);
                     }
                 }
                 catch (Exception ex)
@@ -860,7 +855,6 @@ namespace ScpControl.Bluetooth
                                     transfered = HCI_Delete_Stored_Link_Key(bdAddr);
                                     transfered = HCI_Accept_Connection_Request(bdAddr, 0x00);
 
-                                    _waitForConnectionComplete.Reset();
                                     break;
 
                                     #endregion
@@ -948,11 +942,8 @@ namespace ScpControl.Bluetooth
                                         if (!nameList.Any())
                                             break;
 
-                                        connection = Add(bdHandle[0], (byte) (bdHandle[1] | 0x20), nameList[bd]);
                                         //using there the handles saved earlier
-
-                                        // signal L2CAP task to continue
-                                        _waitForConnectionComplete.Set();
+                                        connection = Add(bdHandle[0], (byte) (bdHandle[1] | 0x20), nameList[bd]);
 
                                         #region Fake DS3 workaround
 

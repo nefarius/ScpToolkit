@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -91,7 +92,6 @@ namespace ScpControl.Bluetooth
         private string _lmpVersion = string.Empty;
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
-        private readonly ManualResetEvent _waitForConnectionComplete = new ManualResetEvent(false);
 
         #endregion
 

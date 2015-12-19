@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.212.15353</AssemblyVersion>
+    <AssemblyVersion>1.6.216.15353</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -216,6 +216,7 @@
     <Compile Include="Usb\UsbSpecification.cs" />
     <Compile Include="Utilities\AssemblyHelper.cs" />
     <Compile Include="Utilities\ByteArrayExtensions.cs" />
+    <Compile Include="Utilities\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="Utilities\DumpHelper.cs" />
     <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\FileDownloader.cs" />
