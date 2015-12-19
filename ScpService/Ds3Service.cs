@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Globalization;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using log4net;
 using ScpControl;
 using ScpControl.Bluetooth;
-using ScpControl.Exceptions;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Usb.Ds3;
@@ -20,6 +19,8 @@ namespace ScpService
 {
     public partial class Ds3Service : ServiceBase
     {
+        #region Private fields
+
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private IntPtr _bthNotify = IntPtr.Zero;
         private ScpDevice.ServiceControlHandlerEx _mControlHandler;
@@ -28,6 +29,8 @@ namespace ScpService
         private IntPtr _mServiceHandle = IntPtr.Zero;
         private IntPtr _genericNotify = IntPtr.Zero;
         private readonly Timer _mTimer;
+
+        #endregion
 
         public Ds3Service()
         {
@@ -43,6 +46,8 @@ namespace ScpService
 
         protected override void OnStart(string[] args)
         {
+            var sw = Stopwatch.StartNew();
+
             Log.Info("Scarlet.Crush Productions DSx Service Started");
 
             Log.DebugFormat("++ {0} {1}", Assembly.GetExecutingAssembly().Location,
@@ -79,6 +84,8 @@ namespace ScpService
 
 #endif
 
+            Log.DebugFormat("Time spent 'till Root Hub start: {0}", sw.Elapsed);
+
             var hubStartTask = Task.Factory.StartNew(() =>
             {
                 rootHub.Open();
@@ -91,10 +98,14 @@ namespace ScpService
                 Stop();
             }, TaskContinuationOptions.OnlyOnFaulted);
 
+            Log.DebugFormat("Time spent 'till registering notifications: {0}", sw.Elapsed);
+
             ScpDevice.RegisterNotify(_mServiceHandle, UsbDs3.DeviceClassGuid, ref _ds3Notify, false);
             ScpDevice.RegisterNotify(_mServiceHandle, UsbDs4.DeviceClassGuid, ref _ds4Notify, false);
             ScpDevice.RegisterNotify(_mServiceHandle, BthDongle.DeviceClassGuid, ref _bthNotify, false);
             ScpDevice.RegisterNotify(_mServiceHandle, UsbGenericGamepad.DeviceClassGuid, ref _genericNotify, false);
+
+            Log.DebugFormat("Total Time spent in Service Start method: {0}", sw.Elapsed);
         }
 
         protected override void OnStop()
