@@ -27,6 +27,8 @@ namespace ScpControl.Usb
 
         private IDisposable _outputReportTask;
 
+        private readonly TaskQueue _inputReportQueue = new TaskQueue();
+
         #endregion
 
         #region Private methods
@@ -80,9 +82,13 @@ namespace ScpControl.Usb
 
         public event EventHandler<ScpHidReport> HidReportReceived;
 
-        protected virtual void OnHidReportReceived(ScpHidReport report)
+        protected void OnHidReportReceived(ScpHidReport report)
         {
-            if (HidReportReceived != null) HidReportReceived(this, report);
+            _inputReportQueue.Enqueue(() => Task.Run(() =>
+            {
+                if (HidReportReceived != null)
+                    HidReportReceived.Invoke(this, report);
+            }));
         }
 
         #endregion

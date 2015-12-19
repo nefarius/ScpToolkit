@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Sound;
@@ -21,6 +22,8 @@ namespace ScpControl.Bluetooth
             Scheduler.Default);
 
         private IDisposable _outputReportTask;
+
+        private readonly TaskQueue _inputReportQueue = new TaskQueue();
 
         #endregion
 
@@ -187,9 +190,13 @@ namespace ScpControl.Bluetooth
 
         public event EventHandler<ScpHidReport> HidReportReceived;
 
-        protected virtual void OnHidReportReceived(ScpHidReport report)
+        protected void OnHidReportReceived(ScpHidReport report)
         {
-            if (HidReportReceived != null) HidReportReceived(this, report);
+            _inputReportQueue.Enqueue(() => Task.Run(() =>
+            {
+                if (HidReportReceived != null)
+                    HidReportReceived.Invoke(this, report);
+            }));
         }
 
         #endregion
