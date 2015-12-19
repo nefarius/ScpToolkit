@@ -6,7 +6,8 @@
         Background="Transparent"
         WindowStartupLocation="Manual"
         WindowStyle="None"
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        Loaded="MainWindow_OnLoaded">
     <Grid>
         <tb:TaskbarIcon Visibility="Visible"
                         IconSource="Dual Shock 3.ico"
