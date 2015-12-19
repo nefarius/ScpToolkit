@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="12.4.2" version="12.6" Modules="enterprise" RootPath="." Language="en" Id="{4A610BC3-7F32-44FC-9153-310AC8708D94}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="12.4.2" version="12.6.1" Modules="enterprise" RootPath="." Language="en" Id="{4A610BC3-7F32-44FC-9153-310AC8708D94}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="SerValComponent;AutorunComponent;MultipleInstancesComponent;MsiJavaComponent;MsiRegsComponent;MsiExtComponent;MsiDriverPackagesComponent;AnalyticsComponent;ActSyncAppComponent;MsiMergeModsComponent;DictionaryComponent;MsiEnvComponent;ScheduledTasksComponent;CPLAppletComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;WebApplicationsComponent;MsiOdbcDataSrcComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent;MsiDirectEditorComponent"/>
   </COMPONENT>
@@ -14,21 +14,23 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{5957511C-EAF1-4D71-803F-99C002B1D24C} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{A4ACB25B-5BEE-43E8-91F2-88877A3FFAD8} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.207.15352" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.209.15353" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNT" MultiBuildValue="DefaultBuild:Windows 2000, Windows 2000 Service Pack 1, Windows 2000 Service Pack 2, Windows 2000 Service Pack 3, Windows 2000 Service Pack 4, Windows XP x86, Windows XP x86 Service Pack 1, Windows XP x86 Service Pack 2, Windows XP x86 Service Pack 3, Windows Server 2003 x86, Windows Server 2003 x86 Service Pack 1, Windows Server 2003 x86 Service Pack 2" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT" MultiBuildValue="DefaultBuild:Windows XP x86, Windows XP x86 Service Pack 1, Windows XP x86 Service Pack 2, Windows XP x86 Service Pack 3, Windows Server 2003 x86, Windows Server 2003 x86 Service Pack 1, Windows Server 2003 x86 Service Pack 2" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT40Display" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNT50Display" MultiBuildValue="DefaultBuild:Windows 2000" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT64" MultiBuildValue="DefaultBuild:Windows XP x64, Windows XP x64 Service Pack 1, Windows XP x64 Service Pack 2, Windows Server 2003 x64, Windows Server 2003 x64 Service Pack 1, Windows Server 2003 x64 Service Pack 2" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT64Display" MultiBuildValue="DefaultBuild:Windows XP x64, Windows Server 2003 x64" ValueLocId="-"/>
-    <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="DefaultBuild:Windows 2000, Windows XP x86, Windows Server 2003 x86" ValueLocId="-"/>
+    <ROW Property="WindowsTypeNTDisplay" MultiBuildValue="DefaultBuild:Windows XP x86, Windows XP x86 Service Pack 1, Windows XP x86 Service Pack 2, Windows XP x86 Service Pack 3, Windows Server 2003 x86, Windows Server 2003 x86 Service Pack 1, Windows Server 2003 x86 Service Pack 2" ValueLocId="-"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
     <ROW Directory="AI_Bin32_Dir" Directory_Parent="APPDIR" DefaultDir="32-bit"/>
@@ -350,6 +352,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
     <ROW Name="DotNetNativeImage.dll" SourcePath="&lt;AI_CUSTACTS&gt;DotNetNativeImage.dll"/>
+    <ROW Name="PowerShellScriptLauncher.dll" SourcePath="&lt;AI_CUSTACTS&gt;PowerShellScriptLauncher.dll"/>
     <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
@@ -450,6 +453,9 @@
     <ROW Action="AI_ConfigPermissions" Type="1" Source="userAccounts.dll" Target="OnConfigPermissions"/>
     <ROW Action="AI_DATA_SETTER" Type="51" Source="AI_ExtractFiles" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="[~]"/>
+    <ROW Action="AI_DATA_SETTER_2" Type="51" Source="CustomActionData" Target="AEkAcwA2ADQAQgBpAHQAAgABAFAAYQByAGEAbQBzAAIAAQBTAGMAcgBpAHAAdAACACMAIABCAGwAbwBjAGsAIABmAG8AcgAgAGQAZQBjAGwAYQByAGkAbgBnACAAdABoAGUAIABzAGMAcgBpAHAAdAAgAHAAYQByAGEAbQBlAHQAZQByAHMALgANAAoAUABhAHIAYQBtACgAKQANAAoADQAKACMAIABZAG8AdQByACAAYwBvAGQAZQAgAGcAbwBlAHMAIABoAGUAcgBlAC4ADQAKAFMAdABhAHIAdAAtAFMAZQByAHYAaQBjAGUAIABEAHMAMwBTAGUAcgB2AGkAYwBl"/>
+    <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="AEkAcwA2ADQAQgBpAHQAAgABAFAAYQByAGEAbQBzAAIAAQBTAGMAcgBpAHAAdAACACMAIABCAGwAbwBjAGsAIABmAG8AcgAgAGQAZQBjAGwAYQByAGkAbgBnACAAdABoAGUAIABzAGMAcgBpAHAAdAAgAHAAYQByAGEAbQBlAHQAZQByAHMALgANAAoAUABhAHIAYQBtACgAKQANAAoADQAKACMAIABZAG8AdQByACAAYwBvAGQAZQAgAGcAbwBlAHMAIABoAGUAcgBlAC4ADQAKAFIAZQBzAHQAYQByAHQALQBTAGUAcgB2AGkAYwBlACAARABzADMAUwBlAHIAdgBpAGMAZQ=="/>
+    <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="AEkAcwA2ADQAQgBpAHQAAgABAFAAYQByAGEAbQBzAAIAAQBTAGMAcgBpAHAAdAACACMAIABCAGwAbwBjAGsAIABmAG8AcgAgAGQAZQBjAGwAYQByAGkAbgBnACAAdABoAGUAIABzAGMAcgBpAHAAdAAgAHAAYQByAGEAbQBlAHQAZQByAHMALgANAAoAUABhAHIAYQBtACgAKQANAAoADQAKACMAIABZAG8AdQByACAAYwBvAGQAZQAgAGcAbwBlAHMAIABoAGUAcgBlAC4ADQAKAFMAdABvAHAALQBTAGUAcgB2AGkAYwBlACAARABzADMAUwBlAHIAdgBpAGMAZQ=="/>
     <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
     <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
@@ -480,6 +486,9 @@
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
     <ROW Action="AI_SetPermissions" Type="11265" Source="userAccounts.dll" Target="OnSetPermissions" WithoutSeq="true"/>
+    <ROW Action="PS_RestartService" Type="65" Source="PowerShellScriptLauncher.dll" Target="RunPowerShellScript" Options="1" AdditionalSeq="AI_DATA_SETTER_3"/>
+    <ROW Action="PS_StartService" Type="65" Source="PowerShellScriptLauncher.dll" Target="RunPowerShellScript" Options="1" AdditionalSeq="AI_DATA_SETTER_2"/>
+    <ROW Action="PS_StopService" Type="65" Source="PowerShellScriptLauncher.dll" Target="RunPowerShellScript" Options="1" AdditionalSeq="AI_DATA_SETTER_4"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[AI_ProgramFiles][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -520,6 +529,12 @@
     <ROW Action="AI_ExtractFiles" Sequence="3998" Builds="DefaultBuild"/>
     <ROW Action="AI_DATA_SETTER" Sequence="3997"/>
     <ROW Action="AI_EstimateExtractFiles" Sequence="3999" Builds="DefaultBuild"/>
+    <ROW Action="PS_StartService" Condition="( NOT Installed ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6603"/>
+    <ROW Action="AI_DATA_SETTER_2" Condition="( NOT Installed ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6602"/>
+    <ROW Action="PS_RestartService" Condition="( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6605"/>
+    <ROW Action="AI_DATA_SETTER_3" Condition="( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6604"/>
+    <ROW Action="PS_StopService" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6607"/>
+    <ROW Action="AI_DATA_SETTER_4" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6606"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="747"/>
@@ -537,8 +552,9 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="( Version9X OR ( NOT VersionNT64 ) OR ( VersionNT64 AND ((VersionNT64 &lt;&gt; 502) OR (((VersionNT64 = 502) AND (ServicePackLevel &gt;= 1)) OR (MsiNTProductType &lt;&gt; 1))) AND ((VersionNT64 &lt;&gt; 502) OR (((VersionNT64 = 502) AND (ServicePackLevel &lt;&gt; 1)) OR (MsiNTProductType &lt;&gt; 1))) AND ((VersionNT64 &lt;&gt; 502) OR (((VersionNT64 = 502) AND (ServicePackLevel &lt;&gt; 2)) OR (MsiNTProductType &lt;&gt; 1))) AND ((VersionNT64 &lt;&gt; 502) OR ((VersionNT64 = 502) AND ((MsiNTProductType = 1) OR (ServicePackLevel &gt;= 1)))) AND ((VersionNT64 &lt;&gt; 502) OR ((VersionNT64 = 502) AND ((MsiNTProductType = 1) OR (ServicePackLevel &lt;&gt; 1)))) AND ((VersionNT64 &lt;&gt; 502) OR ((VersionNT64 = 502) AND ((MsiNTProductType = 1) OR (ServicePackLevel &lt;&gt; 2)))) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT64Display]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT64" IsPredefined="true" Builds="DefaultBuild"/>
-    <ROW Condition="( Version9X OR VersionNT64 OR ( VersionNT AND ((VersionNT &lt;&gt; 500) OR ((VersionNT = 500) AND (ServicePackLevel &gt;= 1))) AND ((VersionNT &lt;&gt; 500) OR ((VersionNT = 500) AND (ServicePackLevel &lt;&gt; 1))) AND ((VersionNT &lt;&gt; 500) OR ((VersionNT = 500) AND (ServicePackLevel &lt;&gt; 2))) AND ((VersionNT &lt;&gt; 500) OR ((VersionNT = 500) AND (ServicePackLevel &lt;&gt; 3))) AND ((VersionNT &lt;&gt; 500) OR ((VersionNT = 500) AND (ServicePackLevel &lt;&gt; 4))) AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &gt;= 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &lt;&gt; 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &lt;&gt; 2))) OR VersionNT64) AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &lt;&gt; 3))) OR VersionNT64) AND (((VersionNT &lt;&gt; 502) OR ((VersionNT = 502) AND (ServicePackLevel &gt;= 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 502) OR ((VersionNT = 502) AND (ServicePackLevel &lt;&gt; 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 502) OR ((VersionNT = 502) AND (ServicePackLevel &lt;&gt; 2))) OR VersionNT64) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="( Version9X OR VersionNT64 OR ( VersionNT AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &gt;= 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &lt;&gt; 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &lt;&gt; 2))) OR VersionNT64) AND (((VersionNT &lt;&gt; 501) OR ((VersionNT = 501) AND (ServicePackLevel &lt;&gt; 3))) OR VersionNT64) AND (((VersionNT &lt;&gt; 502) OR ((VersionNT = 502) AND (ServicePackLevel &gt;= 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 502) OR ((VersionNT = 502) AND (ServicePackLevel &lt;&gt; 1))) OR VersionNT64) AND (((VersionNT &lt;&gt; 502) OR ((VersionNT = 502) AND (ServicePackLevel &lt;&gt; 2))) OR VersionNT64) ) )" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNTDisplay]." DescriptionLocId="AI.LaunchCondition.NoSpecificNT" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="(VersionNT &lt;&gt; 400)" Description="[ProductName] cannot be installed on the following Windows versions: [WindowsTypeNT40Display]." DescriptionLocId="AI.LaunchCondition.NoNT40" IsPredefined="true" Builds="DefaultBuild"/>
+    <ROW Condition="(VersionNT &lt;&gt; 500)" Description="[ProductName] cannot be installed on [WindowsTypeNT50Display]." DescriptionLocId="AI.LaunchCondition.NoNT50" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="SETUPEXEDIR OR (REMOVE=&quot;ALL&quot;)" Description="This package can only be run from a bootstrapper." DescriptionLocId="AI.LaunchCondition.RequireBootstrapper" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
   </COMPONENT>

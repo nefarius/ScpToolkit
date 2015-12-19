@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Threading;
+using System.Threading.Tasks;
 using log4net;
 using ScpControl;
 using ScpControl.Bluetooth;
@@ -78,17 +79,17 @@ namespace ScpService
 
 #endif
 
-            try
+            var hubStartTask = Task.Factory.StartNew(() =>
             {
                 rootHub.Open();
                 rootHub.Start();
-            }
-            catch (RootHubAlreadyStartedException rhex)
+            });
+
+            hubStartTask.ContinueWith(task =>
             {
-                Log.FatalFormat("Couldn't start the root hub: {0}", rhex.Message);
+                Log.FatalFormat("Couldn't start the root hub: {0}", task.Exception);
                 Stop();
-                return;
-            }
+            }, TaskContinuationOptions.OnlyOnFaulted);
 
             ScpDevice.RegisterNotify(_mServiceHandle, UsbDs3.DeviceClassGuid, ref _ds3Notify, false);
             ScpDevice.RegisterNotify(_mServiceHandle, UsbDs4.DeviceClassGuid, ref _ds4Notify, false);
