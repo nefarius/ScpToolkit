@@ -47,6 +47,7 @@
                             </Grid.ColumnDefinitions>
 
                             <CheckBox Grid.Row="0" Grid.Column="0"
+                                      IsEnabled="False"
                                       IsChecked="{Binding Path=InstallWindowsService}"
                                       ToolTip="Install Windows Service running in the background (recommended)">
                                 Install Windows Service
