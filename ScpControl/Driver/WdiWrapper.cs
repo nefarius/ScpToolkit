@@ -140,7 +140,7 @@ namespace ScpControl.Driver
                     if (string.CompareOrdinal(deviceInfo.CurrentDriver, driverName) == 0 && !force)
                     {
                         result = WdiErrorCode.WDI_ERROR_EXISTS;
-                        Log.WarnFormat("Device \"{0}\" ({1}) is already using {2}, installation aborted",
+                        Log.DebugFormat("Device \"{0}\" ({1}) is already using {2}, installation aborted",
                             deviceInfo.Description,
                             deviceId, driverName);
                         break;

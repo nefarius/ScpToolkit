@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using log4net;
+using ScpControl.Database;
 using ScpControl.ScpCore;
 using ScpControl.Utilities;
 
@@ -31,6 +32,12 @@ namespace ScpControl.Driver
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
+                usbDevice.DeviceType = WdiUsbDeviceType.BluetoothHost;
+                using (var db = new ScpDb())
+                {
+                    db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);
+                }
+
                 installed++;
                 Log.InfoFormat("Installed driver for Bluetooth dongle {0}", usbDevice);
             }
@@ -74,6 +81,12 @@ namespace ScpControl.Driver
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
+                usbDevice.DeviceType = WdiUsbDeviceType.DualShock3;
+                using (var db = new ScpDb())
+                {
+                    db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);
+                }
+
                 installed++;
                 Log.InfoFormat("Installed driver for DualShock 3 controller {0}", usbDevice);
             }
@@ -117,6 +130,12 @@ namespace ScpControl.Driver
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
+                usbDevice.DeviceType = WdiUsbDeviceType.DualSHock4;
+                using (var db = new ScpDb())
+                {
+                    db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);
+                }
+
                 installed++;
                 Log.InfoFormat("Installed driver for DualShock 4 controller {0}", usbDevice);
             }

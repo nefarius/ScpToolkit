@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
@@ -9,8 +10,11 @@ using System.Threading.Tasks;
 using log4net;
 using ScpControl;
 using ScpControl.Bluetooth;
+using ScpControl.Database;
+using ScpControl.Driver;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
+using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;
 using ScpControl.Usb.Gamepads;
@@ -59,21 +63,31 @@ namespace ScpService
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);
 
-#if FIXME // TODO: this is currently broken, replace
-
             var installTask = Task.Factory.StartNew(() =>
             {
-                if (GlobalConfiguration.Instance.ForceBluetoothDriverReinstallation)
-                    DriverInstaller.InstallBluetoothDongles(
-                        ScpDeviceCollection.Instance.Devices.Where(d => d.DeviceType == WdiUsbDeviceType.BluetoothHost));
+                using (var db = new ScpDb())
+                {
+                    var bthDevices = db.Engine.GetAllDbEntities<WdiDeviceInfo>(ScpDb.TableDevices)
+                        .Where(d => d.Value.DeviceType == WdiUsbDeviceType.BluetoothHost)
+                        .Select(d => d.Value);
 
-                if (GlobalConfiguration.Instance.ForceDs3DriverReinstallation)
-                    DriverInstaller.InstallDualShock3Controllers(
-                        ScpDeviceCollection.Instance.Devices.Where(d => d.DeviceType == WdiUsbDeviceType.DualShock3));
+                    if (GlobalConfiguration.Instance.ForceBluetoothDriverReinstallation)
+                        DriverInstaller.InstallBluetoothDongles(bthDevices);
 
-                if (GlobalConfiguration.Instance.ForceDs4DriverReinstallation)
-                    DriverInstaller.InstallDualShock4Controllers(
-                        ScpDeviceCollection.Instance.Devices.Where(d => d.DeviceType == WdiUsbDeviceType.DualSHock4));
+                    var ds3Devices = db.Engine.GetAllDbEntities<WdiDeviceInfo>(ScpDb.TableDevices)
+                        .Where(d => d.Value.DeviceType == WdiUsbDeviceType.DualShock3)
+                        .Select(d => d.Value);
+
+                    if (GlobalConfiguration.Instance.ForceDs3DriverReinstallation)
+                        DriverInstaller.InstallDualShock3Controllers(ds3Devices);
+
+                    var ds4Devices = db.Engine.GetAllDbEntities<WdiDeviceInfo>(ScpDb.TableDevices)
+                        .Where(d => d.Value.DeviceType == WdiUsbDeviceType.DualSHock4)
+                        .Select(d => d.Value);
+
+                    if (GlobalConfiguration.Instance.ForceDs4DriverReinstallation)
+                        DriverInstaller.InstallDualShock4Controllers(ds4Devices);
+                }
             });
 
             installTask.ContinueWith(task =>
@@ -81,8 +95,6 @@ namespace ScpService
                 Log.FatalFormat("Error during driver installation: {0}", task.Exception);
                 Stop();
             }, TaskContinuationOptions.OnlyOnFaulted);
-
-#endif
 
             Log.DebugFormat("Time spent 'till Root Hub start: {0}", sw.Elapsed);
 

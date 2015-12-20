@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.216.15353</AssemblyVersion>
+    <AssemblyVersion>1.6.217.15354</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +49,10 @@
   <ItemGroup>
     <Reference Include="CSScriptLibrary">
       <HintPath>..\packages\CS-Script.3.9.17.0\lib\net45\CSScriptLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="DBreeze, Version=1.72.2015.827, Culture=neutral, PublicKeyToken=174b57f1c155f3c6, processorArchitecture=MSIL">
+      <HintPath>..\packages\DBreeze.1.72.0\lib\net45\DBreeze.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HidSharp, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -153,6 +157,8 @@
     <Compile Include="Bluetooth\BthHub.Designer.cs">
       <DependentUpon>BthHub.cs</DependentUpon>
     </Compile>
+    <Compile Include="Database\DBreezeEngineExtensions.cs" />
+    <Compile Include="Database\ScpDb.cs" />
     <Compile Include="Driver\Devcon.cs" />
     <Compile Include="Driver\Difx.cs" />
     <Compile Include="Driver\DriverInstaller.cs" />
@@ -161,7 +167,6 @@
     <Compile Include="Driver\PNPUtilLib\DriverStoreEntry.cs" />
     <Compile Include="Driver\PNPUtilLib\IDriverStore.cs" />
     <Compile Include="Driver\PNPUtilLib\PNPUtil.cs" />
-    <Compile Include="Driver\ScpDeviceCollection.cs" />
     <Compile Include="Driver\WdiWrapper.cs" />
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
