@@ -208,12 +208,12 @@ namespace ScpControl.Usb.Gamepads
 
         public override bool Pair(PhysicalAddress master)
         {
-            return false; // ignore
+            return true; // ignore
         }
 
         public override bool Rumble(byte large, byte small)
         {
-            return false; // ignore
+            return true; // ignore
         }
 
         #endregion
