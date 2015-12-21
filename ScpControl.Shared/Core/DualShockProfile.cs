@@ -289,14 +289,18 @@ namespace ScpControl.Shared.Core
     {
         #region Ctor
 
+        public DsButtonProfile()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         ///     Creates a new button mapping profile.
         /// </summary>
         /// <param name="sources">A list of DualShock buttons which will be affected by this profile.</param>
-        public DsButtonProfile(params IDsButton[] sources)
+        public DsButtonProfile(params IDsButton[] sources) : this()
         {
             SourceButtons = sources;
-            OnCreated();
         }
 
         #endregion

@@ -37,6 +37,8 @@ namespace ScpControl.Database
 
         public static string TableDevices { get { return "tScpDevices"; } }
 
+        public static string TableProfiles { get { return "tScpProfiles"; } }
+
         public void Dispose()
         {
             if (Engine != null)
