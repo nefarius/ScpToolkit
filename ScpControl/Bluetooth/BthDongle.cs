@@ -92,6 +92,7 @@ namespace ScpControl.Bluetooth
         private string _lmpVersion = string.Empty;
         private DsState _state = DsState.Disconnected;
         private readonly ConnectionList _connected = new ConnectionList();
+        private readonly ManualResetEvent _connectionPendingEvent = new ManualResetEvent(true);
 
         #endregion
 
@@ -216,39 +217,48 @@ namespace ScpControl.Bluetooth
         #endregion
 
         #region Device management methods
-
+        
         private BthDevice Add(byte lsb, byte msb, string name)
         {
-            BthDevice connection = null;
-
-            if (_connected.Count < 4)
+            lock (_connected)
             {
-                // TODO: weak check, maybe improve in future
-                if (name.Equals(BthDs4.GenuineProductName, StringComparison.OrdinalIgnoreCase))
-                    connection = new BthDs4(this, BluetoothHostAddress, lsb, msb);
-                else
-                    connection = new BthDs3(this, BluetoothHostAddress, lsb, msb);
+                BthDevice connection = null;
 
-                _connected[connection.HciHandle] = connection;
+                if (_connected.Count < 4)
+                {
+                    // TODO: weak check, maybe improve in future
+                    if (name.Equals(BthDs4.GenuineProductName, StringComparison.OrdinalIgnoreCase))
+                        connection = new BthDs4(this, BluetoothHostAddress, lsb, msb);
+                    else
+                        connection = new BthDs3(this, BluetoothHostAddress, lsb, msb);
+
+                    _connected[connection.HciHandle] = connection;
+                }
+
+                return connection;
             }
-
-            return connection;
         }
 
         private BthDevice GetConnection(L2CapDataPacket packet)
         {
-            return (!_connected.Any() | !_connected.ContainsKey(packet.Handle)) ? null : _connected[packet.Handle];
+            lock (_connected)
+            {
+                return (!_connected.Any() | !_connected.ContainsKey(packet.Handle)) ? null : _connected[packet.Handle];
+            }
         }
 
         private void Remove(byte lsb, byte msb)
         {
-            var connection = new BthHandle(lsb, msb);
+            lock (_connected)
+            {
+                var connection = new BthHandle(lsb, msb);
 
-            if (!_connected.ContainsKey(connection))
-                return;
+                if (!_connected.ContainsKey(connection))
+                    return;
 
-            _connected[connection].Stop();
-            _connected.Remove(connection);
+                _connected[connection].Stop();
+                _connected.Remove(connection);
+            }
         }
 
         #endregion

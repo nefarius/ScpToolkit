@@ -39,11 +39,15 @@ namespace ScpControl.Bluetooth
 
                     var connection = GetConnection(packet);
 
-                    if (connection == null)
+                    if (connection == null && !_connectionPendingEvent.WaitOne(TimeSpan.FromSeconds(2)))
                     {
-                        Log.DebugFormat("Couldn't get connection handle [{0:X2}, {1:X2}]", buffer[0], buffer[1]);
+                        Log.WarnFormat("Couldn't get connection handle [{0:X2}, {1:X2}]", buffer[0], buffer[1]);
                         continue;
                     }
+
+                    connection = GetConnection(packet);
+
+                    if (connection == null) continue;
 
                     if (connection.Model == DsModel.DS4)
                     {
@@ -872,6 +876,8 @@ namespace ScpControl.Bluetooth
                                         bdHandle[0] = buffer[3];
                                         bdHandle[1] = buffer[4];
 
+                                        _connectionPendingEvent.Reset();
+
                                         //only after connection completed with status 0 we request for controller's name.
                                         transfered = HCI_Remote_Name_Request(bdAddr);
                                     }
@@ -974,6 +980,8 @@ namespace ScpControl.Bluetooth
                                         connection.DeviceAddress =
                                             new PhysicalAddress(new[]
                                             {buffer[8], buffer[7], buffer[6], buffer[5], buffer[4], buffer[3]});
+
+                                        _connectionPendingEvent.Set();
                                     }
                                     else
                                     {
