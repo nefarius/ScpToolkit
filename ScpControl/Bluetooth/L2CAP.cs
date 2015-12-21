@@ -158,7 +158,10 @@ namespace ScpControl.Bluetooth
         public L2CapDataPacket(byte[] buffer)
         {
             RawBytes = buffer;
+            Handle = new BthHandle(RawBytes[0], RawBytes[1]);
         }
+
+        public BthHandle Handle { get; private set; }
 
         /// <summary>
         ///     True if this packet is for the control channel, false otherwise.

@@ -235,24 +235,9 @@ namespace ScpControl.Bluetooth
             return connection;
         }
 
-        /// <summary>
-        ///     Returns an existing Bluetooth connection based on an incoming buffer.
-        /// </summary>
-        /// <param name="lsb">Least significant bit in byte stream.</param>
-        /// <param name="msb">Most significant bit in byte stream.</param>
-        /// <returns>The Bluetooth connection, null if not found.</returns>
-        private BthDevice GetConnection(byte lsb, byte msb)
-        {
-            var hande = new BthHandle(lsb, msb);
-
-            return (!_connected.Any() | !_connected.ContainsKey(hande)) ? null : _connected[hande];
-        }
-
         private BthDevice GetConnection(L2CapDataPacket packet)
         {
-            var raw = packet.RawBytes;
-
-            return GetConnection(raw[0], raw[1]);
+            return (!_connected.Any() | !_connected.ContainsKey(packet.Handle)) ? null : _connected[packet.Handle];
         }
 
         private void Remove(byte lsb, byte msb)
