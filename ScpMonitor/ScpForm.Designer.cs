@@ -113,27 +113,27 @@
             this.tmReset,
             this.tmExit});
             this.cmTray.Name = "cmTray";
-            this.cmTray.Size = new System.Drawing.Size(153, 92);
+            this.cmTray.Size = new System.Drawing.Size(149, 70);
             // 
             // tmProfile
             // 
             this.tmProfile.Enabled = false;
             this.tmProfile.Name = "tmProfile";
-            this.tmProfile.Size = new System.Drawing.Size(152, 22);
+            this.tmProfile.Size = new System.Drawing.Size(148, 22);
             this.tmProfile.Text = "&Input Tester";
             this.tmProfile.Click += new System.EventHandler(this.tmProfile_Click);
             // 
             // tmReset
             // 
             this.tmReset.Name = "tmReset";
-            this.tmReset.Size = new System.Drawing.Size(152, 22);
+            this.tmReset.Size = new System.Drawing.Size(148, 22);
             this.tmReset.Text = "&Reset Position";
             this.tmReset.Click += new System.EventHandler(this.tmReset_Click);
             // 
             // tmExit
             // 
             this.tmExit.Name = "tmExit";
-            this.tmExit.Size = new System.Drawing.Size(152, 22);
+            this.tmExit.Size = new System.Drawing.Size(148, 22);
             this.tmExit.Text = "E&xit";
             this.tmExit.Click += new System.EventHandler(this.tmExit_Click);
             // 
@@ -189,7 +189,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(734, 111);
+            this.ClientSize = new System.Drawing.Size(824, 111);
             this.Controls.Add(this.btnUp_3);
             this.Controls.Add(this.btnUp_2);
             this.Controls.Add(this.btnUp_1);

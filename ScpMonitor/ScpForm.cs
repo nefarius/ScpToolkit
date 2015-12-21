@@ -69,9 +69,6 @@ namespace ScpMonitor
             lblHost.Text = "Host Address : 00:00:00:00:00:00\r\n\r\n0\r\n\r\n0\r\n\r\n0";
             lblPad_1.Text = "Pad 1 : DS3 00:00:00:00:00:00 - Usb FFFFFFFF Charging";
 
-            var SizeX = 50 + lblHost.Width + lblPad_1.Width;
-            var SizeY = 20 + lblHost.Height;
-
             lblPad_1.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 0));
             lblPad_2.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 2));
             lblPad_3.Location = new Point(new Size(40 + lblHost.Width, 10 + lblHost.Height / 7 * 4));
@@ -80,8 +77,6 @@ namespace ScpMonitor
             btnUp_1.Location = new Point(lblPad_2.Location.X - 26, lblPad_2.Location.Y - 6);
             btnUp_2.Location = new Point(lblPad_3.Location.X - 26, lblPad_3.Location.Y - 6);
             btnUp_3.Location = new Point(lblPad_4.Location.X - 26, lblPad_4.Location.Y - 6);
-
-            ClientSize = new Size(SizeX, SizeY);
         }
 
         public void Reset()
