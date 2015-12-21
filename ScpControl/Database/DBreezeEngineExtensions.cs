@@ -30,7 +30,7 @@ namespace ScpControl.Database
         {
             using (var tran = engine.GetTransaction())
             {
-                return tran.SelectForward<string, DbXML<T>>(table).ToDictionary(d => d.Key, d => d.Value.Get);
+                return tran.SelectForward<string, DbCustomSerializer<T>>(table).ToDictionary(d => d.Key, d => d.Value.Get);
             }
         }
 
@@ -38,7 +38,7 @@ namespace ScpControl.Database
         {
             using (var tran = engine.GetTransaction())
             {
-                return tran.Select<string, DbXML<T>>(table, key).Value.Get;
+                return tran.Select<string, DbCustomSerializer<T>>(table, key).Value.Get;
             }
         }
 
@@ -46,7 +46,7 @@ namespace ScpControl.Database
         {
             using (var tran = engine.GetTransaction())
             {
-                tran.Insert(table, key, new DbXML<T>(entity));
+                tran.Insert(table, key, new DbCustomSerializer<T>(entity));
                 tran.Commit();
             }
         }

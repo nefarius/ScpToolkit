@@ -167,17 +167,6 @@ namespace ScpControl.Shared.Core
         [Description("The unique identifier of this profile.")]
         public Guid Id { get; private set; }
 
-        /// <summary>
-        ///     The name of the file this profile is stored in on the system.
-        /// </summary>
-        [ReadOnly(true)]
-        [DisplayName("Profile file name")]
-        [Description("The local file name of this profile.")]
-        public string FileName
-        {
-            get { return string.Format("{0}.xml", Id.ToString("D")); }
-        }
-
         [DataMember]
         [ReadOnly(true)]
         [DisplayName("Pad ID")]
@@ -198,6 +187,7 @@ namespace ScpControl.Shared.Core
         [DisplayName("Match profile on")]
         public DsMatch Match { get; set; }
 
+        [Browsable(false)]
         private IEnumerable<DsButtonProfile> Buttons
         {
             get

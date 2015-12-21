@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using DBreeze;
+using Newtonsoft.Json;
 using ScpControl.ScpCore;
 
 namespace ScpControl.Database
@@ -27,6 +28,17 @@ namespace ScpControl.Database
 
         public ScpDb()
         {
+            var jSettings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All
+            };
+
+            DBreeze.Utils.CustomSerializator.Serializator =
+                o => JsonConvert.SerializeObject(o, Formatting.Indented, jSettings);
+
+            DBreeze.Utils.CustomSerializator.Deserializator = 
+                (s, type) => JsonConvert.DeserializeObject(s, jSettings);
+
             Engine = new DBreezeEngine(DbPath);
         }
 
