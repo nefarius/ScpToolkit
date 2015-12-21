@@ -4,15 +4,15 @@ namespace ScpControl.Bluetooth
 {
     public sealed class BthHandle : IEquatable<BthHandle>, IComparable<BthHandle>
     {
-        private readonly byte[] _mHandle = new byte[2] { 0x00, 0x00 };
-        private readonly ushort _mValue;
+        private readonly byte[] _handle = new byte[2] { 0x00, 0x00 };
+        private readonly ushort _value;
 
         public BthHandle(byte lsb, byte msb)
         {
-            _mHandle[0] = lsb;
-            _mHandle[1] = msb;
+            _handle[0] = lsb;
+            _handle[1] = msb;
 
-            _mValue = (ushort)(_mHandle[0] | (ushort)(_mHandle[1] << 8));
+            _value = (ushort)(_handle[0] | (ushort)(_handle[1] << 8));
         }
 
         public BthHandle(byte[] handle)
@@ -27,38 +27,38 @@ namespace ScpControl.Bluetooth
 
         public byte[] Bytes
         {
-            get { return _mHandle; }
+            get { return _handle; }
         }
 
         public ushort Short
         {
-            get { return _mValue; }
+            get { return _value; }
         }
 
         #region IComparable<BthHandle> Members
 
         public int CompareTo(BthHandle other)
         {
-            return _mValue.CompareTo(other._mValue);
+            return _value.CompareTo(other._value);
         }
 
         #endregion
 
         public override string ToString()
         {
-            return string.Format("{0:X4}", _mValue);
+            return string.Format("{0:X4}", _value);
         }
 
         #region IEquatable<BthHandle> Members
 
         public bool Equals(BthHandle other)
         {
-            return _mValue == other._mValue;
+            return _value == other._value;
         }
 
         public bool Equals(byte lsb, byte msb)
         {
-            return _mHandle[0] == lsb && _mHandle[1] == msb;
+            return _handle[0] == lsb && _handle[1] == msb;
         }
 
         public bool Equals(byte[] other)
