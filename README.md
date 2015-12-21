@@ -53,7 +53,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 4. Wait for the Setup to finish.
   * If you're performing a fresh installation, run the Driver Installer afterwards.
   * If you're upgrading from an older installation you may skip the Driver Installer.
-5. When running the Driver Installer, chose your Bluetooth and controller devices you like to use with ScpToolkit.
+5. When running the Driver Installer, choose your Bluetooth and controller devices you like to use with ScpToolkit.
 6. The next step depends on your operating system:
  - Vista: check the Force Install option.
  - Win 7/8/8.1/10: leave it unchecked (or check if you're facing installation troubles, might help).
