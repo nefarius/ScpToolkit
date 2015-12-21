@@ -35,7 +35,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [Microsoft .NET Framework 4.5](https://www.microsoft.com/en-US/download/details.aspx?id=42642)
  * [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-US/download/details.aspx?id=5555)
  * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=40784)
- * [DirectX Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=35)
+ * [DirectX Runtime](https://www.microsoft.com/en-us/download/details.aspx?DisplayLang=en&id=35)
  * [Xbox 360 Controller driver](https://www.microsoft.com/hardware/en-US/d/xbox-360-controller-for-windows)
   * Already integrated in Windows 8.x or greater
  * At least one supported Sony DualShock 3/4 controller (see **Compatible Controllers**)
@@ -53,7 +53,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 4. Wait for the Setup to finish.
   * If you're performing a fresh installation, run the Driver Installer afterwards.
   * If you're upgrading from an older installation you may skip the Driver Installer.
-5. When running the Driver Installer, chose your Bluetooth and controller devices you like to use with ScpToolkit.
+5. When running the Driver Installer, choose your Bluetooth and controller devices you like to use with ScpToolkit.
 6. The next step depends on your operating system:
  - Vista: check the Force Install option.
  - Win 7/8/8.1/10: leave it unchecked (or check if you're facing installation troubles, might help).
