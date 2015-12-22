@@ -29,6 +29,8 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [AutoDependencyProperty.Fody](http://blog.angeloflogic.com/2014/12/no-more-dependencyproperty-with.html)
  * [LoadAssembliesOnStartup](https://github.com/Fody/LoadAssembliesOnStartup)
  * [Costura](https://github.com/Fody/Costura/)
+ * [DBreeze NoSql embedded object DBMS](https://dbreeze.codeplex.com/)
+ * [JSON.NET](http://json.codeplex.com/)
 
 ## Installation requirements
  * Microsoft Windows Vista/7/8/8.1/10 x86 or amd64
