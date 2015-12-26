@@ -66,6 +66,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>Copy /Y /B $(SolutionDir)\ScpControl\Properties\CommonInfo.cs $(ProjectDir)\Properties\CommonInfo.cs &gt; nul:</PreBuildEvent>
