@@ -16,6 +16,7 @@ namespace ScpControl.Shared.Core
         bool IsPressed { get; set; }
         float Pressure { get; }
         byte Value { get; }
+        X360Button Xbox360Button { get; set; }
     }
 
     /// <summary>
@@ -63,6 +64,8 @@ namespace ScpControl.Shared.Core
         {
             get { return (byte) (IsPressed ? 0xFF : 0x00); }
         }
+
+        public X360Button Xbox360Button { get; set; }
 
         #endregion
     }

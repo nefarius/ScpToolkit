@@ -324,6 +324,9 @@ namespace ScpControl.Shared.Core
 
                     _currentDsButtonState.IsPressed = !button.Equals(Ds3Button.None) &&
                                                       (buttons & button.Offset) == button.Offset;
+                    _currentDsButtonState.Xbox360Button = _currentDsButtonState.IsPressed
+                        ? button.Xbox360Button
+                        : X360Button.None;
 
                     return _currentDsButtonState;
                 }
@@ -335,6 +338,9 @@ namespace ScpControl.Shared.Core
 
                     _currentDsButtonState.IsPressed = !button.Equals(Ds4Button.None) &&
                                                       (buttons & button.Offset) == button.Offset;
+                    _currentDsButtonState.Xbox360Button = _currentDsButtonState.IsPressed
+                        ? button.Xbox360Button
+                        : X360Button.None;
 
                     return _currentDsButtonState;
                 }
