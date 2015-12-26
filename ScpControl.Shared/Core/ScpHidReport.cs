@@ -131,6 +131,7 @@ namespace ScpControl.Shared.Core
 
         public uint PacketCounter
         {
+            get { return (uint) ((RawBytes[7] << 24) | (RawBytes[6] << 16) | (RawBytes[5] << 8) | (RawBytes[4] << 0)); }
             set
             {
                 RawBytes[4] = (byte) (value >> 0 & 0xFF);

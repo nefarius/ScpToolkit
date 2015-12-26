@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using ScpControl.Shared.Core;
 
 namespace ScpXInputBridge
 {
@@ -10,8 +9,7 @@ namespace ScpXInputBridge
         [StructLayout(LayoutKind.Sequential)]
         public struct XINPUT_GAMEPAD
         {
-            [MarshalAs(UnmanagedType.U2)]
-            public X360Button wButtons;
+            public ushort wButtons;
             public byte bLeftTrigger;
             public byte bRightTrigger;
             public short sThumbLX;
