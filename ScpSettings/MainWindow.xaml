@@ -342,7 +342,8 @@
             <controls:AccordionItem Header="Service settings">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
                     <GroupBox Header="Driver settings"
@@ -357,6 +358,12 @@
                         </StackPanel>
                     </GroupBox>
 
+                    <GroupBox Header="Virtual Xbox 360 controller driver"
+                              Grid.Row="1">
+                        <StackPanel>
+                            <CheckBox IsChecked="{Binding Path=IsVBusDisabled}">Disable Virtual Bus</CheckBox>
+                        </StackPanel>
+                    </GroupBox>
                 </Grid>
             </controls:AccordionItem>
 

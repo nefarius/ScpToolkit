@@ -210,6 +210,8 @@ namespace ScpControl.ScpCore
             }
         }
 
+        #region Service settings
+
         public bool ForceBluetoothDriverReinstallation
         {
             get { return Settings.Default.ForceBluetoothDriverReinstallation; }
@@ -228,6 +230,14 @@ namespace ScpControl.ScpCore
             set { Settings.Default.ForceDs4DriverReinstallation = value; }
         }
 
+        public bool IsVBusDisabled
+        {
+            get { return Settings.Default.IsVBusDisabled; }
+            set { Settings.Default.IsVBusDisabled = value; }
+        }
+
+        #endregion
+        
         #region Sound settings
 
         public bool SoundsEnabled
@@ -369,6 +379,8 @@ namespace ScpControl.ScpCore
 
         #endregion
 
+        #region PCSX2 settings
+
         public string Pcsx2RootPath
         {
             get { return Settings.Default.Pcsx2RootPath; }
@@ -380,6 +392,8 @@ namespace ScpControl.ScpCore
             get { return Settings.Default.IsPressureSensitivityModEnabled; }
             set { Settings.Default.IsPressureSensitivityModEnabled = (value == true); }
         }
+
+        #endregion
 
         #endregion
     }

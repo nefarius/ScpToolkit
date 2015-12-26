@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.Utilities;
@@ -327,6 +326,8 @@ namespace ScpControl
 
         public bool Plugin(int serial)
         {
+            if (GlobalConfiguration.Instance.IsVBusDisabled) return true;
+
             var retVal = false;
 
             if (serial < 1 || serial > BusWidth) return retVal;
@@ -370,6 +371,8 @@ namespace ScpControl
 
         public bool Unplug(int serial)
         {
+            if (GlobalConfiguration.Instance.IsVBusDisabled) return true;
+
             var retVal = false;
             serial += m_Offset;
 
