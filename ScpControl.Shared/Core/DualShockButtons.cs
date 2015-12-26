@@ -29,6 +29,7 @@ namespace ScpControl.Shared.Core
         int MaskOffset { get; }
         int ArrayIndex { get; }
         void ToggleBit(ref byte source, bool value);
+        X360Button Xbox360Button { get; }
     }
 
     #endregion
@@ -114,6 +115,12 @@ namespace ScpControl.Shared.Core
         /// </summary>
         [DataMember]
         public int ArrayIndex { get; protected set; }
+
+        /// <summary>
+        ///     The equivalent button on an Xbox 360 controller.
+        /// </summary>
+        [DataMember]
+        public X360Button Xbox360Button { get; protected set; }
 
         #endregion
 
@@ -208,7 +215,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 0,
             DisplayName = "Select",
             ArrayIndex = 10,
-            MaskOffset = 0
+            MaskOffset = 0,
+            Xbox360Button = X360Button.Back
         });
 
         public static IDsButton Select
@@ -221,7 +229,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 1,
             DisplayName = "Left thumb",
             ArrayIndex = 10,
-            MaskOffset = 1
+            MaskOffset = 1,
+            Xbox360Button = X360Button.LS
         });
 
         public static IDsButton L3
@@ -234,7 +243,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 2,
             DisplayName = "Right thumb",
             ArrayIndex = 10,
-            MaskOffset = 2
+            MaskOffset = 2,
+            Xbox360Button = X360Button.RS
         });
 
         public static IDsButton R3
@@ -247,7 +257,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 3,
             DisplayName = "Start",
             ArrayIndex = 10,
-            MaskOffset = 3
+            MaskOffset = 3,
+            Xbox360Button = X360Button.Start
         });
 
         public static IDsButton Start
@@ -260,7 +271,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 4,
             DisplayName = "D-Pad up",
             ArrayIndex = 10,
-            MaskOffset = 4
+            MaskOffset = 4,
+            Xbox360Button = X360Button.Up
         });
 
         public static IDsButton Up
@@ -273,7 +285,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 5,
             DisplayName = "D-Pad right",
             ArrayIndex = 10,
-            MaskOffset = 5
+            MaskOffset = 5,
+            Xbox360Button = X360Button.Right
         });
 
         public static IDsButton Right
@@ -286,7 +299,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 6,
             DisplayName = "D-Pad down",
             ArrayIndex = 10,
-            MaskOffset = 6
+            MaskOffset = 6,
+            Xbox360Button = X360Button.Down
         });
 
         public static IDsButton Down
@@ -299,7 +313,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 7,
             DisplayName = "D-Pad left",
             ArrayIndex = 10,
-            MaskOffset = 7
+            MaskOffset = 7,
+            Xbox360Button = X360Button.Left
         });
 
         public static IDsButton Left
@@ -338,7 +353,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 10,
             DisplayName = "Left shoulder",
             ArrayIndex = 11,
-            MaskOffset = 2
+            MaskOffset = 2,
+            Xbox360Button = X360Button.LB
         });
 
         public static IDsButton L1
@@ -351,7 +367,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 11,
             DisplayName = "Right shoulder",
             ArrayIndex = 11,
-            MaskOffset = 3
+            MaskOffset = 3,
+            Xbox360Button = X360Button.RB
         });
 
         public static IDsButton R1
@@ -364,7 +381,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 12,
             DisplayName = "Triangle",
             ArrayIndex = 11,
-            MaskOffset = 4
+            MaskOffset = 4,
+            Xbox360Button = X360Button.Y
         });
 
         public static IDsButton Triangle
@@ -377,7 +395,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 13,
             DisplayName = "Circle",
             ArrayIndex = 11,
-            MaskOffset = 5
+            MaskOffset = 5,
+            Xbox360Button = X360Button.B
         });
 
         public static IDsButton Circle
@@ -386,12 +405,13 @@ namespace ScpControl.Shared.Core
         }
 
         private static readonly Lazy<IDsButton> DsBtnCross = new Lazy<IDsButton>(() => new Ds3Button("Cross")
-                {
-                    Offset = 1 << 14,
-                    DisplayName = "Cross",
-                    ArrayIndex = 11,
-                    MaskOffset = 6
-                });
+        {
+            Offset = 1 << 14,
+            DisplayName = "Cross",
+            ArrayIndex = 11,
+            MaskOffset = 6,
+            Xbox360Button = X360Button.A
+        });
 
         public static IDsButton Cross
         {
@@ -403,7 +423,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 15,
             DisplayName = "Square",
             ArrayIndex = 11,
-            MaskOffset = 7
+            MaskOffset = 7,
+            Xbox360Button = X360Button.X
         });
 
         public static IDsButton Square
@@ -416,7 +437,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 16,
             DisplayName = "PS",
             ArrayIndex = 12,
-            MaskOffset = 0
+            MaskOffset = 0,
+            Xbox360Button = X360Button.Guide
         });
 
         public static IDsButton Ps
@@ -478,7 +500,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 0,
             DisplayName = "D-Pad up",
             ArrayIndex = 13,
-            MaskOffset = 0
+            MaskOffset = 0,
+            Xbox360Button = X360Button.Up
         });
 
         public static IDsButton Up
@@ -491,7 +514,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 1,
             DisplayName = "D-Pad right",
             ArrayIndex = 13,
-            MaskOffset = 1
+            MaskOffset = 1,
+            Xbox360Button = X360Button.Right
         });
 
         public static IDsButton Right
@@ -504,7 +528,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 2,
             DisplayName = "D-Pad down",
             ArrayIndex = 13,
-            MaskOffset = 2
+            MaskOffset = 2,
+            Xbox360Button = X360Button.Down
         });
 
         public static IDsButton Down
@@ -517,7 +542,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 3,
             DisplayName = "D-Pad left",
             ArrayIndex = 13,
-            MaskOffset = 3
+            MaskOffset = 3,
+            Xbox360Button = X360Button.Left
         });
 
         public static IDsButton Left
@@ -530,7 +556,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 4,
             DisplayName = "Square",
             ArrayIndex = 13,
-            MaskOffset = 4
+            MaskOffset = 4,
+            Xbox360Button = X360Button.X
         });
 
         public static IDsButton Square
@@ -543,7 +570,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 5,
             DisplayName = "Cross",
             ArrayIndex = 13,
-            MaskOffset = 5
+            MaskOffset = 5,
+            Xbox360Button = X360Button.A
         });
 
         public static IDsButton Cross
@@ -556,7 +584,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 6,
             DisplayName = "Circle",
             ArrayIndex = 13,
-            MaskOffset = 6
+            MaskOffset = 6,
+            Xbox360Button = X360Button.B
         });
 
         public static IDsButton Circle
@@ -569,7 +598,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 7,
             DisplayName = "Triangle",
             ArrayIndex = 13,
-            MaskOffset = 7
+            MaskOffset = 7,
+            Xbox360Button = X360Button.Y
         });
 
         public static IDsButton Triangle
@@ -582,7 +612,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 8,
             DisplayName = "Left shoulder",
             ArrayIndex = 14,
-            MaskOffset = 0
+            MaskOffset = 0,
+            Xbox360Button = X360Button.LB
         });
 
         public static IDsButton L1
@@ -595,7 +626,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 9,
             DisplayName = "Right shoulder",
             ArrayIndex = 14,
-            MaskOffset = 1
+            MaskOffset = 1,
+            Xbox360Button = X360Button.RB
         });
 
         public static IDsButton R1
@@ -634,7 +666,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 12,
             DisplayName = "Share",
             ArrayIndex = 14,
-            MaskOffset = 4
+            MaskOffset = 4,
+            Xbox360Button = X360Button.Back
         });
 
         public static IDsButton Share
@@ -647,7 +680,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 13,
             DisplayName = "Options",
             ArrayIndex = 14,
-            MaskOffset = 5
+            MaskOffset = 5,
+            Xbox360Button = X360Button.Start
         });
 
         public static IDsButton Options
@@ -660,7 +694,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 14,
             DisplayName = "Left thumb",
             ArrayIndex = 14,
-            MaskOffset = 6
+            MaskOffset = 6,
+            Xbox360Button = X360Button.LS
         });
 
         public static IDsButton L3
@@ -673,7 +708,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 15,
             DisplayName = "Right thumb",
             ArrayIndex = 14,
-            MaskOffset = 7
+            MaskOffset = 7,
+            Xbox360Button = X360Button.RS
         });
 
         public static IDsButton R3
@@ -686,7 +722,8 @@ namespace ScpControl.Shared.Core
             Offset = 1 << 16,
             DisplayName = "PS",
             ArrayIndex = 15,
-            MaskOffset = 0
+            MaskOffset = 0,
+            Xbox360Button = X360Button.Guide
         });
 
         public static IDsButton Ps

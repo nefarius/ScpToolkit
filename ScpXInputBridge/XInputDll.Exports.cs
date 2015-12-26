@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using RGiesecke.DllExport;
+using ScpControl.Shared.Core;
 
 namespace ScpXInputBridge
 {
@@ -38,6 +39,11 @@ namespace ScpXInputBridge
         [DllExport("XInputGetState", CallingConvention.StdCall)]
         public static uint XInputGetState(uint dwUserIndex, ref XINPUT_STATE pState)
         {
+            var report = Proxy.GetReport(dwUserIndex);
+            var xPad = new XINPUT_GAMEPAD();
+
+            
+
             return OriginalXInputGetStateFunction.Value(dwUserIndex, ref pState);
         }
 
