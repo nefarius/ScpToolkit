@@ -1,10 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
-using MadMilkman.Ini;
+using Microsoft.Win32;
 
 namespace ScpXInputBridge
 {
@@ -48,6 +49,60 @@ namespace ScpXInputBridge
 
         #endregion
 
+        #region Private properties
+
+        private static string BasePath
+        {
+            get
+            {
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                {
+                    using (
+                        var regKey = hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit\ScpControl", false)
+                        )
+                    {
+                        return (regKey != null) ? (string) regKey.GetValue("BasePath") : string.Empty;
+                    }
+                }
+            }
+        }
+
+        private static string BaseName
+        {
+            get
+            {
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                {
+                    using (
+                        var regKey =
+                            hklm.OpenSubKey(
+                                @"SOFTWARE\Nefarius Software Solutions\ScpToolkit\ScpControl", false))
+                    {
+                        return (regKey != null) ? (string) regKey.GetValue("BaseName") : string.Empty;
+                    }
+                }
+            }
+        }
+
+        private static string XInputDllPath
+        {
+            get
+            {
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                {
+                    using (
+                        var regKey =
+                            hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit\XInput",
+                                false))
+                    {
+                        return (regKey != null) ? (string) regKey.GetValue("DllPathOverride") : string.Empty;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
         #region Methods
 
         /// <summary>
@@ -77,29 +132,11 @@ namespace ScpXInputBridge
 
             Log.InfoFormat("Initializing library {0} [{1}]", myself.Name, myself.Version);
 
-            var iniOpts = new IniOptions
-            {
-                CommentStarter = IniCommentStarter.Semicolon
-            };
-
-            var ini = new IniFile(iniOpts);
-            var fullPath = Path.Combine(WorkingDirectory, CfgFile);
-            Log.DebugFormat("INI-File path: {0}", fullPath);
-
-            if (!File.Exists(fullPath))
-            {
-                Log.FatalFormat("Configuration file {0} not found", fullPath);
-                return;
-            }
-
             try
             {
-                // parse data from INI
-                ini.Load(fullPath);
-
-                var basePath = ini.Sections["ScpControl"].Keys["BinPath"].Value;
+                var basePath = BasePath;
                 Log.DebugFormat("ScpToolkit bin path: {0}", basePath);
-                var binName = ini.Sections["ScpControl"].Keys["BinName"].Value;
+                var binName = BaseName;
                 Log.DebugFormat("ScpControl bin path: {0}", binName);
 
                 // resolve assembly dependencies
@@ -127,16 +164,16 @@ namespace ScpXInputBridge
             }
 
             // if no custom path specified by user, use DLL in system32 dir
-            var xinput13Path = ini.Sections["Original XInput DLL"].Keys.Contains("OriginalFilePath")
-                ? ini.Sections["Original XInput DLL"].Keys["OriginalFilePath"].Value
-                : Path.Combine(Environment.SystemDirectory, "xinput1_3.dll");
-            Log.DebugFormat("Original XInput DLL path: {0}", xinput13Path);
+            var xinputPath = (!string.IsNullOrEmpty(XInputDllPath) && File.Exists(XInputDllPath))
+                ? XInputDllPath
+                : Path.Combine(Environment.SystemDirectory, string.Format("{0}.dll", myself.Name));
+            Log.DebugFormat("Original XInput DLL path: {0}", xinputPath);
 
-            NativeDllHandle = Kernel32Natives.LoadLibrary(xinput13Path);
+            NativeDllHandle = Kernel32Natives.LoadLibrary(xinputPath);
 
             if (NativeDllHandle == IntPtr.Zero)
             {
-                Log.FatalFormat("Couldn't load native DLL");
+                Log.FatalFormat("Couldn't load native DLL: {0}", new Win32Exception(Marshal.GetLastWin32Error()));
                 return;
             }
 

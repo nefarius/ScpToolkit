@@ -72,9 +72,6 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.4\lib\net45-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MadMilkman.Ini">
-      <HintPath>..\packages\MadMilkman.Ini.1.0.5.0\lib\net20\MadMilkman.Ini.dll</HintPath>
-    </Reference>
     <Reference Include="RGiesecke.DllExport.Metadata">
       <HintPath>..\packages\UnmanagedExports.1.2.7\lib\net\RGiesecke.DllExport.Metadata.dll</HintPath>
       <Private>False</Private>
@@ -95,9 +92,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="FodyWeavers.xml" />
-    <Content Include="ScpXInput.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="XInput_log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
