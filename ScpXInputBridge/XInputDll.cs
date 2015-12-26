@@ -129,8 +129,10 @@ namespace ScpXInputBridge
                 Process.GetCurrentProcess().MainWindowTitle);
 
             var myself = Assembly.GetExecutingAssembly().GetName();
+            var myPath = Assembly.GetExecutingAssembly().Location;
+            var myName = Path.GetFileName(myPath);
 
-            Log.InfoFormat("Initializing library {0} [{1}]", myself.Name, myself.Version);
+            Log.InfoFormat("Initializing library {0} [{1}]", myName, myself.Version);
 
             try
             {
@@ -166,7 +168,7 @@ namespace ScpXInputBridge
             // if no custom path specified by user, use DLL in system32 dir
             var xinputPath = (!string.IsNullOrEmpty(XInputDllPath) && File.Exists(XInputDllPath))
                 ? XInputDllPath
-                : Path.Combine(Environment.SystemDirectory, string.Format("{0}.dll", myself.Name));
+                : Path.Combine(Environment.SystemDirectory, myName);
             Log.DebugFormat("Original XInput DLL path: {0}", xinputPath);
 
             NativeDllHandle = Kernel32Natives.LoadLibrary(xinputPath);

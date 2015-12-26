@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScpMonitor", "ScpMonitor\ScpMonitor.csproj", "{6C9F554E-90D6-449C-91E9-130D476D88B5}"
 EndProject
@@ -317,7 +317,6 @@ Global
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Debug|Win32.Build.0 = Win8.1 Debug|Win32
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Debug|Win32.Deploy.0 = Win8.1 Debug|Win32
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Debug|x64.ActiveCfg = Win8.1 Debug|x64
-		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Debug|x64.Build.0 = Win8.1 Debug|x64
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Debug|x64.Deploy.0 = Win8.1 Debug|x64
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Debug|x86.ActiveCfg = Win8 Debug|Win32
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Release|Any CPU.ActiveCfg = Win8.1 Release|Win32
@@ -328,7 +327,6 @@ Global
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Release|Win32.Build.0 = Win8.1 Release|Win32
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Release|Win32.Deploy.0 = Win8.1 Release|Win32
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Release|x64.ActiveCfg = Win8.1 Release|x64
-		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Release|x64.Build.0 = Win8.1 Release|x64
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Release|x64.Deploy.0 = Win8.1 Release|x64
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Release|x86.ActiveCfg = Win8 Release|Win32
 		{5E74D4FF-6121-468C-9697-D9D2FE8054AA}.Win7 Debug|Any CPU.ActiveCfg = Win7 Debug|Win32
@@ -405,7 +403,6 @@ Global
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Debug|Win32.Build.0 = Win8.1 Debug|Win32
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Debug|Win32.Deploy.0 = Win8.1 Debug|Win32
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Debug|x64.ActiveCfg = Win8.1 Debug|x64
-		{E34D279E-2B61-4EE3-95AE-165631857C37}.Debug|x64.Build.0 = Win8.1 Debug|x64
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Debug|x64.Deploy.0 = Win8.1 Debug|x64
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Debug|x86.ActiveCfg = Win8 Debug|Win32
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Release|Any CPU.ActiveCfg = Win8.1 Release|Win32
@@ -416,7 +413,6 @@ Global
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Release|Win32.Build.0 = Win8.1 Release|Win32
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Release|Win32.Deploy.0 = Win8.1 Release|Win32
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Release|x64.ActiveCfg = Win8.1 Release|x64
-		{E34D279E-2B61-4EE3-95AE-165631857C37}.Release|x64.Build.0 = Win8.1 Release|x64
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Release|x64.Deploy.0 = Win8.1 Release|x64
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Release|x86.ActiveCfg = Win8 Release|Win32
 		{E34D279E-2B61-4EE3-95AE-165631857C37}.Win7 Debug|Any CPU.ActiveCfg = Win7 Debug|Win32
