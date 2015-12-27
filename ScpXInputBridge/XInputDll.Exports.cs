@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using RGiesecke.DllExport;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.Utilities;
@@ -40,6 +41,8 @@ namespace ScpXInputBridge
         [DllExport("XInputGetState", CallingConvention.StdCall)]
         public static uint XInputGetState(uint dwUserIndex, ref XINPUT_STATE pState)
         {
+            Log.DebugFormat("dwUserIndex = {0}", dwUserIndex);
+
             if (OriginalXInputGetStateFunction.Value(dwUserIndex, ref pState) == ResultWin32.ERROR_SUCCESS)
             {
                 return ResultWin32.ERROR_SUCCESS;
@@ -190,7 +193,41 @@ namespace ScpXInputBridge
         public static uint XInputGetCapabilities(uint dwUserIndex, uint dwFlags,
             ref XINPUT_CAPABILITIES pCapabilities)
         {
-            return OriginalXInputGetCapabilitiesFunction.Value(dwUserIndex, dwFlags, ref pCapabilities);
+            Log.DebugFormat("dwUserIndex = {0}", dwUserIndex);
+
+            if (OriginalXInputGetCapabilitiesFunction.Value(dwUserIndex, dwFlags, ref pCapabilities) ==
+                ResultWin32.ERROR_SUCCESS)
+            {
+                return ResultWin32.ERROR_SUCCESS;
+            }
+
+            try
+            {
+                ScpHidReport report = Proxy.GetReport(dwUserIndex);
+                if (report == null || report.PadState != DsState.Connected)
+                {
+                    return ResultWin32.ERROR_DEVICE_NOT_CONNECTED;
+                }
+
+                pCapabilities.Type = XInputConstants.XINPUT_DEVTYPE_GAMEPAD;
+                pCapabilities.SubType = XInputConstants.XINPUT_DEVSUBTYPE_GAMEPAD;
+                pCapabilities.Flags = (ushort) (XInputConstants.CapabilityFlags.XINPUT_CAPS_FFB_SUPPORTED |
+                                                XInputConstants.CapabilityFlags.XINPUT_CAPS_WIRELESS);
+
+                pCapabilities.Gamepad = new XINPUT_GAMEPAD()
+                {
+                    wButtons = 0xFFFF,
+                    bLeftTrigger = 0xFF,
+                    bRightTrigger = 0xFF
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("Unexpected error: {0}", ex);
+                return ResultWin32.ERROR_DEVICE_NOT_CONNECTED;
+            }
+
+            return ResultWin32.ERROR_SUCCESS;
         }
 
         /// <summary>
