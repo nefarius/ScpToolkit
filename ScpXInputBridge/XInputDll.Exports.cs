@@ -41,8 +41,6 @@ namespace ScpXInputBridge
         [DllExport("XInputGetState", CallingConvention.StdCall)]
         public static uint XInputGetState(uint dwUserIndex, ref XINPUT_STATE pState)
         {
-            Log.DebugFormat("dwUserIndex = {0}", dwUserIndex);
-
             if (OriginalXInputGetStateFunction.Value(dwUserIndex, ref pState) == ResultWin32.ERROR_SUCCESS)
             {
                 return ResultWin32.ERROR_SUCCESS;
@@ -50,7 +48,13 @@ namespace ScpXInputBridge
 
             try
             {
-                ScpHidReport report = Proxy.GetReport(dwUserIndex);
+                ScpHidReport report = null;
+
+                while (dwUserIndex == 0 && (report = Proxy.GetReport(dwUserIndex)) == null)
+                {
+                    Thread.Sleep(100);
+                }
+
                 if (report == null || report.PadState != DsState.Connected)
                 {
                     return ResultWin32.ERROR_DEVICE_NOT_CONNECTED;
