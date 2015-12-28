@@ -12,9 +12,9 @@ namespace ScpControl
         #region Private fields
 
         private const int BusWidth = 4;
-        private readonly List<int> m_Plugged = new List<int>();
-        private int m_Offset;
-        private DsState m_State = DsState.Disconnected;
+        private readonly List<int> _pluggedInDevices = new List<int>();
+        private int _busOffset;
+        private DsState _busState = DsState.Disconnected;
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace ScpControl
 
         public DsState State
         {
-            get { return m_State; }
+            get { return _busState; }
         }
 
         #endregion
@@ -58,33 +58,29 @@ namespace ScpControl
 
         #endregion
 
-        #region Private methods
+        #region Public methods
 
         /// <summary>
         ///     Translates Pad ID to bus device offset.
         /// </summary>
         /// <param name="index">The Pad ID to translate.</param>
         /// <returns>The bus device serial.</returns>
-        private int IndexToSerial(byte index)
+        public int IndexToSerial(byte index)
         {
-            return index + m_Offset + 1;
+            return index + _busOffset + 1;
         }
-
-        #endregion
-
-        #region Public methods
 
         public override bool Open(int instance = 0)
         {
             if (State == DsState.Disconnected)
             {
-                m_Offset = instance*BusWidth;
+                _busOffset = instance*BusWidth;
 
-                Log.DebugFormat("-- Bus Open: Offset {0}", m_Offset);
+                Log.DebugFormat("-- Bus Open: Offset {0}", _busOffset);
 
                 if (!base.Open(0))
                 {
-                    Log.ErrorFormat("-- Bus Open: Offset {0} failed", m_Offset);
+                    Log.ErrorFormat("-- Bus Open: Offset {0} failed", _busOffset);
                 }
             }
 
@@ -102,7 +98,7 @@ namespace ScpControl
                 if (GetDeviceHandle(Path))
                 {
                     IsActive = true;
-                    m_State = DsState.Reserved;
+                    _busState = DsState.Reserved;
                 }
             }
 
@@ -113,7 +109,7 @@ namespace ScpControl
         {
             if (State == DsState.Reserved)
             {
-                m_State = DsState.Connected;
+                _busState = DsState.Connected;
             }
 
             return State == DsState.Connected;
@@ -125,14 +121,14 @@ namespace ScpControl
             {
                 var Items = new Queue<int>();
 
-                lock (m_Plugged)
+                lock (_pluggedInDevices)
                 {
-                    foreach (var serial in m_Plugged) Items.Enqueue(serial - m_Offset);
+                    foreach (var serial in _pluggedInDevices) Items.Enqueue(serial - _busOffset);
                 }
 
                 while (Items.Count > 0) Unplug(Items.Dequeue());
 
-                m_State = DsState.Reserved;
+                _busState = DsState.Reserved;
             }
 
             return State == DsState.Reserved;
@@ -142,14 +138,14 @@ namespace ScpControl
         {
             if (base.Stop())
             {
-                m_State = DsState.Reserved;
+                _busState = DsState.Reserved;
             }
 
             if (State != DsState.Reserved)
             {
                 if (base.Close())
                 {
-                    m_State = DsState.Disconnected;
+                    _busState = DsState.Disconnected;
                 }
             }
 
@@ -332,13 +328,13 @@ namespace ScpControl
 
             if (serial < 1 || serial > BusWidth) return retVal;
 
-            serial += m_Offset;
+            serial += _busOffset;
 
             if (State == DsState.Connected)
             {
-                lock (m_Plugged)
+                lock (_pluggedInDevices)
                 {
-                    if (!m_Plugged.Contains(serial))
+                    if (!_pluggedInDevices.Contains(serial))
                     {
                         var transfered = 0;
                         var buffer = new byte[16];
@@ -356,7 +352,7 @@ namespace ScpControl
                         if (DeviceIoControl(FileHandle, 0x2A4000, buffer, buffer.Length, null, 0, ref transfered,
                             IntPtr.Zero))
                         {
-                            m_Plugged.Add(serial);
+                            _pluggedInDevices.Add(serial);
                             retVal = true;
 
                             Log.DebugFormat("-- Bus Plugin : Serial {0}", serial);
@@ -374,13 +370,13 @@ namespace ScpControl
             if (GlobalConfiguration.Instance.IsVBusDisabled) return true;
 
             var retVal = false;
-            serial += m_Offset;
+            serial += _busOffset;
 
             if (State == DsState.Connected)
             {
-                lock (m_Plugged)
+                lock (_pluggedInDevices)
                 {
-                    if (m_Plugged.Contains(serial))
+                    if (_pluggedInDevices.Contains(serial))
                     {
                         var transfered = 0;
                         var buffer = new byte[16];
@@ -398,7 +394,7 @@ namespace ScpControl
                         if (DeviceIoControl(FileHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered,
                             IntPtr.Zero))
                         {
-                            m_Plugged.Remove(serial);
+                            _pluggedInDevices.Remove(serial);
                             retVal = true;
 
                             Log.DebugFormat("-- Bus Unplug : Serial {0}", serial);

@@ -340,31 +340,40 @@
 
             <!-- Service settings -->
             <controls:AccordionItem Header="Service settings">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <GroupBox Header="Driver settings"
-                              Grid.Row="0">
-                        <StackPanel>
-                            <TextBlock>
-                                By checking one or more of the checkboxes below the service will check you device drivers on every start-up and re-applies the correct driver on your Bluetooth dongle or Usb-wired DualShock controllers to ensure proper communication with the software.
-                            </TextBlock>
-                            <CheckBox IsChecked="{Binding Path=ForceBluetoothDriverReinstallation}">Force Bluetooth driver installation</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=ForceDs3DriverReinstallation}">Force DualShock 3 driver installation</CheckBox>
-                            <CheckBox IsChecked="{Binding Path=ForceDs4DriverReinstallation}">Force DualShock 4 driver installation</CheckBox>
-                        </StackPanel>
-                    </GroupBox>
+                        <GroupBox Header="Driver settings"
+                                  Grid.Row="0">
+                            <StackPanel>
+                                <TextBlock>
+                                    By checking one or more of the checkboxes below the service will check you device drivers on every start-up and re-applies the correct driver on your Bluetooth dongle or Usb-wired DualShock controllers to ensure proper communication with the software.
+                                </TextBlock>
+                                <CheckBox IsChecked="{Binding Path=ForceBluetoothDriverReinstallation}">Force Bluetooth driver installation</CheckBox>
+                                <CheckBox IsChecked="{Binding Path=ForceDs3DriverReinstallation}">Force DualShock 3 driver installation</CheckBox>
+                                <CheckBox IsChecked="{Binding Path=ForceDs4DriverReinstallation}">Force DualShock 4 driver installation</CheckBox>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <GroupBox Header="Virtual Xbox 360 controller driver"
-                              Grid.Row="1">
-                        <StackPanel>
-                            <CheckBox IsChecked="{Binding Path=IsVBusDisabled}">Disable Virtual Bus</CheckBox>
-                        </StackPanel>
-                    </GroupBox>
-                </Grid>
+                        <GroupBox Header="Virtual Xbox 360 controller driver"
+                                  Grid.Row="1">
+                            <StackPanel>
+                                <TextBlock>
+                                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+                                </TextBlock>
+                                <CheckBox IsChecked="{Binding Path=IsVBusDisabled}">Disable Virtual Bus events</CheckBox>
+                                <TextBlock>
+                                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+                                </TextBlock>
+                                <CheckBox IsChecked="{Binding Path=AlwaysDisconnectVirtualBusDevice}">Always unplug virtual controller</CheckBox>
+                            </StackPanel>
+                        </GroupBox>
+                    </Grid>
+                </ScrollViewer>
             </controls:AccordionItem>
 
             <!-- Sound settings -->

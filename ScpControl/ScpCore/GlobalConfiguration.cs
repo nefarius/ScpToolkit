@@ -236,6 +236,12 @@ namespace ScpControl.ScpCore
             set { Settings.Default.IsVBusDisabled = value; }
         }
 
+        public bool AlwaysDisconnectVirtualBusDevice
+        {
+            get { return Settings.Default.AlwaysDisconnectVirtualBusDevice; }
+            set { Settings.Default.AlwaysDisconnectVirtualBusDevice = value; }
+        }
+
         #endregion
         
         #region Sound settings

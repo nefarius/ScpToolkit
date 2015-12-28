@@ -569,5 +569,18 @@ namespace ScpControl.Properties {
                 this["IsVBusDisabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AlwaysDisconnectVirtualBusDevice {
+            get {
+                return ((bool)(this["AlwaysDisconnectVirtualBusDevice"]));
+            }
+            set {
+                this["AlwaysDisconnectVirtualBusDevice"] = value;
+            }
+        }
     }
 }

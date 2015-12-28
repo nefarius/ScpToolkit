@@ -612,8 +612,14 @@ namespace ScpControl
 
             if (e.PadState != DsState.Connected)
             {
+                // reset rumble/vibration to off state
                 _mXInput[serial][0] = _mXInput[serial][1] = 0;
                 _mNative[serial][0] = _mNative[serial][1] = 0;
+
+                if (GlobalConfiguration.Instance.AlwaysDisconnectVirtualBusDevice)
+                {
+                    _scpBus.Unplug(_scpBus.IndexToSerial((byte) e.PadId));
+                }
             }
 
             // skip broadcast if native feed is disabled
