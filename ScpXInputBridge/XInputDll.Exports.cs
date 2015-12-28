@@ -4,6 +4,7 @@ using System.Threading;
 using RGiesecke.DllExport;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.Utilities;
+using ScpControl.Shared.XInput;
 
 namespace ScpXInputBridge
 {

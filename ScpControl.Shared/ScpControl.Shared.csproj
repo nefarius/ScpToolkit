@@ -62,6 +62,7 @@
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="Utilities\DsMath.cs" />
     <Compile Include="XInput\ScpXInputExtensions.cs" />
+    <Compile Include="XInput\XInputConstants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

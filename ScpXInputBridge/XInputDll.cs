@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
 using Microsoft.Win32;
+using ScpControl.Shared.XInput;
 
 namespace ScpXInputBridge
 {
