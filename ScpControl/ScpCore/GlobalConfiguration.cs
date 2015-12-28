@@ -242,6 +242,12 @@ namespace ScpControl.ScpCore
             set { Settings.Default.AlwaysDisconnectVirtualBusDevice = value; }
         }
 
+        public bool SkipOccupiedSlots
+        {
+            get { return Settings.Default.SkipOccupiedSlots; }
+            set { Settings.Default.SkipOccupiedSlots = value; }
+        }
+
         #endregion
         
         #region Sound settings

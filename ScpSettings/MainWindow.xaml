@@ -348,7 +348,7 @@
                         </Grid.RowDefinitions>
 
                         <GroupBox Header="Driver settings"
-                                  Grid.Row="0">
+                                  Grid.Row="0" Margin="0,0,0,10">
                             <StackPanel>
                                 <TextBlock>
                                     By checking one or more of the checkboxes below the service will check you device drivers on every start-up and re-applies the correct driver on your Bluetooth dongle or Usb-wired DualShock controllers to ensure proper communication with the software.
@@ -360,7 +360,7 @@
                         </GroupBox>
 
                         <GroupBox Header="Virtual Xbox 360 controller driver"
-                                  Grid.Row="1">
+                                  Grid.Row="1" Margin="0,0,0,10">
                             <StackPanel>
                                 <TextBlock>
                                     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
@@ -370,6 +370,10 @@
                                     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
                                 </TextBlock>
                                 <CheckBox IsChecked="{Binding Path=AlwaysDisconnectVirtualBusDevice}">Always unplug virtual controller</CheckBox>
+                                <TextBlock>
+                                    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam
+                                </TextBlock>
+                                <CheckBox IsChecked="{Binding Path=SkipOccupiedSlots}">Skip occupied gamepad slots</CheckBox>
                             </StackPanel>
                         </GroupBox>
                     </Grid>
