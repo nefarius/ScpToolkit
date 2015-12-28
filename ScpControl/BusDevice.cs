@@ -328,7 +328,15 @@ namespace ScpControl
 
             var retVal = false;
 
-            if (serial < 1 || serial > BusWidth) return retVal;
+            if (GlobalConfiguration.Instance.SkipOccupiedSlots)
+            {
+                while (IsSerialOccupied(serial) && serial < BusWidth)
+                {
+                    serial++;
+                }
+            }
+
+            if (serial < 1 || serial > BusWidth) return false;
 
             serial += _busOffset;
 
@@ -430,10 +438,15 @@ namespace ScpControl
 
         #region Private methods
 
-        private bool IsSlotOccupied(int serial)
+        private static bool IsSerialOccupied(int serial)
         {
+            if (--serial < 0 || serial > 3)
+            {
+                throw new ArgumentException(string.Format("Serial index ({0}) must be within range", serial));
+            }
+
             var state = new XINPUT_STATE();
-            return (XInputNatives.XInputGetState((uint)serial, ref state) == ResultWin32.ERROR_SUCCESS);
+            return (XInputNatives.XInputGetState((uint) serial, ref state) == ResultWin32.ERROR_SUCCESS);
         }
 
         #endregion
