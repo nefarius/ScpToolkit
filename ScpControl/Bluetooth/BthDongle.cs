@@ -186,13 +186,6 @@ namespace ScpControl.Bluetooth
 
             _state = DsState.Reserved;
 
-            // disconnect all connected devices gracefully
-            foreach (var device in _connected.Values)
-            {
-                device.Disconnect();
-                device.Stop();
-            }
-
             // notify tasks to stop work
             _hciCancellationTokenSource.Cancel();
             _l2CapCancellationTokenSource.Cancel();
@@ -200,7 +193,17 @@ namespace ScpControl.Bluetooth
             _hciCancellationTokenSource = new CancellationTokenSource();
             _l2CapCancellationTokenSource = new CancellationTokenSource();
 
-            _connected.Clear();
+            lock (_connected)
+            {
+                // disconnect all connected devices gracefully
+                foreach (var device in _connected.Values)
+                {
+                    device.Disconnect();
+                    device.Stop();
+                }
+
+                _connected.Clear();
+            }
 
             return base.Stop();
         }
