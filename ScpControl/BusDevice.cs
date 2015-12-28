@@ -4,6 +4,8 @@ using System.ComponentModel;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.Utilities;
+using ScpControl.Shared.XInput;
+using ScpControl.XInput;
 
 namespace ScpControl
 {
@@ -17,7 +19,7 @@ namespace ScpControl
         private DsState _busState = DsState.Disconnected;
 
         #endregion
-
+        
         #region Public properties
 
         public static int ReportSize
@@ -422,6 +424,16 @@ namespace ScpControl
             return
                 DeviceIoControl(FileHandle, 0x2A400C, input, input.Length, output, output.Length, ref transfered,
                     IntPtr.Zero) && transfered > 0;
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private bool IsSlotOccupied(int serial)
+        {
+            var state = new XINPUT_STATE();
+            return (XInputNatives.XInputGetState((uint)serial, ref state) == ResultWin32.ERROR_SUCCESS);
         }
 
         #endregion

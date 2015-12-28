@@ -308,6 +308,7 @@
     <Compile Include="Utilities\OsInfoHelper.cs" />
     <Compile Include="Utilities\StringExtensions.cs" />
     <Compile Include="Utilities\ThemeUtil.cs" />
+    <Compile Include="XInput\XInputNatives.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
