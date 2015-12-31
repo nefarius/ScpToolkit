@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using System.Threading;
 using RGiesecke.DllExport;
+#if !EXPERIMENTAL
+using System.Threading;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.Utilities;
+#endif
 using ScpControl.Shared.XInput;
 
 namespace ScpXInputBridge
@@ -42,6 +44,9 @@ namespace ScpXInputBridge
         [DllExport("XInputGetState", CallingConvention.StdCall)]
         public static uint XInputGetState(uint dwUserIndex, ref XINPUT_STATE pState)
         {
+#if !EXPERIMENTAL
+            return OriginalXInputGetStateFunction.Value(dwUserIndex, ref pState);
+#else
             if (OriginalXInputGetStateFunction.Value(dwUserIndex, ref pState) == ResultWin32.ERROR_SUCCESS)
             {
                 return ResultWin32.ERROR_SUCCESS;
@@ -158,6 +163,7 @@ namespace ScpXInputBridge
             }
 
             return ResultWin32.ERROR_SUCCESS;
+#endif
         }
 
         /// <summary>
@@ -198,6 +204,10 @@ namespace ScpXInputBridge
         public static uint XInputGetCapabilities(uint dwUserIndex, uint dwFlags,
             ref XINPUT_CAPABILITIES pCapabilities)
         {
+#if !EXPERIMENTAL
+            return OriginalXInputGetCapabilitiesFunction.Value(dwUserIndex, dwFlags, ref pCapabilities);
+#else
+
             Log.DebugFormat("dwUserIndex = {0}", dwUserIndex);
 
             if (OriginalXInputGetCapabilitiesFunction.Value(dwUserIndex, dwFlags, ref pCapabilities) ==
@@ -233,6 +243,7 @@ namespace ScpXInputBridge
             }
 
             return ResultWin32.ERROR_SUCCESS;
+#endif
         }
 
         /// <summary>
