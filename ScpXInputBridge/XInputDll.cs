@@ -56,30 +56,30 @@ namespace ScpXInputBridge
         {
             get
             {
-                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
                 {
                     using (
-                        var regKey = hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit\ScpControl", false)
+                        var regKey = hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit", false)
                         )
                     {
-                        return (regKey != null) ? (string) regKey.GetValue("BasePath") : string.Empty;
+                        return (regKey != null) ? (string) regKey.GetValue("Path") : string.Empty;
                     }
                 }
             }
         }
 
-        private static string BaseName
+        private static string ScpControlPath
         {
             get
             {
-                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
                 {
                     using (
                         var regKey =
                             hklm.OpenSubKey(
                                 @"SOFTWARE\Nefarius Software Solutions\ScpToolkit\ScpControl", false))
                     {
-                        return (regKey != null) ? (string) regKey.GetValue("BaseName") : string.Empty;
+                        return (regKey != null) ? (string) regKey.GetValue("Path") : string.Empty;
                     }
                 }
             }
@@ -89,7 +89,7 @@ namespace ScpXInputBridge
         {
             get
             {
-                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
                 {
                     using (
                         var regKey =
@@ -139,8 +139,8 @@ namespace ScpXInputBridge
             {
                 var basePath = BasePath;
                 Log.DebugFormat("ScpToolkit bin path: {0}", basePath);
-                var binName = BaseName;
-                Log.DebugFormat("ScpControl bin path: {0}", binName);
+                var controlPath = ScpControlPath;
+                Log.DebugFormat("ScpControl bin path: {0}", controlPath);
 
                 // resolve assembly dependencies
                 AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
@@ -153,7 +153,7 @@ namespace ScpXInputBridge
                     return Assembly.LoadFrom(asmPath);
                 };
 
-                var scpControl = Assembly.LoadFrom(Path.Combine(basePath, binName));
+                var scpControl = Assembly.LoadFrom(controlPath);
                 var scpProxyType = scpControl.GetType("ScpControl.ScpProxy");
 
                 Proxy = Activator.CreateInstance(scpProxyType);

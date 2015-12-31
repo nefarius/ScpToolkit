@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DOCUMENT Type="Advanced Installer" CreateVersion="12.4.2" version="12.6.1" Modules="enterprise" RootPath="." Language="en" Id="{4A610BC3-7F32-44FC-9153-310AC8708D94}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
-    <ROW Name="HiddenItems" Value="SerValComponent;AutorunComponent;MultipleInstancesComponent;MsiJavaComponent;MsiRegsComponent;MsiExtComponent;MsiDriverPackagesComponent;AnalyticsComponent;ActSyncAppComponent;MsiMergeModsComponent;DictionaryComponent;MsiEnvComponent;ScheduledTasksComponent;CPLAppletComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;WebApplicationsComponent;MsiOdbcDataSrcComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent;MsiDirectEditorComponent"/>
+    <ROW Name="HiddenItems" Value="SerValComponent;AutorunComponent;MultipleInstancesComponent;MsiJavaComponent;MsiExtComponent;MsiDriverPackagesComponent;AnalyticsComponent;ActSyncAppComponent;MsiMergeModsComponent;DictionaryComponent;MsiEnvComponent;ScheduledTasksComponent;CPLAppletComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;WebApplicationsComponent;MsiOdbcDataSrcComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent;MsiDirectEditorComponent"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="[|ProductName] Setup" ValueLocId="*"/>
-    <ROW Property="ARPHELPLINK" Value="http://forums.pcsx2.net/Thread-ScpToolkit-XInput-Wrapper-aka-ScpServer-Reloaded"/>
+    <ROW Property="ARPHELPLINK" Value="https://github.com/nefarius/ScpServer/issues"/>
     <ROW Property="ARPPRODUCTICON" Value="DualShock3.exe" Type="8"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/nefarius/ScpServer"/>
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{B3845CCF-E530-4EE4-8FC2-C02448E5F397} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{4DB6F58D-A87D-4087-8FD7-B87FC4C72054} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.228.15363" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.229.15365" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -101,6 +101,7 @@
     <ROW Component="Mapper" ComponentId="{27AA5C0B-D69E-4993-854F-A0F8CC433B9E}" Directory_="Mapper_Dir" Attributes="0"/>
     <ROW Component="Mono.CSharp.dll" ComponentId="{23669302-58D9-41C4-9F1B-1FEF2F18D632}" Directory_="APPDIR" Attributes="0" KeyPath="Mono.CSharp.dll"/>
     <ROW Component="Newtonsoft.Json.dll" ComponentId="{D1CD02D2-87A1-4D51-9FE7-7DA26FBCCF04}" Directory_="APPDIR" Attributes="0" KeyPath="Newtonsoft.Json.dll"/>
+    <ROW Component="Path" ComponentId="{A630DCAF-62A4-4C5B-AD65-51906DB7A227}" Directory_="APPDIR" Attributes="4" KeyPath="Path_1"/>
     <ROW Component="Plugins" ComponentId="{DFB25C8E-C3CD-43D9-B76F-F353C71CAA01}" Directory_="Plugins_Dir" Attributes="0"/>
     <ROW Component="ProductInformation" ComponentId="{35D0C342-2B78-4181-91B0-7D3480F551D3}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
     <ROW Component="Profiles" ComponentId="{ED907342-9A57-49E2-A5FC-B4CF70B0F79B}" Directory_="Profiles_Dir" Attributes="0"/>
@@ -191,7 +192,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="AI32BitFiles" Title="32-bit" Description="32-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="AI64BitFiles" Title="64-bit" Description="64-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
-    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mapper Mono.CSharp.dll Newtonsoft.Json.dll Plugins Profiles RetroArchProfile.script.cs SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpVBus.inf ScpVBus.inf_1 ScpVBus.inf_2 ScpVBus.inf_3 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libusb0.dll libusb0.dll_1 libusbK.dll libusbK.dll_1 libwdi.dll libwdi.dll_1 startup.ogg wdfcoinstaller01007.dll wdfcoinstaller01007.dll_1 wdfcoinstaller01009.dll wdfcoinstaller01009.dll_1 x64 x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1 xusb21.sys xusb21.sys_1 xusb21.sys_2 xusb21.sys_3"/>
+    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mapper Mono.CSharp.dll Newtonsoft.Json.dll Path Plugins Profiles RetroArchProfile.script.cs SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpVBus.inf ScpVBus.inf_1 ScpVBus.inf_2 ScpVBus.inf_3 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libusb0.dll libusb0.dll_1 libusbK.dll libusbK.dll_1 libwdi.dll libwdi.dll_1 startup.ogg wdfcoinstaller01007.dll wdfcoinstaller01007.dll_1 wdfcoinstaller01009.dll wdfcoinstaller01009.dll_1 x64 x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1 xusb21.sys xusb21.sys_1 xusb21.sys_2 xusb21.sys_3"/>
     <ROW Feature="B63_41B8_9CB7_8C5E07C0FC18_" Title="Visual C++ 2010 SP1 x64 (MFC Security Update)" Description="Visual C++ 2010 SP1 x64 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CA62D813A4E74FA2AAE86A7D7B7B1493" Title="Visual C++ Redistributable for Visual Studio 2013 x64" Description="Visual C++ Redistributable for Visual Studio 2013 x64" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" Title="Visual C++ 2010 SP1 x86 (MFC Security Update)" Description="Visual C++ 2010 SP1 x86 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
@@ -592,6 +593,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
     <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
+    <ROW Registry="Path_1" Root="-1" Key="Software\[Manufacturer]\[ProductName]\ScpControl" Name="Path" Value="[#ScpControl.dll]" Component_="Path"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
