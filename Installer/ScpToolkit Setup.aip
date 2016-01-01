@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{4DB6F58D-A87D-4087-8FD7-B87FC4C72054} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{402CC959-80BE-486E-B43D-A75F483B5A13} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.229.15365" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.231.16001" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>

@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>b5436925</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>8a118610</NuGetPackageImportStamp>
     <AssemblyInfoFilePath>Properties\CommonInfo.cs</AssemblyInfoFilePath>
     <UpdateAssemblyVersion>True</UpdateAssemblyVersion>
     <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.229.15365</AssemblyVersion>
+    <AssemblyVersion>1.6.232.16001</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,8 +47,8 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="CSScriptLibrary">
-      <HintPath>..\packages\CS-Script.3.9.17.0\lib\net45\CSScriptLibrary.dll</HintPath>
+    <Reference Include="CSScriptLibrary, Version=3.9.19.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
+      <HintPath>..\packages\CS-Script.3.9.19.0\lib\net45\CSScriptLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="DBreeze, Version=1.72.2015.827, Culture=neutral, PublicKeyToken=174b57f1c155f3c6, processorArchitecture=MSIL">
@@ -63,20 +63,21 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Libarius.1.14.1\lib\Libarius.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.14.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\log4net.2.0.4\lib\net45-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="MadMilkman.Ini, Version=1.0.5.0, Culture=neutral, PublicKeyToken=4e0b5157a7ffbb74, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MadMilkman.Ini.1.0.5.0\lib\net20\MadMilkman.Ini.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Mono.CSharp">
-      <HintPath>..\packages\CS-Script.3.9.17.0\lib\net45\Mono.CSharp.dll</HintPath>
+    <Reference Include="Mono.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\CS-Script.3.9.19.0\lib\net45\Mono.CSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationFramework" />
@@ -467,12 +468,12 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
+  <Import Project="..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.3\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.29.4\build\portable-net+sl+win+wpa+wp\Fody.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
