@@ -210,6 +210,9 @@
     <Compile Include="Usb\Ds3\Replica\UsbDs3QuadStick.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Usb\Gamepads\UsbMadcatzTournamentEdition2Fightstick.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Usb\Gamepads\UsbShanWanWirelessGamepad.cs">
       <SubType>Component</SubType>
     </Compile>

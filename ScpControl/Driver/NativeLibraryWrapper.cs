@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -43,28 +44,45 @@ namespace ScpControl.Driver
         {
             Log.DebugFormat("Preparing to load {0}", name);
 
-            // preloading the library matching the current architecture
-            if (Environment.Is64BitProcess)
+            try
             {
-                Log.DebugFormat("Called from 64-Bit process");
+                // preloading the library matching the current architecture
+                if (Environment.Is64BitProcess)
+                {
+                    Log.DebugFormat("Called from 64-Bit process");
 
-                var lib64 = Path.Combine(GlobalConfiguration.AppDirectory, amd64Path);
-                Log.DebugFormat("{0} path: {1}", name, lib64);
+                    var lib64 = Path.Combine(GlobalConfiguration.AppDirectory, amd64Path);
+                    Log.DebugFormat("{0} path: {1}", name, lib64);
 
-                Kernel32.LoadLibrary(lib64);
+                    if (Kernel32.LoadLibrary(lib64) == IntPtr.Zero)
+                    {
+                        Log.FatalFormat("Couldn't load library {0}: {1}", lib64,
+                            new Win32Exception(Marshal.GetLastWin32Error()));
+                        return;
+                    }
 
-                Log.DebugFormat("Loaded library: {0}", lib64);
+                    Log.DebugFormat("Loaded library: {0}", lib64);
+                }
+                else
+                {
+                    Log.DebugFormat("Called from 32-Bit process");
+
+                    var lib32 = Path.Combine(GlobalConfiguration.AppDirectory, x86Path);
+                    Log.DebugFormat("{0} path: {1}", name, lib32);
+
+                    if (Kernel32.LoadLibrary(lib32) == IntPtr.Zero)
+                    {
+                        Log.FatalFormat("Couldn't load library {0}: {1}", lib32,
+                            new Win32Exception(Marshal.GetLastWin32Error()));
+                        return;
+                    }
+
+                    Log.DebugFormat("Loaded library: {0}", lib32);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Log.DebugFormat("Called from 32-Bit process");
-
-                var lib32 = Path.Combine(GlobalConfiguration.AppDirectory, x86Path);
-                Log.DebugFormat("{0} path: {1}", name, lib32);
-
-                Kernel32.LoadLibrary(lib32);
-
-                Log.DebugFormat("Loaded library: {0}", lib32);
+                Log.FatalFormat("Couldn't load library {0}: {1}", name, ex);
             }
         }
     }

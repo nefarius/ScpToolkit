@@ -154,6 +154,8 @@ namespace ScpControl.Driver
                     {
                         Log.InfoFormat("Driver \"{0}\" successfully created in directory \"{1}\"", infName, driverPath);
 
+                        Log.InfoFormat("Starting driver installation, this might take up to five minutes...");
+
                         // install/replace the current devices driver
                         result = wdi_install_driver(pList, driverPath, infName, ref intOpts);
 
