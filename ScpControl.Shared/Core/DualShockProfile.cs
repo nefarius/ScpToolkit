@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using WindowsInput;
 using WindowsInput.Native;
 using PropertyChanged;
 
@@ -47,6 +48,7 @@ namespace ScpControl.Shared.Core
     [KnownType(typeof (Ds3Button))]
     [KnownType(typeof (Ds4Button))]
     [KnownType(typeof (VirtualKeyCode))]
+    [KnownType(typeof (MouseButton))]
     [DisplayName("DualShock Profile")]
     public class DualShockProfile
     {
