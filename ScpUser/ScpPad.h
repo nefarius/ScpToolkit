@@ -246,21 +246,6 @@ namespace SCPUser {
 		}
 
 	private: 
-		System::Void cbAdvanced_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
-		{
-			if (cbAdvanced->Checked)
-			{
-				this->ClientSize = System::Drawing::Size(this->ClientSize.Width + 175, this->ClientSize.Height);
-				advPanel->Visible = cbAdvanced->Checked;
-			}
-			else
-			{
-				advPanel->Visible = cbAdvanced->Checked;
-				this->ClientSize = System::Drawing::Size(this->ClientSize.Width - 175, this->ClientSize.Height);
-			}
-		}
-
-	private: 
 		System::Void cbExtensions_CheckedChanged(System::Object^ sender, System::EventArgs^ e)
 		{
 			if (cbExtensions->Checked)
@@ -287,8 +272,8 @@ namespace SCPUser {
 			this->lbOutput_1 = (gcnew System::Windows::Forms::Label());
 			this->lbOutput_2 = (gcnew System::Windows::Forms::Label());
 			this->lbOutput_3 = (gcnew System::Windows::Forms::Label());
-			this->cbAdvanced = (gcnew System::Windows::Forms::CheckBox());
 			this->advPanel = (gcnew System::Windows::Forms::Panel());
+			this->cbExtensions = (gcnew System::Windows::Forms::CheckBox());
 			this->lblRumble = (gcnew System::Windows::Forms::Label());
 			this->tbOutput_0_Large = (gcnew System::Windows::Forms::TrackBar());
 			this->tbOutput_0_Small = (gcnew System::Windows::Forms::TrackBar());
@@ -301,26 +286,27 @@ namespace SCPUser {
 			this->cbDeadZone = (gcnew System::Windows::Forms::CheckBox());
 			this->statusBar = (gcnew System::Windows::Forms::StatusBar());
 			this->updateTimer = (gcnew System::Windows::Forms::Timer(this->components));
-			this->cbExtensions = (gcnew System::Windows::Forms::CheckBox());
 			this->advPanel->SuspendLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_0_Large))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_0_Small))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_1_Large))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_1_Small))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_2_Large))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_2_Small))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_3_Large))->BeginInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_3_Small))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_0_Large))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_0_Small))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_1_Large))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_1_Small))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_2_Large))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_2_Small))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_3_Large))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_3_Small))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// lbOutput_0
 			// 
 			this->lbOutput_0->AutoSize = true;
 			this->lbOutput_0->BackColor = System::Drawing::Color::Transparent;
+			this->lbOutput_0->Font = (gcnew System::Drawing::Font(L"Consolas", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->lbOutput_0->ForeColor = System::Drawing::SystemColors::ControlText;
-			this->lbOutput_0->Location = System::Drawing::Point(40, 30);
+			this->lbOutput_0->Location = System::Drawing::Point(13, 30);
 			this->lbOutput_0->Name = L"lbOutput_0";
-			this->lbOutput_0->Size = System::Drawing::Size(49, 13);
+			this->lbOutput_0->Size = System::Drawing::Size(55, 13);
 			this->lbOutput_0->TabIndex = 8;
 			this->lbOutput_0->Text = L"<output>";
 			// 
@@ -328,10 +314,12 @@ namespace SCPUser {
 			// 
 			this->lbOutput_1->AutoSize = true;
 			this->lbOutput_1->BackColor = System::Drawing::Color::Transparent;
+			this->lbOutput_1->Font = (gcnew System::Drawing::Font(L"Consolas", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->lbOutput_1->ForeColor = System::Drawing::SystemColors::ControlText;
-			this->lbOutput_1->Location = System::Drawing::Point(40, 120);
+			this->lbOutput_1->Location = System::Drawing::Point(13, 120);
 			this->lbOutput_1->Name = L"lbOutput_1";
-			this->lbOutput_1->Size = System::Drawing::Size(49, 13);
+			this->lbOutput_1->Size = System::Drawing::Size(55, 13);
 			this->lbOutput_1->TabIndex = 9;
 			this->lbOutput_1->Text = L"<output>";
 			// 
@@ -339,10 +327,12 @@ namespace SCPUser {
 			// 
 			this->lbOutput_2->AutoSize = true;
 			this->lbOutput_2->BackColor = System::Drawing::Color::Transparent;
+			this->lbOutput_2->Font = (gcnew System::Drawing::Font(L"Consolas", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->lbOutput_2->ForeColor = System::Drawing::SystemColors::ControlText;
-			this->lbOutput_2->Location = System::Drawing::Point(40, 210);
+			this->lbOutput_2->Location = System::Drawing::Point(13, 210);
 			this->lbOutput_2->Name = L"lbOutput_2";
-			this->lbOutput_2->Size = System::Drawing::Size(49, 13);
+			this->lbOutput_2->Size = System::Drawing::Size(55, 13);
 			this->lbOutput_2->TabIndex = 10;
 			this->lbOutput_2->Text = L"<output>";
 			// 
@@ -350,24 +340,14 @@ namespace SCPUser {
 			// 
 			this->lbOutput_3->AutoSize = true;
 			this->lbOutput_3->BackColor = System::Drawing::Color::Transparent;
+			this->lbOutput_3->Font = (gcnew System::Drawing::Font(L"Consolas", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->lbOutput_3->ForeColor = System::Drawing::SystemColors::ControlText;
-			this->lbOutput_3->Location = System::Drawing::Point(40, 300);
+			this->lbOutput_3->Location = System::Drawing::Point(13, 300);
 			this->lbOutput_3->Name = L"lbOutput_3";
-			this->lbOutput_3->Size = System::Drawing::Size(49, 13);
+			this->lbOutput_3->Size = System::Drawing::Size(55, 13);
 			this->lbOutput_3->TabIndex = 11;
 			this->lbOutput_3->Text = L"<output>";
-			// 
-			// cbAdvanced
-			// 
-			this->cbAdvanced->AutoSize = true;
-			this->cbAdvanced->BackColor = System::Drawing::Color::Transparent;
-			this->cbAdvanced->Location = System::Drawing::Point(302, 445);
-			this->cbAdvanced->Name = L"cbAdvanced";
-			this->cbAdvanced->Size = System::Drawing::Size(75, 17);
-			this->cbAdvanced->TabIndex = 12;
-			this->cbAdvanced->Text = L"Advanced";
-			this->cbAdvanced->UseVisualStyleBackColor = false;
-			this->cbAdvanced->CheckedChanged += gcnew System::EventHandler(this, &SCPPad::cbAdvanced_CheckedChanged);
 			// 
 			// advPanel
 			// 
@@ -384,11 +364,21 @@ namespace SCPUser {
 			this->advPanel->Controls->Add(this->tbOutput_3_Small);
 			this->advPanel->Controls->Add(this->cbDeadZone);
 			this->advPanel->Dock = System::Windows::Forms::DockStyle::Right;
-			this->advPanel->Location = System::Drawing::Point(505, 0);
+			this->advPanel->Location = System::Drawing::Point(874, 0);
 			this->advPanel->Name = L"advPanel";
-			this->advPanel->Size = System::Drawing::Size(175, 478);
+			this->advPanel->Size = System::Drawing::Size(175, 491);
 			this->advPanel->TabIndex = 13;
-			this->advPanel->Visible = false;
+			// 
+			// cbExtensions
+			// 
+			this->cbExtensions->AutoSize = true;
+			this->cbExtensions->Location = System::Drawing::Point(50, 421);
+			this->cbExtensions->Name = L"cbExtensions";
+			this->cbExtensions->Size = System::Drawing::Size(77, 17);
+			this->cbExtensions->TabIndex = 10;
+			this->cbExtensions->Text = L"Extensions";
+			this->cbExtensions->UseVisualStyleBackColor = true;
+			this->cbExtensions->CheckedChanged += gcnew System::EventHandler(this, &SCPPad::cbExtensions_CheckedChanged);
 			// 
 			// lblRumble
 			// 
@@ -510,9 +500,9 @@ namespace SCPUser {
 			// 
 			// statusBar
 			// 
-			this->statusBar->Location = System::Drawing::Point(0, 478);
+			this->statusBar->Location = System::Drawing::Point(0, 491);
 			this->statusBar->Name = L"statusBar";
-			this->statusBar->Size = System::Drawing::Size(680, 22);
+			this->statusBar->Size = System::Drawing::Size(1049, 22);
 			this->statusBar->TabIndex = 7;
 			// 
 			// updateTimer
@@ -521,47 +511,35 @@ namespace SCPUser {
 			this->updateTimer->Interval = 50;
 			this->updateTimer->Tick += gcnew System::EventHandler(this, &SCPPad::updateTimer_Tick);
 			// 
-			// cbExtensions
-			// 
-			this->cbExtensions->AutoSize = true;
-			this->cbExtensions->Location = System::Drawing::Point(50, 421);
-			this->cbExtensions->Name = L"cbExtensions";
-			this->cbExtensions->Size = System::Drawing::Size(77, 17);
-			this->cbExtensions->TabIndex = 10;
-			this->cbExtensions->Text = L"Extensions";
-			this->cbExtensions->UseVisualStyleBackColor = true;
-			this->cbExtensions->CheckedChanged += gcnew System::EventHandler(this, &SCPPad::cbExtensions_CheckedChanged);
-			// 
 			// SCPPad
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::White;
-			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^  >(resources->GetObject(L"$this.BackgroundImage")));
-			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
-			this->ClientSize = System::Drawing::Size(680, 500);
+			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
+			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->ClientSize = System::Drawing::Size(1049, 513);
 			this->Controls->Add(this->lbOutput_0);
 			this->Controls->Add(this->lbOutput_1);
 			this->Controls->Add(this->lbOutput_2);
 			this->Controls->Add(this->lbOutput_3);
-			this->Controls->Add(this->cbAdvanced);
 			this->Controls->Add(this->advPanel);
 			this->Controls->Add(this->statusBar);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
-			this->Icon = (cli::safe_cast<System::Drawing::Icon^  >(resources->GetObject(L"$this.Icon")));
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MaximizeBox = false;
 			this->Name = L"SCPPad";
 			this->Text = L"XInput Controller Tester";
 			this->advPanel->ResumeLayout(false);
 			this->advPanel->PerformLayout();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_0_Large))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_0_Small))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_1_Large))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_1_Small))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_2_Large))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_2_Small))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_3_Large))->EndInit();
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^  >(this->tbOutput_3_Small))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_0_Large))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_0_Small))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_1_Large))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_1_Small))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_2_Large))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_2_Small))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_3_Large))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->tbOutput_3_Small))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -571,7 +549,7 @@ namespace SCPUser {
 	private: System::Windows::Forms::Label^  lbOutput_1;
 	private: System::Windows::Forms::Label^  lbOutput_2;
 	private: System::Windows::Forms::Label^  lbOutput_3;
-	private: System::Windows::Forms::CheckBox^  cbAdvanced;
+
 	private: System::Windows::Forms::Panel^  advPanel;
 	private: System::Windows::Forms::Label^  lblRumble;
 	private: System::Windows::Forms::TrackBar^  tbOutput_0_Large;
