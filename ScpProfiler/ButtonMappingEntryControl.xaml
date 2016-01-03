@@ -4,15 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:scpProfiler="clr-namespace:ScpProfiler"
              mc:Ignorable="d"
-             MinHeight="48" MinWidth="600" Width="886">
+             MinHeight="48" MinWidth="600" Width="886" Loaded="UserControl_Loaded">
     <Grid>
-        <Grid.Resources>
-            <scpProfiler:ButtonMappingViewModel x:Key="CurrentButtonMappingViewModel"
-                                                CurrentButtonProfile="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile}" />
-        </Grid.Resources>
-        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60" />
             <ColumnDefinition Width="60" />
@@ -45,7 +39,7 @@
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch"
                   Margin="10,9"
-                  ItemsSource="{Binding Source={StaticResource CurrentButtonMappingViewModel}, Path=CurrentCommandTypeView}"
+                  ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=CurrentCommandTypeView}"
                   IsSynchronizedWithCurrentItem="True"
                   DisplayMemberPath="Description"
                   SelectedValuePath="Value"
@@ -59,7 +53,7 @@
                   HorizontalAlignment="Stretch"
                   Margin="10,9"
                   Height="30"
-                  ItemsSource="{Binding Source={StaticResource CurrentButtonMappingViewModel}, Path=CurrentCommandTargetView}"
+                  ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=CurrentCommandTargetView}"
                   IsSynchronizedWithCurrentItem="True" />
 
         <!-- Mapping enabled? -->

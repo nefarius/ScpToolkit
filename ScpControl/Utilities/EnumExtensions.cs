@@ -50,5 +50,33 @@ namespace ScpControl.Utilities
     {
         public string Description { get; set; }
         public object Value { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (EnumMetaData)) return false;
+            return Equals((EnumMetaData) obj);
+        }
+
+        protected bool Equals(EnumMetaData other)
+        {
+            return string.Equals(Description, other.Description);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Description != null ? Description.GetHashCode() : 0);
+        }
+
+        public static bool operator ==(EnumMetaData left, EnumMetaData right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(EnumMetaData left, EnumMetaData right)
+        {
+            return !Equals(left, right);
+        }
     }
 }
