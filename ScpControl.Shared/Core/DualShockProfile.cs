@@ -279,6 +279,9 @@ namespace ScpControl.Shared.Core
     [DataContract]
     public class DsButtonProfile
     {
+        private static readonly InputSimulator VirtualInput = new InputSimulator();
+        private const uint InputDelay = 100;
+
         #region Ctor
 
         public DsButtonProfile()
@@ -337,6 +340,21 @@ namespace ScpControl.Shared.Core
                         report.Unset(button);
                         // set new button
                         report.Set(target);
+                    }
+                    break;
+                case CommandType.Keystrokes:
+                    foreach (var button in SourceButtons)
+                    {
+                        var target = (VirtualKeyCode) Enum.ToObject(typeof(VirtualKeyCode), MappingTarget.CommandTarget);
+
+                        if (report[button].IsPressed)
+                        {
+                            VirtualInput.Keyboard.KeyDown(target);
+                        }
+                        else
+                        {
+                            VirtualInput.Keyboard.KeyUp(target);
+                        }
                     }
                     break;
             }

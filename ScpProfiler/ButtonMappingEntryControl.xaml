@@ -4,20 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:utilities="clr-namespace:ScpControl.Utilities;assembly=ScpControl"
-             xmlns:core="clr-namespace:ScpControl.Shared.Core;assembly=ScpControl.Shared"
+             xmlns:scpProfiler="clr-namespace:ScpProfiler"
              mc:Ignorable="d"
              MinHeight="48" MinWidth="600" Width="886">
-    <UserControl.Resources>
-        <ObjectDataProvider x:Key="MyCommandTypes" MethodName="GetValuesAndDescriptions"
-                            ObjectType="utilities:EnumExtensions">
-            <ObjectDataProvider.MethodParameters>
-                <x:TypeExtension TypeName="core:CommandType" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-    </UserControl.Resources>
-
     <Grid>
+        <Grid.Resources>
+            <scpProfiler:ButtonMappingViewModel x:Key="CurrentButtonMappingViewModel"
+                                                CurrentButtonProfile="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile}" />
+        </Grid.Resources>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="60" />
             <ColumnDefinition Width="60" />
@@ -50,24 +45,22 @@
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch"
                   Margin="10,9"
-                  ItemsSource="{Binding Source={StaticResource MyCommandTypes}}"
-                  SelectedValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=ButtonProfile.MappingTarget.CommandType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  ItemsSource="{Binding Source={StaticResource CurrentButtonMappingViewModel}, Path=CurrentCommandTypeView}"
+                  IsSynchronizedWithCurrentItem="True"
                   DisplayMemberPath="Description"
                   SelectedValuePath="Value"
-                  SelectionChanged="TargetTypeComboBox_OnSelectionChanged"
                   Height="30" />
 
         <!-- Target command -->
         <ComboBox Grid.Column="3"
                   ToolTip="Action target"
-                  x:Name="TargetCommandComboBox"
                   VerticalAlignment="Top"
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch"
                   Margin="10,9"
-                  SelectedIndex="0"
                   Height="30"
-                  SelectionChanged="TargetCommandComboBox_SelectionChanged" />
+                  ItemsSource="{Binding Source={StaticResource CurrentButtonMappingViewModel}, Path=CurrentCommandTargetView}"
+                  IsSynchronizedWithCurrentItem="True" />
 
         <!-- Mapping enabled? -->
         <CheckBox Grid.Column="4"

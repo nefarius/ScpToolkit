@@ -94,6 +94,7 @@
     <Compile Include="AxisMappingEntryControl.xaml.cs">
       <DependentUpon>AxisMappingEntryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ButtonMappingViewModel.cs" />
     <Compile Include="DpadAxisControl.xaml.cs">
       <DependentUpon>DpadAxisControl.xaml</DependentUpon>
     </Compile>
