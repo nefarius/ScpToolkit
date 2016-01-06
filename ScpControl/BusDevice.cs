@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.Utilities;
@@ -340,36 +341,40 @@ namespace ScpControl
 
             serial += _busOffset;
 
-            if (State == DsState.Connected)
+            if (State != DsState.Connected) return false;
+
+            lock (_pluggedInDevices)
             {
-                lock (_pluggedInDevices)
+                if (!_pluggedInDevices.Contains(serial))
                 {
-                    if (!_pluggedInDevices.Contains(serial))
+                    var transfered = 0;
+                    var buffer = new byte[16];
+
+                    buffer[0] = 0x10;
+                    buffer[1] = 0x00;
+                    buffer[2] = 0x00;
+                    buffer[3] = 0x00;
+
+                    buffer[4] = (byte) ((serial >> 0) & 0xFF);
+                    buffer[5] = (byte) ((serial >> 8) & 0xFF);
+                    buffer[6] = (byte) ((serial >> 16) & 0xFF);
+                    buffer[7] = (byte) ((serial >> 24) & 0xFF);
+
+                    if (DeviceIoControl(FileHandle, 0x2A4000, buffer, buffer.Length, null, 0, ref transfered,
+                        IntPtr.Zero))
                     {
-                        var transfered = 0;
-                        var buffer = new byte[16];
+                        _pluggedInDevices.Add(serial);
+                        retVal = true;
 
-                        buffer[0] = 0x10;
-                        buffer[1] = 0x00;
-                        buffer[2] = 0x00;
-                        buffer[3] = 0x00;
-
-                        buffer[4] = (byte) ((serial >> 0) & 0xFF);
-                        buffer[5] = (byte) ((serial >> 8) & 0xFF);
-                        buffer[6] = (byte) ((serial >> 16) & 0xFF);
-                        buffer[7] = (byte) ((serial >> 24) & 0xFF);
-
-                        if (DeviceIoControl(FileHandle, 0x2A4000, buffer, buffer.Length, null, 0, ref transfered,
-                            IntPtr.Zero))
-                        {
-                            _pluggedInDevices.Add(serial);
-                            retVal = true;
-
-                            Log.DebugFormat("-- Bus Plugin : Serial {0}", serial);
-                        }
+                        Log.DebugFormat("-- Bus Plugin : Serial {0}", serial);
                     }
-                    else retVal = true;
+                    else
+                    {
+                        Log.ErrorFormat("Couldn't plug in virtual device {0}: {1}", serial,
+                            new Win32Exception(Marshal.GetLastWin32Error()));
+                    }
                 }
+                else retVal = true;
             }
 
             return retVal;
@@ -382,36 +387,40 @@ namespace ScpControl
             var retVal = false;
             serial += _busOffset;
 
-            if (State == DsState.Connected)
+            if (State != DsState.Connected) return false;
+
+            lock (_pluggedInDevices)
             {
-                lock (_pluggedInDevices)
+                if (_pluggedInDevices.Contains(serial))
                 {
-                    if (_pluggedInDevices.Contains(serial))
+                    var transfered = 0;
+                    var buffer = new byte[16];
+
+                    buffer[0] = 0x10;
+                    buffer[1] = 0x00;
+                    buffer[2] = 0x00;
+                    buffer[3] = 0x00;
+
+                    buffer[4] = (byte) ((serial >> 0) & 0xFF);
+                    buffer[5] = (byte) ((serial >> 8) & 0xFF);
+                    buffer[6] = (byte) ((serial >> 16) & 0xFF);
+                    buffer[7] = (byte) ((serial >> 24) & 0xFF);
+
+                    if (DeviceIoControl(FileHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered,
+                        IntPtr.Zero))
                     {
-                        var transfered = 0;
-                        var buffer = new byte[16];
+                        _pluggedInDevices.Remove(serial);
+                        retVal = true;
 
-                        buffer[0] = 0x10;
-                        buffer[1] = 0x00;
-                        buffer[2] = 0x00;
-                        buffer[3] = 0x00;
-
-                        buffer[4] = (byte) ((serial >> 0) & 0xFF);
-                        buffer[5] = (byte) ((serial >> 8) & 0xFF);
-                        buffer[6] = (byte) ((serial >> 16) & 0xFF);
-                        buffer[7] = (byte) ((serial >> 24) & 0xFF);
-
-                        if (DeviceIoControl(FileHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered,
-                            IntPtr.Zero))
-                        {
-                            _pluggedInDevices.Remove(serial);
-                            retVal = true;
-
-                            Log.DebugFormat("-- Bus Unplug : Serial {0}", serial);
-                        }
+                        Log.DebugFormat("-- Bus Unplug : Serial {0}", serial);
                     }
-                    else retVal = true;
+                    else
+                    {
+                        Log.ErrorFormat("Couldn't unplug virtual device {0}: {1}", serial,
+                            new Win32Exception(Marshal.GetLastWin32Error()));
+                    }
                 }
+                else retVal = true;
             }
 
             return retVal;
