@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{402CC959-80BE-486E-B43D-A75F483B5A13} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{92D97ED2-1524-4B1F-A5D9-CEBA9BB32D3A} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.231.16001" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.234.16006" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -312,7 +312,7 @@
     <ROW File="libwdi.dll_1" Component_="libwdi.dll_1" FileName="libwdi.dll" Attributes="0" SourcePath="..\..\bin\libwdi\x86\libwdi.dll" SelfReg="false" NextFile="ScpVBus.sys_1"/>
     <ROW File="log4net.dll_1" Component_="ScpService.exe" FileName="log4net.dll" Attributes="0" SourcePath="..\..\bin\log4net.dll" SelfReg="false" NextFile="MadMilkman.Ini.dll_1"/>
     <ROW File="startup.ogg" Component_="startup.ogg" FileName="startup.ogg" Attributes="0" SourcePath="..\..\bin\Media\startup.ogg" SelfReg="false" NextFile="ScpVBus.cat"/>
-    <ROW File="updater.exe" Component_="updater.exe" FileName="updater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="updater.exe" Component_="updater.exe" FileName="SCPUPD~1.EXE|ScpUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
     <ROW File="wdfcoinstaller01007.dll" Component_="wdfcoinstaller01007.dll" FileName="WDFCOI~1.DLL|wdfcoinstaller01007.dll" Attributes="0" SourcePath="..\..\bin\Xbox360\driver\vista_xp\x64\wdfcoinstaller01007.dll" SelfReg="false" NextFile="xusb21.sys"/>
     <ROW File="wdfcoinstaller01007.dll_1" Component_="wdfcoinstaller01007.dll_1" FileName="WDFCOI~1.DLL|wdfcoinstaller01007.dll" Attributes="0" SourcePath="..\..\bin\Xbox360\driver\vista_xp\x86\wdfcoinstaller01007.dll" SelfReg="false" NextFile="xusb21.sys_2"/>
     <ROW File="wdfcoinstaller01009.dll" Component_="wdfcoinstaller01009.dll" FileName="WDFCOI~1.DLL|wdfcoinstaller01009.dll" Attributes="0" SourcePath="..\..\bin\Xbox360\driver\win7\x64\wdfcoinstaller01009.dll" SelfReg="false" NextFile="xusb21.sys_1"/>
@@ -545,17 +545,17 @@
     <ROW Name="DualShock3.exe" SourcePath="..\ScpControlPanel\Dual Shock 3.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
-    <ROW IniFile="AppDir" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="ApplicationName" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationName" Value="[ProductName]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="ApplicationVersion" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationVersion" Value="[ProductVersion]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="CheckFrequency" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="CheckFrequency" Value="2" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="CompanyName" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="CompanyName" Value="[Manufacturer]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="DefaultCommandLine" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="DefaultCommandLine" Value="/checknow -minuseractions" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="DownloadsFolder" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="DownloadsFolder" Value="[CommonAppDataFolder][Manufacturer]\[ProductName]\updates\" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="Flags" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="Flags" Value="PerMachine|ShowConfigOptionsButton" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="ID" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="ID" Value="[UpgradeCode]" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="SupportServiceName" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="SupportServiceName" Value="updater" Action="0" Component_="updater.exe"/>
-    <ROW IniFile="URL" FileName="updater.ini" DirProperty="APPDIR" Section="General" Key="URL" Value="https://raw.githubusercontent.com/nefarius/ScpServer/master/updates.txt" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="AppDir" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ApplicationName" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationName" Value="[ProductName]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ApplicationVersion" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="ApplicationVersion" Value="[ProductVersion]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="CheckFrequency" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="CheckFrequency" Value="2" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="CompanyName" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="CompanyName" Value="[Manufacturer]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="DefaultCommandLine" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="DefaultCommandLine" Value="/checknow" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="DownloadsFolder" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="DownloadsFolder" Value="[CommonAppDataFolder][Manufacturer]\[ProductName]\updates\" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="Flags" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="Flags" Value="PerMachine|ShowConfigOptionsButton" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="ID" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="ID" Value="[UpgradeCode]" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="SupportServiceName" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="SupportServiceName" Value="updater" Action="0" Component_="updater.exe"/>
+    <ROW IniFile="URL" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="URL" Value="https://raw.githubusercontent.com/nefarius/ScpServer/master/updates.txt" Action="0" Component_="updater.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
@@ -668,6 +668,8 @@
     <ROW Shortcut="ScpToolkitSettingsManager" Directory_="DesktopFolder" Name="SCPTOO~5|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitTrayNotifications" Directory_="SHORTCUTDIR" Name="SCPTOO~9|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe_1" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitTrayNotifications_1" Directory_="StartupFolder" Name="SCPTOO~1|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe_1" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitUpdater" Directory_="SHORTCUTDIR" Name="SCPTO~11|ScpToolkit Updater" Component_="updater.exe" Target="[#updater.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitUpdater_1" Directory_="DesktopFolder" Name="SCPTOO~3|ScpToolkit Updater" Component_="updater.exe" Target="[#updater.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="surface"/>
@@ -699,6 +701,6 @@
     <ROW TaskId="AI_updater" TaskName="updater" Run="[#updater.exe]" WorkDir="[APPDIR]" UserProp="[%UserDomain]\[LogonUser]" StartTime="20480" Flags="24576" Trigger="1|1|1|1|0|0|0|" Condition="1" TaskVersion="2.0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
-    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconPath="..\ScpControlPanel\Dual Shock 3.ico" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" TaskId="AI_updater" Description="[|UpdaterName] [|ProductVersion] © [|Manufacturer], Inc, 2016"/>
+    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconPath="..\ScpControl\updater.ico" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" TaskId="AI_updater" Description="[|UpdaterName] [|ProductVersion] © [|Manufacturer], Inc, 2016"/>
   </COMPONENT>
 </DOCUMENT>
