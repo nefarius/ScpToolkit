@@ -2,7 +2,7 @@
 
 [ScpToolkit v1.6.236.16008]
 Name = ScpToolkit v1.6.236.16008
-URL = https://github.com/nefarius/ScpServer/releases/download/untagged-ea0627c795bd8fbea48c/ScpToolkit_Setup.exe
+URL = https://github.com/nefarius/ScpServer/releases/download/v1.6.236.16008/ScpToolkit_Setup.exe
 Size = 23361937
 FilePath = [APPDIR]ScpControl.dll
 Version = 1.6.236.16008
