@@ -55,7 +55,7 @@ namespace ScpControl
 
         // Bluetooth hub
         private readonly BthHub _bthHub = new BthHub();
-        private readonly Cache[] _cache = {new Cache(), new Cache(), new Cache(), new Cache()};
+        private readonly Cache[] _cache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
         private readonly byte[][] _mNative =
         {
@@ -107,7 +107,7 @@ namespace ScpControl
 
         public DualShockPadMeta GetPadDetail(DsPadId pad)
         {
-            var serial = (byte) pad;
+            var serial = (byte)pad;
 
             lock (Pads)
             {
@@ -115,7 +115,7 @@ namespace ScpControl
 
                 return new DualShockPadMeta
                 {
-                    BatteryStatus = (byte) current.Battery,
+                    BatteryStatus = (byte)current.Battery,
                     ConnectionType = current.Connection,
                     Model = current.Model,
                     PadId = current.PadId,
@@ -127,7 +127,7 @@ namespace ScpControl
 
         public bool Rumble(DsPadId pad, byte large, byte small)
         {
-            var serial = (byte) pad;
+            var serial = (byte)pad;
 
             if (Pads[serial].State != DsState.Connected) return false;
 
@@ -168,8 +168,8 @@ namespace ScpControl
             Pads[target] = Pads[target - 1];
             Pads[target - 1] = swap;
 
-            Pads[target].PadId = (DsPadId) target;
-            Pads[target - 1].PadId = (DsPadId) (target - 1);
+            Pads[target].PadId = (DsPadId)target;
+            Pads[target - 1].PadId = (DsPadId)(target - 1);
 
             _reservedPads[target] = Pads[target].DeviceAddress;
             _reservedPads[target - 1] = Pads[target - 1].DeviceAddress;
@@ -359,11 +359,11 @@ namespace ScpControl
                 var binding = new NetTcpBinding
                 {
                     TransferMode = TransferMode.Streamed,
-                    Security = new NetTcpSecurity {Mode = SecurityMode.None}
+                    Security = new NetTcpSecurity { Mode = SecurityMode.None }
                 };
 
                 _rootHubServiceHost = new ServiceHost(this, baseAddress);
-                _rootHubServiceHost.AddServiceEndpoint(typeof (IScpCommandService), binding, baseAddress);
+                _rootHubServiceHost.AddServiceEndpoint(typeof(IScpCommandService), binding, baseAddress);
 
                 _rootHubServiceHost.Open();
 
@@ -548,7 +548,7 @@ namespace ScpControl
 
                         bFound = true;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         Pads[index] = arrived;
                     }
                 }
@@ -560,7 +560,7 @@ namespace ScpControl
                         bFound = true;
                         _reservedPads[index] = arrived.DeviceAddress;
 
-                        arrived.PadId = (DsPadId) index;
+                        arrived.PadId = (DsPadId)index;
                         Pads[index] = arrived;
                     }
                 }
@@ -568,11 +568,11 @@ namespace ScpControl
 
             if (bFound)
             {
-                _scpBus.Plugin((int) arrived.PadId + 1);
+                _scpBus.Plugin((int)arrived.PadId + 1);
 
                 if (!GlobalConfiguration.Instance.IsVBusDisabled)
                 {
-                    Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int) arrived.PadId + 1,
+                    Log.InfoFormat("Plugged in Port #{0} for {1} on Virtual Bus", (int)arrived.PadId + 1,
                         arrived.DeviceAddress.AsFriendlyName());
                 }
             }
@@ -582,7 +582,7 @@ namespace ScpControl
         protected override void OnHidReportReceived(object sender, ScpHidReport e)
         {
             // get current pad ID
-            var serial = (int) e.PadId;
+            var serial = (int)e.PadId;
 
             // get cached status data
             var report = _cache[serial].Report;
@@ -623,7 +623,7 @@ namespace ScpControl
 
                 if (GlobalConfiguration.Instance.AlwaysDisconnectVirtualBusDevice)
                 {
-                    _scpBus.Unplug(_scpBus.IndexToSerial((byte) e.PadId));
+                    _scpBus.Unplug(_scpBus.IndexToSerial((byte)e.PadId));
                 }
             }
 

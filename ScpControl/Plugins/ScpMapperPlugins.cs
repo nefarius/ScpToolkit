@@ -49,10 +49,15 @@ namespace ScpControl.Plugins
 
         public void Process(ScpHidReport report)
         {
-            foreach (var mapperProfile in MapperProfiles)
+            try
             {
-                mapperProfile.Process(report);
+                foreach (var mapperProfile in MapperProfiles)
+                {
+                    mapperProfile.Process(report);
+                }
             }
+            catch // TODO: remove!
+            { }
         }
     }
 }

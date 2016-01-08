@@ -44,9 +44,15 @@ namespace ScpControl.Profiler
         /// <param name="report">The extended HID report.</param>
         public void PassThroughAllProfiles(ScpHidReport report)
         {
-            foreach (var profile in Profiles.Where(p => p.IsActive))
+            try
             {
-                profile.Remap(report);
+                foreach (var profile in Profiles.Where(p => p.IsActive))
+                {
+                    profile.Remap(report);
+                }
+            }
+            catch // TODO: remove!
+            {
             }
         }
 
