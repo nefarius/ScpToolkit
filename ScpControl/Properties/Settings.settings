@@ -137,5 +137,8 @@
     <Setting Name="SkipOccupiedSlots" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="UseAsyncHidReportProcessing" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -90,11 +90,6 @@ namespace ScpControl.ScpCore
         /// </summary>
         public static string AppDirectory { get { return WorkingDirectory; } }
 
-        /// <summary>
-        ///     Gets the local path to the XML-based profiles.
-        /// </summary>
-        public static string ProfilesPath { get { return Path.Combine(AppDirectory, "Profiles"); } }
-
         public bool FlipLX
         {
             get { return Settings.Default.FlipAxisLx; }
@@ -175,6 +170,12 @@ namespace ScpControl.ScpCore
         {
             get { return Settings.Default.DisableSecureSimplePairing; }
             set { Settings.Default.DisableSecureSimplePairing = value; }
+        }
+
+        public bool UseAsyncHidReportProcessing
+        {
+            get { return Settings.Default.UseAsyncHidReportProcessing; }
+            set { Settings.Default.UseAsyncHidReportProcessing = value; }
         }
 
         public byte Brightness

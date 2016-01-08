@@ -192,11 +192,19 @@ namespace ScpControl.Bluetooth
 
         protected void OnHidReportReceived(ScpHidReport report)
         {
-            _inputReportQueue.Enqueue(() => Task.Run(() =>
+            if (GlobalConfiguration.Instance.UseAsyncHidReportProcessing)
+            {
+                _inputReportQueue.Enqueue(() => Task.Run(() =>
+                {
+                    if (HidReportReceived != null)
+                        HidReportReceived.Invoke(this, report);
+                }));
+            }
+            else
             {
                 if (HidReportReceived != null)
                     HidReportReceived.Invoke(this, report);
-            }));
+            }
         }
 
         #endregion

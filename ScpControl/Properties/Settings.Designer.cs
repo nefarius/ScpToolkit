@@ -595,5 +595,17 @@ namespace ScpControl.Properties {
                 this["SkipOccupiedSlots"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseAsyncHidReportProcessing {
+            get {
+                return ((bool)(this["UseAsyncHidReportProcessing"]));
+            }
+            set {
+                this["UseAsyncHidReportProcessing"] = value;
+            }
+        }
     }
 }

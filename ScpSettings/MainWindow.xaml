@@ -148,6 +148,11 @@
                                 Secure Simple Pairing was introduced in the Bluetooth 2.1 + EDR specification. It's used for pairing DualShock 4 controllers. On problems with 3rd party controllers this feature can be disabled.
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=DisableSSP}">Disable Secure Simple Pairing</CheckBox>
+
+                            <TextBlock>
+                                Secure Simple Pairing was introduced in the Bluetooth 2.1 + EDR specification. It's used for pairing DualShock 4 controllers. On problems with 3rd party controllers this feature can be disabled.
+                            </TextBlock>
+                            <CheckBox IsChecked="{Binding Path=UseAsyncHidReportProcessing}">Use asynchronous HID Report Processing</CheckBox>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>
