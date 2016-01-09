@@ -33,7 +33,7 @@ namespace ScpSettings
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (!_proxy.IsActive)
+            if (!_proxy.IsActive || _config == null)
                 return;
 
             _config.IdleTimeout *= GlobalConfiguration.IdleTimeoutMultiplier;
@@ -45,16 +45,27 @@ namespace ScpSettings
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            if (!_proxy.Start())
+            try
             {
-                MessageBox.Show("Couldn't connect to server, please check if the service is running!",
-                    "Fatal error",
+                if (!_proxy.Start())
+                {
+                    MessageBox.Show("Couldn't connect to server, please check if the service is running!",
+                        "Fatal error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    Close();
+                    return;
+                }
+
+                _config = _proxy.ReadConfig();
+            }
+            catch
+            {
+                MessageBox.Show("Couldn't request configuration, make sure the SCP DSx Service is running!",
+                    "Couldn't fetch configuration",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 Close();
                 return;
             }
-
-            _config = _proxy.ReadConfig();
 
             _config.IdleTimeout /= GlobalConfiguration.IdleTimeoutMultiplier;
             _config.Latency /= GlobalConfiguration.LatencyMultiplier;
@@ -87,19 +98,19 @@ namespace ScpSettings
 
             BrightnessGroupBox.Header = value == 0
                 ? "Light Bar Brightness: Disabled"
-                : string.Format("Light Bar Brightness: {0}%", (int) ((value*100)/255));
+                : string.Format("Light Bar Brightness: {0}%", (int)((value * 100) / 255));
         }
 
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var value = ((int) e.NewValue) << 4;
+            var value = ((int)e.NewValue) << 4;
 
             RumbleLatencyGroupBox.Header = string.Format("Rumble Latency: {0} ms", value);
         }
 
         private void Slider_LEDsPeriodChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var value = (int) e.NewValue;
+            var value = (int)e.NewValue;
 
             LEDsFlashingPeriodGroupBox.Header = string.Format("LEDs flashing period: {0} ms", value);
         }
