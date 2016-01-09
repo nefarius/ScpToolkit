@@ -610,10 +610,6 @@ namespace ScpControl
                     Pads[serial].Rumble(large, small);
                 }
             }
-            else
-            {
-                Log.ErrorFormat("Couldn't send report to virtual device: {0}", new Win32Exception(Marshal.GetLastWin32Error()));
-            }
 
             if (e.PadState != DsState.Connected)
             {
