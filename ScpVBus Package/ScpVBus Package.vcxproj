@@ -323,6 +323,11 @@
   <ItemGroup>
     <FilesToPackage Include="@(Inf->'%(CopyOutput)')" Condition="'@(Inf)'!=''" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScpVBus\ScpVBus.vcxproj">
+      <Project>{5e74d4ff-6121-468c-9697-d9d2fe8054aa}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
