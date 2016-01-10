@@ -150,7 +150,7 @@
                             <CheckBox IsChecked="{Binding Path=DisableSSP}">Disable Secure Simple Pairing</CheckBox>
 
                             <TextBlock>
-                                By default, incoming HID Reports get processed and passed through to the virtual controllers in a synchronous, blocking manner. If you experiance noticeable input lag you may try the "fire-and-forget"-approach by enabling the following option (Warning: might introduce alignment errors).
+                                By default, incoming HID Reports get processed and passed through to the virtual controllers in a synchronous, blocking manner. If you experience noticeable input lag you may try the "fire-and-forget"-approach by enabling the following option (Warning: might introduce alignment errors).
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=UseAsyncHidReportProcessing}">Use asynchronous HID Report Processing</CheckBox>
                         </StackPanel>
