@@ -27,14 +27,18 @@ namespace ScpControl.Profiler
         {
             lock (this)
             {
-                using (var db = new ScpDb())
+                try
                 {
-                    Profiles =
-                        db.Engine.GetAllDbEntities<DualShockProfile>(ScpDb.TableProfiles)
-                            .Select(p => p.Value)
-                            .ToList()
-                            .AsReadOnly();
+                    using (var db = new ScpDb())
+                    {
+                        Profiles =
+                            db.Engine.GetAllDbEntities<DualShockProfile>(ScpDb.TableProfiles)
+                                .Select(p => p.Value)
+                                .ToList()
+                                .AsReadOnly();
+                    }
                 }
+                catch { }
             }
         }
 
