@@ -317,6 +317,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bus\busenum.h" />
+    <ClInclude Include="bus\resource.h" />
     <ClInclude Include="inc\ScpVBus.h" />
   </ItemGroup>
   <ItemGroup>

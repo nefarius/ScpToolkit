@@ -1,38 +1,88 @@
-#include <windows.h>
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+/////////////////////////////////////////////////////////////////////////////
+// German (Austria) resources
 
-#define VER_USE_OTHER_MAJOR_MINOR_VER
-#define VER_PRODUCTMAJORVERSION     1
-#define VER_PRODUCTMINORVERSION     0
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEA)
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN_AUSTRIAN
+#pragma code_page(1252)
 
-#include <ntverp.h>
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
 
-#undef  VER_PRODUCTNAME_STR
-#define VER_PRODUCTNAME_STR    "Scp Virtual Bus Driver"
-
-#define VER_FILETYPE                VFT_DRV
-#define VER_FILESUBTYPE             VFT2_DRV_SYSTEM
-#define VER_FILEDESCRIPTION_STR     VER_PRODUCTNAME_STR
-#define VER_INTERNALNAME_STR        "ScpVBus.sys"
-#define VER_ORIGINALFILENAME_STR    "ScpVBus.sys"
-
-#undef  VER_COMPANYNAME_STR
-#define VER_COMPANYNAME_STR    "Scarlet.Crush Productions"
-
-#ifndef VER_LEGALCOPYRIGHT_YEARS
-#define VER_LEGALCOPYRIGHT_YEARS    "2012, 2013"
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,104
+ PRODUCTVERSION 1,0,0,104
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x9L
+#else
+ FILEFLAGS 0x8L
 #endif
+ FILEOS 0x40004L
+ FILETYPE 0x3L
+ FILESUBTYPE 0x7L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Scarlet.Crush Productions"
+            VALUE "FileDescription", "Scp Virtual Bus Driver"
+            VALUE "FileVersion", "1.0.0.104"
+            VALUE "InternalName", "ScpVBus.sys"
+            VALUE "LegalCopyright", "Copyright © 2012, 2013 Scarlet.Crush Productions. All rights reserved."
+            VALUE "OriginalFilename", "ScpVBus.sys"
+            VALUE "ProductName", "Scp Virtual Bus Driver"
+            VALUE "ProductVersion", "1.0.0.104"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
 
-#ifndef VER_LEGALCOPYRIGHT_STR_WITH_YEARS
-#define VER_LEGALCOPYRIGHT_STR_WITH_YEARS    "Copyright © 2012, 2013 Scarlet.Crush Productions. All rights reserved."
-#endif
 
-#undef  VER_PRODUCTBUILD
-#define VER_PRODUCTBUILD            0
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
 
-#undef  VER_PRODUCTBUILD_QFE
-#define VER_PRODUCTBUILD_QFE        103
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
 
-#undef  VER_LEGALCOPYRIGHT_STR
-#define VER_LEGALCOPYRIGHT_STR      VER_LEGALCOPYRIGHT_STR_WITH_YEARS
+2 TEXTINCLUDE 
+BEGIN
+    "\0"
+END
 
-#include "common.ver"
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // German (Austria) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
