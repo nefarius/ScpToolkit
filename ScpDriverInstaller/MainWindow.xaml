@@ -4,141 +4,177 @@
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
         xmlns:utilities="clr-namespace:ScpDriverInstaller.Utilities"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="ScpToolkit Driver Installer"
         Width="1020" MinWidth="1020" WindowStartupLocation="CenterScreen" SizeToContent="Height"
         ResizeMode="CanMinimize"
-        Background="#FF1B1B1B"
         Icon="Usb.ico" Initialized="Window_Initialized" Loaded="Window_Loaded" Closing="MainWindow_OnClosing">
     <Grid>
-        <Grid Margin="10">
+        <Grid Margin="10" Visibility="Hidden">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            
+            
             <!-- Top control bar -->
-            <Grid x:Name="InstallGrid" Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="200" />
-                </Grid.ColumnDefinitions>
+        <Grid x:Name="InstallGrid" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="200" />
+            </Grid.ColumnDefinitions>
 
-                <Grid.DataContext>
-                    <viewModels:InstallationOptionsViewModel />
-                </Grid.DataContext>
+            <Grid.DataContext>
+                <viewModels:InstallationOptionsViewModel />
+            </Grid.DataContext>
 
-                <!-- Installation options -->
-                <controls:Accordion ExpandDirection="Right" MinHeight="220" Width="780">
-                    <!-- Driver section -->
-                    <controls:AccordionItem Header="Drivers">
-                        <Grid Margin="0,10,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
+            <!-- Installation options -->
+            <controls:Accordion ExpandDirection="Right" MinHeight="220" Width="780">
+                <!-- Driver section -->
+                <controls:AccordionItem Header="Drivers">
+                    <Grid Margin="0,10,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                            <CheckBox Grid.Row="0" Grid.Column="0"
+                        <CheckBox Grid.Row="0" Grid.Column="0"
                                       IsEnabled="False"
                                       IsChecked="{Binding Path=InstallWindowsService}"
                                       ToolTip="Install Windows Service running in the background (recommended)">
-                                Install Windows Service
-                            </CheckBox>
-                            
-                            <CheckBox Grid.Row="0" Grid.Column="1"
+                            Install Windows Service
+                        </CheckBox>
+
+                        <CheckBox Grid.Row="0" Grid.Column="1"
                                       IsChecked="{Binding Path=InstallXbox360Driver}"
                                       IsEnabled="{Binding Path=IsXbox360DriverNeeded}"
                                       ToolTip="Install Microsoft Xbox 360 controller driver (Windows Vista/7 only)">
-                                Install Xbox 360 controller driver
-                            </CheckBox>
-                            
-                            <CheckBox Grid.Row="1" Grid.Column="0"
+                            Install Xbox 360 controller driver
+                        </CheckBox>
+
+                        <CheckBox Grid.Row="1" Grid.Column="0"
                                       IsChecked="{Binding Path=InstallBluetoothDriver}"
                                       ToolTip="Replace driver of selected Bluetooth dongle (not needed if controllers are only used wired)">
-                                Install Bluetooth driver
-                            </CheckBox>
-                            <CheckBox Grid.Row="2" Grid.Column="0"
+                            Install Bluetooth driver
+                        </CheckBox>
+                        <CheckBox Grid.Row="2" Grid.Column="0"
                                       IsChecked="{Binding Path=InstallDualShock3Driver}"
                                       ToolTip="Replace driver on all selected DualShock 3 USB controllers">
-                                Install DualShock 3 driver
-                            </CheckBox>
-                            <CheckBox Grid.Row="3" Grid.Column="0"
+                            Install DualShock 3 driver
+                        </CheckBox>
+                        <CheckBox Grid.Row="3" Grid.Column="0"
                                       IsChecked="{Binding Path=InstallDualShock4Driver}"
                                       ToolTip="Replace driver on all selected DualShock 4 USB controllers">
-                                Install DualShock 4 driver
-                            </CheckBox>
-                            <CheckBox Grid.Row="4" Grid.Column="0"
+                            Install DualShock 4 driver
+                        </CheckBox>
+                        <CheckBox Grid.Row="4" Grid.Column="0"
                                       IsChecked="{Binding Path=ForceDriverInstallation}"
                                       ToolTip="Forces the installation of all drivers even if they are fine (most of the time not needed)">
-                                Force Driver Installation
-                            </CheckBox>
+                            Force Driver Installation
+                        </CheckBox>
 
-                            <Expander Grid.Row="1" Grid.Column="1"
+                        <Expander Grid.Row="1" Grid.Column="1"
                                       Margin="20,0,0,0"
                                       Header="Choose Bluetooth dongles to install"
                                       IsEnabled="{Binding Path=InstallBluetoothDriver}">
-                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel x:Name="BluetoothStackPanel" />
-                                </ScrollViewer>
-                            </Expander>
-                            <Expander Grid.Row="2" Grid.Column="1"
+                            <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="BluetoothStackPanel" />
+                            </ScrollViewer>
+                        </Expander>
+                        <!-- <Expander Grid.Row="2" Grid.Column="1"
                                       Margin="20,0,0,0"
                                       Header="Choose DualShock 3 controllers to install"
                                       IsEnabled="{Binding Path=InstallDualShock3Driver}">
-                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel x:Name="DualShock3StackPanel" />
-                                </ScrollViewer>
-                            </Expander>
-                            <Expander Grid.Row="3" Grid.Column="1"
+                            <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="DualShock3StackPanel" />
+                            </ScrollViewer>
+                        </Expander> -->
+                        <Expander Grid.Row="3" Grid.Column="1"
                                       Margin="20,0,0,0"
                                       Header="Choose DualShock 4 controllers to install"
                                       IsEnabled="{Binding Path=InstallDualShock4Driver}">
-                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel x:Name="DualShock4StackPanel" />
-                                </ScrollViewer>
-                            </Expander>
-                        </Grid>
-                    </controls:AccordionItem>
-                </controls:Accordion>
+                            <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="DualShock4StackPanel" />
+                            </ScrollViewer>
+                        </Expander>
+                    </Grid>
+                </controls:AccordionItem>
+            </controls:Accordion>
 
-                <!-- Buttons -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                    <Button Margin="20,20,20,5" Command="{Binding InstallClickCommand}">Install</Button>
-                    <Button Margin="20,5" Command="{Binding UninstallClickCommand}">Uninstall</Button>
-                    <Button Margin="20,5,20,20" Command="{Binding ExitClickCommand}">Exit</Button>
-                </StackPanel>
-            </Grid>
+            <!-- Buttons -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                <Button Margin="20,20,20,5" Command="{Binding InstallClickCommand}">Install</Button>
+                <Button Margin="20,5" Command="{Binding UninstallClickCommand}">Uninstall</Button>
+                <Button Margin="20,5,20,20" Command="{Binding ExitClickCommand}">Exit</Button>
+            </StackPanel>
+        </Grid>
 
-            <!-- Progress bar -->
-            <GroupBox Grid.Row="1" Margin="0,10"
+        <!-- Progress bar -->
+        <GroupBox Grid.Row="1" Margin="0,10"
                       Header="Progress">
-                <ProgressBar x:Name="MainProgressBar" Height="20" />
-            </GroupBox>
+            <ProgressBar x:Name="MainProgressBar" Height="20" />
+        </GroupBox>
 
-            <!-- Log section -->
-            <Expander Grid.Row="2" Header="Log"
+        <!-- Log section -->
+        <Expander Grid.Row="2" Header="Log"
                       IsExpanded="True"
                       ExpandDirection="Down"
                       VerticalAlignment="Top">
-                <ScrollViewer Height="300">
-                    <TextBlock Text="{Binding Notification}"
+            <ScrollViewer Height="300">
+                <TextBlock Text="{Binding Notification}"
                                x:Name="LogTextBlock"
                                FontFamily="Courier New"
                                TextWrapping="Wrap">
-                        <TextBlock.DataContext>
-                            <utilities:NotifyAppender />
-                        </TextBlock.DataContext>
-                    </TextBlock>
-                </ScrollViewer>
-            </Expander>
-        </Grid>
+                    <TextBlock.DataContext>
+                        <utilities:NotifyAppender />
+                    </TextBlock.DataContext>
+                </TextBlock>
+            </ScrollViewer>
+        </Expander>
+    </Grid>
+
+        <xctk:Wizard FinishButtonClosesWindow="True">
+            <xctk:WizardPage x:Name="IntroPage" 
+                                   Title="Welcome to the ScpToolkit Driver Installer"
+                                   Description="This Wizard will walk you though the process of installing you Sony DualShock 3 or 4 controller(s) on your system.">
+                <Grid>
+                    <Label>LOOOL</Label>
+                </Grid>
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="Page1" PageType="Interior"
+                                   Title="Install DualShock 3 controllers"
+                                   Description="This is the first page in the process."
+                                   NextPage="{Binding ElementName=Page2}"
+                                   PreviousPage="{Binding ElementName=IntroPage}">
+                <controls:Accordion VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <controls:AccordionItem Header="Simple">
+                        <Label>Nothing</Label>
+                    </controls:AccordionItem>
+                    
+                    <controls:AccordionItem Header="Advanced">
+                        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                            <StackPanel x:Name="DualShock3StackPanel" />
+                        </ScrollViewer>
+                    </controls:AccordionItem>
+                </controls:Accordion>
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="Page2" PageType="Interior"
+                                   Title="Page 2"
+                                   Description="This is the second page in the process"/>
+            <xctk:WizardPage x:Name="LastPage" PageType="Interior"
+                                   Title="Last Page"
+                                   Description="This is the last page in the process"
+                                   CanFinish="True"/>
+        </xctk:Wizard>
     </Grid>
 </Window>

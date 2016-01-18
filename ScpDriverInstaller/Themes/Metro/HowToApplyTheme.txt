@@ -1,7 +1,5 @@
-﻿<Application x:Class="ScpDriverInstaller.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="MainWindow.xaml">
+﻿To apply the Infragistics WPF Metro Light theme to your WPF application, paste the following code into your App.xaml
+
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -10,4 +8,3 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
-</Application>

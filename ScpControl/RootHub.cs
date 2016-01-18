@@ -6,13 +6,11 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.ServiceModel;
 using Libarius.System;
 using ReactiveSockets;
 using ScpControl.Bluetooth;
 using ScpControl.Exceptions;
-using ScpControl.Plugins;
 using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
@@ -590,9 +588,6 @@ namespace ScpControl
 
             // pass current report through user profiles
             DualShockProfileManager.Instance.PassThroughAllProfiles(e);
-
-            // pass current report through user scripts
-            ScpMapperPlugins.Instance.Process(e);
 
             // translate current report to Xbox format
             _scpBus.Parse(e, report);
