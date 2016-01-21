@@ -31,6 +31,8 @@ namespace ScpDriverInstaller.View_Models
 
         public bool ForceDriverInstallation { get; set; }
 
+        public bool InstallDs3ButtonEnabled { get; set; }
+
         public InstallationOptionsViewModel()
         {
             InstallWindowsService = true;
@@ -38,6 +40,7 @@ namespace ScpDriverInstaller.View_Models
             InstallDualShock3Driver = true;
             InstallDualShock4Driver = true;
             InstallXbox360Driver = IsXbox360DriverNeeded;
+            InstallDs3ButtonEnabled = false;
 
             _canExecute = true;
         }

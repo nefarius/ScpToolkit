@@ -76,7 +76,7 @@ namespace ScpControl.Driver
             uint installed = 0;
 
             foreach (var usbDevice in from usbDevice in usbDevices
-                let result = WdiWrapper.Instance.InstallLibusbKDriver(usbDevice.DeviceId, ds3Drivers.DeviceGuid,
+                let result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId, ds3Drivers.DeviceGuid,
                     DriverDirectory, string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force)
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)

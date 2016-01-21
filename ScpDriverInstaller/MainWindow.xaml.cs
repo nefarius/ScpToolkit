@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,6 +23,7 @@ using ScpControl.Utilities;
 using ScpDriverInstaller.Properties;
 using ScpDriverInstaller.Utilities;
 using ScpDriverInstaller.View_Models;
+using ScpControl.Usb.PnP;
 
 namespace ScpDriverInstaller
 {
@@ -118,7 +118,8 @@ namespace ScpDriverInstaller
         private bool _reboot;
         private Cursor _saved;
         private bool _scpServiceConfigured;
-        private OsType _valid = OsType.Invalid;
+        private readonly UsbNotifier _usbPortDs3 = new UsbNotifier(0x054C, 0x0268);
+        private readonly UsbNotifier _usbPortDs4 = new UsbNotifier(0x054C, 0x05C4);
 
         #endregion
 
@@ -383,7 +384,7 @@ namespace ScpDriverInstaller
                         else
                         {
                             Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
-                                (uint) Marshal.GetLastWin32Error());
+                                (uint)Marshal.GetLastWin32Error());
                             return;
                         }
                     }
@@ -451,7 +452,7 @@ namespace ScpDriverInstaller
 
                         if (result > 0) _ds4DriverConfigured = true;
                     }
-                    
+
                     if (_viewModel.InstallWindowsService)
                     {
                         IDictionary state = new Hashtable();
@@ -477,7 +478,7 @@ namespace ScpDriverInstaller
                     {
                         case 1073: // ERROR_SERVICE_EXISTS
                             Log.Info("Service already exists, attempting to restart...");
-                            
+
                             StopService(Settings.Default.ScpServiceName);
                             Log.Info("Service stopped successfully");
 
@@ -544,28 +545,8 @@ namespace ScpDriverInstaller
             _installer.OnLogEvent += Logger;
 
             var info = OsInfoHelper.OsInfo;
-            _valid = OsInfoHelper.OsParse(info);
 
             Log.InfoFormat("{0} detected", info);
-
-            // get all local USB devices
-            foreach (var usbDevice in WdiWrapper.Instance.UsbDeviceList)
-            {
-                BluetoothStackPanel.Children.Add(new CheckBox
-                {
-                    Content = usbDevice
-                });
-
-                DualShock3StackPanel.Children.Add(new CheckBox
-                {
-                    Content = usbDevice
-                });
-
-                DualShock4StackPanel.Children.Add(new CheckBox
-                {
-                    Content = usbDevice
-                });
-            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -597,13 +578,86 @@ namespace ScpDriverInstaller
             {
                 ((log4net.Repository.Hierarchy.Logger)currentLogger.Logger).RemoveAppender(this);
             }
+
+            // unregister notifications
+            _usbPortDs3.UnregisterHandle();
+            _usbPortDs4.UnregisterHandle();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
 
+            // get native window handle
             _hWnd = new WindowInteropHelper(this).Handle;
+
+            // listen for DualShock 3 plug-in events
+            _usbPortDs3.OnDeviceRemoved += UsbPortDs3OnOnDeviceRemoved;
+            _usbPortDs3.OnSpecifiedDeviceArrived += UsbPortDs3OnOnSpecifiedDeviceArrived;
+            _usbPortDs3.RegisterHandle(_hWnd);
+            _usbPortDs3.CheckDevicePresent();
+
+            // listen for DualShock 4 plug-in events
+            _usbPortDs4.OnSpecifiedDeviceArrived += UsbPortDs4OnOnSpecifiedDeviceArrived;
+            _usbPortDs4.OnDeviceArrived += (sender, args) => { _usbPortDs4.CheckDevicePresent(); };
+            _usbPortDs4.RegisterHandle(_hWnd);
+            _usbPortDs4.CheckDevicePresent();
+
+            // hook into WndProc
+            var source = PresentationSource.FromVisual(this) as HwndSource;
+            if (source != null) source.AddHook(WndProc);
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            _usbPortDs3.ParseMessages(msg, wParam);
+            _usbPortDs4.ParseMessages(msg, wParam);
+
+            return IntPtr.Zero;
+        }
+
+        private void UsbPortDs3OnOnDeviceRemoved(object sender, EventArgs eventArgs)
+        {
+            Ds3DeviceAddedOrRemoved();
+        }
+
+        private void UsbPortDs4OnOnSpecifiedDeviceArrived(object sender, EventArgs eventArgs)
+        {
+
+        }
+
+        private void UsbPortDs3OnOnSpecifiedDeviceArrived(object sender, EventArgs eventArgs)
+        {
+            Ds3DeviceAddedOrRemoved();
+        }
+
+        private void Ds3DeviceAddedOrRemoved()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                DualShock3StackPanelSimple.Children.Clear();
+
+                foreach (
+                    var usbDevice in
+                        WdiWrapper.Instance.UsbDeviceList.Where(d => d.VendorId == 0x054C && d.ProductId == 0x0268)
+                    )
+                {
+                    DualShock3StackPanelSimple.Children.Add(new CheckBox
+                    {
+                        Content = usbDevice
+                    });
+                }
+
+                DualShock3StackPanel.Children.Clear();
+
+                foreach (var usbDevice in WdiWrapper.Instance.UsbDeviceList)
+                {
+                    DualShock3StackPanel.Children.Add(new CheckBox
+                    {
+                        Content = usbDevice
+                    });
+                }
+            });
         }
 
         #endregion
@@ -619,8 +673,7 @@ namespace ScpDriverInstaller
                 if (sc.Status == ServiceControllerStatus.Stopped)
                 {
                     sc.Start();
-                    // TODO: improve this!
-                    Thread.Sleep(1000);
+                    sc.WaitForStatus(ServiceControllerStatus.Running);
                     return true;
                 }
             }
@@ -641,8 +694,7 @@ namespace ScpDriverInstaller
                 if (sc.Status == ServiceControllerStatus.Running)
                 {
                     sc.Stop();
-                    // TODO: improve this!
-                    Thread.Sleep(1000);
+                    sc.WaitForStatus(ServiceControllerStatus.Stopped);
                     return true;
                 }
             }
@@ -689,5 +741,20 @@ namespace ScpDriverInstaller
         }
 
         #endregion
+
+        private void InstallDs3ControllersButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            // get selected DualShock 3 devices
+            var ds3SToInstall =
+                DualShock3StackPanelSimple.Children.Cast<CheckBox>()
+                    .Where(c => c.IsChecked == true)
+                    .Select(c => c.Content)
+                    .Cast<WdiDeviceInfo>()
+                    .ToList();
+
+            DriverInstaller.InstallDualShock3Controllers(ds3SToInstall, _hWnd);
+
+            Ds3DeviceAddedOrRemoved();
+        }
     }
 }
