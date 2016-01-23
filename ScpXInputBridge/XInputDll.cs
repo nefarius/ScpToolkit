@@ -6,117 +6,14 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using log4net;
 using Microsoft.Win32;
+using ScpControl.Shared.Win32;
 using ScpControl.Shared.XInput;
 
 namespace ScpXInputBridge
 {
     public partial class XInputDll
     {
-        #region Private delegates
-
-        private static readonly Lazy<XInputEnableFunction> OriginalXInputEnableFunction =
-            new Lazy<XInputEnableFunction>(
-                () => (XInputEnableFunction) GetMethod<XInputEnableFunction>(NativeDllHandle, "XInputEnable"));
-
-        private static readonly Lazy<XInputGetStateFunction> OriginalXInputGetStateFunction = new Lazy
-            <XInputGetStateFunction>(
-            () => (XInputGetStateFunction) GetMethod<XInputGetStateFunction>(NativeDllHandle, "XInputGetState"));
-
-        private static readonly Lazy<XInputSetStateFunction> OriginalXInputSetStateFunction = new Lazy
-            <XInputSetStateFunction>(
-            () => (XInputSetStateFunction) GetMethod<XInputSetStateFunction>(NativeDllHandle, "XInputSetState"));
-
-        private static readonly Lazy<XInputGetCapabilitiesFunction> OriginalXInputGetCapabilitiesFunction = new Lazy
-            <XInputGetCapabilitiesFunction>(
-            () => (XInputGetCapabilitiesFunction)
-                GetMethod<XInputGetCapabilitiesFunction>(NativeDllHandle, "XInputGetCapabilities"));
-
-        private static readonly Lazy<XInputGetDSoundAudioDeviceGuidsFunction>
-            OriginalXInputGetDSoundAudioDeviceGuidsFunction = new Lazy<XInputGetDSoundAudioDeviceGuidsFunction>(
-                () => (XInputGetDSoundAudioDeviceGuidsFunction)
-                    GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(NativeDllHandle,
-                        "XInputGetDSoundAudioDeviceGuids"));
-
-        private static readonly Lazy<XInputGetBatteryInformationFunction> OriginalXInputGetBatteryInformationFunction = new Lazy
-            <XInputGetBatteryInformationFunction>(
-            () => (XInputGetBatteryInformationFunction)
-                GetMethod<XInputGetBatteryInformationFunction>(NativeDllHandle, "XInputGetBatteryInformation"));
-
-        private static readonly Lazy<XInputGetKeystrokeFunction> OriginalXInputGetKeystrokeFunction = new Lazy
-            <XInputGetKeystrokeFunction>(
-            () =>
-                (XInputGetKeystrokeFunction)
-                    GetMethod<XInputGetKeystrokeFunction>(NativeDllHandle, "XInputGetKeystroke"));
-
-        #endregion
-
-        #region Private properties
-
-        private static string BasePath
-        {
-            get
-            {
-                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-                {
-                    using (
-                        var regKey = hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit", false)
-                        )
-                    {
-                        return (regKey != null) ? (string) regKey.GetValue("Path") : string.Empty;
-                    }
-                }
-            }
-        }
-
-        private static string ScpControlPath
-        {
-            get
-            {
-                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-                {
-                    using (
-                        var regKey =
-                            hklm.OpenSubKey(
-                                @"SOFTWARE\Nefarius Software Solutions\ScpToolkit\ScpControl", false))
-                    {
-                        return (regKey != null) ? (string) regKey.GetValue("Path") : string.Empty;
-                    }
-                }
-            }
-        }
-
-        private static string XInputDllPath
-        {
-            get
-            {
-                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-                {
-                    using (
-                        var regKey =
-                            hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit\XInput",
-                                false))
-                    {
-                        return (regKey != null) ? (string) regKey.GetValue("DllPathOverride") : string.Empty;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
         #region Methods
-
-        /// <summary>
-        ///     Translates a native method into a managed delegate.
-        /// </summary>
-        /// <typeparam name="T">The type of the target delegate.</typeparam>
-        /// <param name="module">The module name to search the function in.</param>
-        /// <param name="methodName">The native finctions' name.</param>
-        /// <returns>Returns the managed delegate.</returns>
-        private static Delegate GetMethod<T>(IntPtr module, string methodName)
-        {
-            return Marshal.GetDelegateForFunctionPointer(Kernel32Natives.GetProcAddress(module, methodName), typeof (T));
-        }
 
         /// <summary>
         ///     Initializes library.
@@ -167,7 +64,7 @@ namespace ScpXInputBridge
             }
 
             // if no custom path specified by user, use DLL in system32 dir
-            var xinputPath = (!string.IsNullOrEmpty(XInputDllPath) && File.Exists(XInputDllPath))
+            var xinputPath = !string.IsNullOrEmpty(XInputDllPath) && File.Exists(XInputDllPath)
                 ? XInputDllPath
                 : Path.Combine(Environment.SystemDirectory, myName);
             Log.DebugFormat("Original XInput DLL path: {0}", xinputPath);
@@ -181,6 +78,105 @@ namespace ScpXInputBridge
             }
 
             Log.Info("Library initialized");
+        }
+
+        #endregion
+
+        #region Private delegates
+
+        private static readonly Lazy<XInputEnableFunction> OriginalXInputEnableFunction =
+            new Lazy<XInputEnableFunction>(
+                () =>
+                    (XInputEnableFunction)
+                        Kernel32Natives.GetMethod<XInputEnableFunction>(NativeDllHandle, "XInputEnable"));
+
+        private static readonly Lazy<XInputGetStateFunction> OriginalXInputGetStateFunction = new Lazy
+            <XInputGetStateFunction>(
+            () =>
+                (XInputGetStateFunction)
+                    Kernel32Natives.GetMethod<XInputGetStateFunction>(NativeDllHandle, "XInputGetState"));
+
+        private static readonly Lazy<XInputSetStateFunction> OriginalXInputSetStateFunction = new Lazy
+            <XInputSetStateFunction>(
+            () =>
+                (XInputSetStateFunction)
+                    Kernel32Natives.GetMethod<XInputSetStateFunction>(NativeDllHandle, "XInputSetState"));
+
+        private static readonly Lazy<XInputGetCapabilitiesFunction> OriginalXInputGetCapabilitiesFunction = new Lazy
+            <XInputGetCapabilitiesFunction>(
+            () => (XInputGetCapabilitiesFunction)
+                Kernel32Natives.GetMethod<XInputGetCapabilitiesFunction>(NativeDllHandle, "XInputGetCapabilities"));
+
+        private static readonly Lazy<XInputGetDSoundAudioDeviceGuidsFunction>
+            OriginalXInputGetDSoundAudioDeviceGuidsFunction = new Lazy<XInputGetDSoundAudioDeviceGuidsFunction>(
+                () => (XInputGetDSoundAudioDeviceGuidsFunction)
+                    Kernel32Natives.GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(NativeDllHandle,
+                        "XInputGetDSoundAudioDeviceGuids"));
+
+        private static readonly Lazy<XInputGetBatteryInformationFunction> OriginalXInputGetBatteryInformationFunction = new Lazy
+            <XInputGetBatteryInformationFunction>(
+            () => (XInputGetBatteryInformationFunction)
+                Kernel32Natives.GetMethod<XInputGetBatteryInformationFunction>(NativeDllHandle,
+                    "XInputGetBatteryInformation"));
+
+        private static readonly Lazy<XInputGetKeystrokeFunction> OriginalXInputGetKeystrokeFunction = new Lazy
+            <XInputGetKeystrokeFunction>(
+            () =>
+                (XInputGetKeystrokeFunction)
+                    Kernel32Natives.GetMethod<XInputGetKeystrokeFunction>(NativeDllHandle, "XInputGetKeystroke"));
+
+        #endregion
+
+        #region Private properties
+
+        private static string BasePath
+        {
+            get
+            {
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+                {
+                    using (
+                        var regKey = hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit", false)
+                        )
+                    {
+                        return regKey != null ? (string) regKey.GetValue("Path") : string.Empty;
+                    }
+                }
+            }
+        }
+
+        private static string ScpControlPath
+        {
+            get
+            {
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+                {
+                    using (
+                        var regKey =
+                            hklm.OpenSubKey(
+                                @"SOFTWARE\Nefarius Software Solutions\ScpToolkit\ScpControl", false))
+                    {
+                        return regKey != null ? (string) regKey.GetValue("Path") : string.Empty;
+                    }
+                }
+            }
+        }
+
+        private static string XInputDllPath
+        {
+            get
+            {
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+                {
+                    using (
+                        var regKey =
+                            hklm.OpenSubKey(@"SOFTWARE\Nefarius Software Solutions\ScpToolkit\XInput",
+                                false))
+                    {
+                        return regKey != null ? (string) regKey.GetValue("DllPathOverride") : string.Empty;
+                    }
+                }
+            }
         }
 
         #endregion

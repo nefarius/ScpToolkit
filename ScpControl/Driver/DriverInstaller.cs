@@ -73,9 +73,10 @@ namespace ScpControl.Driver
             IntPtr hWnd = default(IntPtr),
             bool force = false)
         {
-            var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId,
-                UsbDs3.DeviceClassGuid,
-                DriverDirectory, string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force);
+            usbDevice.InfFile = string.Format("Ds3Controller_{0}.inf", Guid.NewGuid());
+
+            var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId, UsbDs3.DeviceClassGuid,
+                DriverDirectory, usbDevice.InfFile, hWnd, force);
 
             if (result != WdiErrorCode.WDI_SUCCESS)
             {
@@ -145,9 +146,10 @@ namespace ScpControl.Driver
             IntPtr hWnd = default(IntPtr),
             bool force = false)
         {
-            var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId,
-                UsbDs4.DeviceClassGuid,
-                DriverDirectory, string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force);
+            usbDevice.InfFile = string.Format("Ds4Controller_{0}.inf", Guid.NewGuid());
+
+            var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId, UsbDs4.DeviceClassGuid,
+                DriverDirectory, usbDevice.InfFile, hWnd, force);
 
             if (result != WdiErrorCode.WDI_SUCCESS)
             {

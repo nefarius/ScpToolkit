@@ -440,6 +440,7 @@ namespace ScpControl.Driver
         public string HardwareId { get; set; }
         public string CurrentDriver { get; set; }
         public WdiUsbDeviceType DeviceType { get; set; }
+        public string InfFile { get; set; }
 
         public override string ToString()
         {

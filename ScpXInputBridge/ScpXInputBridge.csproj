@@ -82,7 +82,6 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Kernel32Natives.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
     <Compile Include="XInputDll.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

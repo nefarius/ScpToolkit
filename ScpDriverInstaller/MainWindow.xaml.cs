@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -617,26 +618,26 @@ namespace ScpDriverInstaller
             _hWnd = new WindowInteropHelper(this).Handle;
 
             // listen for DualShock 3 plug-in events (HidUsb)
-            _hidUsbDs3.OnDeviceRemoved += (sender, args) => Ds3HidDeviceAddedOrRemoved();
-            _hidUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => Ds3HidDeviceAddedOrRemoved();
+            _hidUsbDs3.OnDeviceRemoved += (sender, args) => DsHidDeviceAddedOrRemoved();
+            _hidUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => DsHidDeviceAddedOrRemoved();
             _hidUsbDs3.RegisterHandle(_hWnd);
             _hidUsbDs3.CheckDevicePresent();
 
             // listen for DualShock 3 plug-in events (WinUSB)
-            _winUsbDs3.OnDeviceRemoved += (sender, args) => Ds3WinUsbDeviceAddedOrRemoved();
-            _winUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => Ds3WinUsbDeviceAddedOrRemoved();
+            _winUsbDs3.OnDeviceRemoved += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
+            _winUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
             _winUsbDs3.RegisterHandle(_hWnd);
             _winUsbDs3.CheckDevicePresent();
 
             // listen for DualShock 4 plug-in events (HidUsb)
-            _hidUsbDs4.OnDeviceRemoved += (sender, args) => Ds4HidDeviceAddedOrRemoved();
-            _hidUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => Ds4HidDeviceAddedOrRemoved();
+            _hidUsbDs4.OnDeviceRemoved += (sender, args) => DsHidDeviceAddedOrRemoved();
+            _hidUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => DsHidDeviceAddedOrRemoved();
             _hidUsbDs4.RegisterHandle(_hWnd);
             _hidUsbDs4.CheckDevicePresent();
 
             // listen for DualShock 4 plug-in events (HidUsb)
-            _winUsbDs4.OnDeviceRemoved += (sender, args) => Ds4WinUsbDeviceAddedOrRemoved();
-            _winUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => Ds4WinUsbDeviceAddedOrRemoved();
+            _winUsbDs4.OnDeviceRemoved += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
+            _winUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
             _winUsbDs4.RegisterHandle(_hWnd);
             _winUsbDs4.CheckDevicePresent();
 
@@ -658,7 +659,7 @@ namespace ScpDriverInstaller
         /// <summary>
         ///     Updates the GUI if a device using HidUsb was plugged-in or removed.
         /// </summary>
-        private void Ds3HidDeviceAddedOrRemoved()
+        private void DsHidDeviceAddedOrRemoved()
         {
             Dispatcher.Invoke(() =>
             {
@@ -670,7 +671,7 @@ namespace ScpDriverInstaller
                     var usbDevice in
                         WdiWrapper.Instance.UsbDeviceList.Where(
                             d => d.VendorId == _hidUsbDs3.VendorId
-                                 && d.ProductId == _hidUsbDs3.ProductId
+                                 && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
                                  && d.CurrentDriver.Equals("HidUsb"))
                     )
                 {
@@ -690,7 +691,7 @@ namespace ScpDriverInstaller
         /// <summary>
         ///     Updates the GUI if a device using WinUSB was plugged-in or removed.
         /// </summary>
-        private void Ds3WinUsbDeviceAddedOrRemoved()
+        private void DsWinUsbDeviceAddedOrRemoved()
         {
             // WinUsb devices
             DualShockStackPanelWinUsb.Children.Clear();
@@ -699,7 +700,7 @@ namespace ScpDriverInstaller
                 var usbDevice in
                     WdiWrapper.Instance.UsbDeviceList.Where(
                         d => d.VendorId == _hidUsbDs3.VendorId
-                             && d.ProductId == _hidUsbDs3.ProductId
+                             && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
                              && d.CurrentDriver.Equals("WinUSB"))
                 )
             {
@@ -713,56 +714,52 @@ namespace ScpDriverInstaller
             }
         }
 
-        private void Ds4HidDeviceAddedOrRemoved()
-        {
-            
-        }
-
-        private void Ds4WinUsbDeviceAddedOrRemoved()
-        {
-            
-        }
-
         private void InstallDsOnClick(object sender, RoutedEventArgs routedEventArgs)
         {
             var ds3SToInstall =
                 DualShockStackPanelHidUsb.Children.Cast<TextBlock>()
                     .Select(c => c.Tag)
                     .Cast<WdiDeviceInfo>()
-                    .Where(d => d.ProductId == 0x0268)
+                    .Where(d => d.VendorId == _hidUsbDs3.VendorId && d.ProductId == _hidUsbDs3.ProductId)
                     .ToList();
 
-            if (DriverInstaller.InstallDualShock3Controller(ds3SToInstall.First(), _hWnd))
+            if (ds3SToInstall.Any())
             {
-                MessageBox.Show("Installation succeeded, please proceed with the next step.",
-                    "Installation succeeded",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                if (DriverInstaller.InstallDualShock3Controller(ds3SToInstall.First(), _hWnd))
+                {
+                    MessageBox.Show("Installation succeeded, please proceed with the next step.",
+                        "Installation succeeded",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Installation failed.",
+                        "Installation failed",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            else
-            {
-                MessageBox.Show("Installation failed.",
-                    "Installation failed",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
+            
             var ds4SToInstall =
                 DualShockStackPanelHidUsb.Children.Cast<TextBlock>()
                     .Select(c => c.Tag)
                     .Cast<WdiDeviceInfo>()
-                    .Where(d => d.ProductId == 0x05C4)
+                    .Where(d => d.VendorId == _hidUsbDs4.VendorId && d.ProductId == _hidUsbDs4.ProductId)
                     .ToList();
 
-            if (DriverInstaller.InstallDualShock4Controller(ds4SToInstall.First(), _hWnd))
+            if (ds4SToInstall.Any())
             {
-                MessageBox.Show("Installation succeeded, please proceed with the next step.",
-                    "Installation succeeded",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("Installation failed.",
-                    "Installation failed",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                if (DriverInstaller.InstallDualShock4Controller(ds4SToInstall.First(), _hWnd))
+                {
+                    MessageBox.Show("Installation succeeded, please proceed with the next step.",
+                        "Installation succeeded",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Installation failed.",
+                        "Installation failed",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
