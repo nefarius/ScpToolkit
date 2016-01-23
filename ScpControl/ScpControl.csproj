@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.6.239.16021</AssemblyVersion>
+    <AssemblyVersion>1.6.242.16023</AssemblyVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -230,6 +230,7 @@
     <Compile Include="Utilities\PortableSettingsProvider.cs" />
     <Compile Include="Utilities\TaskQueue.cs" />
     <Compile Include="Value Converters\EnumDescriptionConverter.cs" />
+    <Compile Include="Value Converters\MultiCheckedToEnabledConverter.cs" />
     <Compile Include="Value Converters\RadioBoolToIntConverter.cs" />
     <Compile Include="Wcf\IScpCommandService.cs" />
     <Compile Include="ScpCore\GlobalConfiguration.cs" />

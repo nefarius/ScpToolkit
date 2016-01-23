@@ -28,7 +28,6 @@
                 </Grid.ColumnDefinitions>
 
 
-
                 <!-- Installation options -->
                 <controls:Accordion ExpandDirection="Right" MinHeight="220" Width="780">
                     <!-- Driver section -->
@@ -145,60 +144,70 @@
         <!-- A Wizard! -->
         <xctk:Wizard FinishButtonClosesWindow="True">
             <!-- Welcome page -->
-            <xctk:WizardPage x:Name="IntroPage" 
-                                   Title="Welcome to the ScpToolkit Driver Installer"
-                                   Description="This Wizard will walk you though the process of installing you Sony DualShock 3 or 4 controller(s) on your system.">
+            <xctk:WizardPage x:Name="IntroPage"
+                             Title="Welcome to the ScpToolkit Driver Installer"
+                             Description="This Wizard will walk you though the process of installing you Sony DualShock 3 or 4 controller(s) on your system.">
                 <Grid>
                     <Label>LOOOL</Label>
                 </Grid>
             </xctk:WizardPage>
             <xctk:WizardPage x:Name="Page1" PageType="Interior"
-                                   Title="Install DualShock 3 controllers"
-                                   Description="This is the first page in the process."
-                                   NextPage="{Binding ElementName=Page2}"
-                                   PreviousPage="{Binding ElementName=IntroPage}">
+                             Title="Install DualShock 3/4 Controllers"
+                             Description="In this step you can initialize one or more DualShock 3/4 controllers."
+                             NextPage="{Binding ElementName=Page2}"
+                             PreviousPage="{Binding ElementName=IntroPage}">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="600"/>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="500" />
                     </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="0">
-                        <StackPanel>
-                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
                             If you haven't already please plug in your DualShock 3 controller with the USB cable now and wait until it appears in the list on the right.
-                            </TextBlock>
-                            <Button IsEnabled="{Binding Path=InstallDs3ButtonEnabled}" Click="InstallDs3ControllersButton_OnClick">Install selected controllers</Button>
-                        </StackPanel>
+                            <LineBreak /><LineBreak />
+                            If the device doesn't show up after a few seconds, it's either already equiped with the right driver or in a faulty state.
+                            <LineBreak /><LineBreak />
+                            Once your device becomes visible, hit the "Install" button to start the driver installation process for this particular controller.
+                        </TextBlock>
+                        <Button IsEnabled="{Binding Path=InstallDs3ButtonEnabled}"
+                                Click="InstallDsOnClick" Margin="20,0">
+                            Initialize all connected devices as DualShock 3/4 Controllers
+                        </Button>
+                    </StackPanel>
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <GroupBox Grid.Row="0"
+                                  Margin="10,0,0,0"
+                                  Header="Uninitialized DualShock 3/4 Controllers">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="DualShockStackPanelHidUsb" />
+                            </ScrollViewer>
+                        </GroupBox>
+
+                        <GroupBox Grid.Row="1"
+                                  Margin="10,0,0,0"
+                                  Header="Initialized DualShock 3/4 Controllers">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="DualShockStackPanelWinUsb" />
+                            </ScrollViewer>
+                        </GroupBox>
                     </Grid>
 
-                    <controls:Accordion VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1">
-                        <controls:AccordionItem Header="DualShock 3 Controllers">
-                            <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                                <StackPanel x:Name="DualShock3StackPanelSimple" />
-                            </ScrollViewer>
-                        </controls:AccordionItem>
-
-                        <controls:AccordionItem Header="All USB Devices (Advanced)">
-                            <StackPanel>
-                                <TextBlock Foreground="DarkRed" FontWeight="Bold" Margin="0,0,0,10">
-                                Warning: you can seriously screw up your system if you select the wrong device!
-                                </TextBlock>
-                                <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel x:Name="DualShock3StackPanel" />
-                                </ScrollViewer>
-                            </StackPanel>
-                        </controls:AccordionItem>
-                    </controls:Accordion>
                 </Grid>
             </xctk:WizardPage>
             <xctk:WizardPage x:Name="Page2" PageType="Interior"
-                                   Title="Page 2"
-                                   Description="This is the second page in the process"/>
+                             Title="Page 2"
+                             Description="This is the second page in the process" />
             <xctk:WizardPage x:Name="LastPage" PageType="Interior"
-                                   Title="Last Page"
-                                   Description="This is the last page in the process"
-                                   CanFinish="True"/>
+                             Title="Last Page"
+                             Description="This is the last page in the process"
+                             CanFinish="True" />
         </xctk:Wizard>
     </Grid>
 </Window>

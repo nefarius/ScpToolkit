@@ -6,6 +6,8 @@ using System.Reflection;
 using log4net;
 using ScpControl.Database;
 using ScpControl.ScpCore;
+using ScpControl.Usb.Ds3;
+using ScpControl.Usb.Ds4;
 using ScpControl.Utilities;
 
 namespace ScpControl.Driver
@@ -67,6 +69,29 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
+        public static bool InstallDualShock3Controller(WdiDeviceInfo usbDevice,
+            IntPtr hWnd = default(IntPtr),
+            bool force = false)
+        {
+            var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId,
+                UsbDs3.DeviceClassGuid,
+                DriverDirectory, string.Format("Ds3Controller_{0}.inf", Guid.NewGuid()), hWnd, force);
+
+            if (result != WdiErrorCode.WDI_SUCCESS)
+            {
+                Log.ErrorFormat("Installing DualShock 3 Controller ({0}) failed: {1}", usbDevice.DeviceId, result);
+                return false;
+            }
+
+            usbDevice.DeviceType = WdiUsbDeviceType.DualShock3;
+            using (var db = new ScpDb())
+            {
+                db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);
+            }
+
+            return true;
+        }
+
         public static uint InstallDualShock3Controllers(IEnumerable<WdiDeviceInfo> usbDevices,
             IntPtr hWnd = default(IntPtr),
             bool force = false)
@@ -116,6 +141,29 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
+        public static bool InstallDualShock4Controller(WdiDeviceInfo usbDevice,
+            IntPtr hWnd = default(IntPtr),
+            bool force = false)
+        {
+            var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId,
+                UsbDs4.DeviceClassGuid,
+                DriverDirectory, string.Format("Ds4Controller_{0}.inf", Guid.NewGuid()), hWnd, force);
+
+            if (result != WdiErrorCode.WDI_SUCCESS)
+            {
+                Log.ErrorFormat("Installing DualShock 4 Controller ({0}) failed: {1}", usbDevice.DeviceId, result);
+                return false;
+            }
+
+            usbDevice.DeviceType = WdiUsbDeviceType.DualShock4;
+            using (var db = new ScpDb())
+            {
+                db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);
+            }
+
+            return true;
+        }
+
         public static uint InstallDualShock4Controllers(IEnumerable<WdiDeviceInfo> usbDevices,
             IntPtr hWnd = default(IntPtr),
             bool force = false)
@@ -130,7 +178,7 @@ namespace ScpControl.Driver
                 where result == WdiErrorCode.WDI_SUCCESS
                 select usbDevice)
             {
-                usbDevice.DeviceType = WdiUsbDeviceType.DualSHock4;
+                usbDevice.DeviceType = WdiUsbDeviceType.DualShock4;
                 using (var db = new ScpDb())
                 {
                     db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);

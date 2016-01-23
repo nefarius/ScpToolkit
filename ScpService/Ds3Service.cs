@@ -82,7 +82,7 @@ namespace ScpService
                         DriverInstaller.InstallDualShock3Controllers(ds3Devices);
 
                     var ds4Devices = db.Engine.GetAllDbEntities<WdiDeviceInfo>(ScpDb.TableDevices)
-                        .Where(d => d.Value.DeviceType == WdiUsbDeviceType.DualSHock4)
+                        .Where(d => d.Value.DeviceType == WdiUsbDeviceType.DualShock4)
                         .Select(d => d.Value);
 
                     if (GlobalConfiguration.Instance.ForceDs4DriverReinstallation)

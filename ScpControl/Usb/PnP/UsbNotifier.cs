@@ -5,42 +5,25 @@ using System.Runtime.InteropServices;
 namespace ScpControl.Usb.PnP
 {
     /// <summary>
-    ///     A modified version of the <see href="http://www.codeproject.com/Articles/18099/A-USB-HID-Component-for-C">USB HID Component for C#</see>.
+    ///     A modified version of the
+    ///     <see href="http://www.codeproject.com/Articles/18099/A-USB-HID-Component-for-C">USB HID Component for C#</see>.
     /// </summary>
     public class UsbNotifier : Win32Usb
     {
-        #region Private fields
-
-        private IntPtr _handle;
-        private IntPtr _usbEventHandle;
-
-        #endregion
-
-        #region Ctors
-
-        public UsbNotifier()
-        {
-            VendorId = 0;
-            ProductId = 0;
-        }
-
-        public UsbNotifier(ushort vid, ushort pid)
-        {
-            VendorId = vid;
-            ProductId = pid;
-        }
-
-        #endregion
-
-        [Description("The product id from the USB device you want to use")]
-        [DefaultValue("(none)")]
-        [Category("Embedded Details")]
+        /// <summary>
+        ///     The product id from the USB device you want to use.
+        /// </summary>
         public ushort ProductId { get; set; }
 
-        [Description("The vendor id from the USB device you want to use")]
-        [DefaultValue("(none)")]
-        [Category("Embedded Details")]
+        /// <summary>
+        ///     The vendor id from the USB device you want to use.
+        /// </summary>
         public ushort VendorId { get; set; }
+
+        /// <summary>
+        ///     The device class GUID this notifier will listen for. Defaults to <see cref="Win32Usb.HidGuid"/>.
+        /// </summary>
+        public Guid ClassGuid { get; private set; }
 
         //events
         /// <summary>
@@ -97,7 +80,7 @@ namespace ScpControl.Usb.PnP
         /// </example>
         public void RegisterHandle(IntPtr handle)
         {
-            _usbEventHandle = RegisterForUsbEvents(handle, HidGuid);
+            _usbEventHandle = RegisterForUsbEvents(handle, ClassGuid);
 
             if (_usbEventHandle == IntPtr.Zero)
             {
@@ -208,10 +191,10 @@ namespace ScpControl.Usb.PnP
         /// <summary>
         ///     Finds a device given its PID and VID
         /// </summary>
-        private static bool FindDevice(int nVid, int nPid)
+        private bool FindDevice(int nVid, int nPid)
         {
             var strSearch = string.Format("vid_{0:x4}&pid_{1:x4}", nVid, nPid); // first, build the path search string
-            var gHid = HidGuid; // next, get the GUID from Windows that it uses to represent the HID USB interface
+            var gHid = ClassGuid; // next, get the GUID from Windows that it uses to represent the HID USB interface
             var hInfoSet = SetupDiGetClassDevs(ref gHid, null, IntPtr.Zero, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
             // this gets a list of all HID devices currently connected to the computer (InfoSet)
 
@@ -246,5 +229,32 @@ namespace ScpControl.Usb.PnP
             }
             return false; // oops, didn't find our device
         }
+
+        #region Private fields
+
+        private IntPtr _handle;
+        private IntPtr _usbEventHandle;
+
+        #endregion
+
+        #region Ctors
+
+        public UsbNotifier()
+        {
+            ClassGuid = HidGuid;
+        }
+
+        public UsbNotifier(ushort vid, ushort pid) : this()
+        {
+            VendorId = vid;
+            ProductId = pid;
+        }
+
+        public UsbNotifier(ushort vid, ushort pid, Guid classGuid) : this(vid, pid)
+        {
+            ClassGuid = classGuid;
+        }
+
+        #endregion
     }
 }

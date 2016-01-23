@@ -8,16 +8,16 @@
     <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="ALLUSERS" Value="1"/>
     <ROW Property="ARPCOMMENTS" Value="[|ProductName] Setup" ValueLocId="*"/>
-    <ROW Property="ARPHELPLINK" Value="https://github.com/nefarius/ScpServer/issues"/>
+    <ROW Property="ARPHELPLINK" Value="https://github.com/nefarius/ScpToolkit/issues"/>
     <ROW Property="ARPPRODUCTICON" Value="DualShock3.exe" Type="8"/>
-    <ROW Property="ARPURLINFOABOUT" Value="https://github.com/nefarius/ScpServer"/>
-    <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpServer/releases"/>
+    <ROW Property="ARPURLINFOABOUT" Value="https://github.com/nefarius/ScpToolkit"/>
+    <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpToolkit/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{3D34AD5B-E642-4AB2-B42D-0E1A2A6BCDAA} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{F429EA9C-A2BB-47B4-A2AB-3B960353EFAE} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.239.16012" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.242.16023" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -40,10 +40,7 @@
     <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
     <ROW Directory="LilyPad_Dir" Directory_Parent="APPDIR" DefaultDir="LilyPad"/>
     <ROW Directory="Logs_Dir" Directory_Parent="APPDIR" DefaultDir="Logs"/>
-    <ROW Directory="Mapper_Dir" Directory_Parent="Plugins_Dir" DefaultDir="Mapper" DirectoryOptions="12"/>
     <ROW Directory="Media_Dir" Directory_Parent="APPDIR" DefaultDir="Media"/>
-    <ROW Directory="Plugins_Dir" Directory_Parent="APPDIR" DefaultDir="Plugins" DirectoryOptions="12"/>
-    <ROW Directory="Profiles_Dir" Directory_Parent="APPDIR" DefaultDir="Profiles" DirectoryOptions="12"/>
     <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
     <ROW Directory="ScpVBus_Dir" Directory_Parent="APPDIR" DefaultDir="ScpVBus"/>
     <ROW Directory="StartupFolder" Directory_Parent="TARGETDIR" DefaultDir="STARTU~1|StartupFolder" IsPseudoRoot="1"/>
@@ -98,14 +95,10 @@
     <ROW Component="LilyPadScpr5875.dll" ComponentId="{DFA51E37-0EA3-41CF-81BE-0BA1594A83DF}" Directory_="LilyPad_Dir" Attributes="0" KeyPath="LilyPadScpr5875.dll"/>
     <ROW Component="Logs" ComponentId="{17BFD6DD-B3CE-451E-B648-122CC38284AA}" Directory_="Logs_Dir" Attributes="0"/>
     <ROW Component="Mantin.Controls.Wpf.Notification.pdb" ComponentId="{DC9828E5-6B17-4EF7-BCC2-1CE5F5382CBC}" Directory_="APPDIR" Attributes="0" KeyPath="Mantin.Controls.Wpf.Notification.pdb" Type="4"/>
-    <ROW Component="Mapper" ComponentId="{27AA5C0B-D69E-4993-854F-A0F8CC433B9E}" Directory_="Mapper_Dir" Attributes="0"/>
     <ROW Component="Mono.CSharp.dll" ComponentId="{23669302-58D9-41C4-9F1B-1FEF2F18D632}" Directory_="APPDIR" Attributes="0" KeyPath="Mono.CSharp.dll"/>
     <ROW Component="Newtonsoft.Json.dll" ComponentId="{D1CD02D2-87A1-4D51-9FE7-7DA26FBCCF04}" Directory_="APPDIR" Attributes="0" KeyPath="Newtonsoft.Json.dll"/>
     <ROW Component="Path" ComponentId="{A630DCAF-62A4-4C5B-AD65-51906DB7A227}" Directory_="APPDIR" Attributes="4" KeyPath="Path_1"/>
-    <ROW Component="Plugins" ComponentId="{DFB25C8E-C3CD-43D9-B76F-F353C71CAA01}" Directory_="Plugins_Dir" Attributes="0"/>
     <ROW Component="ProductInformation" ComponentId="{35D0C342-2B78-4181-91B0-7D3480F551D3}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="Profiles" ComponentId="{ED907342-9A57-49E2-A5FC-B4CF70B0F79B}" Directory_="Profiles_Dir" Attributes="0"/>
-    <ROW Component="RetroArchProfile.script.cs" ComponentId="{4AC77166-DA87-4377-AE1B-84BEE6EAB28F}" Directory_="Mapper_Dir" Attributes="0" KeyPath="RetroArchProfile.script.cs" Type="0"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{95EFCF24-37FC-47D8-A17C-BB18A6DF9F8E}" Directory_="SHORTCUTDIR" Attributes="0"/>
     <ROW Component="ScpCleanWipe.exe.config" ComponentId="{7AA12DC2-7E63-4E9C-AC9F-DF4237B9C304}" Directory_="APPDIR" Attributes="0" KeyPath="ScpCleanWipe.exe.config"/>
     <ROW Component="ScpCleanWipe.exe_1" ComponentId="{97BC2050-332D-482C-A334-CD35C01046F4}" Directory_="APPDIR" Attributes="0" KeyPath="ScpCleanWipe.exe"/>
@@ -193,7 +186,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="AI32BitFiles" Title="32-bit" Description="32-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="AI64BitFiles" Title="64-bit" Description="64-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
-    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mapper Mono.CSharp.dll Newtonsoft.Json.dll Path Plugins Profiles RetroArchProfile.script.cs SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpUpdater.exe ScpVBus.inf ScpVBus.inf_1 ScpVBus.inf_2 ScpVBus.inf_3 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libusb0.dll libusb0.dll_1 libusbK.dll libusbK.dll_1 libwdi.dll libwdi.dll_1 startup.ogg wdfcoinstaller01007.dll wdfcoinstaller01007.dll_1 wdfcoinstaller01009.dll wdfcoinstaller01009.dll_1 x64 x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1 xusb21.sys xusb21.sys_1 xusb21.sys_2 xusb21.sys_3"/>
+    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mono.CSharp.dll Newtonsoft.Json.dll Path SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpUpdater.exe ScpVBus.inf ScpVBus.inf_1 ScpVBus.inf_2 ScpVBus.inf_3 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libusb0.dll libusb0.dll_1 libusbK.dll libusbK.dll_1 libwdi.dll libwdi.dll_1 startup.ogg wdfcoinstaller01007.dll wdfcoinstaller01007.dll_1 wdfcoinstaller01009.dll wdfcoinstaller01009.dll_1 x64 x86 xusb21.cat xusb21.cat_1 xusb21.inf xusb21.inf_1 xusb21.sys xusb21.sys_1 xusb21.sys_2 xusb21.sys_3"/>
     <ROW Feature="B63_41B8_9CB7_8C5E07C0FC18_" Title="Visual C++ 2010 SP1 x64 (MFC Security Update)" Description="Visual C++ 2010 SP1 x64 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CA62D813A4E74FA2AAE86A7D7B7B1493" Title="Visual C++ Redistributable for Visual Studio 2013 x64" Description="Visual C++ Redistributable for Visual Studio 2013 x64" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" Title="Visual C++ 2010 SP1 x86 (MFC Security Update)" Description="Visual C++ 2010 SP1 x86 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
@@ -235,7 +228,6 @@
     <ROW File="Newtonsoft.Json.dll" Component_="Newtonsoft.Json.dll" FileName="NEWTON~1.DLL|Newtonsoft.Json.dll" Attributes="0" SourcePath="..\..\bin\Newtonsoft.Json.dll" SelfReg="false" NextFile="updater.exe"/>
     <ROW File="Ookii.Dialogs.Wpf.dll" Component_="ScpService.exe" FileName="OOKIID~1.DLL|Ookii.Dialogs.Wpf.dll" Attributes="0" SourcePath="..\..\bin\Ookii.Dialogs.Wpf.dll" SelfReg="false" NextFile="ReactiveSockets.dll"/>
     <ROW File="ReactiveSockets.dll" Component_="ScpService.exe" FileName="REACTI~1.DLL|ReactiveSockets.dll" Attributes="0" SourcePath="..\..\bin\ReactiveSockets.dll" SelfReg="false" NextFile="ScpControl.dll"/>
-    <ROW File="RetroArchProfile.script.cs" Component_="RetroArchProfile.script.cs" FileName="RETROA~1.CS|RetroArchProfile.script.cs" Attributes="0" SourcePath="..\..\bin\Plugins\Mapper\RetroArchProfile.script.cs" SelfReg="false" NextFile="ScpProfiler.exe"/>
     <ROW File="ScpCleanWipe.exe" Component_="ScpCleanWipe.exe_1" FileName="SCPCLE~1.EXE|ScpCleanWipe.exe" Attributes="0" SourcePath="..\..\bin\ScpCleanWipe.exe" SelfReg="false" NextFile="ScpDriverInstaller.exe" DigSign="true"/>
     <ROW File="ScpCleanWipe.exe.config" Component_="ScpCleanWipe.exe.config" FileName="SCPCLE~1.CON|ScpCleanWipe.exe.config" Attributes="0" SourcePath="..\..\bin\ScpCleanWipe.exe.config" SelfReg="false" NextFile="ScpControl.dll.config"/>
     <ROW File="ScpCleanWipe.pdb" Component_="ScpCleanWipe.pdb" FileName="SCPCLE~1.PDB|ScpCleanWipe.pdb" Attributes="0" SourcePath="..\..\bin\ScpCleanWipe.pdb" SelfReg="false" NextFile="ScpControl.pdb"/>
@@ -290,7 +282,7 @@
     <ROW File="System.Windows.Controls.Layout.Toolkit.dll" Component_="ScpService.exe" FileName="SYSTEM~6.DLL|System.Windows.Controls.Layout.Toolkit.dll" Attributes="0" SourcePath="..\..\bin\System.Windows.Controls.Layout.Toolkit.dll" SelfReg="false" NextFile="Trinet.Core.IO.Ntfs.dll"/>
     <ROW File="Trinet.Core.IO.Ntfs.dll" Component_="Trinet.Core.IO.Ntfs.dll" FileName="TRINET~1.DLL|Trinet.Core.IO.Ntfs.dll" Attributes="0" SourcePath="..\..\bin\Trinet.Core.IO.Ntfs.dll" SelfReg="false" NextFile="WPFToolkit.dll"/>
     <ROW File="WPFToolkit.dll" Component_="ScpService.exe" FileName="WPFTOO~1.DLL|WPFToolkit.dll" Attributes="0" SourcePath="..\..\bin\WPFToolkit.dll" SelfReg="false" NextFile="LilyPadScpr5875.dll"/>
-    <ROW File="WindowsInput.dll" Component_="WindowsInput.dll" FileName="WINDOW~1.DLL|WindowsInput.dll" Attributes="0" SourcePath="..\..\bin\WindowsInput.dll" SelfReg="false" NextFile="RetroArchProfile.script.cs"/>
+    <ROW File="WindowsInput.dll" Component_="WindowsInput.dll" FileName="WINDOW~1.DLL|WindowsInput.dll" Attributes="0" SourcePath="..\..\bin\WindowsInput.dll" SelfReg="false" NextFile="ScpProfiler.exe"/>
     <ROW File="XInput1_3.dll" Component_="XInput1_3.dll" FileName="XINPUT~1.DLL|XInput1_3.dll" Attributes="0" SourcePath="..\..\bin\XInput\x86\XInput1_3.dll" SelfReg="false" NextFile="ScpVBus.inf_1"/>
     <ROW File="XInput1_3.dll_1" Component_="XInput1_3.dll_1" FileName="XINPUT~1.DLL|XInput1_3.dll" Attributes="0" SourcePath="..\..\bin\XInput\x64\XInput1_3.dll" SelfReg="false" NextFile="XInput_log4net.config_1"/>
     <ROW File="XInput_log4net.config" Component_="XInput_log4net.config" FileName="XINPUT~1.CON|XInput_log4net.config" Attributes="0" SourcePath="..\..\bin\XInput\x86\XInput_log4net.config" SelfReg="false" NextFile="XInput1_3.dll_1"/>
@@ -327,7 +319,7 @@
     <ROW File="xusb21.sys_3" Component_="xusb21.sys_3" FileName="xusb21.sys" Attributes="0" SourcePath="..\..\bin\Xbox360\driver\win7\x86\xusb21.sys" SelfReg="false" NextFile="XInput1_3.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
-    <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" UpdatesUrl="https://raw.githubusercontent.com/nefarius/ScpServer/master/updates.txt" EulaPathLocId="*" IntroTextPathLocId="*"/>
+    <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="4" UpdatesUrl="https://raw.githubusercontent.com/nefarius/ScpServer/master/updates.txt" EulaPathLocId="*" IntroTextPathLocId="*"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="Setup Files" PackageFileName="ScpToolkit_Setup" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="..\ScpControlPanel\Dual Shock 3.ico" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" UseLargeSchema="true" MsiPackageType="AI_ALL"/>
@@ -380,7 +372,7 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiAssemblyNameComponent">
     <ROW Component_="ScpService.exe" Name="Name" Value="ScpService" Sync="false"/>
     <ROW Component_="ScpService.exe" Name="Culture" Value="neutral" Sync="false"/>
-    <ROW Component_="ScpService.exe" Name="Version" Value="1.6.217.15354" Sync="true"/>
+    <ROW Component_="ScpService.exe" Name="Version" Value="1.6.241.16023" Sync="true"/>
     <ROW Component_="ScpService.exe" Name="ProcessorArchitecture" Value="MSIL" Sync="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
@@ -476,9 +468,6 @@
     <ROW Directory_="XInput_Dir" Component_="XInput" ManualDelete="true"/>
     <ROW Directory_="x86_Dir" Component_="x86" ManualDelete="false"/>
     <ROW Directory_="LilyPad_Dir" Component_="LilyPad" ManualDelete="true"/>
-    <ROW Directory_="Plugins_Dir" Component_="Plugins" ManualDelete="true"/>
-    <ROW Directory_="Mapper_Dir" Component_="Mapper" ManualDelete="false"/>
-    <ROW Directory_="Profiles_Dir" Component_="Profiles" ManualDelete="false"/>
     <ROW Directory_="x64_2_Dir" Component_="x64" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
@@ -529,7 +518,6 @@
     <ROW Action="AI_ScheduleTasks" Type="11265" Source="aischeduler.dll" Target="ScheduleTasks" WithoutSeq="true"/>
     <ROW Action="AI_ScheduleTasks2" Type="11265" Source="aischeduler2.dll" Target="ScheduleTasks" WithoutSeq="true"/>
     <ROW Action="AI_SetPermissions" Type="11265" Source="userAccounts.dll" Target="OnSetPermissions" WithoutSeq="true"/>
-    <ROW Action="AI_UPDATER_SERVICE_CONFIG" Type="3090" Source="updater.exe" Target="/configservice -name &quot;updater&quot;"/>
     <ROW Action="AI_UPDATER_UNINSTALL" Type="82" Source="updater.exe" Target="/clean silent"/>
     <ROW Action="AI_UninstallTasks" Type="1" Source="aischeduler.dll" Target="UninstallTasks"/>
     <ROW Action="AI_UninstallTasks2" Type="1" Source="aischeduler2.dll" Target="UninstallTasks"/>
@@ -554,8 +542,7 @@
     <ROW IniFile="DownloadsFolder" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="DownloadsFolder" Value="[CommonAppDataFolder][Manufacturer]\[ProductName]\updates\" Action="0" Component_="ScpUpdater.exe"/>
     <ROW IniFile="Flags" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="Flags" Value="PerMachine|ShowConfigOptionsButton" Action="0" Component_="ScpUpdater.exe"/>
     <ROW IniFile="ID" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="ID" Value="[UpgradeCode]" Action="0" Component_="ScpUpdater.exe"/>
-    <ROW IniFile="SupportServiceName" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="SupportServiceName" Value="updater" Action="0" Component_="ScpUpdater.exe"/>
-    <ROW IniFile="URL" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="URL" Value="https://raw.githubusercontent.com/nefarius/ScpServer/master/updates.txt" Action="0" Component_="ScpUpdater.exe"/>
+    <ROW IniFile="URL" FileName="SCPUPD~1.INI|ScpUpdater.ini" DirProperty="APPDIR" Section="General" Key="URL" Value="https://raw.githubusercontent.com/nefarius/ScpToolkit/master/updates.txt" Action="0" Component_="ScpUpdater.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
     <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
@@ -576,7 +563,7 @@
     <ROW Action="AI_NativeImageUnInstallCommit" Condition="DISABLEROLLBACK = 1" Sequence="6251"/>
     <ROW Action="AI_ConfigPermissions" Condition="REMOVE &lt;&gt; &quot;ALL&quot;" Sequence="5851"/>
     <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
-    <ROW Action="ScpTrayApp.exe" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="6601"/>
+    <ROW Action="ScpTrayApp.exe" Condition="( ( NOT Installed ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) ) AND ( !ScpToolkitTrayNotifications = 3 )" Sequence="6601"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99" Builds="DefaultBuild"/>
     <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="101" Builds="DefaultBuild"/>
     <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild"/>
@@ -585,7 +572,7 @@
     <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild"/>
     <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild"/>
     <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild"/>
-    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6599" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (AI_INSTALL_MODE&lt;&gt;&quot;Remove&quot;) AND (NOT PATCH)" Sequence="6597" Builds="DefaultBuild"/>
     <ROW Action="AI_ExtractFiles" Sequence="3998" Builds="DefaultBuild"/>
     <ROW Action="AI_DATA_SETTER" Sequence="3997"/>
     <ROW Action="AI_EstimateExtractFiles" Sequence="3999" Builds="DefaultBuild"/>
@@ -596,7 +583,6 @@
     <ROW Action="PS_StopService" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6607"/>
     <ROW Action="AI_DATA_SETTER_4" Condition="( Installed AND ( REMOVE = &quot;ALL&quot; OR AI_INSTALL_MODE = &quot;Remove&quot; ) ) AND ( (VersionNT &gt; 501) OR (VersionNT = 501 AND ServicePackLevel &gt;= 2) )" Sequence="6606"/>
     <ROW Action="AI_UPDATER_UNINSTALL" Condition="($updater.exe = 2) AND (?updater.exe = 3) AND NOT (UPGRADINGPRODUCTCODE)" Sequence="1551"/>
-    <ROW Action="AI_UPDATER_SERVICE_CONFIG" Condition="( ( ( NOT Installed AND VersionNT) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; AND VersionNT) ) AND ($updater.exe = 3) )" Sequence="5801"/>
     <ROW Action="AI_ProcessTasks" Condition="REMOVE&lt;&gt;&quot;ALL&quot;" Sequence="1623"/>
     <ROW Action="AI_UninstallTasks" Condition="REMOVE=&quot;ALL&quot;" Sequence="1698"/>
     <ROW Action="AI_ProcessTasks2" Condition="(VersionNT &gt;= 600) AND (REMOVE&lt;&gt;&quot;ALL&quot;)" Sequence="1624"/>
@@ -629,9 +615,6 @@
     <ROW LockObject="x86_Dir" Table="CreateFolder" User="[GRP_EVERYONE]" Permission="537002153" Flags="2"/>
     <ROW LockObject="XInput_Dir" Table="CreateFolder" User="[GRP_EVERYONE]" Permission="537002153" Flags="2"/>
     <ROW LockObject="LilyPad_Dir" Table="CreateFolder" User="[GRP_EVERYONE]" Permission="537002153" Flags="2"/>
-    <ROW LockObject="Plugins_Dir" Table="CreateFolder" User="[GRP_EVERYONE]" Permission="1610809791" Flags="2"/>
-    <ROW LockObject="Mapper_Dir" Table="CreateFolder" User="[GRP_EVERYONE]" Permission="1610809791" Flags="2"/>
-    <ROW LockObject="Profiles_Dir" Table="CreateFolder" User="[GRP_EVERYONE]" Permission="1610809791" Flags="2"/>
     <ROW LockObject="x64_2_Dir" Table="CreateFolder" User="[GRP_EVERYONE]" Permission="537002153" Flags="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
@@ -646,11 +629,9 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
     <ROW ServiceControl="ScpService.exe" Name="Ds3Service" Event="160" Wait="1" Component_="ScpService.exe"/>
-    <ROW ServiceControl="updater" Name="updater" Event="160" Wait="1" Component_="ScpUpdater.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
     <ROW ServiceInstall="ScpService.exe" Name="Ds3Service" DisplayName="SCP DSx Service" ServiceType="16" StartType="2" ErrorControl="32769" Dependencies="ScpVBus" Component_="ScpService.exe" Description="Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers"/>
-    <ROW ServiceInstall="updater" Name="updater" DisplayName="updater" ServiceType="16" StartType="3" ErrorControl="1" Arguments="/runservice" Component_="ScpUpdater.exe" Description="Updater Support Service"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
     <ROW Shortcut="ScpCleanWipe.exe" Directory_="SHORTCUTDIR" Name="SCPTOO~1|ScpToolkit Clean Wipe Utility" Component_="ScpCleanWipe.exe_1" Target="[#ScpCleanWipe.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
@@ -668,8 +649,8 @@
     <ROW Shortcut="ScpToolkitSettingsManager" Directory_="DesktopFolder" Name="SCPTOO~5|ScpToolkit Settings Manager" Component_="ScpSettings.exe" Target="[#ScpSettings.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitTrayNotifications" Directory_="SHORTCUTDIR" Name="SCPTOO~9|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe_1" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ScpToolkitTrayNotifications_1" Directory_="StartupFolder" Name="SCPTOO~1|ScpToolkit Tray Notifications" Component_="ScpTrayApp.exe_1" Target="[#ScpTrayApp.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitUpdater" Directory_="SHORTCUTDIR" Name="SCPTO~11|ScpToolkit Updater" Component_="ScpUpdater.exe" Target="[#updater.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ScpToolkitUpdater_1" Directory_="DesktopFolder" Name="SCPTOO~3|ScpToolkit Updater" Component_="ScpUpdater.exe" Target="[#updater.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitUpdater" Directory_="SHORTCUTDIR" Name="SCPTO~11|ScpToolkit Updater" Component_="ScpUpdater.exe" Target="[#updater.exe]" Arguments="/checknow" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ScpToolkitUpdater_1" Directory_="DesktopFolder" Name="SCPTOO~3|ScpToolkit Updater" Component_="ScpUpdater.exe" Target="[#updater.exe]" Arguments="/checknow" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="surface"/>
@@ -682,25 +663,29 @@
     <ROW NativeImage="ScpService.exe" Component="ScpService.exe" Attributes="16" Directory_AppBase="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
+    <ROW PrereqKey="B5158184F44A6981C5919229A6AEBE" DisplayName="Visual C++ Redistributable for Visual Studio 2015 x64" VersionMin="14.0" SetupFileUrl="http://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x64.exe" Location="1" ExactSize="14572000" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" WinNT64Versions="Windows XP x64, Windows XP x64 Service Pack 1, Windows Server 2003 x64, Windows Server 2003 x64 Service Pack 1, Windows Vista x64, Windows Vista x64 Service Pack 1, Windows 7 x64, Windows Server 2008 R2 x64" Operator="1" NoUiComLine="/q /norestart" Options="x" MD5="27b141aacc2777a82bb3fa9f6e5e5c1c" TargetName="Visual C++ Redistributable for Visual Studio 2015"/>
     <ROW PrereqKey="B63_41B8_9CB7_8C5E07C0FC18_" DisplayName="Visual C++ 2010 SP1 x64 (MFC Security Update)" VersionMin="10.0" SetupFileUrl="http://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x64.exe" Location="1" ExactSize="10274136" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" NoUiComLine="/q /norestart" MD5="c9d9eebccef20d637f193490cec05e79" TargetName="Visual C++ 2010 SP1"/>
     <ROW PrereqKey="CA62D813A4E74FA2AAE86A7D7B7B1493" DisplayName="Visual C++ Redistributable for Visual Studio 2013 x64" VersionMin="12.0" SetupFileUrl="http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe" Location="1" ExactSize="7194312" WinNTVersions="Windows 9x/ME/NT/2000/XP/Vista/Windows 7/Windows 8 x86/Windows 8.1 x86/Windows 10 x86" Operator="1" NoUiComLine="/q /norestart" Options="x" MD5="96b61b8e069832e6b809f24ea74567ba" TargetName="Visual C++ Redistributable for Visual Studio 2013"/>
     <ROW PrereqKey="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" DisplayName="Visual C++ 2010 SP1 x86 (MFC Security Update)" VersionMin="10.0" SetupFileUrl="http://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe" Location="1" ExactSize="8990552" WinNTVersions="Windows 2000, Windows 2000 Service Pack 1, Windows 2000 Service Pack 2, Windows 2000 Service Pack 3, Windows 2000 Service Pack 4" Operator="1" NoUiComLine="/q /norestart" MD5="1801436936e64598bab5b87b37dc7f87" TargetName="Visual C++ 2010 SP1"/>
     <ROW PrereqKey="D564007E3BBE4F85950A09B470A7CA65" DisplayName="Visual C++ Redistributable for Visual Studio 2013 x86" VersionMin="12.0" SetupFileUrl="http://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x86.exe" Location="1" ExactSize="6503984" WinNTVersions="Windows 2000, Windows 2000 Service Pack 1, Windows 2000 Service Pack 2, Windows 2000 Service Pack 3, Windows 2000 Service Pack 4" Operator="1" NoUiComLine="/q /norestart" MD5="0fc525b6b7b96a87523daa7a0013c69d" TargetName="Visual C++ Redistributable for Visual Studio 2013"/>
+    <ROW PrereqKey="D7E473DF14F3E98497864847195F2" DisplayName="Visual C++ Redistributable for Visual Studio 2015 x86" VersionMin="14.0" SetupFileUrl="http://download.microsoft.com/download/9/3/F/93FCF1E7-E6A4-478B-96E7-D4B285925B00/vc_redist.x86.exe" Location="1" ExactSize="13767776" WinNTVersions="Windows XP x86, Windows XP x86 Service Pack 1, Windows XP x86 Service Pack 2, Windows Server 2003 x86, Windows Server 2003 x86 Service Pack 1, Windows Vista x86, Windows Vista x86 Service Pack 1, Windows 7 x86" WinNT64Versions="Windows XP x64, Windows XP x64 Service Pack 1, Windows Server 2003 x64, Windows Server 2003 x64 Service Pack 1, Windows Vista x64, Windows Vista x64 Service Pack 1, Windows 7 x64, Windows Server 2008 R2 x64" Operator="1" NoUiComLine="/q /norestart" MD5="1a15e6606bac9647e7ad3caa543377cf" TargetName="Visual C++ Redistributable for Visual Studio 2015"/>
     <ROW PrereqKey="F7FB4AD7F09F46EF88CE1FACFB376EB1" DisplayName=".NET Framework 4.5.1" SetupFileUrl="http://download.microsoft.com/download/1/6/7/167F0D79-9317-48AE-AEDB-17120579F8E2/NDP451-KB2858728-x86-x64-AllOS-ENU.exe" Location="1" ExactSize="70087104" WinNTVersions="Windows 2000, Windows 2000 Service Pack 1, Windows 2000 Service Pack 2, Windows 2000 Service Pack 3, Windows 2000 Service Pack 4, Windows XP x86, Windows XP x86 Service Pack 1, Windows XP x86 Service Pack 2, Windows XP x86 Service Pack 3, Windows Server 2003 x86, Windows Server 2003 x86 Service Pack 1, Windows Server 2003 x86 Service Pack 2, Windows 8.1 x86, Windows 10 x86" WinNT64Versions="Windows XP x64, Windows XP x64 Service Pack 1, Windows XP x64 Service Pack 2, Windows Server 2003 x64, Windows Server 2003 x64 Service Pack 1, Windows Server 2003 x64 Service Pack 2, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64" Operator="1" NoUiComLine="/q /norestart" Options="x" MD5="607d3c9b399e3d303a1b14eb4326bd1e" TargetName=".NET Framework 4.5.1"/>
     <ROW PrereqKey="FED9133B924D06BFC714B05D58F4C5" DisplayName="DirectX 9.0c Runtime (web installer)" VersionMin="9.0" SetupFileUrl="http://download.microsoft.com/download/8/0/d/80d7e79d-c0e4-415a-bcca-e229eafe2679/dxwebsetup.exe" Location="1" ExactSize="315624" WinNTVersions="Windows XP x86 Service Pack 2, Windows XP x86 Service Pack 3, Windows Server 2003 x86 Service Pack 1, Windows Server 2003 x86 Service Pack 2, Windows Vista x86, Windows Vista x86 Service Pack 1, Windows Vista x86 Service Pack 2, Windows Server 2008 x86, Windows 7 x86, Windows 7 x86 Service Pack 1, Windows 8 x86, Windows 8.1 x86, Windows 10 x86" WinNT64Versions="Windows XP x64 Service Pack 1, Windows XP x64 Service Pack 2, Windows Server 2003 x64 Service Pack 1, Windows Server 2003 x64 Service Pack 2, Windows Vista x64, Windows Vista x64 Service Pack 1, Windows Vista x64 Service Pack 2, Windows Server 2008 x64, Windows 7 x64, Windows 7 x64 Service Pack 1, Windows Server 2008 R2 x64, Windows Server 2008 R2 x64 Service Pack 1, Windows 8 x64, Windows Server 2012 x64, Windows 8.1 x64, Windows Server 2012 R2 x64, Windows 10 x64" Operator="1" NoUiComLine="/q" Options="x" MD5="5a79fb5e05fbf27afacdbdabf8579cb8" TargetName="DirectX 9.0c Runtime" MsiKey="FED9133B924D06BFC714B05D58F4C5"/>
-    <ATTRIBUTE name="PrereqsOrder" value="F7FB4AD7F09F46EF88CE1FACFB376EB1 FED9133B924D06BFC714B05D58F4C5 B63_41B8_9CB7_8C5E07C0FC18_ CB585686_DAA3_4384_BDDF_08ABA631E9F3_ CA62D813A4E74FA2AAE86A7D7B7B1493 D564007E3BBE4F85950A09B470A7CA65"/>
+    <ATTRIBUTE name="PrereqsOrder" value="F7FB4AD7F09F46EF88CE1FACFB376EB1 FED9133B924D06BFC714B05D58F4C5 B63_41B8_9CB7_8C5E07C0FC18_ CB585686_DAA3_4384_BDDF_08ABA631E9F3_ CA62D813A4E74FA2AAE86A7D7B7B1493 D564007E3BBE4F85950A09B470A7CA65 D7E473DF14F3E98497864847195F2 B5158184F44A6981C5919229A6AEBE"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
+    <ROW SearchKey="B5158184F44A6981C5919229A6AEBEVersion" Prereq="B5158184F44A6981C5919229A6AEBE" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum\Version" VerMin="14.0.23026" Order="1" Property="PreReqSearch_B5158184F44A6981C5919229A6AEBE"/>
     <ROW SearchKey="B63_41B8_9CB7_8C5E07C0FC18_Version" Prereq="B63_41B8_9CB7_8C5E07C0FC18_" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\10.0\red\amd64\1033\Version" VerMin="40219.325" Order="1" Property="PreReqSearch_B63_41B8_9CB7_8C5E07C0FC18_"/>
     <ROW SearchKey="CA62D813A4E74FA2AAE86A7D7B7B1493Version" Prereq="CA62D813A4E74FA2AAE86A7D7B7B1493" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_CA62D813A4E74FA2AAE86A7D7B7B1493"/>
     <ROW SearchKey="CB585686_DAA3_4384_BDDF_08ABA631E9F3_Version" Prereq="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\10.0\red\x86\1033\Version" VerMin="40219.325" Order="1" Property="PreReqSearch_CB585686_DAA3_4384_BDDF_08ABA631E9F3_"/>
     <ROW SearchKey="D564007E3BBE4F85950A09B470A7CA65Version" Prereq="D564007E3BBE4F85950A09B470A7CA65" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\12.0\RuntimeMinimum\Version" VerMin="12.0.21005" Order="1" Property="PreReqSearch_D564007E3BBE4F85950A09B470A7CA65"/>
+    <ROW SearchKey="D7E473DF14F3E98497864847195F2Version" Prereq="D7E473DF14F3E98497864847195F2" SearchType="2" SearchString="HKLM\SOFTWARE\Microsoft\DevDiv\VC\Servicing\14.0\RuntimeMinimum\Version" VerMin="14.0.23026" Order="1" Property="PreReqSearch_D7E473DF14F3E98497864847195F2"/>
     <ROW SearchKey="F7FB4AD7F09F46EF88CE1FACFB376EB1Release" Prereq="F7FB4AD7F09F46EF88CE1FACFB376EB1" SearchType="9" SearchString="HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\Release" RefContent="G378757" Order="1" Property="PreReqSearch_F7FB4AD7F09F46EF88CE1FACFB376EB1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.ScheduledTasksComponent">
-    <ROW TaskId="AI_updater" TaskName="updater" Run="[#updater.exe]" WorkDir="[APPDIR]" UserProp="[%UserDomain]\[LogonUser]" StartTime="20480" Flags="24576" Trigger="2|1|43|1|0|0|0|" Condition="1" TaskVersion="2.0"/>
+    <ROW TaskId="AI_ScpUpdater" TaskName="ScpUpdater" Run="[#updater.exe]" CmdLine="/silent" WorkDir="[APPDIR]" UserProp="[%UserDomain]\[LogonUser]" StartTime="22528" Flags="9216" Trigger="1|1|1|1|0|0|0|" Condition="1" TaskVersion="1.0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.UpdaterComponent">
-    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" SupportServiceName="SupportServiceName" Flags="Flags" IconPath="..\ScpControl\updater.ico" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" SupportServiceCASeq="AI_UPDATER_SERVICE_CONFIG" SupportService="updater" SupportServiceCtrl="updater" TaskId="AI_updater" Description="[|UpdaterName] [|ProductVersion] © [|Manufacturer], Inc, 2016"/>
+    <ROW Updater="updater.exe" URL="URL" SearchFreq="CheckFrequency" DownloadsFolder="DownloadsFolder" ID="ID" TargetDir="AppDir" AppName="ApplicationName" AppVersion="ApplicationVersion" CompanyName="CompanyName" DefCommandLine="DefaultCommandLine" Flags="Flags" IconPath="..\ScpControl\updater.ico" IconIndex="0" UnistallCASeq="AI_UPDATER_UNINSTALL" TaskId="AI_ScpUpdater" Description="[|UpdaterName] [|ProductVersion] © [|Manufacturer], Inc, 2016"/>
   </COMPONENT>
 </DOCUMENT>

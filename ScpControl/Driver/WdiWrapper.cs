@@ -278,6 +278,13 @@ namespace ScpControl.Driver
                 WdiDriverType.WDI_WINUSB);
         }
 
+        public WdiErrorCode InstallWinUsbDriver(string deviceId, Guid deviceGuid, string driverPath, string infName,
+            IntPtr hwnd, bool force = false)
+        {
+            return InstallDeviceDriver(deviceId, deviceGuid.ToString("B"), driverPath, infName, hwnd, force,
+                WdiDriverType.WDI_WINUSB);
+        }
+
         /// <summary>
         ///     Replaces the device driver of given device with libusbK.
         /// </summary>
@@ -445,6 +452,6 @@ namespace ScpControl.Driver
         Unknown,
         BluetoothHost,
         DualShock3,
-        DualSHock4
+        DualShock4
     }
 }
