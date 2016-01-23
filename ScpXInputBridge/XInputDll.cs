@@ -86,44 +86,33 @@ namespace ScpXInputBridge
 
         private static readonly Lazy<XInputEnableFunction> OriginalXInputEnableFunction =
             new Lazy<XInputEnableFunction>(
-                () =>
-                    (XInputEnableFunction)
-                        Kernel32Natives.GetMethod<XInputEnableFunction>(NativeDllHandle, "XInputEnable"));
+                () => Kernel32Natives.GetMethod<XInputEnableFunction>(NativeDllHandle, "XInputEnable"));
 
         private static readonly Lazy<XInputGetStateFunction> OriginalXInputGetStateFunction = new Lazy
             <XInputGetStateFunction>(
-            () =>
-                (XInputGetStateFunction)
-                    Kernel32Natives.GetMethod<XInputGetStateFunction>(NativeDllHandle, "XInputGetState"));
+            () => Kernel32Natives.GetMethod<XInputGetStateFunction>(NativeDllHandle, "XInputGetState"));
 
         private static readonly Lazy<XInputSetStateFunction> OriginalXInputSetStateFunction = new Lazy
             <XInputSetStateFunction>(
-            () =>
-                (XInputSetStateFunction)
-                    Kernel32Natives.GetMethod<XInputSetStateFunction>(NativeDllHandle, "XInputSetState"));
+            () => Kernel32Natives.GetMethod<XInputSetStateFunction>(NativeDllHandle, "XInputSetState"));
 
         private static readonly Lazy<XInputGetCapabilitiesFunction> OriginalXInputGetCapabilitiesFunction = new Lazy
             <XInputGetCapabilitiesFunction>(
-            () => (XInputGetCapabilitiesFunction)
-                Kernel32Natives.GetMethod<XInputGetCapabilitiesFunction>(NativeDllHandle, "XInputGetCapabilities"));
+            () => Kernel32Natives.GetMethod<XInputGetCapabilitiesFunction>(NativeDllHandle, "XInputGetCapabilities"));
 
         private static readonly Lazy<XInputGetDSoundAudioDeviceGuidsFunction>
             OriginalXInputGetDSoundAudioDeviceGuidsFunction = new Lazy<XInputGetDSoundAudioDeviceGuidsFunction>(
-                () => (XInputGetDSoundAudioDeviceGuidsFunction)
-                    Kernel32Natives.GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(NativeDllHandle,
-                        "XInputGetDSoundAudioDeviceGuids"));
+                () => Kernel32Natives.GetMethod<XInputGetDSoundAudioDeviceGuidsFunction>(NativeDllHandle,
+                    "XInputGetDSoundAudioDeviceGuids"));
 
         private static readonly Lazy<XInputGetBatteryInformationFunction> OriginalXInputGetBatteryInformationFunction = new Lazy
             <XInputGetBatteryInformationFunction>(
-            () => (XInputGetBatteryInformationFunction)
-                Kernel32Natives.GetMethod<XInputGetBatteryInformationFunction>(NativeDllHandle,
-                    "XInputGetBatteryInformation"));
+            () => Kernel32Natives.GetMethod<XInputGetBatteryInformationFunction>(NativeDllHandle,
+                "XInputGetBatteryInformation"));
 
         private static readonly Lazy<XInputGetKeystrokeFunction> OriginalXInputGetKeystrokeFunction = new Lazy
             <XInputGetKeystrokeFunction>(
-            () =>
-                (XInputGetKeystrokeFunction)
-                    Kernel32Natives.GetMethod<XInputGetKeystrokeFunction>(NativeDllHandle, "XInputGetKeystroke"));
+            () => Kernel32Natives.GetMethod<XInputGetKeystrokeFunction>(NativeDllHandle, "XInputGetKeystroke"));
 
         #endregion
 

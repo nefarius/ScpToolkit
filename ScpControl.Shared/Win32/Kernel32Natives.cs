@@ -24,9 +24,11 @@ namespace ScpControl.Shared.Win32
         /// <param name="module">The module name to search the function in.</param>
         /// <param name="methodName">The native finctions' name.</param>
         /// <returns>Returns the managed delegate.</returns>
-        public static Delegate GetMethod<T>(IntPtr module, string methodName)
+        public static T GetMethod<T>(IntPtr module, string methodName)
         {
-            return Marshal.GetDelegateForFunctionPointer(Kernel32Natives.GetProcAddress(module, methodName), typeof(T));
+            return (T) Convert.ChangeType(
+                Marshal.GetDelegateForFunctionPointer(GetProcAddress(module, methodName), typeof (T)),
+                typeof (T));
         }
     }
 }

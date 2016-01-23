@@ -16,6 +16,7 @@ namespace ScpControl.Driver
     {
         private static readonly Lazy<T> LazyInstance = new Lazy<T>(CreateInstanceOfT);
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected IntPtr LibraryHandle { get; private set; }
 
         /// <summary>
         ///     Object factory.
@@ -54,7 +55,7 @@ namespace ScpControl.Driver
                     var lib64 = Path.Combine(GlobalConfiguration.AppDirectory, amd64Path);
                     Log.DebugFormat("{0} path: {1}", name, lib64);
 
-                    if (Kernel32.LoadLibrary(lib64) == IntPtr.Zero)
+                    if ((LibraryHandle = Kernel32.LoadLibrary(lib64)) == IntPtr.Zero)
                     {
                         Log.FatalFormat("Couldn't load library {0}: {1}", lib64,
                             new Win32Exception(Marshal.GetLastWin32Error()));
@@ -70,7 +71,7 @@ namespace ScpControl.Driver
                     var lib32 = Path.Combine(GlobalConfiguration.AppDirectory, x86Path);
                     Log.DebugFormat("{0} path: {1}", name, lib32);
 
-                    if (Kernel32.LoadLibrary(lib32) == IntPtr.Zero)
+                    if ((LibraryHandle = Kernel32.LoadLibrary(lib32)) == IntPtr.Zero)
                     {
                         Log.FatalFormat("Couldn't load library {0}: {1}", lib32,
                             new Win32Exception(Marshal.GetLastWin32Error()));

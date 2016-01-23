@@ -113,7 +113,8 @@ namespace ScpControl.Driver
             {
                 driver_type = driverType,
                 device_guid = deviceGuid,
-                vendor_name = "ScpToolkit compatible device"
+                vendor_name = "ScpToolkit compatible device",
+                cert_subject = "CN=Nefarius Software Solutions"
             };
 
             // set parent window handle (may be IntPtr.Zero)
@@ -331,6 +332,36 @@ namespace ScpControl.Driver
             return Marshal.PtrToStringAnsi(namePtr);
         }
 
+        public void RegisterLogger(IntPtr hWnd)
+        {
+            WdiErrorCode result;
+
+            if ((result = wdi_register_logger(hWnd, WmLibwdiLogger, 0)) != WdiErrorCode.WDI_SUCCESS)
+            {
+                Log.ErrorFormat("Couldn't register libwdi logger: {0}", result);
+            }
+        }
+
+        public void UnregisterLogger(IntPtr hWnd)
+        {
+            WdiErrorCode result;
+
+            if ((result = wdi_unregister_logger(hWnd)) != WdiErrorCode.WDI_SUCCESS)
+            {
+                Log.ErrorFormat("Couldn't unregister libwdi logger: {0}", result);
+            }
+        }
+
+        public string ReadLogger()
+        {
+            var buffer = Marshal.AllocHGlobal(8192);
+            uint msgSize = 0;
+
+            var result = wdi_read_logger(buffer, 8192, ref msgSize);
+
+            return result == WdiErrorCode.WDI_SUCCESS ? Marshal.PtrToStringUni(buffer, (int) msgSize) : string.Empty;
+        }
+
         #endregion
 
         #region Structs
@@ -368,7 +399,7 @@ namespace ScpControl.Driver
             [MarshalAs(UnmanagedType.LPStr)] public string device_guid;
             public readonly bool disable_cat;
             public readonly bool disable_signing;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string cert_subject;
+            [MarshalAs(UnmanagedType.LPStr)] public string cert_subject;
             public readonly bool use_wcid_driver;
         }
 
@@ -416,14 +447,14 @@ namespace ScpControl.Driver
         private static extern int wdi_set_log_level(WdiLogLevel level);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_register_logger", ExactSpelling = false)]
-        private static extern int wdi_register_logger(IntPtr hWnd, uint message, uint buffsize);
+        private static extern WdiErrorCode wdi_register_logger(IntPtr hWnd, uint message, uint buffsize);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_read_logger", ExactSpelling = false)]
-        private static extern int wdi_read_logger(IntPtr buffer, uint buffer_size,
+        private static extern WdiErrorCode wdi_read_logger(IntPtr buffer, uint buffer_size,
             ref uint message_size);
 
         [DllImport("libwdi.dll", EntryPoint = "wdi_unregister_logger", ExactSpelling = false)]
-        private static extern int wdi_unregister_logger(IntPtr hWnd);
+        private static extern WdiErrorCode wdi_unregister_logger(IntPtr hWnd);
 
         #endregion
     }

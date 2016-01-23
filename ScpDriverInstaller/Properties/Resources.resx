@@ -135,4 +135,43 @@
   <data name="Ds4ListEmpty_Text" xml:space="preserve">
     <value>You chose to install the DualShock 4 drivers but you didn't select one or more devices from the device list!</value>
   </data>
+  <data name="DsInstError_Footer" xml:space="preserve">
+    <value>If you can't resolve this issue by yourself, &lt;a href="https://github.com/nefarius/ScpToolkit/wiki"&gt;check out the online documentation&lt;/a&gt;.</value>
+  </data>
+  <data name="DsInstError_Verbose" xml:space="preserve">
+    <value>Installer result: {0} ({1})</value>
+  </data>
+  <data name="DsInstError_Content" xml:space="preserve">
+    <value>I'm sorry to inform you that some of your devices weren't installed properly.
+
+Sadly there are too many possibilities of why it failed to cram all suggested resolutions in one of these info boxes, but I can give you some hints on resolving the issue:
+
+1. Re-open this Driver Installer and simply try again. Seriously, try it.
+2. Reboot your machine. It's Windows, so it might help.
+3. Check your cabling. Your cat might have gnawed on your USB cable.
+4. Is your controller listen under "Human Interface Devices" in Device Manager? If not, it might be equipped with the wrong driver for whatever reason. Find it and revert to the default device driver.
+5. ???
+6. See what I meant? This list is already getting too long, click the link in the footer if you need more help!</value>
+  </data>
+  <data name="DsInstError_Instruction" xml:space="preserve">
+    <value>One or more installation tasks failed or did not complete</value>
+  </data>
+  <data name="DsInstError_Title" xml:space="preserve">
+    <value>Installation failed</value>
+  </data>
+  <data name="DsInstOk_Title" xml:space="preserve">
+    <value>Installation successful</value>
+  </data>
+  <data name="DsInstOk_Instruction" xml:space="preserve">
+    <value>DualShock controllers installed successfully</value>
+  </data>
+  <data name="DsInstOk_Content" xml:space="preserve">
+    <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
+  </data>
+  <data name="DsInstOk_Verbose" xml:space="preserve">
+    <value>Nothing to see here, everything is fine! =)</value>
+  </data>
+  <data name="DsInstOk_Footer" xml:space="preserve">
+    <value>This installation was made possible by the great &lt;a href="https://github.com/pbatard/libwdi"&gt;libwdi&lt;/a&gt; library.</value>
+  </data>
 </root>

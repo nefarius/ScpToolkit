@@ -17,9 +17,13 @@ namespace ScpControl.Driver
     /// </summary>
     public static class DriverInstaller
     {
+        #region Private static fields
+
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly string DriverDirectory = Path.Combine(GlobalConfiguration.AppDirectory, "Driver");
+
+        #endregion
 
         public static uint InstallBluetoothDongles(IEnumerable<WdiDeviceInfo> usbDevices, IntPtr hWnd = default(IntPtr),
             bool force = false)
@@ -69,11 +73,11 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
-        public static bool InstallDualShock3Controller(WdiDeviceInfo usbDevice,
+        public static WdiErrorCode InstallDualShock3Controller(WdiDeviceInfo usbDevice,
             IntPtr hWnd = default(IntPtr),
             bool force = false)
         {
-            usbDevice.InfFile = string.Format("Ds3Controller_{0}.inf", Guid.NewGuid());
+            usbDevice.InfFile = string.Format("Ds3Controller_{0:X4}_{1:X4}.inf", usbDevice.VendorId, usbDevice.ProductId);
 
             var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId, UsbDs3.DeviceClassGuid,
                 DriverDirectory, usbDevice.InfFile, hWnd, force);
@@ -81,7 +85,7 @@ namespace ScpControl.Driver
             if (result != WdiErrorCode.WDI_SUCCESS)
             {
                 Log.ErrorFormat("Installing DualShock 3 Controller ({0}) failed: {1}", usbDevice.DeviceId, result);
-                return false;
+                return result;
             }
 
             usbDevice.DeviceType = WdiUsbDeviceType.DualShock3;
@@ -90,7 +94,7 @@ namespace ScpControl.Driver
                 db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);
             }
 
-            return true;
+            return result;
         }
 
         public static uint InstallDualShock3Controllers(IEnumerable<WdiDeviceInfo> usbDevices,
@@ -142,11 +146,11 @@ namespace ScpControl.Driver
             return uninstalled;
         }
 
-        public static bool InstallDualShock4Controller(WdiDeviceInfo usbDevice,
+        public static WdiErrorCode InstallDualShock4Controller(WdiDeviceInfo usbDevice,
             IntPtr hWnd = default(IntPtr),
             bool force = false)
         {
-            usbDevice.InfFile = string.Format("Ds4Controller_{0}.inf", Guid.NewGuid());
+            usbDevice.InfFile = string.Format("Ds4Controller_{0:X4}_{1:X4}.inf", usbDevice.VendorId, usbDevice.ProductId);
 
             var result = WdiWrapper.Instance.InstallWinUsbDriver(usbDevice.DeviceId, UsbDs4.DeviceClassGuid,
                 DriverDirectory, usbDevice.InfFile, hWnd, force);
@@ -154,7 +158,7 @@ namespace ScpControl.Driver
             if (result != WdiErrorCode.WDI_SUCCESS)
             {
                 Log.ErrorFormat("Installing DualShock 4 Controller ({0}) failed: {1}", usbDevice.DeviceId, result);
-                return false;
+                return result;
             }
 
             usbDevice.DeviceType = WdiUsbDeviceType.DualShock4;
@@ -163,7 +167,7 @@ namespace ScpControl.Driver
                 db.Engine.PutDbEntity(ScpDb.TableDevices, usbDevice.DeviceId, usbDevice);
             }
 
-            return true;
+            return result;
         }
 
         public static uint InstallDualShock4Controllers(IEnumerable<WdiDeviceInfo> usbDevices,

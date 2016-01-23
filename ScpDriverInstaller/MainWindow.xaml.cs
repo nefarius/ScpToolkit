@@ -19,6 +19,7 @@ using log4net.Appender;
 using log4net.Core;
 using log4net.Repository.Hierarchy;
 using Mantin.Controls.Wpf.Notification;
+using Ookii.Dialogs.Wpf;
 using ScpControl.Driver;
 using ScpControl.ScpCore;
 using ScpControl.Usb.Ds3;
@@ -661,31 +662,28 @@ namespace ScpDriverInstaller
         /// </summary>
         private void DsHidDeviceAddedOrRemoved()
         {
-            Dispatcher.Invoke(() =>
+            // HidUsb devices
+            DualShockStackPanelHidUsb.Children.Clear();
+            _viewModel.InstallDs3ButtonEnabled = false;
+
+            foreach (
+                var usbDevice in
+                    WdiWrapper.Instance.UsbDeviceList.Where(
+                        d => d.VendorId == _hidUsbDs3.VendorId
+                             && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
+                             && d.CurrentDriver.Equals("HidUsb"))
+                )
             {
-                // HidUsb devices
-                DualShockStackPanelHidUsb.Children.Clear();
-                _viewModel.InstallDs3ButtonEnabled = false;
-
-                foreach (
-                    var usbDevice in
-                        WdiWrapper.Instance.UsbDeviceList.Where(
-                            d => d.VendorId == _hidUsbDs3.VendorId
-                                 && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
-                                 && d.CurrentDriver.Equals("HidUsb"))
-                    )
+                DualShockStackPanelHidUsb.Children.Add(new TextBlock
                 {
-                    DualShockStackPanelHidUsb.Children.Add(new TextBlock
-                    {
-                        Text = string.Format("Device #{0}: {1}", DualShockStackPanelHidUsb.Children.Count, usbDevice),
-                        Tag = usbDevice,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(10, 0, 0, 10)
-                    });
+                    Text = string.Format("Device #{0}: {1}", DualShockStackPanelHidUsb.Children.Count, usbDevice),
+                    Tag = usbDevice,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(10, 0, 0, 10)
+                });
 
-                    _viewModel.InstallDs3ButtonEnabled = true;
-                }
-            });
+                _viewModel.InstallDs3ButtonEnabled = true;
+            }
         }
 
         /// <summary>
@@ -716,6 +714,8 @@ namespace ScpDriverInstaller
 
         private void InstallDsOnClick(object sender, RoutedEventArgs routedEventArgs)
         {
+            WdiErrorCode ds3Result = WdiErrorCode.WDI_SUCCESS, ds4Result = WdiErrorCode.WDI_SUCCESS;
+
             var ds3SToInstall =
                 DualShockStackPanelHidUsb.Children.Cast<TextBlock>()
                     .Select(c => c.Tag)
@@ -725,20 +725,9 @@ namespace ScpDriverInstaller
 
             if (ds3SToInstall.Any())
             {
-                if (DriverInstaller.InstallDualShock3Controller(ds3SToInstall.First(), _hWnd))
-                {
-                    MessageBox.Show("Installation succeeded, please proceed with the next step.",
-                        "Installation succeeded",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Installation failed.",
-                        "Installation failed",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                ds3Result = DriverInstaller.InstallDualShock3Controller(ds3SToInstall.First(), _hWnd);
             }
-            
+
             var ds4SToInstall =
                 DualShockStackPanelHidUsb.Children.Cast<TextBlock>()
                     .Select(c => c.Tag)
@@ -748,17 +737,44 @@ namespace ScpDriverInstaller
 
             if (ds4SToInstall.Any())
             {
-                if (DriverInstaller.InstallDualShock4Controller(ds4SToInstall.First(), _hWnd))
+                ds4Result = DriverInstaller.InstallDualShock4Controller(ds4SToInstall.First(), _hWnd);
+            }
+
+            if (ds3Result == WdiErrorCode.WDI_SUCCESS && ds4Result == WdiErrorCode.WDI_SUCCESS)
+            {
+                ExtendedMessageBox.Show(this,
+                    Properties.Resources.DsInstOk_Title,
+                    Properties.Resources.DsInstOk_Instruction,
+                    Properties.Resources.DsInstOk_Content,
+                    Properties.Resources.DsInstOk_Verbose,
+                    Properties.Resources.DsInstOk_Footer,
+                    TaskDialogIcon.Information);
+            }
+            else
+            {
+                if (ds3Result != WdiErrorCode.WDI_SUCCESS)
                 {
-                    MessageBox.Show("Installation succeeded, please proceed with the next step.",
-                        "Installation succeeded",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    ExtendedMessageBox.Show(this,
+                        Properties.Resources.DsInstError_Title,
+                        Properties.Resources.DsInstError_Instruction,
+                        Properties.Resources.DsInstError_Content,
+                        string.Format(Properties.Resources.DsInstError_Verbose,
+                            WdiWrapper.Instance.GetErrorMessage(ds3Result), ds3Result),
+                        Properties.Resources.DsInstError_Footer,
+                        TaskDialogIcon.Error);
+                    return;
                 }
-                else
+
+                if (ds4Result != WdiErrorCode.WDI_SUCCESS)
                 {
-                    MessageBox.Show("Installation failed.",
-                        "Installation failed",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    ExtendedMessageBox.Show(this,
+                        Properties.Resources.DsInstError_Title,
+                        Properties.Resources.DsInstError_Instruction,
+                        Properties.Resources.DsInstError_Content,
+                        string.Format(Properties.Resources.DsInstError_Verbose,
+                            WdiWrapper.Instance.GetErrorMessage(ds4Result), ds4Result),
+                        Properties.Resources.DsInstError_Footer,
+                        TaskDialogIcon.Error);
                 }
             }
         }
