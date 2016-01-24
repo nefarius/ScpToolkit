@@ -10,13 +10,11 @@
 #define SCPZADIG_API __declspec(dllimport)
 #endif
 
-// This class is exported from the ScpZadig.dll
-class SCPZADIG_API CScpZadig {
-public:
-	CScpZadig(void);
-	// TODO: add your methods here.
-};
+#include "libwdi\inc\libwdi.h"
+#if _WIN64
+#pragma comment(lib, "libwdi/lib/amd64/libwdi.lib")
+#else
+#pragma comment(lib, "libwdi/lib/x86/libwdi.lib")
+#endif
 
-extern SCPZADIG_API int nScpZadig;
-
-SCPZADIG_API int fnScpZadig(void);
+SCPZADIG_API wdi_error InstallWinUsbDriver(LPCSTR deviceId, LPSTR deviceGuid, LPCSTR driverPath, LPCSTR infName, HWND hWnd, BOOL force);
