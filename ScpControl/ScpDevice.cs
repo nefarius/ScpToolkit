@@ -60,7 +60,7 @@ namespace ScpControl
             ProductId = pid;
         }
 
-        protected static void GetHardwareId(string devicePath, out short vendorId, out short productId)
+        public static void GetHardwareId(string devicePath, out short vendorId, out short productId)
         {
             // regex to extract vendor ID and product ID from hardware ID string
             var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);

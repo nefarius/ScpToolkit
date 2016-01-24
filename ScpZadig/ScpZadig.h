@@ -17,5 +17,7 @@
 #pragma comment(lib, "libwdi/lib/x86/libwdi.lib")
 #endif
 
-SCPZADIG_API wdi_error InstallDeviceDriver(LPCSTR deviceId, LPSTR deviceGuid, LPCSTR driverPath, LPCSTR infName, HWND hWnd, BOOL force, wdi_driver_type driverType);
-
+extern "C"
+{
+	SCPZADIG_API wdi_error InstallDeviceDriver(USHORT vid, USHORT pid, LPSTR deviceDescription, LPSTR deviceGuid, LPCSTR driverPath, LPCSTR infName, HWND hWnd, BOOL force, wdi_driver_type driverType);
+}
