@@ -17,4 +17,5 @@
 #pragma comment(lib, "libwdi/lib/x86/libwdi.lib")
 #endif
 
-SCPZADIG_API wdi_error InstallWinUsbDriver(LPCSTR deviceId, LPSTR deviceGuid, LPCSTR driverPath, LPCSTR infName, HWND hWnd, BOOL force);
+SCPZADIG_API wdi_error InstallDeviceDriver(LPCSTR deviceId, LPSTR deviceGuid, LPCSTR driverPath, LPCSTR infName, HWND hWnd, BOOL force, wdi_driver_type driverType);
+
