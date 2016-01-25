@@ -188,8 +188,12 @@ namespace ScpControl.Driver.PNPUtilLib
                                     break;
                                 case 3: // [jenda_] Driver date and version :
                                     var DateAndVersion = currentLine.Split(':')[1].Trim();
-                                    dse.DriverDate = DateAndVersion.Split(' ')[0].Trim();
-                                    dse.DriverVersion = DateAndVersion.Split(' ')[1].Trim();
+                                    // date and version may be empty
+                                    if(DateAndVersion.Length > 0)
+                                    {
+                                        dse.DriverDate = DateAndVersion.Split(' ')[0].Trim();
+                                        dse.DriverVersion = DateAndVersion.Split(' ')[1].Trim();
+                                    }
                                     break;
                                 case 4: // [jenda_] Signer name :
                                     dse.DriverSignerName = currentLine.Split(':')[1].Trim();
