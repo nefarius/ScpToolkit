@@ -160,7 +160,6 @@
     <Compile Include="Driver\Devcon.cs" />
     <Compile Include="Driver\Difx.cs" />
     <Compile Include="Driver\DriverInstaller.cs" />
-    <Compile Include="Driver\LibusbKWrapper.cs" />
     <Compile Include="Driver\NativeLibraryWrapper.cs" />
     <Compile Include="Driver\PNPUtilLib\DriverStoreEntry.cs" />
     <Compile Include="Driver\PNPUtilLib\IDriverStore.cs" />
@@ -355,18 +354,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Libarius.XML" />
-    <Content Include="libusbK\amd64\libusb0.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libusbK\amd64\libusbK.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libusbK\x86\libusb0.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libusbK\x86\libusbK.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="libwdi\amd64\libwdi.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -388,10 +375,10 @@
     <Content Include="System\ScpVBus.inf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="WDI\amd64\wdi-simple.exe">
+    <Content Include="libwdi\amd64\wdi-simple.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="WDI\x86\wdi-simple.exe">
+    <Content Include="libwdi\x86\wdi-simple.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Xbox360\driver\vista_xp\x64\wdfcoinstaller01007.dll">
@@ -419,7 +406,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="ScpControlClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="ScpControl.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

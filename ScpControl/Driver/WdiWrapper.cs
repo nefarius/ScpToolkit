@@ -9,6 +9,7 @@ using ScpControl.ScpCore;
 
 namespace ScpControl.Driver
 {
+
     #region Public enums
 
     public enum WdiErrorCode
@@ -64,49 +65,6 @@ namespace ScpControl.Driver
 
         #endregion
 
-        #region Private methods
-
-        private static WdiDeviceInfo NativeToManagedWdiUsbDevice(wdi_device_info info)
-        {
-            // get raw bytes from description pointer
-            var descSize = 0;
-            while (Marshal.ReadByte(info.desc, descSize) != 0) ++descSize;
-            var descBytes = new byte[descSize];
-            Marshal.Copy(info.desc, descBytes, 0, descSize);
-
-            // put info in managed object
-            var wdiDevice = new WdiDeviceInfo
-            {
-                VendorId = info.vid,
-                ProductId = info.pid,
-                InterfaceId = (byte) info.mi,
-                Description = Encoding.UTF8.GetString(descBytes),
-                DeviceId = info.device_id,
-                HardwareId = info.hardware_id,
-                CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
-            };
-
-            return wdiDevice;
-        }
-
-        #endregion
-
-        #region Enums
-
-        /// <summary>
-        ///     The Usb driver solution to install.
-        /// </summary>
-        private enum WdiDriverType
-        {
-            [Description("WinUSB")] WDI_WINUSB,
-            WDI_LIBUSB0,
-            [Description("libusbK")] WDI_LIBUSBK,
-            WDI_USER,
-            WDI_NB_DRIVERS
-        }
-
-        #endregion
-
         #region Public properties
 
         public IEnumerable<WdiDeviceInfo> UsbDeviceList
@@ -153,10 +111,64 @@ namespace ScpControl.Driver
 
         #endregion
 
+        #region Private methods
+
+        private static WdiDeviceInfo NativeToManagedWdiUsbDevice(wdi_device_info info)
+        {
+            // get raw bytes from description pointer
+            var descSize = 0;
+            while (Marshal.ReadByte(info.desc, descSize) != 0) ++descSize;
+            var descBytes = new byte[descSize];
+            Marshal.Copy(info.desc, descBytes, 0, descSize);
+
+            // put info in managed object
+            var wdiDevice = new WdiDeviceInfo
+            {
+                VendorId = info.vid,
+                ProductId = info.pid,
+                InterfaceId = (byte) info.mi,
+                Description = Encoding.UTF8.GetString(descBytes),
+                DeviceId = info.device_id,
+                HardwareId = info.hardware_id,
+                CurrentDriver = Marshal.PtrToStringAnsi(info.driver)
+            };
+
+            return wdiDevice;
+        }
+
+        #endregion
+
+        #region Enums
+
+        /// <summary>
+        ///     The Usb driver solution to install.
+        /// </summary>
+        private enum WdiDriverType
+        {
+            [Description("WinUSB")] WDI_WINUSB,
+            WDI_LIBUSB0,
+            [Description("libusbK")] WDI_LIBUSBK,
+            WDI_USER,
+            WDI_NB_DRIVERS
+        }
+
+        #endregion
+
         #region Public methods
 
-        public static WdiErrorCode InstallWinUsbDriver(WdiDeviceInfo device, Guid deviceGuid, string driverPath, string infName,IntPtr hwnd)
+        /// <summary>
+        ///     Equipes a given device with the WinUSB driver.
+        /// </summary>
+        /// <param name="device">The device to perform the driver installation on.</param>
+        /// <param name="deviceGuid">The device class GUID of the driver.</param>
+        /// <param name="driverPath">The filesystem path to extract the driver and helper files to.</param>
+        /// <param name="infName">The name of the *.INF file to create.</param>
+        /// <param name="hwnd">The handle of the parent window to relate the progress dialog to.</param>
+        /// <returns>The error code (0 if succeeded).</returns>
+        public static WdiErrorCode InstallWinUsbDriver(WdiDeviceInfo device, Guid deviceGuid, string driverPath,
+            string infName, IntPtr hwnd = default(IntPtr))
         {
+            // build CLI args
             var cliArgs = new StringBuilder();
             cliArgs.AppendFormat("--name \"DualShock Controller\" ");
             cliArgs.AppendFormat("--inf \"{0}\" ", infName);
@@ -165,17 +177,18 @@ namespace ScpControl.Driver
             cliArgs.AppendFormat("--type 0 ");
             cliArgs.AppendFormat("--dest \"{0}\" ", driverPath);
             cliArgs.AppendFormat("--stealth-cert ");
-            cliArgs.AppendFormat("--progressbar={0:D} ", hwnd.ToInt64());
+            if (hwnd != default(IntPtr)) cliArgs.AppendFormat("--progressbar={0:D} ", hwnd.ToInt64());
             cliArgs.AppendFormat("--timeout 120000 ");
-            cliArgs.AppendFormat("--device-guid \"{0}\" ",deviceGuid.ToString("B"));
+            cliArgs.AppendFormat("--device-guid \"{0}\" ", deviceGuid.ToString("B"));
 
-            var cli = cliArgs.ToString();
+            // build path to install helper
+            var wdiSimplePath = Path.Combine(GlobalConfiguration.AppDirectory, "libwdi",
+                Environment.Is64BitProcess ? "amd64" : "x86", "wdi-simple.exe");
 
-            var wdiSimplePath = Path.Combine(GlobalConfiguration.AppDirectory, (Environment.Is64BitProcess) ? @"WDI\amd64" : @"WDI\x86", "wdi-simple.exe");
-
+            // set-up installer process
             var wdiProc = new Process
             {
-                StartInfo = new ProcessStartInfo(wdiSimplePath, cli)
+                StartInfo = new ProcessStartInfo(wdiSimplePath, cliArgs.ToString())
                 {
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -183,9 +196,11 @@ namespace ScpControl.Driver
                 }
             };
 
+            // start & wait
             wdiProc.Start();
             wdiProc.WaitForExit();
 
+            // return code of application is possible error code
             return (WdiErrorCode) wdiProc.ExitCode;
         }
 
@@ -233,19 +248,19 @@ namespace ScpControl.Driver
         [StructLayout(LayoutKind.Sequential)]
         private struct wdi_options_prepare_driver
         {
-            [MarshalAs(UnmanagedType.I4)] public WdiDriverType driver_type;
-            [MarshalAs(UnmanagedType.LPStr)] public string vendor_name;
-            [MarshalAs(UnmanagedType.LPStr)] public string device_guid;
+            [MarshalAs(UnmanagedType.I4)] public readonly WdiDriverType driver_type;
+            [MarshalAs(UnmanagedType.LPStr)] public readonly string vendor_name;
+            [MarshalAs(UnmanagedType.LPStr)] public readonly string device_guid;
             public readonly bool disable_cat;
             public readonly bool disable_signing;
-            [MarshalAs(UnmanagedType.LPStr)] public string cert_subject;
+            [MarshalAs(UnmanagedType.LPStr)] public readonly string cert_subject;
             public readonly bool use_wcid_driver;
         }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct wdi_options_install_driver
         {
-            public IntPtr hWnd;
+            public readonly IntPtr hWnd;
             public readonly bool install_filter_driver;
             public readonly uint pending_install_timeout;
         }

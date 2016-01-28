@@ -51,70 +51,58 @@ namespace ScpControl.Driver
     /// <summary>
     ///     Abstracts calls to the underlying Usb library functions.
     /// </summary>
-    public class WinUsbWrapper : NativeLibraryWrapper<WinUsbWrapper>
+    public static class WinUsbWrapper
     {
-        #region Ctor
-
-        /// <summary>
-        ///     Automatically loads the correct native library.
-        /// </summary>
-        private WinUsbWrapper()
-        {
-            LoadNativeLibrary("libusbK", @"libusbK\x86\libusbK.dll", @"libusbK\amd64\libusbK.dll");
-        }
-
-        #endregion
-
         #region Public methods
 
-        public bool Initialize(IntPtr DeviceHandle, ref IntPtr InterfaceHandle)
+        public static bool Initialize(IntPtr DeviceHandle, ref IntPtr InterfaceHandle)
         {
             return WinUsb_Initialize(DeviceHandle, ref InterfaceHandle);
         }
 
-        public bool QueryInterfaceSettings(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
+        public static bool QueryInterfaceSettings(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
             ref USB_INTERFACE_DESCRIPTOR UsbAltInterfaceDescriptor)
         {
             return WinUsb_QueryInterfaceSettings(InterfaceHandle, AlternateInterfaceNumber,
                 ref UsbAltInterfaceDescriptor);
         }
 
-        public bool QueryPipe(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
+        public static bool QueryPipe(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
             byte PipeIndex, ref WINUSB_PIPE_INFORMATION PipeInformation)
         {
             return WinUsb_QueryPipe(InterfaceHandle, AlternateInterfaceNumber, PipeIndex, ref PipeInformation);
         }
 
-        public bool AbortPipe(IntPtr InterfaceHandle, byte PipeID)
+        public static bool AbortPipe(IntPtr InterfaceHandle, byte PipeID)
         {
             return WinUsb_AbortPipe(InterfaceHandle, PipeID);
         }
 
-        public bool FlushPipe(IntPtr InterfaceHandle, byte PipeID)
+        public static bool FlushPipe(IntPtr InterfaceHandle, byte PipeID)
         {
             return WinUsb_FlushPipe(InterfaceHandle, PipeID);
         }
 
-        public bool ControlTransfer(IntPtr InterfaceHandle, WINUSB_SETUP_PACKET SetupPacket,
+        public static bool ControlTransfer(IntPtr InterfaceHandle, WINUSB_SETUP_PACKET SetupPacket,
             byte[] Buffer, int BufferLength, ref int LengthTransferred, IntPtr Overlapped)
         {
             return WinUsb_ControlTransfer(InterfaceHandle, SetupPacket, Buffer, BufferLength, ref LengthTransferred,
                 Overlapped);
         }
 
-        public bool ReadPipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
+        public static bool ReadPipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
             int BufferLength, ref int LengthTransferred, IntPtr Overlapped)
         {
             return WinUsb_ReadPipe(InterfaceHandle, PipeID, Buffer, BufferLength, ref LengthTransferred, Overlapped);
         }
 
-        public bool WritePipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
+        public static bool WritePipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
             int BufferLength, ref int LengthTransferred, IntPtr Overlapped)
         {
             return WinUsb_WritePipe(InterfaceHandle, PipeID, Buffer, BufferLength, ref LengthTransferred, Overlapped);
         }
 
-        public bool Free(IntPtr InterfaceHandle)
+        public static bool Free(IntPtr InterfaceHandle)
         {
             return WinUsb_Free(InterfaceHandle);
         }
@@ -123,36 +111,36 @@ namespace ScpControl.Driver
 
         #region P/Invoke
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_Initialize(IntPtr DeviceHandle, ref IntPtr InterfaceHandle);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_QueryInterfaceSettings(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
             ref USB_INTERFACE_DESCRIPTOR UsbAltInterfaceDescriptor);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_QueryPipe(IntPtr InterfaceHandle, byte AlternateInterfaceNumber,
             byte PipeIndex, ref WINUSB_PIPE_INFORMATION PipeInformation);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_AbortPipe(IntPtr InterfaceHandle, byte PipeID);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_FlushPipe(IntPtr InterfaceHandle, byte PipeID);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_ControlTransfer(IntPtr InterfaceHandle, WINUSB_SETUP_PACKET SetupPacket,
             byte[] Buffer, int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_ReadPipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
             int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_WritePipe(IntPtr InterfaceHandle, byte PipeID, byte[] Buffer,
             int BufferLength, ref int LengthTransferred, IntPtr Overlapped);
 
-        [DllImport("libusbK.dll", SetLastError = true)]
+        [DllImport("winusb.dll", SetLastError = true)]
         private static extern bool WinUsb_Free(IntPtr InterfaceHandle);
 
         #endregion
