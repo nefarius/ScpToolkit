@@ -67,6 +67,7 @@ namespace ScpService
             {
                 using (var db = new ScpDb())
                 {
+#if FIXME
                     var bthDevices = db.Engine.GetAllDbEntities<WdiDeviceInfo>(ScpDb.TableDevices)
                         .Where(d => d.Value.DeviceType == WdiUsbDeviceType.BluetoothHost)
                         .Select(d => d.Value);
@@ -87,6 +88,7 @@ namespace ScpService
 
                     if (GlobalConfiguration.Instance.ForceDs4DriverReinstallation)
                         DriverInstaller.InstallDualShock4Controllers(ds4Devices);
+#endif
                 }
             });
 

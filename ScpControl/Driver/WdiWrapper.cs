@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using ScpControl.Utilities;
+using ScpControl.ScpCore;
 
 namespace ScpControl.Driver
 {
@@ -58,13 +60,6 @@ namespace ScpControl.Driver
         private WdiWrapper()
         {
             LoadNativeLibrary("libwdi", @"libwdi\x86\libwdi.dll", @"libwdi\amd64\libwdi.dll");
-            LoadNativeLibrary("ScpZadig", @"Zadig\x86\ScpZadig.dll", @"Zadig\x64\ScpZadig.dll");
-
-#if DEBUG
-            wdi_set_log_level(WdiLogLevel.WDI_LOG_LEVEL_DEBUG);
-#else
-            wdi_set_log_level(WdiLogLevel.WDI_LOG_LEVEL_INFO);
-#endif
         }
 
         #endregion
@@ -84,6 +79,7 @@ namespace ScpControl.Driver
             {
                 VendorId = info.vid,
                 ProductId = info.pid,
+                InterfaceId = (byte) info.mi,
                 Description = Encoding.UTF8.GetString(descBytes),
                 DeviceId = info.device_id,
                 HardwareId = info.hardware_id,
@@ -113,16 +109,6 @@ namespace ScpControl.Driver
 
         #region Public properties
 
-        public static uint WmLibwdiLogger
-        {
-            get { return 0x0400 + 1; }
-        }
-
-        public int WdfVersion
-        {
-            get { return wdi_get_wdf_version(); }
-        }
-
         public IEnumerable<WdiDeviceInfo> UsbDeviceList
         {
             get
@@ -136,7 +122,7 @@ namespace ScpControl.Driver
                 {
                     list_all = true,
                     list_hubs = false,
-                    trim_whitespaces = false
+                    trim_whitespaces = true
                 };
 
                 // receive Usb device list
@@ -169,53 +155,38 @@ namespace ScpControl.Driver
 
         #region Public methods
 
-        /// <summary>
-        ///     Replaces the device driver of given device with WinUSB.
-        /// </summary>
-        /// <param name="deviceId">Hardware-ID of the device to change the driver for.</param>
-        /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
-        /// <param name="driverPath">Temporary path for driver auto-creation.</param>
-        /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
-        /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
-        /// <param name="force">Force driver installation even if the device is already using WinUSB.</param>
-        /// <returns>The error code returned by libwdi.</returns>
-        public WdiErrorCode InstallWinUsbDriver(string deviceId, string deviceGuid, string driverPath, string infName,
-            IntPtr hwnd, bool force = false)
+        public static WdiErrorCode InstallWinUsbDriver(WdiDeviceInfo device, Guid deviceGuid, string driverPath, string infName,IntPtr hwnd)
         {
-            short vid, pid;
-            ScpDevice.GetHardwareId(deviceId, out vid, out pid);
+            var cliArgs = new StringBuilder();
+            cliArgs.AppendFormat("--name \"DualShock Controller\" ");
+            cliArgs.AppendFormat("--inf \"{0}\" ", infName);
+            cliArgs.AppendFormat("--manufacturer \"ScpToolkit compatible device\" ");
+            cliArgs.AppendFormat("--vid 0x{0:X4} --pid 0x{1:X4} ", device.VendorId, device.ProductId);
+            cliArgs.AppendFormat("--type 0 ");
+            cliArgs.AppendFormat("--dest \"{0}\" ", driverPath);
+            cliArgs.AppendFormat("--stealth-cert ");
+            cliArgs.AppendFormat("--progressbar={0:D} ", hwnd.ToInt64());
+            cliArgs.AppendFormat("--timeout 120000 ");
+            cliArgs.AppendFormat("--device-guid \"{0}\" ",deviceGuid.ToString("B"));
 
-            return InstallDeviceDriver((ushort) vid, (ushort) pid, "DS", deviceGuid, driverPath, infName, hwnd, force,
-                WdiDriverType.WDI_WINUSB);
-        }
+            var cli = cliArgs.ToString();
 
-        public WdiErrorCode InstallWinUsbDriver(string deviceId, Guid deviceGuid, string driverPath, string infName,
-            IntPtr hwnd, bool force = false)
-        {
-            short vid, pid;
-            ScpDevice.GetHardwareId(deviceId, out vid, out pid);
+            var wdiSimplePath = Path.Combine(GlobalConfiguration.AppDirectory, (Environment.Is64BitProcess) ? @"WDI\amd64" : @"WDI\x86", "wdi-simple.exe");
 
-            return InstallDeviceDriver((ushort)vid, (ushort)pid, "DS", deviceGuid.ToString("B"), driverPath, infName, hwnd, force,
-                WdiDriverType.WDI_WINUSB);
-        }
+            var wdiProc = new Process
+            {
+                StartInfo = new ProcessStartInfo(wdiSimplePath, cli)
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
 
-        /// <summary>
-        ///     Replaces the device driver of given device with libusbK.
-        /// </summary>
-        /// <param name="deviceId">Hardware-ID of the device to change the driver for.</param>
-        /// <param name="deviceGuid">Device-GUID (with brackets) to register device driver with.</param>
-        /// <param name="driverPath">Temporary path for driver auto-creation.</param>
-        /// <param name="infName">Temporary .INF-name for driver auto-creation.</param>
-        /// <param name="hwnd">Optional window handle to display installation progress dialog on.</param>
-        /// <param name="force">Force driver installation even if the device is already using libusbK.</param>
-        /// <returns>The error code returned by libwdi.</returns>
-        public WdiErrorCode InstallLibusbKDriver(string deviceId, string deviceGuid, string driverPath, string infName,
-            IntPtr hwnd, bool force = false)
-        {
-            return WdiErrorCode.WDI_ERROR_ACCESS;
+            wdiProc.Start();
+            wdiProc.WaitForExit();
 
-            //return InstallDeviceDriver(deviceId, deviceGuid, driverPath, infName, hwnd, force,
-            //    WdiDriverType.WDI_LIBUSBK);
+            return (WdiErrorCode) wdiProc.ExitCode;
         }
 
         public string GetErrorMessage(WdiErrorCode errcode)
@@ -228,36 +199,6 @@ namespace ScpControl.Driver
         {
             var namePtr = wdi_get_vendor_name(vendorId);
             return Marshal.PtrToStringAnsi(namePtr);
-        }
-
-        public void RegisterLogger(IntPtr hWnd)
-        {
-            WdiErrorCode result;
-
-            if ((result = wdi_register_logger(hWnd, WmLibwdiLogger, 0)) != WdiErrorCode.WDI_SUCCESS)
-            {
-                Log.ErrorFormat("Couldn't register libwdi logger: {0}", result);
-            }
-        }
-
-        public void UnregisterLogger(IntPtr hWnd)
-        {
-            WdiErrorCode result;
-
-            if ((result = wdi_unregister_logger(hWnd)) != WdiErrorCode.WDI_SUCCESS)
-            {
-                Log.ErrorFormat("Couldn't unregister libwdi logger: {0}", result);
-            }
-        }
-
-        public string ReadLogger()
-        {
-            var buffer = Marshal.AllocHGlobal(8192);
-            uint msgSize = 0;
-
-            var result = wdi_read_logger(buffer, 8192, ref msgSize);
-
-            return result == WdiErrorCode.WDI_SUCCESS ? Marshal.PtrToStringUni(buffer, (int) msgSize) : string.Empty;
         }
 
         #endregion
@@ -313,10 +254,6 @@ namespace ScpControl.Driver
 
         #region P/Invoke
 
-        [DllImport("ScpZadig.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern WdiErrorCode InstallDeviceDriver(ushort vid, ushort pid, string deviceDescription, string deviceGuid, string driverPath,
-            string infName, IntPtr hWnd, bool force, WdiDriverType driverType);
-
         [DllImport("libwdi.dll", EntryPoint = "wdi_strerror", ExactSpelling = false)]
         private static extern IntPtr wdi_strerror(int errcode);
 
@@ -327,36 +264,8 @@ namespace ScpControl.Driver
         private static extern int wdi_create_list(ref IntPtr list,
             ref wdi_options_create_list options);
 
-        [DllImport("libwdi.dll", EntryPoint = "wdi_prepare_driver", ExactSpelling = false)]
-        private static extern WdiErrorCode wdi_prepare_driver(IntPtr device_info,
-            [MarshalAs(UnmanagedType.LPStr)] string path,
-            [MarshalAs(UnmanagedType.LPStr)] string inf_name,
-            ref wdi_options_prepare_driver options);
-
-        [DllImport("libwdi.dll", EntryPoint = "wdi_install_driver", ExactSpelling = false)]
-        private static extern WdiErrorCode wdi_install_driver(IntPtr device_info,
-            [MarshalAs(UnmanagedType.LPStr)] string path,
-            [MarshalAs(UnmanagedType.LPStr)] string inf_name,
-            ref wdi_options_install_driver options);
-
         [DllImport("libwdi.dll", EntryPoint = "wdi_destroy_list", ExactSpelling = false)]
         private static extern WdiErrorCode wdi_destroy_list(IntPtr list);
-
-        [DllImport("libwdi.dll", EntryPoint = "wdi_get_wdf_version", ExactSpelling = false)]
-        private static extern int wdi_get_wdf_version();
-
-        [DllImport("libwdi.dll", EntryPoint = "wdi_set_log_level", ExactSpelling = false)]
-        private static extern int wdi_set_log_level(WdiLogLevel level);
-
-        [DllImport("libwdi.dll", EntryPoint = "wdi_register_logger", ExactSpelling = false)]
-        private static extern WdiErrorCode wdi_register_logger(IntPtr hWnd, uint message, uint buffsize);
-
-        [DllImport("libwdi.dll", EntryPoint = "wdi_read_logger", ExactSpelling = false)]
-        private static extern WdiErrorCode wdi_read_logger(IntPtr buffer, uint buffer_size,
-            ref uint message_size);
-
-        [DllImport("libwdi.dll", EntryPoint = "wdi_unregister_logger", ExactSpelling = false)]
-        private static extern WdiErrorCode wdi_unregister_logger(IntPtr hWnd);
 
         #endregion
     }
@@ -368,6 +277,7 @@ namespace ScpControl.Driver
     {
         public ushort VendorId { get; set; }
         public ushort ProductId { get; set; }
+        public byte InterfaceId { get; set; }
         public string Description { get; set; }
         public string DeviceId { get; set; }
         public string HardwareId { get; set; }

@@ -457,27 +457,6 @@ namespace ScpDriverInstaller
                         }
                     }
 
-                    if (_viewModel.InstallBluetoothDriver)
-                    {
-                        result = DriverInstaller.InstallBluetoothDongles(donglesToInstall, force: forceInstall);
-
-                        if (result > 0) _bthDriverConfigured = true;
-                    }
-
-                    if (_viewModel.InstallDualShock3Driver)
-                    {
-                        result = DriverInstaller.InstallDualShock3Controllers(ds3SToInstall, force: forceInstall);
-
-                        if (result > 0) _ds3DriverConfigured = true;
-                    }
-
-                    if (_viewModel.InstallDualShock4Driver)
-                    {
-                        result = DriverInstaller.InstallDualShock4Controllers(ds4SToInstall, force: forceInstall);
-
-                        if (result > 0) _ds4DriverConfigured = true;
-                    }
-
                     if (_viewModel.InstallWindowsService)
                     {
                         IDictionary state = new Hashtable();
