@@ -92,7 +92,7 @@ namespace ScpControl.Driver
                 while (pList != IntPtr.Zero)
                 {
                     // translate device info to managed object
-                    var info = (wdi_device_info) Marshal.PtrToStructure(pList, typeof (wdi_device_info));
+                    var info = (wdi_device_info)Marshal.PtrToStructure(pList, typeof(wdi_device_info));
 
                     var wdiDevice = NativeToManagedWdiUsbDevice(info);
 
@@ -126,7 +126,7 @@ namespace ScpControl.Driver
             {
                 VendorId = info.vid,
                 ProductId = info.pid,
-                InterfaceId = (byte) info.mi,
+                InterfaceId = (byte)info.mi,
                 Description = Encoding.UTF8.GetString(descBytes),
                 DeviceId = info.device_id,
                 HardwareId = info.hardware_id,
@@ -145,9 +145,11 @@ namespace ScpControl.Driver
         /// </summary>
         private enum WdiDriverType
         {
-            [Description("WinUSB")] WDI_WINUSB,
+            [Description("WinUSB")]
+            WDI_WINUSB,
             WDI_LIBUSB0,
-            [Description("libusbK")] WDI_LIBUSBK,
+            [Description("libusbK")]
+            WDI_LIBUSBK,
             WDI_USER,
             WDI_NB_DRIVERS
         }
@@ -170,7 +172,18 @@ namespace ScpControl.Driver
         {
             // build CLI args
             var cliArgs = new StringBuilder();
-            cliArgs.AppendFormat("--name \"DualShock Controller\" ");
+            switch (device.DeviceType)
+            {
+                case WdiUsbDeviceType.BluetoothHost:
+                    cliArgs.AppendFormat("--name \"Bluetooth Host (ScpToolkit)\" ");
+                    break;
+                case WdiUsbDeviceType.DualShock3:
+                    cliArgs.AppendFormat("--name \"DualShock 3 Controller (ScpToolkit)\" ");
+                    break;
+                case WdiUsbDeviceType.DualShock4:
+                    cliArgs.AppendFormat("--name \"DualShock 4 Controller (ScpToolkit)\" ");
+                    break;
+            }
             cliArgs.AppendFormat("--inf \"{0}\" ", infName);
             cliArgs.AppendFormat("--manufacturer \"ScpToolkit compatible device\" ");
             cliArgs.AppendFormat("--vid 0x{0:X4} --pid 0x{1:X4} ", device.VendorId, device.ProductId);
@@ -201,12 +214,12 @@ namespace ScpControl.Driver
             wdiProc.WaitForExit();
 
             // return code of application is possible error code
-            return (WdiErrorCode) wdiProc.ExitCode;
+            return (WdiErrorCode)wdiProc.ExitCode;
         }
 
         public string GetErrorMessage(WdiErrorCode errcode)
         {
-            var msgPtr = wdi_strerror((int) errcode);
+            var msgPtr = wdi_strerror((int)errcode);
             return Marshal.PtrToStringAnsi(msgPtr);
         }
 
@@ -230,10 +243,14 @@ namespace ScpControl.Driver
             public readonly char mi;
             public readonly IntPtr desc;
             public readonly IntPtr driver;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string device_id;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string hardware_id;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string compatible_id;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string upper_filter;
+            [MarshalAs(UnmanagedType.LPStr)]
+            public readonly string device_id;
+            [MarshalAs(UnmanagedType.LPStr)]
+            public readonly string hardware_id;
+            [MarshalAs(UnmanagedType.LPStr)]
+            public readonly string compatible_id;
+            [MarshalAs(UnmanagedType.LPStr)]
+            public readonly string upper_filter;
             public readonly ulong driver_version;
         }
 
@@ -248,12 +265,16 @@ namespace ScpControl.Driver
         [StructLayout(LayoutKind.Sequential)]
         private struct wdi_options_prepare_driver
         {
-            [MarshalAs(UnmanagedType.I4)] public readonly WdiDriverType driver_type;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string vendor_name;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string device_guid;
+            [MarshalAs(UnmanagedType.I4)]
+            public readonly WdiDriverType driver_type;
+            [MarshalAs(UnmanagedType.LPStr)]
+            public readonly string vendor_name;
+            [MarshalAs(UnmanagedType.LPStr)]
+            public readonly string device_guid;
             public readonly bool disable_cat;
             public readonly bool disable_signing;
-            [MarshalAs(UnmanagedType.LPStr)] public readonly string cert_subject;
+            [MarshalAs(UnmanagedType.LPStr)]
+            public readonly string cert_subject;
             public readonly bool use_wcid_driver;
         }
 

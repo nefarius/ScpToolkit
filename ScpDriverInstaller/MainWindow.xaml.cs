@@ -868,7 +868,13 @@ namespace ScpDriverInstaller
             {
                 _genericBluetoothHost.OnDeviceRemoved += (sender, args) => BthGenericDeviceAddedOrRemoved();
                 _genericBluetoothHost.OnDeviceArrived += (sender, args) => BthGenericDeviceAddedOrRemoved();
-                _genericBluetoothHost.RegisterHandle(_hWnd);
+                _genericBluetoothHost.RegisterHandle(_hWnd);   
+            }
+
+            // refresh all lists
+            {
+                DsHidDeviceAddedOrRemoved();
+                DsWinUsbDeviceAddedOrRemoved();
                 BthGenericDeviceAddedOrRemoved();
             }
 
