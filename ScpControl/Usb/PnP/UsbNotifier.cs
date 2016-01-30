@@ -244,6 +244,11 @@ namespace ScpControl.Usb.PnP
             ClassGuid = HidGuid;
         }
 
+        public UsbNotifier(Guid classGuid)
+        {
+            ClassGuid = classGuid;
+        }
+
         public UsbNotifier(ushort vid, ushort pid) : this()
         {
             VendorId = vid;

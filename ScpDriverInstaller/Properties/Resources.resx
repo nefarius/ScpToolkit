@@ -174,4 +174,19 @@ Sadly there are too many possibilities of why it failed to cram all suggested re
   <data name="DsInstOk_Footer" xml:space="preserve">
     <value>This installation was made possible by the great &lt;a href="https://github.com/pbatard/libwdi"&gt;libwdi&lt;/a&gt; library.</value>
   </data>
+  <data name="BthInstOk_Content" xml:space="preserve">
+    <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
+  </data>
+  <data name="BthInstOk_Footer" xml:space="preserve">
+    <value>This installation was made possible by the great &lt;a href="https://github.com/pbatard/libwdi"&gt;libwdi&lt;/a&gt; library.</value>
+  </data>
+  <data name="BthInstOk_Instruction" xml:space="preserve">
+    <value>Bluetooth Hosts installed successfully</value>
+  </data>
+  <data name="BthInstOk_Title" xml:space="preserve">
+    <value>Installation successful</value>
+  </data>
+  <data name="BthInstOk_Verbose" xml:space="preserve">
+    <value>Seriously, nothing to see here, everything is STILL fine! =)</value>
+  </data>
 </root>

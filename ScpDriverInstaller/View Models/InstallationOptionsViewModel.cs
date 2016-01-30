@@ -33,6 +33,8 @@ namespace ScpDriverInstaller.View_Models
 
         public bool InstallDs3ButtonEnabled { get; set; }
 
+        public bool InstallBthButtonEnabled { get; set; }
+
         public InstallationOptionsViewModel()
         {
             InstallWindowsService = true;

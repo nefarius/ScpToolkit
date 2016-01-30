@@ -61,6 +61,51 @@ namespace ScpDriverInstaller.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step..
+        /// </summary>
+        internal static string BthInstOk_Content {
+            get {
+                return ResourceManager.GetString("BthInstOk_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This installation was made possible by the great &lt;a href=&quot;https://github.com/pbatard/libwdi&quot;&gt;libwdi&lt;/a&gt; library..
+        /// </summary>
+        internal static string BthInstOk_Footer {
+            get {
+                return ResourceManager.GetString("BthInstOk_Footer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bluetooth Hosts installed successfully.
+        /// </summary>
+        internal static string BthInstOk_Instruction {
+            get {
+                return ResourceManager.GetString("BthInstOk_Instruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation successful.
+        /// </summary>
+        internal static string BthInstOk_Title {
+            get {
+                return ResourceManager.GetString("BthInstOk_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seriously, nothing to see here, everything is STILL fine! =).
+        /// </summary>
+        internal static string BthInstOk_Verbose {
+            get {
+                return ResourceManager.GetString("BthInstOk_Verbose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You chose to install a Bluetooth dongle but have not selected one or more devices from the device list!.
         /// </summary>
         internal static string BthListEmpty_Text {
