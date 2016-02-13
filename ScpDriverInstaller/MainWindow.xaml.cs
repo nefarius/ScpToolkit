@@ -312,55 +312,6 @@ namespace ScpDriverInstaller
 
         private async void ViewModelOnInstallButtonClicked(object sender, EventArgs eventArgs)
         {
-            #region Preparation
-
-            // get selected Bluetooth devices
-            var donglesToInstall =
-                BluetoothStackPanel.Children.Cast<CheckBox>()
-                    .Where(c => c.IsChecked == true)
-                    .Select(c => c.Content)
-                    .Cast<WdiDeviceInfo>()
-                    .ToList();
-
-            if (_viewModel.InstallBluetoothDriver && !donglesToInstall.Any())
-            {
-                ShowPopup(Properties.Resources.BthListEmpty_Title,
-                    Properties.Resources.BthListEmpty_Text,
-                    NotificationType.Warning);
-            }
-
-            // get selected DualShock 3 devices
-            var ds3SToInstall =
-                DualShockStackPanelHidUsb.Children.Cast<CheckBox>()
-                    .Where(c => c.IsChecked == true)
-                    .Select(c => c.Content)
-                    .Cast<WdiDeviceInfo>()
-                    .ToList();
-
-            if (_viewModel.InstallDualShock3Driver && !ds3SToInstall.Any())
-            {
-                ShowPopup(Properties.Resources.Ds3ListEmpty_Title,
-                    Properties.Resources.Ds3ListEmpty_Text,
-                    NotificationType.Warning);
-            }
-
-            // get selected DualShock 4 devices
-            var ds4SToInstall =
-                DualShock4StackPanel.Children.Cast<CheckBox>()
-                    .Where(c => c.IsChecked == true)
-                    .Select(c => c.Content)
-                    .Cast<WdiDeviceInfo>()
-                    .ToList();
-
-            if (_viewModel.InstallDualShock4Driver && !ds4SToInstall.Any())
-            {
-                ShowPopup(Properties.Resources.Ds4ListEmpty_Title,
-                    Properties.Resources.Ds4ListEmpty_Text,
-                    NotificationType.Warning);
-            }
-
-            #endregion
-
             #region Pre-Installation
 
             _saved = Cursor;
