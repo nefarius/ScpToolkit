@@ -597,6 +597,7 @@ namespace ScpControl.Properties {
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseAsyncHidReportProcessing {
@@ -605,6 +606,19 @@ namespace ScpControl.Properties {
             }
             set {
                 this["UseAsyncHidReportProcessing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ProfilesEnabled {
+            get {
+                return ((bool)(this["ProfilesEnabled"]));
+            }
+            set {
+                this["ProfilesEnabled"] = value;
             }
         }
     }

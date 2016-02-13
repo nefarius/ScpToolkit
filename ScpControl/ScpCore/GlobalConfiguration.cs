@@ -211,6 +211,12 @@ namespace ScpControl.ScpCore
             }
         }
 
+        public bool ProfilesEnabled
+        {
+            get { return Settings.Default.ProfilesEnabled; }
+            set { Settings.Default.ProfilesEnabled = value; }
+        }
+
         #region Service settings
 
         public bool ForceBluetoothDriverReinstallation

@@ -586,8 +586,11 @@ namespace ScpControl
             var report = _cache[serial].Report;
             var rumble = _cache[serial].Rumble;
 
-            // pass current report through user profiles
-            DualShockProfileManager.Instance.PassThroughAllProfiles(e);
+            if (GlobalConfiguration.Instance.ProfilesEnabled)
+            {
+                // pass current report through user profiles
+                DualShockProfileManager.Instance.PassThroughAllProfiles(e);
+            }
 
             // translate current report to Xbox format
             _scpBus.Parse(e, report);

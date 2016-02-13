@@ -153,6 +153,11 @@
                                 By default, incoming HID Reports get processed and passed through to the virtual controllers in a synchronous, blocking manner. If you experience noticeable input lag you may try the "fire-and-forget"-approach by enabling the following option (Warning: might introduce alignment errors).
                             </TextBlock>
                             <CheckBox IsChecked="{Binding Path=UseAsyncHidReportProcessing}">Use asynchronous HID Report Processing</CheckBox>
+
+                            <TextBlock>
+                                Mapping buttons/axes to different targets like key presses, mouse axes of even different controller buttons is currently experimental at best and has to be enabled explicitly. Since this is an unstable feature, expect things to go crazy if you tick this box.
+                            </TextBlock>
+                            <CheckBox IsChecked="{Binding Path=ProfilesEnabled}">Route controller inputs through profile manager</CheckBox>
                         </StackPanel>
                     </Grid>
                 </ScrollViewer>
