@@ -6,7 +6,9 @@
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="ScpToolkit Driver Installer"
-        Width="1020" MinWidth="1020" WindowStartupLocation="CenterScreen" SizeToContent="Height"
+        Width="1020" MinWidth="1020" 
+        Height="700" MinHeight="700"
+        WindowStartupLocation="CenterScreen" SizeToContent="Height"
         ResizeMode="CanMinimize"
         Icon="Usb.ico" Initialized="Window_Initialized" Loaded="Window_Loaded" Closing="MainWindow_OnClosing">
     <Grid x:Name="InstallGrid">
@@ -147,7 +149,7 @@
             <xctk:WizardPage x:Name="IntroPage"
                              NextPage="{Binding ElementName=DsInstPage}"
                              Title="Welcome to the ScpToolkit Driver Installer"
-                             Description="This Wizard will walk you though the process of installing you Sony DualShock 3 or 4 controller(s) on your system.">
+                             Description="This Wizard will walk you though the process of installing your Sony DualShock 3/4 controller(s) and/or Bluetooth hosts on your system.">
                 <Grid>
                     <Label>LOOOL</Label>
                 </Grid>
@@ -184,6 +186,7 @@
                         </Button>
                     </StackPanel>
 
+                    <!-- Uninitialized -->
                     <GroupBox Grid.Row="0" Grid.Column="1"
                               Margin="10,0,0,5"
                               Header="Uninitialized DualShock Controllers">
@@ -192,6 +195,7 @@
                         </ScrollViewer>
                     </GroupBox>
 
+                    <!-- Initialized -->
                     <GroupBox Grid.Row="1" Grid.Column="1"
                               Margin="10,5,0,0"
                               Header="Initialized DualShock Controllers">
@@ -233,6 +237,7 @@
                         </Button>
                     </StackPanel>
 
+                    <!-- Uninitialized -->
                     <GroupBox Grid.Row="0" Grid.Column="1"
                               Margin="10,0,0,5"
                               Header="Uninitialized Bluetooth Hosts">
@@ -241,6 +246,7 @@
                         </ScrollViewer>
                     </GroupBox>
 
+                    <!-- Initialized -->
                     <GroupBox Grid.Row="1" Grid.Column="1"
                               Margin="10,5,0,0"
                               Header="Initialized Bluetooth Hosts">
