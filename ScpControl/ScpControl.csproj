@@ -209,6 +209,9 @@
     <Compile Include="Usb\Gamepads\UsbBlankGamepad.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Usb\Gamepads\UsbTwinUSBJoystick.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Usb\PnP\UsbNotifier.cs" />
     <Compile Include="Usb\PnP\Win32Usb.cs" />
     <Compile Include="Usb\UsbHub.3rdPartyFixes.cs">

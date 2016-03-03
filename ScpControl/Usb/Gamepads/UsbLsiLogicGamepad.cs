@@ -13,12 +13,6 @@ namespace ScpControl.Usb.Gamepads
         {
             if (report[2] != 0x00) return;
 
-            if (PacketCounter++ + 1 < PacketCounter)
-            {
-                Log.WarnFormat("Packet counter rolled over ({0}), resetting to 0", PacketCounter);
-                PacketCounter = 0;
-            }
-
             var inputReport = NewHidReport();
 
             #region HID Report translation
@@ -27,7 +21,7 @@ namespace ScpControl.Usb.Gamepads
             Battery = DsBattery.None;
 
             // packet counter
-            inputReport.PacketCounter = PacketCounter;
+            inputReport.PacketCounter = ++PacketCounter;
 
             // null button states
             inputReport.ZeroPsButtonState();
