@@ -199,7 +199,11 @@ namespace ScpDriverInstaller.Utilities
                         break;
                 }
 
-                await Task.Run(() => Process.Start(targetFile).WaitForExit());
+                await Task.Run(() =>
+                {
+                    var process = Process.Start(targetFile);
+                    if (process != null) process.WaitForExit();
+                });
             }
             else
             {
@@ -215,7 +219,11 @@ namespace ScpDriverInstaller.Utilities
                         break;
                 }
 
-                await Task.Run(() => Process.Start(targetFile).WaitForExit());
+                await Task.Run(() =>
+                {
+                    var process = Process.Start(targetFile);
+                    if (process != null) process.WaitForExit();
+                });
             }
         }
     }

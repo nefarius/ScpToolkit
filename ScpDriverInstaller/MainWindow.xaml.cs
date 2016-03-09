@@ -434,57 +434,9 @@ namespace ScpDriverInstaller
 
             await Task.Run(() =>
             {
-                string devPath = string.Empty, instanceId = string.Empty;
-                var forceInstall = _viewModel.ForceDriverInstallation;
-
                 try
                 {
-                    uint result = 0;
-
-                    var flags = DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT;
-
-                    if (forceInstall)
-                        flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
-
                     var rebootRequired = false;
-                    var busInfPath = Path.Combine(GlobalConfiguration.AppDirectory,
-                        "System", "ScpVBus.inf");
-                    Log.DebugFormat("ScpVBus.inf path: {0}", busInfPath);
-
-                    // check for existance of Scp VBus
-                    if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
-                    {
-                        // if not detected, install Inf-file in Windows Driver Store
-                        if (Devcon.Install(busInfPath, ref rebootRequired))
-                        {
-                            Log.Info("Virtual Bus Driver pre-installed in Windows Driver Store successfully");
-
-                            if (Devcon.Create("System", new Guid("{4D36E97D-E325-11CE-BFC1-08002BE10318}"),
-                                "root\\ScpVBus\0\0"))
-                            {
-                                Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Created");
-                                _busDeviceConfigured = true;
-                            }
-                            else
-                            {
-                                Log.Fatal("Virtual Bus Device creation failed");
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
-                                (uint) Marshal.GetLastWin32Error());
-                            return;
-                        }
-                    }
-
-                    // install Virtual Bus driver
-                    result = _installer.Install(busInfPath, flags,
-                        out rebootRequired);
-
-                    _reboot |= rebootRequired;
-                    if (result == 0) _busDriverConfigured = true;
 
                     // install Xbox 360 driver if requested (Vista/7 only)
                     if (_viewModel.IsXbox360DriverNeeded && _viewModel.InstallXbox360Driver)
@@ -537,8 +489,13 @@ namespace ScpDriverInstaller
                         service.Commit(state);
 
                         if (StartService(Settings.Default.ScpServiceName))
-                            Logger(DifxLog.DIFXAPI_INFO, 0, Settings.Default.ScpServiceName + " Started.");
-                        else _reboot = true;
+                        {
+                            Log.InfoFormat("{0} started", Settings.Default.ScpServiceName);
+                        }
+                        else
+                        {
+                            _reboot = true;
+                        }
 
                         _scpServiceConfigured = true;
                     }
@@ -712,6 +669,68 @@ namespace ScpDriverInstaller
                     Properties.Resources.DsInstError_Footer,
                     TaskDialogIcon.Error);
             }
+        }
+
+        private async void InstallVBusOnClick(object sender, RoutedEventArgs e)
+        {
+            await Task.Run(() =>
+            {
+                string devPath = string.Empty, instanceId = string.Empty;
+                var forceInstall = _viewModel.ForceDriverInstallation;
+
+                try
+                {
+                    var flags = DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT;
+
+                    if (forceInstall)
+                        flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
+
+                    var rebootRequired = false;
+                    var busInfPath = Path.Combine(GlobalConfiguration.AppDirectory,
+                        "System", "ScpVBus.inf");
+                    Log.DebugFormat("ScpVBus.inf path: {0}", busInfPath);
+
+                    // check for existance of Scp VBus
+                    if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
+                    {
+                        // if not detected, install Inf-file in Windows Driver Store
+                        if (Devcon.Install(busInfPath, ref rebootRequired))
+                        {
+                            Log.Info("Virtual Bus Driver pre-installed in Windows Driver Store successfully");
+
+                            // create pseudo-device so the bus driver can attach to it later
+                            if (Devcon.Create("System", new Guid("{4D36E97D-E325-11CE-BFC1-08002BE10318}"),
+                                "root\\ScpVBus\0\0"))
+                            {
+                                Log.Info("Virtual Bus Created");
+                                _busDeviceConfigured = true;
+                            }
+                            else
+                            {
+                                Log.Fatal("Virtual Bus Device creation failed");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
+                                (uint) Marshal.GetLastWin32Error());
+                            return;
+                        }
+                    }
+
+                    // install Virtual Bus driver
+                    var result = _installer.Install(busInfPath, flags,
+                        out rebootRequired);
+
+                    _reboot |= rebootRequired;
+                    if (result == 0) _busDriverConfigured = true;
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Error during installation: {0}", ex);
+                }
+            });
         }
 
         #endregion

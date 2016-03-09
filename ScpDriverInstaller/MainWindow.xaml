@@ -264,7 +264,7 @@
                              PreviousPage="{Binding ElementName=BthInstPage}"
                              NextPage="{Binding ElementName=LastPage}">
                 <Grid>
-                    
+                    <Button Click="InstallVBusOnClick">Install virtual Xbox 360 Controller driver</Button>
                 </Grid>
             </xctk:WizardPage>
             
