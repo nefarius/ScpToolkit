@@ -20,6 +20,7 @@ using log4net.Core;
 using log4net.Repository.Hierarchy;
 using Mantin.Controls.Wpf.Notification;
 using Ookii.Dialogs.Wpf;
+using ScpControl.Bluetooth;
 using ScpControl.Driver;
 using ScpControl.ScpCore;
 using ScpControl.Usb.Ds3;
@@ -67,6 +68,111 @@ namespace ScpDriverInstaller
             };
 
             popup.Show();
+        }
+
+        #endregion
+
+        #region Device notification events
+
+        private void OnUsbDeviceAddedOrRemoved()
+        {
+            var usbDevices = WdiWrapper.Instance.UsbDeviceList.ToList();
+            var supportedBluetoothDevices = IniConfig.Instance.BthDongleDriver.HardwareIds;
+            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
+
+            // HidUsb devices
+            {
+                DualShockStackPanelHidUsb.Children.Clear();
+                _viewModel.InstallDs3ButtonEnabled = false;
+
+                foreach (
+                    var usbDevice in
+                        usbDevices.Where(
+                            d => d.VendorId == _hidUsbDs3.VendorId
+                                 && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
+                                 && d.CurrentDriver.Equals("HidUsb"))
+                    )
+                {
+                    DualShockStackPanelHidUsb.Children.Add(new TextBlock
+                    {
+                        Text = string.Format("Device #{0}: {1}", DualShockStackPanelHidUsb.Children.Count, usbDevice),
+                        Tag = usbDevice,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(10, 0, 0, 10)
+                    });
+
+                    _viewModel.InstallDs3ButtonEnabled = true;
+                }
+            }
+
+            // WinUsb devices
+            {
+                DualShockStackPanelWinUsb.Children.Clear();
+
+                foreach (
+                    var usbDevice in
+                        usbDevices.Where(
+                            d => d.VendorId == _hidUsbDs3.VendorId
+                                 && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
+                                 && d.CurrentDriver.Equals("WinUSB"))
+                    )
+                {
+                    DualShockStackPanelWinUsb.Children.Add(new TextBlock
+                    {
+                        Text = string.Format("Device #{0}: {1}", DualShockStackPanelWinUsb.Children.Count, usbDevice),
+                        Tag = usbDevice,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(10, 0, 0, 10)
+                    });
+                }
+            }
+
+            // refresh devices filtering on supported Bluetooth hardware IDs and BTHUSB driver (uninitialized)
+            {
+                var uninitialized =
+                    usbDevices.Where(
+                        d =>
+                            d.CurrentDriver.Equals("BTHUSB") &&
+                            supportedBluetoothDevices.Any(s => s.Contains(regex.Match(d.HardwareId).Value)));
+
+                BluetoothStackPanelDefault.Children.Clear();
+                _viewModel.InstallBthButtonEnabled = false;
+
+                foreach (var usbDevice in uninitialized)
+                {
+                    BluetoothStackPanelDefault.Children.Add(new TextBlock
+                    {
+                        Text = string.Format("Device #{0}: {1}", BluetoothStackPanelDefault.Children.Count, usbDevice),
+                        Tag = usbDevice,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(10, 0, 0, 10)
+                    });
+
+                    _viewModel.InstallBthButtonEnabled = true;
+                }
+            }
+
+            // refresh devices filtering on supported Bluetooth hardware IDs and WinUSB driver (initialized)
+            {
+                var initialized =
+                    usbDevices.Where(
+                        d =>
+                            d.CurrentDriver.Equals("WinUSB") &&
+                            supportedBluetoothDevices.Any(s => s.Contains(regex.Match(d.HardwareId).Value)));
+
+                BluetoothStackPanelWinUsb.Children.Clear();
+
+                foreach (var usbDevice in initialized)
+                {
+                    BluetoothStackPanelWinUsb.Children.Add(new TextBlock
+                    {
+                        Text = string.Format("Device #{0}: {1}", BluetoothStackPanelWinUsb.Children.Count, usbDevice),
+                        Tag = usbDevice,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(10, 0, 0, 10)
+                    });
+                }
+            }
         }
 
         #endregion
@@ -150,6 +256,8 @@ namespace ScpDriverInstaller
         /// <remarks>https://msdn.microsoft.com/en-us/library/windows/hardware/ff545033(v=vs.85).aspx</remarks>
         private readonly UsbNotifier _genericBluetoothHost =
             new UsbNotifier(Guid.Parse("{0850302A-B344-4fda-9BE9-90576B8D46F0}"));
+
+        private readonly UsbNotifier _winUsbBluetoothHost = new UsbNotifier(BthDongle.DeviceClassGuid);
 
         #endregion
 
@@ -496,122 +604,6 @@ namespace ScpDriverInstaller
 
         #endregion
 
-        #region Device notification events
-
-        /// <summary>
-        ///     Updates the GUI if a device using HidUsb was plugged-in or removed.
-        /// </summary>
-        private void DsHidDeviceAddedOrRemoved()
-        {
-            // HidUsb devices
-            DualShockStackPanelHidUsb.Children.Clear();
-            _viewModel.InstallDs3ButtonEnabled = false;
-
-            foreach (
-                var usbDevice in
-                    WdiWrapper.Instance.UsbDeviceList.Where(
-                        d => d.VendorId == _hidUsbDs3.VendorId
-                             && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
-                             && d.CurrentDriver.Equals("HidUsb"))
-                )
-            {
-                DualShockStackPanelHidUsb.Children.Add(new TextBlock
-                {
-                    Text = string.Format("Device #{0}: {1}", DualShockStackPanelHidUsb.Children.Count, usbDevice),
-                    Tag = usbDevice,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(10, 0, 0, 10)
-                });
-
-                _viewModel.InstallDs3ButtonEnabled = true;
-            }
-        }
-
-        /// <summary>
-        ///     Updates the GUI if a device using WinUSB was plugged-in or removed.
-        /// </summary>
-        private void DsWinUsbDeviceAddedOrRemoved()
-        {
-            // WinUsb devices
-            DualShockStackPanelWinUsb.Children.Clear();
-
-            foreach (
-                var usbDevice in
-                    WdiWrapper.Instance.UsbDeviceList.Where(
-                        d => d.VendorId == _hidUsbDs3.VendorId
-                             && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
-                             && d.CurrentDriver.Equals("WinUSB"))
-                )
-            {
-                DualShockStackPanelWinUsb.Children.Add(new TextBlock
-                {
-                    Text = string.Format("Device #{0}: {1}", DualShockStackPanelWinUsb.Children.Count, usbDevice),
-                    Tag = usbDevice,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(10, 0, 0, 10)
-                });
-            }
-        }
-
-        /// <summary>
-        ///     Updates the GUI if any Bluetooth device was plugged-in or removed.
-        /// </summary>
-        private void BthGenericDeviceAddedOrRemoved()
-        {
-            var connectedDevices = WdiWrapper.Instance.UsbDeviceList.ToList();
-            var supportedDevices = IniConfig.Instance.BthDongleDriver.HardwareIds;
-            var regex = new Regex("VID_([0-9A-Z]{4})&PID_([0-9A-Z]{4})", RegexOptions.IgnoreCase);
-
-            // refresh devices filtering on supported hardware IDs and BTHUSB driver (uninitialized)
-            {
-                var uninitialized =
-                    connectedDevices.Where(
-                        d =>
-                            d.CurrentDriver == "BTHUSB" &&
-                            supportedDevices.Any(s => s.Contains(regex.Match(d.HardwareId).Value)));
-
-                BluetoothStackPanelDefault.Children.Clear();
-                _viewModel.InstallBthButtonEnabled = false;
-
-                foreach (var usbDevice in uninitialized)
-                {
-                    BluetoothStackPanelDefault.Children.Add(new TextBlock
-                    {
-                        Text = string.Format("Device #{0}: {1}", BluetoothStackPanelDefault.Children.Count, usbDevice),
-                        Tag = usbDevice,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(10, 0, 0, 10)
-                    });
-
-                    _viewModel.InstallBthButtonEnabled = true;
-                }
-            }
-
-            // refresh devices filtering on supported hardware IDs and WinUSB driver (initialized)
-            {
-                var initialized =
-                    connectedDevices.Where(
-                        d =>
-                            d.CurrentDriver == "WinUSB" &&
-                            supportedDevices.Any(s => s.Contains(regex.Match(d.HardwareId).Value)));
-
-                BluetoothStackPanelWinUsb.Children.Clear();
-
-                foreach (var usbDevice in initialized)
-                {
-                    BluetoothStackPanelWinUsb.Children.Add(new TextBlock
-                    {
-                        Text = string.Format("Device #{0}: {1}", BluetoothStackPanelWinUsb.Children.Count, usbDevice),
-                        Tag = usbDevice,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Margin = new Thickness(10, 0, 0, 10)
-                    });
-                }
-            }
-        }
-
-        #endregion
-
         #region Button events
 
         private void InstallDsOnClick(object sender, RoutedEventArgs routedEventArgs)
@@ -785,49 +777,52 @@ namespace ScpDriverInstaller
 
             // listen for DualShock 3 plug-in events (HidUsb)
             {
-                _hidUsbDs3.OnDeviceRemoved += (sender, args) => DsHidDeviceAddedOrRemoved();
-                _hidUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => DsHidDeviceAddedOrRemoved();
+                _hidUsbDs3.OnDeviceRemoved += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _hidUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => OnUsbDeviceAddedOrRemoved();
                 _hidUsbDs3.RegisterHandle(_hWnd);
                 _hidUsbDs3.CheckDevicePresent();
             }
 
             // listen for DualShock 3 plug-in events (WinUSB)
             {
-                _winUsbDs3.OnDeviceRemoved += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
-                _winUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
+                _winUsbDs3.OnDeviceRemoved += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _winUsbDs3.OnSpecifiedDeviceArrived += (sender, args) => OnUsbDeviceAddedOrRemoved();
                 _winUsbDs3.RegisterHandle(_hWnd);
                 _winUsbDs3.CheckDevicePresent();
             }
 
             // listen for DualShock 4 plug-in events (HidUsb)
             {
-                _hidUsbDs4.OnDeviceRemoved += (sender, args) => DsHidDeviceAddedOrRemoved();
-                _hidUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => DsHidDeviceAddedOrRemoved();
+                _hidUsbDs4.OnDeviceRemoved += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _hidUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => OnUsbDeviceAddedOrRemoved();
                 _hidUsbDs4.RegisterHandle(_hWnd);
                 _hidUsbDs4.CheckDevicePresent();
             }
 
             // listen for DualShock 4 plug-in events (HidUsb)
             {
-                _winUsbDs4.OnDeviceRemoved += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
-                _winUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => DsWinUsbDeviceAddedOrRemoved();
+                _winUsbDs4.OnDeviceRemoved += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _winUsbDs4.OnSpecifiedDeviceArrived += (sender, args) => OnUsbDeviceAddedOrRemoved();
                 _winUsbDs4.RegisterHandle(_hWnd);
                 _winUsbDs4.CheckDevicePresent();
             }
 
             // listen for Bluetooth devices (BTHUSB or WinUSB)
             {
-                _genericBluetoothHost.OnDeviceRemoved += (sender, args) => BthGenericDeviceAddedOrRemoved();
-                _genericBluetoothHost.OnDeviceArrived += (sender, args) => BthGenericDeviceAddedOrRemoved();
-                _genericBluetoothHost.RegisterHandle(_hWnd);   
+                _genericBluetoothHost.OnDeviceRemoved += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _genericBluetoothHost.OnDeviceArrived += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _genericBluetoothHost.RegisterHandle(_hWnd);
+            }
+
+            // listen for Bluetooth devices (WinUSB, initialized)
+            {
+                _winUsbBluetoothHost.OnDeviceRemoved += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _winUsbBluetoothHost.OnDeviceArrived += (sender, args) => OnUsbDeviceAddedOrRemoved();
+                _winUsbBluetoothHost.RegisterHandle(_hWnd);
             }
 
             // refresh all lists
-            {
-                DsHidDeviceAddedOrRemoved();
-                DsWinUsbDeviceAddedOrRemoved();
-                BthGenericDeviceAddedOrRemoved();
-            }
+            OnUsbDeviceAddedOrRemoved();
 
             // hook into WndProc
             var source = PresentationSource.FromVisual(this) as HwndSource;
@@ -841,6 +836,7 @@ namespace ScpDriverInstaller
             _hidUsbDs4.ParseMessages(msg, wParam);
             _winUsbDs4.ParseMessages(msg, wParam);
             _genericBluetoothHost.ParseMessages(msg, wParam);
+            _winUsbBluetoothHost.ParseMessages(msg, wParam);
 
             return IntPtr.Zero;
         }

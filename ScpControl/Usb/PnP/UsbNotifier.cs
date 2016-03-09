@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 namespace ScpControl.Usb.PnP
 {
     /// <summary>
-    ///     A modified version of the
-    ///     <see href="http://www.codeproject.com/Articles/18099/A-USB-HID-Component-for-C">USB HID Component for C#</see>.
+    ///     A modified version of the USB HID Component for C#.
+    ///     <remarks>http://www.codeproject.com/Articles/18099/A-USB-HID-Component-for-C</remarks>
     /// </summary>
     public class UsbNotifier : Win32Usb
     {
@@ -21,7 +21,7 @@ namespace ScpControl.Usb.PnP
         public ushort VendorId { get; set; }
 
         /// <summary>
-        ///     The device class GUID this notifier will listen for. Defaults to <see cref="Win32Usb.HidGuid"/>.
+        ///     The device class GUID this notifier will listen for. Defaults to <see cref="Win32Usb.HidGuid" />.
         /// </summary>
         public Guid ClassGuid { get; private set; }
 
@@ -244,17 +244,29 @@ namespace ScpControl.Usb.PnP
             ClassGuid = HidGuid;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="classGuid">GUID that specifies the device interface class.</param>
         public UsbNotifier(Guid classGuid)
         {
             ClassGuid = classGuid;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="vid">Vendor identifier.</param>
+        /// <param name="pid">Product identifier.</param>
         public UsbNotifier(ushort vid, ushort pid) : this()
         {
             VendorId = vid;
             ProductId = pid;
         }
 
+        /// <summary>
+        /// </summary>
+        /// <param name="vid">Vendor identifier.</param>
+        /// <param name="pid">Product identifier.</param>
+        /// <param name="classGuid">GUID that specifies the device interface class.</param>
         public UsbNotifier(ushort vid, ushort pid, Guid classGuid) : this(vid, pid)
         {
             ClassGuid = classGuid;
