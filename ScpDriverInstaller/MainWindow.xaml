@@ -144,7 +144,7 @@
         </Grid>
 
         <!-- A Wizard! -->
-        <xctk:Wizard FinishButtonClosesWindow="True">
+        <xctk:Wizard FinishButtonClosesWindow="True" Help="Wizard_OnHelp">
             <!-- Welcome page -->
             <xctk:WizardPage x:Name="IntroPage"
                              NextPage="{Binding ElementName=DsInstPage}"
@@ -208,10 +208,10 @@
 
             <!-- Bluetooth Host Installation Page -->
             <xctk:WizardPage x:Name="BthInstPage" PageType="Interior"
-                             Title="Install DualShock 3/4 Controllers"
-                             Description="In this step you can initialize one or more DualShock 3/4 controllers."
+                             Title="Install Bluetooth hosts"
+                             Description="In this step you can initialize one or more Bluetooth hosts."
                              PreviousPage="{Binding ElementName=DsInstPage}"
-                             NextPage="{Binding ElementName=Page2}">
+                             NextPage="{Binding ElementName=VBusInstPage}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition />
@@ -257,9 +257,17 @@
                 </Grid>
             </xctk:WizardPage>
 
-            <xctk:WizardPage x:Name="Page2" PageType="Interior"
-                             Title="Page 2"
-                             Description="This is the second page in the process" />
+            <!-- ScpVBus Installation Page -->
+            <xctk:WizardPage x:Name="VBusInstPage" PageType="Interior"
+                             Title="Install Xbox 360 Controller emulator driver."
+                             Description="In this step you can install the virtual Xbox 360 Controller driver." 
+                             PreviousPage="{Binding ElementName=BthInstPage}"
+                             NextPage="{Binding ElementName=LastPage}">
+                <Grid>
+                    
+                </Grid>
+            </xctk:WizardPage>
+            
             <xctk:WizardPage x:Name="LastPage" PageType="Interior"
                              Title="Last Page"
                              Description="This is the last page in the process"

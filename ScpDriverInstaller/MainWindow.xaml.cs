@@ -2,6 +2,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Configuration.Install;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -903,6 +904,15 @@ namespace ScpDriverInstaller
             }
 
             return false;
+        }
+
+        #endregion
+
+        #region Wizard events
+
+        private void Wizard_OnHelp(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/nefarius/ScpToolkit/wiki/Welcome-to-the-ScpToolkit-documentation!");
         }
 
         #endregion
