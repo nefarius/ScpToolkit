@@ -187,25 +187,6 @@ namespace ScpDriverInstaller
 
         #region Misc. Helpers
 
-        private static void Logger(DifxLog Event, int error, string description)
-        {
-            switch (Event)
-            {
-                case DifxLog.DIFXAPI_ERROR:
-                    Log.Error(description);
-                    break;
-                case DifxLog.DIFXAPI_INFO:
-                    Log.Debug(description);
-                    break;
-                case DifxLog.DIFXAPI_SUCCESS:
-                    Log.Info(description);
-                    break;
-                case DifxLog.DIFXAPI_WARNING:
-                    Log.Warn(description);
-                    break;
-            }
-        }
-
         public void DoAppend(LoggingEvent loggingEvent)
         {
             if (!IsInitialized)
@@ -308,7 +289,7 @@ namespace ScpDriverInstaller
 
                         if (StopService(Settings.Default.ScpServiceName))
                         {
-                            Logger(DifxLog.DIFXAPI_INFO, 0, Settings.Default.ScpServiceName + " Stopped.");
+                            Log.InfoFormat("{0} stopped", Settings.Default.ScpServiceName);
                         }
 
                         service.Uninstall(state);
@@ -345,7 +326,7 @@ namespace ScpDriverInstaller
                     {
                         if (Devcon.Remove(Settings.Default.VirtualBusClassGuid, devPath, instanceId))
                         {
-                            Logger(DifxLog.DIFXAPI_SUCCESS, 0, "Virtual Bus Removed");
+                            Log.Info("Virtual Bus Removed");
                             _busDeviceConfigured = true;
 
                             _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"),
@@ -358,7 +339,7 @@ namespace ScpDriverInstaller
                         }
                         else
                         {
-                            Logger(DifxLog.DIFXAPI_ERROR, 0, "Virtual Bus Removal Failure");
+                            Log.Error("Virtual Bus Removal Failure");
                         }
                     }
                 }
@@ -436,46 +417,6 @@ namespace ScpDriverInstaller
             {
                 try
                 {
-                    var rebootRequired = false;
-
-                    // install Xbox 360 driver if requested (Vista/7 only)
-                    if (_viewModel.IsXbox360DriverNeeded && _viewModel.InstallXbox360Driver)
-                    {
-                        string driverPath = string.Empty, os = OsInfoHelper.OsInfo;
-
-                        switch (OsInfoHelper.OsParse(os))
-                        {
-                            case OsType.Vista:
-                                driverPath = Path.Combine(GlobalConfiguration.AppDirectory,
-                                    @"Xbox360\driver\vista_xp\xusb21.inf");
-                                break;
-                            case OsType.Win7:
-                                driverPath = Path.Combine(GlobalConfiguration.AppDirectory,
-                                    @"Xbox360\driver\win7\xusb21.inf");
-                                break;
-                            default:
-                                Log.WarnFormat(
-                                    "Microsoft Xbox 360 controller driver installation for unknown OS requested, won't install driver");
-                                break;
-                        }
-
-                        if (driverPath != string.Empty)
-                        {
-                            Log.DebugFormat("{0} detected, {1} driver selected", os, driverPath);
-                            Log.InfoFormat("Installing Microsoft Xbox 360 controller driver in Windows Driver Store");
-
-                            if (Devcon.Install(driverPath, ref rebootRequired))
-                            {
-                                Log.Info("Successfully installed Microsoft Xbox 360 controller driver");
-                            }
-                            else
-                            {
-                                Log.ErrorFormat("Couldn't install Microsoft Xbox 360 controller drivers [{0}]",
-                                    driverPath);
-                            }
-                        }
-                    }
-
                     if (_viewModel.InstallWindowsService)
                     {
                         IDictionary state = new Hashtable();
@@ -743,7 +684,6 @@ namespace ScpDriverInstaller
                 AssemblyHelper.LinkerTimestamp);
 
             _installer = Difx.Instance;
-            _installer.OnLogEvent += Logger;
 
             Log.InfoFormat("{0} detected", OsInfoHelper.OsInfo);
         }
