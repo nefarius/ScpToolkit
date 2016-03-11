@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="12.4.2" version="12.6.1" Modules="enterprise" RootPath="." Language="en" Id="{4A610BC3-7F32-44FC-9153-310AC8708D94}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="12.4.2" version="12.7.2" Modules="enterprise" RootPath="." Language="en" Id="{4A610BC3-7F32-44FC-9153-310AC8708D94}">
   <COMPONENT cid="caphyon.advinst.msicomp.ProjectOptionsComponent">
     <ROW Name="HiddenItems" Value="SerValComponent;AutorunComponent;MultipleInstancesComponent;MsiJavaComponent;MsiExtComponent;MsiDriverPackagesComponent;ActSyncAppComponent;MsiMergeModsComponent;DictionaryComponent;MsiEnvComponent;ScheduledTasksComponent;CPLAppletComponent;GameUxComponent;FirewallExceptionComponent;UserAccountsComponent;WebApplicationsComponent;MsiOdbcDataSrcComponent;SqlConnectionComponent;SharePointSlnComponent;SilverlightSlnComponent;MsiDirectEditorComponent"/>
   </COMPONENT>
@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpToolkit/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{5CC21B01-9E7E-4AB5-BCDA-5715A4FFA6DF} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{3F9BD151-EB1E-4A7B-8561-D3CB2BC0573F} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.252.16035" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.6.253.16071" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
