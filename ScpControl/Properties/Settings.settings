@@ -132,10 +132,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="AlwaysDisconnectVirtualBusDevice" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="SkipOccupiedSlots" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="UseAsyncHidReportProcessing" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

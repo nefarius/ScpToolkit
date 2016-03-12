@@ -380,10 +380,6 @@
                                     The default behavior of the virtual Xbox 360 controller device created by the virtual bus is to linger in a connected state even if the physical gamepad gets disconnected (turned off). If you'd like the virtual Xbox 360 controller to "disconnect" from the system when the physical pad gets shut off, tick the box below.
                                 </TextBlock>
                                 <CheckBox IsChecked="{Binding Path=AlwaysDisconnectVirtualBusDevice}">Always unplug virtual controller</CheckBox>
-                                <TextBlock>
-                                    Pads get assigned a slot number when connecting. By default, all four available XInput-slots will be occupied by connected DualShock controllers in an ascending order. If you have an environment with other XInput-compatible devices (like a Microsoft Xbox 360 controller), tick the box below so only empty slots will be used.
-                                </TextBlock>
-                                <CheckBox IsChecked="{Binding Path=SkipOccupiedSlots}">Skip occupied gamepad slots</CheckBox>
                             </StackPanel>
                         </GroupBox>
                     </Grid>

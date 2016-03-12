@@ -573,26 +573,13 @@ namespace ScpControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AlwaysDisconnectVirtualBusDevice {
             get {
                 return ((bool)(this["AlwaysDisconnectVirtualBusDevice"]));
             }
             set {
                 this["AlwaysDisconnectVirtualBusDevice"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SkipOccupiedSlots {
-            get {
-                return ((bool)(this["SkipOccupiedSlots"]));
-            }
-            set {
-                this["SkipOccupiedSlots"] = value;
             }
         }
         
