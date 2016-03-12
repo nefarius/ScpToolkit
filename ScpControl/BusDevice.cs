@@ -28,9 +28,9 @@ namespace ScpControl
             get { return 28; }
         }
 
-        public static int RumbleSize
+        public static int FeedbackSize
         {
-            get { return 8; }
+            get { return 9; }
         }
 
         private static Guid DeviceClassGuid
@@ -329,14 +329,6 @@ namespace ScpControl
 
             var retVal = false;
 
-            if (GlobalConfiguration.Instance.SkipOccupiedSlots)
-            {
-                while (IsSerialOccupied(serial) && serial < BusWidth)
-                {
-                    serial++;
-                }
-            }
-
             if (serial < 1 || serial > BusWidth) return false;
 
             serial += _busOffset;
@@ -441,21 +433,6 @@ namespace ScpControl
             return
                 DeviceIoControl(FileHandle, 0x2A400C, input, input.Length, output, output.Length, ref transfered,
                     IntPtr.Zero) && transfered > 0;
-        }
-
-        #endregion
-
-        #region Private methods
-
-        private static bool IsSerialOccupied(int serial)
-        {
-            if (--serial < 0 || serial > 3)
-            {
-                throw new ArgumentException(string.Format("Serial index ({0}) must be within range", serial));
-            }
-
-            var state = new XINPUT_STATE();
-            return (XInputNatives.XInputGetState((uint) serial, ref state) == ResultWin32.ERROR_SUCCESS);
         }
 
         #endregion

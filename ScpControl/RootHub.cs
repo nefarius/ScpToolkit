@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.ServiceModel;
+using System.Text;
 using Libarius.System;
 using ReactiveSockets;
 using ScpControl.Bluetooth;
@@ -34,16 +35,16 @@ namespace ScpControl
         private class Cache
         {
             private readonly byte[] _report = new byte[BusDevice.ReportSize];
-            private readonly byte[] _rumble = new byte[BusDevice.RumbleSize];
+            private readonly byte[] _feedback = new byte[BusDevice.FeedbackSize];
 
             public byte[] Report
             {
                 get { return _report; }
             }
 
-            public byte[] Rumble
+            public byte[] Feedback
             {
-                get { return _rumble; }
+                get { return _feedback; }
             }
         }
 
@@ -67,7 +68,7 @@ namespace ScpControl
             PhysicalAddress.None, PhysicalAddress.None
         };
 
-        private readonly byte[][] _mXInput =
+        private readonly byte[][] _vibration =
         {
             new byte[2] {0, 0}, new byte[2] {0, 0}, new byte[2] {0, 0},
             new byte[2] {0, 0}
@@ -584,7 +585,7 @@ namespace ScpControl
 
             // get cached status data
             var report = _cache[serial].Report;
-            var rumble = _cache[serial].Rumble;
+            var feedback = _cache[serial].Feedback;
 
             if (GlobalConfiguration.Instance.ProfilesEnabled)
             {
@@ -595,24 +596,27 @@ namespace ScpControl
             // translate current report to Xbox format
             _scpBus.Parse(e, report);
 
-            if (_scpBus.Report(report, rumble) && e.PadState == DsState.Connected)
+            if (_scpBus.Report(report, feedback) && e.PadState == DsState.Connected)
             {
-                var large = rumble[3];
-                var small = rumble[4];
+                var largeMotor = feedback[3]; // large rumble motor
+                var smallMotor = feedback[4]; // small rumble motor
+                var ledNumber = feedback[8]; // virtual controller slot
 
-                if (rumble[1] == 0x08 && (large != _mXInput[serial][0] || small != _mXInput[serial][1]))
+                Log.DebugFormat("Pad {0} has LED {1}", Pads[serial].PadId, ledNumber);
+
+                if (feedback[1] == 0x08 && (largeMotor != _vibration[serial][0] || smallMotor != _vibration[serial][1]))
                 {
-                    _mXInput[serial][0] = large;
-                    _mXInput[serial][1] = small;
+                    _vibration[serial][0] = largeMotor;
+                    _vibration[serial][1] = smallMotor;
 
-                    Pads[serial].Rumble(large, small);
+                    Pads[serial].Rumble(largeMotor, smallMotor);
                 }
             }
 
             if (e.PadState != DsState.Connected)
             {
                 // reset rumble/vibration to off state
-                _mXInput[serial][0] = _mXInput[serial][1] = 0;
+                _vibration[serial][0] = _vibration[serial][1] = 0;
                 _mNative[serial][0] = _mNative[serial][1] = 0;
 
                 if (GlobalConfiguration.Instance.AlwaysDisconnectVirtualBusDevice)
