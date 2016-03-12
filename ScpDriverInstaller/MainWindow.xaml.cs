@@ -627,8 +627,11 @@ namespace ScpDriverInstaller
                         flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
 
                     var rebootRequired = false;
-                    var busInfPath = Path.Combine(GlobalConfiguration.AppDirectory,
-                        "System", "ScpVBus.inf");
+                    var busInfPath = Path.Combine(
+                        GlobalConfiguration.AppDirectory,
+                        "ScpVBus", 
+                        Environment.Is64BitOperatingSystem ? "amd64" : "x86",
+                        "ScpVBus.inf");
                     Log.DebugFormat("ScpVBus.inf path: {0}", busInfPath);
 
                     // check for existance of Scp VBus

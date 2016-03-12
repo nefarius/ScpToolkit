@@ -14,10 +14,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpToolkit/releases"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{3F9BD151-EB1E-4A7B-8561-D3CB2BC0573F} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{EB566691-9832-4EC2-AF55-49D25BCFEDE2} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.6.253.16071" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.7.256.16072" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -42,15 +42,14 @@
     <ROW Directory="Logs_Dir" Directory_Parent="APPDIR" DefaultDir="Logs"/>
     <ROW Directory="Media_Dir" Directory_Parent="APPDIR" DefaultDir="Media"/>
     <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+    <ROW Directory="ScpVBus_1_Dir" Directory_Parent="AI_Bin32_Dir" DefaultDir="ScpVBus"/>
     <ROW Directory="ScpVBus_Dir" Directory_Parent="APPDIR" DefaultDir="ScpVBus"/>
     <ROW Directory="StartupFolder" Directory_Parent="TARGETDIR" DefaultDir="STARTU~1|StartupFolder" IsPseudoRoot="1"/>
-    <ROW Directory="System_1_Dir" Directory_Parent="AI_Bin32_Dir" DefaultDir="System"/>
-    <ROW Directory="System_Dir" Directory_Parent="APPDIR" DefaultDir="System"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
     <ROW Directory="XInput_Dir" Directory_Parent="APPDIR" DefaultDir="XInput" DirectoryOptions="8"/>
     <ROW Directory="amd64_1_Dir" Directory_Parent="irrKlang_Dir" DefaultDir="amd64"/>
+    <ROW Directory="amd64_2_Dir" Directory_Parent="ScpVBus_Dir" DefaultDir="amd64"/>
     <ROW Directory="amd64_3_Dir" Directory_Parent="libwdi_Dir" DefaultDir="amd64"/>
-    <ROW Directory="amd64_4_Dir" Directory_Parent="System_Dir" DefaultDir="amd64"/>
     <ROW Directory="amd64_Dir" Directory_Parent="DIFxAPI_Dir" DefaultDir="amd64"/>
     <ROW Directory="irrKlang_1_Dir" Directory_Parent="AI_Bin32_Dir" DefaultDir="irrKlang"/>
     <ROW Directory="irrKlang_Dir" Directory_Parent="APPDIR" DefaultDir="irrKlang"/>
@@ -59,8 +58,8 @@
     <ROW Directory="x64_2_Dir" Directory_Parent="XInput_Dir" DefaultDir="x64" DirectoryOptions="12"/>
     <ROW Directory="x86_1_Dir" Directory_Parent="DIFxAPI_1_Dir" DefaultDir="x86"/>
     <ROW Directory="x86_2_Dir" Directory_Parent="irrKlang_1_Dir" DefaultDir="x86"/>
+    <ROW Directory="x86_3_Dir" Directory_Parent="ScpVBus_1_Dir" DefaultDir="x86"/>
     <ROW Directory="x86_4_Dir" Directory_Parent="libwdi_1_Dir" DefaultDir="x86"/>
-    <ROW Directory="x86_5_Dir" Directory_Parent="System_1_Dir" DefaultDir="x86"/>
     <ROW Directory="x86_Dir" Directory_Parent="XInput_Dir" DefaultDir="x86" DirectoryOptions="12"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
@@ -123,13 +122,13 @@
     <ROW Component="ScpTrayApp.exe_1" ComponentId="{E7B4C5FC-6CEC-4878-8CE6-0E798B4CCFE5}" Directory_="APPDIR" Attributes="0" KeyPath="ScpTrayApp.exe"/>
     <ROW Component="ScpTrayApp.pdb" ComponentId="{F8D62167-ECBD-4FA3-A175-84F19ABF7AAD}" Directory_="APPDIR" Attributes="0" KeyPath="ScpTrayApp.pdb" Type="4"/>
     <ROW Component="ScpUpdater.exe" ComponentId="{5E9DFB97-21DA-4DD7-ABC0-8C407B34E6DF}" Directory_="APPDIR" Attributes="0" KeyPath="updater.exe"/>
-    <ROW Component="ScpVBus.inf" ComponentId="{0D5DEE7E-5756-4C48-91A9-8F922573D49A}" Directory_="System_Dir" Attributes="0" Condition="VersionNT &gt;= 500" KeyPath="ScpVBus.inf"/>
-    <ROW Component="ScpVBus.inf_1" ComponentId="{AEBEF725-9693-41F4-A831-259C6FD5461C}" Directory_="ScpVBus_Dir" Attributes="0" Condition="VersionNT &gt;= 500" KeyPath="ScpVBus.inf_1"/>
-    <ROW Component="ScpVBus.inf_2" ComponentId="{108087AF-9DF4-4DB2-99C0-FCB209C5A01C}" Directory_="ScpVBus_Dir" Attributes="0" Condition="VersionNT &gt;= 500" KeyPath="ScpVBus.cat_1"/>
-    <ROW Component="ScpVBus.inf_3" ComponentId="{8192E5FA-5699-48E8-AFFF-DD60F505B7CA}" Directory_="System_Dir" Attributes="0" Condition="VersionNT &gt;= 500" KeyPath="ScpVBus.cat"/>
-    <ROW Component="ScpVBus.sys" ComponentId="{7107D2EE-9E9C-4908-BEA7-D565868B5631}" Directory_="amd64_4_Dir" Attributes="256" Condition="VersionNT64" KeyPath="ScpVBus.sys"/>
-    <ROW Component="ScpVBus.sys_1" ComponentId="{9BA9CBAE-FCE9-4A23-821F-336D6DB08459}" Directory_="x86_5_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="ScpVBus.sys_1"/>
+    <ROW Component="ScpVBus.inf" ComponentId="{524F1B35-C26E-4049-A7F3-730FF806D56B}" Directory_="amd64_2_Dir" Attributes="256" Condition="VersionNT64" KeyPath="ScpVBus.inf"/>
+    <ROW Component="ScpVBus.inf_1" ComponentId="{DCD2B155-34DA-4920-9D7C-6B94167C4C05}" Directory_="x86_3_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="ScpVBus.inf_1"/>
+    <ROW Component="ScpVBus.sys" ComponentId="{16F69CCA-D576-417A-8F35-7AF6873AC919}" Directory_="amd64_2_Dir" Attributes="256" Condition="VersionNT64" KeyPath="ScpVBus.sys"/>
+    <ROW Component="ScpVBus.sys_1" ComponentId="{06B7A0B0-8C5B-42C6-8BC4-9D5EC0B21EAC}" Directory_="x86_3_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="ScpVBus.sys_1"/>
     <ROW Component="Trinet.Core.IO.Ntfs.dll" ComponentId="{C0861836-4BE3-4080-8AB8-688926B94050}" Directory_="APPDIR" Attributes="0" KeyPath="Trinet.Core.IO.Ntfs.dll"/>
+    <ROW Component="WdfCoinstaller01009.dll" ComponentId="{17A55A2D-5632-46A5-88DD-B3F4B6BDB86C}" Directory_="amd64_2_Dir" Attributes="256" Condition="VersionNT64" KeyPath="WdfCoinstaller01009.dll"/>
+    <ROW Component="WdfCoinstaller01009.dll_1" ComponentId="{BBD42507-2A6B-4AE3-B05E-74E495C3A22B}" Directory_="x86_3_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="WdfCoinstaller01009.dll_1"/>
     <ROW Component="WindowsInput.dll" ComponentId="{56AFC578-FE01-453E-ADE2-53F7C19EAEF7}" Directory_="APPDIR" Attributes="0" KeyPath="WindowsInput.dll"/>
     <ROW Component="XInput" ComponentId="{532C91A6-7A42-4B65-84EE-104C7A067001}" Directory_="XInput_Dir" Attributes="0"/>
     <ROW Component="XInput1_3.dll" ComponentId="{D5549328-EF24-4740-96F2-B3338C385856}" Directory_="x86_Dir" Attributes="0" KeyPath="XInput1_3.dll"/>
@@ -147,16 +146,18 @@
     <ROW Component="irrKlang.NET4.dll_1" ComponentId="{45A57F31-0547-4798-82B8-FACEED18F979}" Directory_="x86_2_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="irrKlang.NET4.dll_1"/>
     <ROW Component="libwdi.dll" ComponentId="{4A441B19-523A-4958-B34B-0409CEBEFBA7}" Directory_="amd64_3_Dir" Attributes="256" Condition="VersionNT64" KeyPath="libwdi.dll"/>
     <ROW Component="libwdi.dll_1" ComponentId="{533B2E85-2445-45FC-B697-DBCF048A7CA6}" Directory_="x86_4_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="libwdi.dll_1"/>
+    <ROW Component="scpvbus.cat" ComponentId="{17F554B6-9D78-4C9C-99C5-3C8D4E0609A8}" Directory_="amd64_2_Dir" Attributes="256" Condition="VersionNT64" KeyPath="scpvbus.cat" Type="0"/>
+    <ROW Component="scpvbus.cat_1" ComponentId="{BFF0B75A-71D2-4DAD-A612-8A45D5111AE7}" Directory_="x86_3_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="scpvbus.cat_1" Type="0"/>
     <ROW Component="startup.ogg" ComponentId="{34EB35FE-452C-440B-9DAE-98D59BBD5D46}" Directory_="Media_Dir" Attributes="0" KeyPath="startup.ogg"/>
     <ROW Component="wdisimple.exe" ComponentId="{3844AB9F-857E-4E0B-96B3-64729525E6BA}" Directory_="amd64_3_Dir" Attributes="256" Condition="VersionNT64" KeyPath="wdisimple.exe"/>
-    <ROW Component="wdisimple.exe_1" ComponentId="{8AE6B517-0FD3-45EB-9AF6-631AE51A36D7}" Directory_="x86_4_Dir" Attributes="0" KeyPath="wdisimple.exe_1"/>
+    <ROW Component="wdisimple.exe_1" ComponentId="{8AE6B517-0FD3-45EB-9AF6-631AE51A36D7}" Directory_="x86_4_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="wdisimple.exe_1"/>
     <ROW Component="x64" ComponentId="{744736C2-5A69-444B-9DD6-B4311858E9C3}" Directory_="x64_2_Dir" Attributes="0"/>
     <ROW Component="x86" ComponentId="{F911E38E-EDB0-4BF4-9B4A-AF868834DA66}" Directory_="x86_Dir" Attributes="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="AI32BitFiles" Title="32-bit" Description="32-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="AI64BitFiles" Title="64-bit" Description="64-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
-    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mono.CSharp.dll Newtonsoft.Json.dll Path SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpUpdater.exe ScpVBus.inf ScpVBus.inf_1 ScpVBus.inf_2 ScpVBus.inf_3 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libwdi.dll libwdi.dll_1 startup.ogg wdisimple.exe wdisimple.exe_1 x64 x86"/>
+    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mono.CSharp.dll Newtonsoft.Json.dll Path SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpUpdater.exe ScpVBus.inf ScpVBus.inf_1 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WdfCoinstaller01009.dll WdfCoinstaller01009.dll_1 WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libwdi.dll libwdi.dll_1 scpvbus.cat scpvbus.cat_1 startup.ogg wdisimple.exe wdisimple.exe_1 x64 x86"/>
     <ROW Feature="B63_41B8_9CB7_8C5E07C0FC18_" Title="Visual C++ 2010 SP1 x64 (MFC Security Update)" Description="Visual C++ 2010 SP1 x64 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CA62D813A4E74FA2AAE86A7D7B7B1493" Title="Visual C++ Redistributable for Visual Studio 2013 x64" Description="Visual C++ Redistributable for Visual Studio 2013 x64" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" Title="Visual C++ 2010 SP1 x86 (MFC Security Update)" Description="Visual C++ 2010 SP1 x86 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
@@ -238,12 +239,10 @@
     <ROW File="ScpTrayApp.exe" Component_="ScpTrayApp.exe_1" FileName="SCPTRA~1.EXE|ScpTrayApp.exe" Attributes="0" SourcePath="..\..\bin\ScpTrayApp.exe" SelfReg="false" NextFile="ScpTrayApp.exe.config" DigSign="true"/>
     <ROW File="ScpTrayApp.exe.config" Component_="ScpTrayApp.exe.config" FileName="SCPTRA~1.CON|ScpTrayApp.exe.config" Attributes="0" SourcePath="..\..\bin\ScpTrayApp.exe.config" SelfReg="false" NextFile="ScpPair.exe"/>
     <ROW File="ScpTrayApp.pdb" Component_="ScpTrayApp.pdb" FileName="SCPTRA~1.PDB|ScpTrayApp.pdb" Attributes="0" SourcePath="..\..\bin\ScpTrayApp.pdb" SelfReg="false" NextFile="DBreeze.dll"/>
-    <ROW File="ScpVBus.cat" Component_="ScpVBus.inf_3" FileName="ScpVBus.cat" Attributes="0" SourcePath="..\..\bin\System\ScpVBus.cat" SelfReg="false" NextFile="ScpVBus.inf"/>
-    <ROW File="ScpVBus.cat_1" Component_="ScpVBus.inf_2" FileName="ScpVBus.cat" Attributes="0" SourcePath="..\..\bin\System\ScpVBus.cat" SelfReg="false" NextFile="HidSharp.dll"/>
-    <ROW File="ScpVBus.inf" Component_="ScpVBus.inf" FileName="ScpVBus.inf" Attributes="0" SourcePath="..\..\bin\System\ScpVBus.inf" SelfReg="false" NextFile="ScpCleanWipe.exe"/>
-    <ROW File="ScpVBus.inf_1" Component_="ScpVBus.inf_1" FileName="ScpVBus.inf" Attributes="0" SourcePath="..\..\bin\System\ScpVBus.inf" SelfReg="false" NextFile="ScpVBus.cat_1"/>
-    <ROW File="ScpVBus.sys" Component_="ScpVBus.sys" FileName="ScpVBus.sys" Attributes="0" SourcePath="..\..\bin\System\amd64\ScpVBus.sys" SelfReg="false" NextFile="ScpCleanWipe.exe.config"/>
-    <ROW File="ScpVBus.sys_1" Component_="ScpVBus.sys_1" FileName="ScpVBus.sys" Attributes="0" SourcePath="..\..\bin\System\x86\ScpVBus.sys" SelfReg="false" NextFile="XInput1_3.dll"/>
+    <ROW File="ScpVBus.inf" Component_="ScpVBus.inf" FileName="ScpVBus.inf" Attributes="0" SourcePath="..\..\bin\ScpVBus\amd64\ScpVBus.inf" SelfReg="false" NextFile="ScpVBus.inf_1"/>
+    <ROW File="ScpVBus.inf_1" Component_="ScpVBus.inf_1" FileName="ScpVBus.inf" Attributes="0" SourcePath="..\..\bin\ScpVBus\x86\ScpVBus.inf" SelfReg="false"/>
+    <ROW File="ScpVBus.sys" Component_="ScpVBus.sys" FileName="ScpVBus.sys" Attributes="0" SourcePath="..\..\bin\ScpVBus\amd64\ScpVBus.sys" SelfReg="false" NextFile="WdfCoinstaller01009.dll"/>
+    <ROW File="ScpVBus.sys_1" Component_="ScpVBus.sys_1" FileName="ScpVBus.sys" Attributes="0" SourcePath="..\..\bin\ScpVBus\x86\ScpVBus.sys" SelfReg="false" NextFile="WdfCoinstaller01009.dll_1"/>
     <ROW File="System.Reactive.Core.dll" Component_="ScpService.exe" FileName="SYSTEM~1.DLL|System.Reactive.Core.dll" Attributes="0" SourcePath="..\..\bin\System.Reactive.Core.dll" SelfReg="false" NextFile="System.Reactive.Interfaces.dll"/>
     <ROW File="System.Reactive.Interfaces.dll" Component_="ScpService.exe" FileName="SYSTEM~2.DLL|System.Reactive.Interfaces.dll" Attributes="0" SourcePath="..\..\bin\System.Reactive.Interfaces.dll" SelfReg="false" NextFile="System.Reactive.Linq.dll"/>
     <ROW File="System.Reactive.Linq.dll" Component_="ScpService.exe" FileName="SYSTEM~3.DLL|System.Reactive.Linq.dll" Attributes="0" SourcePath="..\..\bin\System.Reactive.Linq.dll" SelfReg="false" NextFile="System.Reactive.PlatformServices.dll"/>
@@ -252,8 +251,10 @@
     <ROW File="System.Windows.Controls.Layout.Toolkit.dll" Component_="ScpService.exe" FileName="SYSTEM~6.DLL|System.Windows.Controls.Layout.Toolkit.dll" Attributes="0" SourcePath="..\..\bin\System.Windows.Controls.Layout.Toolkit.dll" SelfReg="false" NextFile="Trinet.Core.IO.Ntfs.dll"/>
     <ROW File="Trinet.Core.IO.Ntfs.dll" Component_="Trinet.Core.IO.Ntfs.dll" FileName="TRINET~1.DLL|Trinet.Core.IO.Ntfs.dll" Attributes="0" SourcePath="..\..\bin\Trinet.Core.IO.Ntfs.dll" SelfReg="false" NextFile="WPFToolkit.dll"/>
     <ROW File="WPFToolkit.dll" Component_="ScpService.exe" FileName="WPFTOO~1.DLL|WPFToolkit.dll" Attributes="0" SourcePath="..\..\bin\WPFToolkit.dll" SelfReg="false" NextFile="LilyPadScpr5875.dll"/>
+    <ROW File="WdfCoinstaller01009.dll" Component_="WdfCoinstaller01009.dll" FileName="WDFCOI~1.DLL|WdfCoinstaller01009.dll" Attributes="0" SourcePath="..\..\bin\ScpVBus\amd64\WdfCoinstaller01009.dll" SelfReg="false" NextFile="scpvbus.cat_1"/>
+    <ROW File="WdfCoinstaller01009.dll_1" Component_="WdfCoinstaller01009.dll_1" FileName="WDFCOI~1.DLL|WdfCoinstaller01009.dll" Attributes="0" SourcePath="..\..\bin\ScpVBus\x86\WdfCoinstaller01009.dll" SelfReg="false" NextFile="ScpVBus.inf"/>
     <ROW File="WindowsInput.dll" Component_="WindowsInput.dll" FileName="WINDOW~1.DLL|WindowsInput.dll" Attributes="0" SourcePath="..\..\bin\WindowsInput.dll" SelfReg="false" NextFile="ScpProfiler.exe"/>
-    <ROW File="XInput1_3.dll" Component_="XInput1_3.dll" FileName="XINPUT~1.DLL|XInput1_3.dll" Attributes="0" SourcePath="..\..\bin\XInput\x86\XInput1_3.dll" SelfReg="false" NextFile="ScpVBus.inf_1"/>
+    <ROW File="XInput1_3.dll" Component_="XInput1_3.dll" FileName="XINPUT~1.DLL|XInput1_3.dll" Attributes="0" SourcePath="..\..\bin\XInput\x86\XInput1_3.dll" SelfReg="false" NextFile="HidSharp.dll"/>
     <ROW File="XInput1_3.dll_1" Component_="XInput1_3.dll_1" FileName="XINPUT~1.DLL|XInput1_3.dll" Attributes="0" SourcePath="..\..\bin\XInput\x64\XInput1_3.dll" SelfReg="false" NextFile="XInput_log4net.config_1"/>
     <ROW File="XInput_log4net.config" Component_="XInput_log4net.config" FileName="XINPUT~1.CON|XInput_log4net.config" Attributes="0" SourcePath="..\..\bin\XInput\x86\XInput_log4net.config" SelfReg="false" NextFile="XInput1_3.dll_1"/>
     <ROW File="XInput_log4net.config_1" Component_="XInput1_3.exp" FileName="XINPUT~1.CON|XInput_log4net.config" Attributes="0" SourcePath="..\..\bin\XInput\x64\XInput_log4net.config" SelfReg="false" NextFile="ScpTrayApp.exe"/>
@@ -266,13 +267,15 @@
     <ROW File="ikpMP3.dll_1" Component_="ikpMP3.dll_1" FileName="ikpMP3.dll" Attributes="0" SourcePath="..\..\bin\irrKlang\x86\ikpMP3.dll" SelfReg="false" NextFile="irrKlang.NET4.dll_1"/>
     <ROW File="irrKlang.NET4.dll" Component_="irrKlang.NET4.dll" FileName="IRRKLA~1.DLL|irrKlang.NET4.dll" Attributes="0" SourcePath="..\..\bin\irrKlang\amd64\irrKlang.NET4.dll" SelfReg="false" NextFile="libwdi.dll"/>
     <ROW File="irrKlang.NET4.dll_1" Component_="irrKlang.NET4.dll_1" FileName="IRRKLA~1.DLL|irrKlang.NET4.dll" Attributes="0" SourcePath="..\..\bin\irrKlang\x86\irrKlang.NET4.dll" SelfReg="false" NextFile="libwdi.dll_1"/>
-    <ROW File="libwdi.dll" Component_="libwdi.dll" FileName="libwdi.dll" Attributes="0" SourcePath="..\..\bin\libwdi\amd64\libwdi.dll" SelfReg="false" NextFile="ScpVBus.sys"/>
-    <ROW File="libwdi.dll_1" Component_="libwdi.dll_1" FileName="libwdi.dll" Attributes="0" SourcePath="..\..\bin\libwdi\x86\libwdi.dll" SelfReg="false" NextFile="ScpVBus.sys_1"/>
+    <ROW File="libwdi.dll" Component_="libwdi.dll" FileName="libwdi.dll" Attributes="0" SourcePath="..\..\bin\libwdi\amd64\libwdi.dll" SelfReg="false" NextFile="ScpCleanWipe.exe.config"/>
+    <ROW File="libwdi.dll_1" Component_="libwdi.dll_1" FileName="libwdi.dll" Attributes="0" SourcePath="..\..\bin\libwdi\x86\libwdi.dll" SelfReg="false" NextFile="XInput1_3.dll"/>
     <ROW File="log4net.dll_1" Component_="ScpService.exe" FileName="log4net.dll" Attributes="0" SourcePath="..\..\bin\log4net.dll" SelfReg="false" NextFile="MadMilkman.Ini.dll_1"/>
-    <ROW File="startup.ogg" Component_="startup.ogg" FileName="startup.ogg" Attributes="0" SourcePath="..\..\bin\Media\startup.ogg" SelfReg="false" NextFile="ScpVBus.cat"/>
+    <ROW File="scpvbus.cat" Component_="scpvbus.cat" FileName="scpvbus.cat" Attributes="0" SourcePath="..\..\bin\ScpVBus\amd64\scpvbus.cat" SelfReg="false" NextFile="ScpVBus.sys"/>
+    <ROW File="scpvbus.cat_1" Component_="scpvbus.cat_1" FileName="scpvbus.cat" Attributes="0" SourcePath="..\..\bin\ScpVBus\x86\scpvbus.cat" SelfReg="false" NextFile="ScpVBus.sys_1"/>
+    <ROW File="startup.ogg" Component_="startup.ogg" FileName="startup.ogg" Attributes="0" SourcePath="..\..\bin\Media\startup.ogg" SelfReg="false" NextFile="ScpCleanWipe.exe"/>
     <ROW File="updater.exe" Component_="ScpUpdater.exe" FileName="SCPUPD~1.EXE|ScpUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" NextFile="wdisimple.exe" DigSign="true"/>
     <ROW File="wdisimple.exe" Component_="wdisimple.exe" FileName="WDI-SI~1.EXE|wdi-simple.exe" Attributes="0" SourcePath="..\..\bin\libwdi\amd64\wdi-simple.exe" SelfReg="false" NextFile="wdisimple.exe_1" DigSign="true"/>
-    <ROW File="wdisimple.exe_1" Component_="wdisimple.exe_1" FileName="WDI-SI~1.EXE|wdi-simple.exe" Attributes="0" SourcePath="..\..\bin\libwdi\x86\wdi-simple.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="wdisimple.exe_1" Component_="wdisimple.exe_1" FileName="WDI-SI~1.EXE|wdi-simple.exe" Attributes="0" SourcePath="..\..\bin\libwdi\x86\wdi-simple.exe" SelfReg="false" NextFile="scpvbus.cat" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" UpdatesUrl="https://raw.githubusercontent.com/nefarius/ScpServer/master/updates.txt" EulaPathLocId="*" IntroTextPathLocId="*"/>
@@ -284,6 +287,9 @@
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
     <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
+    <ROW TimeStampUrl="http://timestamp.digicert.com" SignerDescription="[|ProductName]" SignOptions="7" SignTool="0" UseSha256="1" Thumbprint="61197cf2f78f4b9107667b1ffe4fd7a313edcf86 Subject: Open Source Developer, Benjamin Höglinger-Stelzer&#10;Issuer: Certum Code Signing CA SHA2&#10;Valid from 03/12/2016 to 03/12/2017"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
     <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
