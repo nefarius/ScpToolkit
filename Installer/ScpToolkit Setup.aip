@@ -12,12 +12,13 @@
     <ROW Property="ARPPRODUCTICON" Value="DualShock3.exe" Type="8"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/nefarius/ScpToolkit"/>
     <ROW Property="ARPURLUPDATEINFO" Value="https://github.com/nefarius/ScpToolkit/releases"/>
+    <ROW Property="AppLogoIcon" Value="applogoicon" MultiBuildValue="DefaultBuild:DualShock.png" Type="1" MsiKey="AppLogoIcon"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{EB566691-9832-4EC2-AF55-49D25BCFEDE2} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{533CF27F-D597-45DD-90D4-15C41E7FB103} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.7.256.16072" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.7.257.16072" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -277,9 +278,6 @@
     <ROW File="wdisimple.exe" Component_="wdisimple.exe" FileName="WDI-SI~1.EXE|wdi-simple.exe" Attributes="0" SourcePath="..\..\bin\libwdi\amd64\wdi-simple.exe" SelfReg="false" NextFile="wdisimple.exe_1" DigSign="true"/>
     <ROW File="wdisimple.exe_1" Component_="wdisimple.exe_1" FileName="WDI-SI~1.EXE|wdi-simple.exe" Attributes="0" SourcePath="..\..\bin\libwdi\x86\wdi-simple.exe" SelfReg="false" NextFile="scpvbus.cat" DigSign="true"/>
   </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
-    <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" UpdatesUrl="https://raw.githubusercontent.com/nefarius/ScpServer/master/updates.txt" EulaPathLocId="*" IntroTextPathLocId="*"/>
-  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="Setup Files" PackageFileName="ScpToolkit_Setup" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="..\ScpControlPanel\Dual Shock 3.ico" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" UseLargeSchema="true" MsiPackageType="AI_ALL"/>
     <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
@@ -339,6 +337,7 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
     <ROW Name="DotNetNativeImage.dll" SourcePath="&lt;AI_CUSTACTS&gt;DotNetNativeImage.dll"/>
+    <ROW Name="DualShock.png" SourcePath="DualShock.png"/>
     <ROW Name="PowerShellScriptLauncher.dll" SourcePath="&lt;AI_CUSTACTS&gt;PowerShellScriptLauncher.dll"/>
     <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
     <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
