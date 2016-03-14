@@ -156,7 +156,9 @@ namespace ScpControl.Bluetooth
             {
                 #region LED manipulation
 
-                if ((now - m_Tick).TotalMilliseconds >= 500 && m_Packet > 0)
+                if ((now - m_Tick).TotalMilliseconds >= 500 
+                    && m_Packet > 0
+                    && XInputSlot.HasValue)
                 {
                     m_Tick = now;
 
@@ -175,9 +177,9 @@ namespace ScpControl.Bluetooth
                                 _counterForLeds++;
                                 _counterForLeds %= 2;
                                 if (_counterForLeds == 1)
-                                    _ledStatus = _ledOffsets[(int) PadId];
+                                    _ledStatus = _ledOffsets[(int) XInputSlot];
                             }
-                            else _ledStatus = _ledOffsets[(int) PadId];
+                            else _ledStatus = _ledOffsets[(int) XInputSlot];
                             break;
                         case 2:
                             switch (Battery)

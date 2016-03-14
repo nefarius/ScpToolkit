@@ -134,6 +134,8 @@ namespace ScpControl.Usb
 
         public virtual DsPadId PadId { get; set; }
 
+        public uint? XInputSlot { get; set; }
+
         /// <summary>
         ///     Controller connection type.
         /// </summary>

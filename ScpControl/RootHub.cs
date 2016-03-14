@@ -602,8 +602,10 @@ namespace ScpControl
                 var smallMotor = feedback[4]; // small rumble motor
                 var ledNumber = feedback[8]; // virtual controller slot
 
-                Log.DebugFormat("Pad {0} has LED {1}", Pads[serial].PadId, ledNumber);
+                // set currently assigned XInput slot
+                Pads[serial].XInputSlot = ledNumber;
 
+                // forward rumble request to pad
                 if (feedback[1] == 0x08 && (largeMotor != _vibration[serial][0] || smallMotor != _vibration[serial][1]))
                 {
                     _vibration[serial][0] = largeMotor;

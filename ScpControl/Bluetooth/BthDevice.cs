@@ -61,6 +61,8 @@ namespace ScpControl.Bluetooth
 
         public virtual DsPadId PadId { get; set; }
 
+        public uint? XInputSlot { get; set; }
+
         #endregion
 
         #region Public methods

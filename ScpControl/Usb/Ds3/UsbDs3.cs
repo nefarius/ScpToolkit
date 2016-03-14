@@ -295,8 +295,9 @@ namespace ScpControl.Usb.Ds3
 
                 #region LED control
 
-                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod &&
-                    PacketCounter > 0)
+                if ((now - m_Last).TotalMilliseconds >= GlobalConfiguration.Instance.Ds3LEDsPeriod 
+                    && PacketCounter > 0
+                    && XInputSlot.HasValue)
                 {
                     m_Last = now;
                     _ledStatus = 0;
@@ -313,9 +314,9 @@ namespace ScpControl.Usb.Ds3
                                 _counterForLeds++;
                                 _counterForLeds %= 2;
                                 if (_counterForLeds == 1)
-                                    _ledStatus = _ledOffsets[(int) PadId];
+                                    _ledStatus = _ledOffsets[(int) XInputSlot];
                             }
-                            else _ledStatus = _ledOffsets[(int) PadId];
+                            else _ledStatus = _ledOffsets[(int) XInputSlot];
                             break;
                         case 2:
                             switch (Battery)

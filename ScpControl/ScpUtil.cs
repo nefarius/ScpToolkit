@@ -15,6 +15,8 @@ namespace ScpControl
     {
         DsPadId PadId { get; set; }
 
+        uint? XInputSlot { get; set; }
+
         DsConnection Connection { get; }
 
         DsState State { get; }
@@ -108,6 +110,9 @@ namespace ScpControl
         {
             return true;
         }
+
+
+        public uint? XInputSlot { get; set; }
     }
 
     public class ArrivalEventArgs : EventArgs
