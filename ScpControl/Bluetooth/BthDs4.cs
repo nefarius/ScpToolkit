@@ -305,7 +305,10 @@ namespace ScpControl.Bluetooth
                     _mBrightness = GlobalConfiguration.Instance.Brightness;
                 }
 
-                SetLightBarColor(PadId);
+                if (XInputSlot.HasValue)
+                {
+                    SetLightBarColor((DsPadId) XInputSlot);
+                }
 
                 #endregion
 

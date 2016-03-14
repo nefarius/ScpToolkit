@@ -324,7 +324,10 @@ namespace ScpControl.Usb.Ds4
                 }
 
                 // set light bar color reflecting pad ID
-                SetLightBarColor(PadId);
+                if (XInputSlot.HasValue)
+                {
+                    SetLightBarColor((DsPadId) XInputSlot);
+                }
 
                 // send report to controller
                 WriteIntPipe(_hidReport, _hidReport.Length, ref transfered);
