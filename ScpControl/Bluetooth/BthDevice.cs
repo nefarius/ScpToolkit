@@ -107,14 +107,15 @@ namespace ScpControl.Bluetooth
             return BluetoothDevice.HCI_Disconnect(HciHandle) > 0;
         }
 
-        public virtual bool Stop()
+        public void Stop()
         {
             if (State == DsState.Connected)
             {
                 if (_outputReportTask != null)
                     _outputReportTask.Dispose();
 
-                State = DsState.Reserved;
+                State = GlobalConfiguration.Instance.ReservePadSlot ? DsState.Reserved : DsState.Disconnected;
+
                 m_Packet = 0;
 
                 m_Publish = false;
@@ -124,8 +125,6 @@ namespace ScpControl.Bluetooth
                 if (GlobalConfiguration.Instance.IsBluetoothDisconnectSoundEnabled)
                     AudioPlayer.Instance.PlayCustomFile(GlobalConfiguration.Instance.BluetoothDisconnectSoundFile);
             }
-
-            return State == DsState.Reserved;
         }
 
         public virtual bool Close()

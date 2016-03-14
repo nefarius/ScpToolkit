@@ -132,6 +132,7 @@ namespace ScpControl.Usb
 
             try
             {
+                // enumerate disconnected but reserved devices
                 for (index = 0; index < _devices.Length; index++)
                 {
                     if (_devices[index].State == DsState.Reserved)

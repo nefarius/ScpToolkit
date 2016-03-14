@@ -608,5 +608,18 @@ namespace ScpControl.Properties {
                 this["ProfilesEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ReservePadSlot {
+            get {
+                return ((bool)(this["ReservePadSlot"]));
+            }
+            set {
+                this["ReservePadSlot"] = value;
+            }
+        }
     }
 }

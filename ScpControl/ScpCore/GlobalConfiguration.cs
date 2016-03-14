@@ -249,6 +249,12 @@ namespace ScpControl.ScpCore
             set { Settings.Default.AlwaysDisconnectVirtualBusDevice = value; }
         }
 
+        public bool ReservePadSlot
+        {
+            get { return Settings.Default.ReservePadSlot; }
+            set { Settings.Default.ReservePadSlot = value; }
+        }
+
         #endregion
         
         #region Sound settings

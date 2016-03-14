@@ -241,7 +241,7 @@ namespace ScpControl.Usb
                 if (_outputReportTask != null)
                     _outputReportTask.Dispose();
 
-                State = DsState.Reserved;
+                State = GlobalConfiguration.Instance.ReservePadSlot ? DsState.Reserved : DsState.Disconnected;
 
                 _hidCancellationTokenSource.Cancel();
                 _hidCancellationTokenSource = new CancellationTokenSource();

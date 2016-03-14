@@ -15,10 +15,10 @@
     <ROW Property="AppLogoIcon" Value="applogoicon" MultiBuildValue="DefaultBuild:DualShock.png" Type="1" MsiKey="AppLogoIcon"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{07490983-803E-44AB-A372-3EEFD20C1957} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{6BEDDC57-0061-4319-933C-8342AA1F2744} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.7.260.16074" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.7.263.16074" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>

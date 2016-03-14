@@ -380,6 +380,10 @@
                                     The default behavior of the virtual Xbox 360 controller device created by the virtual bus is to linger in a connected state even if the physical gamepad gets disconnected (turned off). If you'd like the virtual Xbox 360 controller to "disconnect" from the system when the physical pad gets shut off, tick the box below.
                                 </TextBlock>
                                 <CheckBox IsChecked="{Binding Path=AlwaysDisconnectVirtualBusDevice}">Always unplug virtual controller</CheckBox>
+                                <TextBlock>
+                                    Reserves the slot of the controller to its MAC address if enabled. Usefull if you have a DualShock-only environment and want a fixed slot index for your pad.
+                                </TextBlock>
+                                <CheckBox IsChecked="{Binding Path=ReservePadSlot}">Reserve controller slot</CheckBox>
                             </StackPanel>
                         </GroupBox>
                     </Grid>
