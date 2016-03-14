@@ -614,18 +614,14 @@ namespace ScpDriverInstaller
 
         private async void InstallVBusOnClick(object sender, RoutedEventArgs e)
         {
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
+
             await Task.Run(() =>
             {
                 string devPath = string.Empty, instanceId = string.Empty;
-                var forceInstall = _viewModel.ForceDriverInstallation;
 
                 try
                 {
-                    var flags = DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT;
-
-                    if (forceInstall)
-                        flags |= DifxFlags.DRIVER_PACKAGE_FORCE;
-
                     var rebootRequired = false;
                     var busInfPath = Path.Combine(
                         GlobalConfiguration.AppDirectory,
@@ -633,14 +629,23 @@ namespace ScpDriverInstaller
                         Environment.Is64BitOperatingSystem ? "amd64" : "x86",
                         "ScpVBus.inf");
                     Log.DebugFormat("ScpVBus.inf path: {0}", busInfPath);
-
+                    
                     // check for existance of Scp VBus
                     if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
                     {
+                        UiContext.InvokeOnUiThread(
+                            () =>
+                            {
+                                MainBusyIndicator.BusyContent = "Installing Virtual Bus Driver in Windows Driver Store";
+                            });
+
                         // if not detected, install Inf-file in Windows Driver Store
                         if (Devcon.Install(busInfPath, ref rebootRequired))
                         {
                             Log.Info("Virtual Bus Driver pre-installed in Windows Driver Store successfully");
+
+                            UiContext.InvokeOnUiThread(
+                                () => { MainBusyIndicator.BusyContent = "Creating Hardware ID for Virtual Bus"; });
 
                             // create pseudo-device so the bus driver can attach to it later
                             if (Devcon.Create("System", new Guid("{4D36E97D-E325-11CE-BFC1-08002BE10318}"),
@@ -663,8 +668,12 @@ namespace ScpDriverInstaller
                         }
                     }
 
+                    UiContext.InvokeOnUiThread(
+                        () => { MainBusyIndicator.BusyContent = "Installing driver on Virtual Bus"; });
+
                     // install Virtual Bus driver
-                    var result = _installer.Install(busInfPath, flags,
+                    var result = _installer.Install(busInfPath,
+                        DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT | DifxFlags.DRIVER_PACKAGE_FORCE,
                         out rebootRequired);
 
                     _reboot |= rebootRequired;
@@ -675,6 +684,8 @@ namespace ScpDriverInstaller
                     Log.ErrorFormat("Error during installation: {0}", ex);
                 }
             });
+
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
         }
 
         #endregion
