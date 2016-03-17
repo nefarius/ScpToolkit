@@ -5,8 +5,6 @@ using System.Runtime.InteropServices;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Shared.Utilities;
-using ScpControl.Shared.XInput;
-using ScpControl.XInput;
 
 namespace ScpControl
 {
