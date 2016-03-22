@@ -11,12 +11,14 @@ using System.Text;
 using Libarius.System;
 using ReactiveSockets;
 using ScpControl.Bluetooth;
+using ScpControl.Driver;
 using ScpControl.Exceptions;
 using ScpControl.Profiler;
 using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
+using ScpControl.Shared.XInput;
 using ScpControl.Sound;
 using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
@@ -35,16 +37,16 @@ namespace ScpControl
         private class Cache
         {
             private readonly byte[] _report = new byte[BusDevice.ReportSize];
-            private readonly byte[] _feedback = new byte[BusDevice.FeedbackSize];
+            private readonly byte[] _rumble = new byte[BusDevice.FeedbackSize];
 
             public byte[] Report
             {
                 get { return _report; }
             }
 
-            public byte[] Feedback
+            public byte[] Rumble
             {
-                get { return _feedback; }
+                get { return _rumble; }
             }
         }
 
@@ -582,10 +584,11 @@ namespace ScpControl
         {
             // get current pad ID
             var serial = (int)e.PadId;
+            var userIndex = _scpBus.IndexToSerial((byte)serial);
 
             // get cached status data
             var report = _cache[serial].Report;
-            var feedback = _cache[serial].Feedback;
+            var feedback = _cache[serial].Rumble;
 
             if (GlobalConfiguration.Instance.ProfilesEnabled)
             {
@@ -593,20 +596,24 @@ namespace ScpControl
                 DualShockProfileManager.Instance.PassThroughAllProfiles(e);
             }
 
-            // translate current report to Xbox format
-            _scpBus.Parse(e, report);
-
-            if (_scpBus.Report(report, feedback) && e.PadState == DsState.Connected)
+            if (e.PadState == DsState.Connected)
             {
-                var largeMotor = feedback[3]; // large rumble motor
-                var smallMotor = feedback[4]; // small rumble motor
-                var ledNumber = feedback[8]; // virtual controller slot
+                var output = new XINPUT_GAMEPAD();
 
+                // translate current report to Xbox format
+                _scpBus.Parse(e, ref output);
+
+                XOutputWrapper.Instance.SetState(userIndex, output);
+                
                 // set currently assigned XInput slot
-                Pads[serial].XInputSlot = ledNumber;
+                Pads[serial].XInputSlot = XOutputWrapper.Instance.GetRealIndex(userIndex);
+
+                byte largeMotor = 0;
+                byte smallMotor = 0;
 
                 // forward rumble request to pad
-                if (feedback[1] == 0x08 && (largeMotor != _vibration[serial][0] || smallMotor != _vibration[serial][1]))
+                if (XOutputWrapper.Instance.GetState(userIndex, ref largeMotor, ref smallMotor) 
+                    && (largeMotor != _vibration[serial][0] || smallMotor != _vibration[serial][1]))
                 {
                     _vibration[serial][0] = largeMotor;
                     _vibration[serial][1] = smallMotor;
@@ -614,8 +621,7 @@ namespace ScpControl
                     Pads[serial].Rumble(largeMotor, smallMotor);
                 }
             }
-
-            if (e.PadState != DsState.Connected)
+            else
             {
                 // reset rumble/vibration to off state
                 _vibration[serial][0] = _vibration[serial][1] = 0;
