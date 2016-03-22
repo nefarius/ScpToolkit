@@ -23,7 +23,7 @@
     <AssemblyInfoVersionSettings>
     </AssemblyInfoVersionSettings>
     <PrimaryVersionType>AssemblyVersionAttribute</PrimaryVersionType>
-    <AssemblyVersion>1.7.265.16082</AssemblyVersion>
+    <AssemblyVersion>1.7.267.16082</AssemblyVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -109,15 +109,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bluetooth\BthDongle.Hci.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Bluetooth\BthDongle.L2cap.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Bluetooth\BthDongle.Tasks.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Bluetooth\BthDongle.Hci.cs" />
+    <Compile Include="Bluetooth\BthDongle.L2cap.cs" />
+    <Compile Include="Bluetooth\BthDongle.Tasks.cs" />
     <Compile Include="Bluetooth\BthConnection.cs" />
     <Compile Include="Bluetooth\BthDevice.cs" />
     <Compile Include="Bluetooth\BthDongle.cs" />
@@ -155,39 +149,17 @@
     <Compile Include="Rx\ScpNativeFeedChannel.cs" />
     <Compile Include="ScpCore\SingletonBase.cs" />
     <Compile Include="Sound\AudioPlayer.cs" />
-    <Compile Include="Usb\Gamepads\UsbBadBigBenGamepad.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbGenericGamepad.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Ds3\Replica\UsbDs3Afterglow.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbGameStopPcAdvanced.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbLsiLogicGamepad.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Ds3\Replica\UsbDs3QuadStick.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbMadcatzTournamentEdition2Fightstick.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbShanWanWirelessGamepad.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbSnesGamepad.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbBlankGamepad.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Usb\Gamepads\UsbTwinUSBJoystick.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Usb\Gamepads\UsbBadBigBenGamepad.cs" />
+    <Compile Include="Usb\Gamepads\UsbGenericGamepad.cs" />
+    <Compile Include="Usb\Ds3\Replica\UsbDs3Afterglow.cs" />
+    <Compile Include="Usb\Gamepads\UsbGameStopPcAdvanced.cs" />
+    <Compile Include="Usb\Gamepads\UsbLsiLogicGamepad.cs" />
+    <Compile Include="Usb\Ds3\Replica\UsbDs3QuadStick.cs" />
+    <Compile Include="Usb\Gamepads\UsbMadcatzTournamentEdition2Fightstick.cs" />
+    <Compile Include="Usb\Gamepads\UsbShanWanWirelessGamepad.cs" />
+    <Compile Include="Usb\Gamepads\UsbSnesGamepad.cs" />
+    <Compile Include="Usb\Gamepads\UsbBlankGamepad.cs" />
+    <Compile Include="Usb\Gamepads\UsbTwinUSBJoystick.cs" />
     <Compile Include="Usb\PnP\UsbNotifier.cs" />
     <Compile Include="Usb\PnP\Win32Usb.cs" />
     <Compile Include="Usb\UsbHub.3rdPartyFixes.cs">
@@ -214,9 +186,7 @@
     <Compile Include="ScpCore\GlobalConfiguration.cs" />
     <Compile Include="Bluetooth\HCI.cs" />
     <Compile Include="Bluetooth\L2CAP.cs" />
-    <Compile Include="ScpDevice.Interop.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="ScpDevice.Interop.cs" />
     <Compile Include="ScpProxy.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -233,9 +203,7 @@
     <Compile Include="RootHub.Designer.cs">
       <DependentUpon>RootHub.cs</DependentUpon>
     </Compile>
-    <Compile Include="BusDevice.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="BusDevice.cs" />
     <Compile Include="ScpDevice.cs" />
     <Compile Include="ScpHub.cs">
       <SubType>Component</SubType>
