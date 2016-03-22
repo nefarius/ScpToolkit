@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -13,7 +12,7 @@ namespace ScpControl
     /// <summary>
     ///     Low-level representation of an Scp-compatible Usb device.
     /// </summary>
-    public partial class ScpDevice : Component
+    public partial class ScpDevice
     {
         protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -21,20 +20,10 @@ namespace ScpControl
 
         protected ScpDevice()
         {
-            InitializeComponent();
-        }
-
-        public ScpDevice(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         protected ScpDevice(Guid Class)
         {
-            InitializeComponent();
-
             this._class = Class;
         }
 

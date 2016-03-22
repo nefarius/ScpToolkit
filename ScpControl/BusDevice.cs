@@ -10,7 +10,7 @@ using ScpControl.Shared.XInput;
 
 namespace ScpControl
 {
-    public sealed partial class BusDevice : ScpDevice
+    public class BusDevice : ScpDevice
     {
         #region Private fields
 
@@ -22,16 +22,6 @@ namespace ScpControl
         #endregion
         
         #region Public properties
-
-        public static int ReportSize
-        {
-            get { return 28; }
-        }
-
-        public static int FeedbackSize
-        {
-            get { return 9; }
-        }
 
         private static Guid DeviceClassGuid
         {
@@ -45,18 +35,10 @@ namespace ScpControl
 
         #endregion
 
-        #region Ctors
+        #region Ctor
 
         public BusDevice() : base(DeviceClassGuid)
         {
-            InitializeComponent();
-        }
-
-        public BusDevice(IContainer container) : base(DeviceClassGuid)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         #endregion

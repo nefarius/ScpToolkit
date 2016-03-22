@@ -106,19 +106,10 @@ namespace ScpControl.Usb
         protected UsbDevice(Guid guid)
             : base(guid)
         {
-            InitializeComponent();
         }
 
         public UsbDevice()
         {
-            InitializeComponent();
-        }
-
-        public UsbDevice(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         #endregion

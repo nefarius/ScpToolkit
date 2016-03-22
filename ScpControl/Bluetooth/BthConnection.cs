@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using log4net;
@@ -8,7 +7,7 @@ using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
-    public partial class BthConnection : Component, IEquatable<BthConnection>, IComparable<BthConnection>
+    public partial class BthConnection : IEquatable<BthConnection>, IComparable<BthConnection>
     {
         #region IComparable<ScpBthConnection> Members
 
@@ -83,20 +82,10 @@ namespace ScpControl.Bluetooth
 
         public BthConnection()
         {
-            InitializeComponent();
-        }
-
-        public BthConnection(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         public BthConnection(BthHandle hciHandle)
         {
-            InitializeComponent();
-
             HciHandle = hciHandle;
             DeviceAddress = PhysicalAddress.None;
         }

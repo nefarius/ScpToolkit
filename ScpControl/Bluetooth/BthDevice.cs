@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -14,7 +13,7 @@ namespace ScpControl.Bluetooth
     /// <summary>
     ///     Represents a generic Bluetooth client device.
     /// </summary>
-    public partial class BthDevice : BthConnection, IDsDevice
+    public class BthDevice : BthConnection, IDsDevice
     {
         #region Private fields
 
@@ -216,7 +215,7 @@ namespace ScpControl.Bluetooth
         {
         }
 
-        protected virtual void OnTimer()
+        private void OnTimer()
         {
             if (State != DsState.Connected) return;
 
@@ -260,24 +259,15 @@ namespace ScpControl.Bluetooth
 
         #region Ctors
 
-        public BthDevice()
+        protected BthDevice()
         {
-            InitializeComponent();
-
             DeviceAddress = PhysicalAddress.None;
             HostAddress = PhysicalAddress.None;
         }
 
-        public BthDevice(IContainer container) : this()
-        {
-            container.Add(this);
-        }
-
-        public BthDevice(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
+        protected BthDevice(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
             : base(new BthHandle(lsb, msb))
         {
-            InitializeComponent();
-
             BluetoothDevice = device;
             HostAddress = master;
         }

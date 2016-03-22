@@ -319,17 +319,6 @@ namespace ScpControl.Bluetooth
 
         #region Ctors
 
-        public BthDs3()
-        {
-            InitializeComponent();
-        }
-
-        public BthDs3(IContainer container)
-            : this()
-        {
-            container.Add(this);
-        }
-
         public BthDs3(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)
             : base(device, master, lsb, msb)
         {

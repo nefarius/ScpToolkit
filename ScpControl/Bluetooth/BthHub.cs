@@ -43,7 +43,6 @@ namespace ScpControl.Bluetooth
                         }
 
                         arrived.Close();
-                        arrived.Dispose();
                     }
                 }
                     break;

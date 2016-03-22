@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Threading;
 using ScpControl.ScpCore;
@@ -22,7 +21,7 @@ namespace ScpControl.Bluetooth
     /// <summary>
     ///     Represents a DualShock 4 controller connected via Bluetooth.
     /// </summary>
-    public partial class BthDs4 : BthDevice
+    public class BthDs4 : BthDevice
     {
         #region Private fields
 
@@ -482,14 +481,6 @@ namespace ScpControl.Bluetooth
 
         public BthDs4()
         {
-            InitializeComponent();
-        }
-
-        public BthDs4(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         public BthDs4(IBthDevice device, PhysicalAddress master, byte lsb, byte msb)

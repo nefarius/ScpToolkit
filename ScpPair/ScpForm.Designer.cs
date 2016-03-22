@@ -34,7 +34,7 @@ namespace ScpPair
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.usbDevice = new UsbDs3(this.components);
+            this.usbDevice = new UsbDs3();
             this.tmEnable = new System.Windows.Forms.Timer(this.components);
             this.tbMaster = new System.Windows.Forms.TextBox();
             this.lblLocal = new System.Windows.Forms.Label();

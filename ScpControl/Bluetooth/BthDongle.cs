@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -102,16 +100,6 @@ namespace ScpControl.Bluetooth
             : base(DeviceClassGuid)
         {
             Initialised = false;
-            InitializeComponent();
-        }
-
-        public BthDongle(IContainer container)
-            : base(DeviceClassGuid)
-        {
-            Initialised = false;
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         #endregion

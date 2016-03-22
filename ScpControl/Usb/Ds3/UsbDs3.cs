@@ -41,15 +41,6 @@ namespace ScpControl.Usb.Ds3
         public UsbDs3()
             : base(DeviceClassGuid)
         {
-            InitializeComponent();
-        }
-
-        public UsbDs3(IContainer container)
-            : base(DeviceClassGuid)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         #endregion

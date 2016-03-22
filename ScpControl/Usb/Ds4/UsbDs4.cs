@@ -43,14 +43,6 @@ namespace ScpControl.Usb.Ds4
 
         public UsbDs4() : base(DeviceClassGuid)
         {
-            InitializeComponent();
-        }
-
-        public UsbDs4(IContainer container) : base(DeviceClassGuid)
-        {
-            container.Add(this);
-
-            InitializeComponent();
         }
 
         #endregion
