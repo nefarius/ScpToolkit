@@ -7,7 +7,6 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.ServiceModel;
-using System.Text;
 using Libarius.System;
 using ReactiveSockets;
 using ScpControl.Bluetooth;
@@ -18,7 +17,6 @@ using ScpControl.Properties;
 using ScpControl.Rx;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
-using ScpControl.Shared.XInput;
 using ScpControl.Sound;
 using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
@@ -32,31 +30,10 @@ namespace ScpControl
     [ServiceBehavior(IncludeExceptionDetailInFaults = false, InstanceContextMode = InstanceContextMode.Single)]
     public sealed partial class RootHub : ScpHub, IScpCommandService
     {
-        #region Internal helpers
-
-        private class Cache
-        {
-            private readonly byte[] _report = new byte[BusDevice.ReportSize];
-            private readonly byte[] _rumble = new byte[BusDevice.FeedbackSize];
-
-            public byte[] Report
-            {
-                get { return _report; }
-            }
-
-            public byte[] Rumble
-            {
-                get { return _rumble; }
-            }
-        }
-
-        #endregion
-
         #region Private fields
 
         // Bluetooth hub
         private readonly BthHub _bthHub = new BthHub();
-        private readonly Cache[] _cache = { new Cache(), new Cache(), new Cache(), new Cache() };
 
         private readonly byte[][] _mNative =
         {
@@ -586,10 +563,6 @@ namespace ScpControl
             var serial = (int)e.PadId;
             var userIndex = _scpBus.IndexToSerial((byte)serial);
 
-            // get cached status data
-            var report = _cache[serial].Report;
-            var feedback = _cache[serial].Rumble;
-
             if (GlobalConfiguration.Instance.ProfilesEnabled)
             {
                 // pass current report through user profiles
@@ -598,12 +571,8 @@ namespace ScpControl
 
             if (e.PadState == DsState.Connected)
             {
-                var output = new XINPUT_GAMEPAD();
-
-                // translate current report to Xbox format
-                _scpBus.Parse(e, ref output);
-
-                XOutputWrapper.Instance.SetState(userIndex, output);
+                // translate current report to Xbox format and send it to bus device
+                XOutputWrapper.Instance.SetState(userIndex, _scpBus.Parse(e));
                 
                 // set currently assigned XInput slot
                 Pads[serial].XInputSlot = XOutputWrapper.Instance.GetRealIndex(userIndex);

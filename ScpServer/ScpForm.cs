@@ -220,7 +220,8 @@ namespace ScpServer
 
                 bPair = bPair ||
                         (Pad[index].Checked && rootHub.Pads[index].Connection == DsConnection.Usb &&
-                         !rootHub.BluetoothHostAddress.Equals(rootHub.Pads[index].HostAddress));
+                         rootHub.BluetoothHostAddress != null
+                         && !rootHub.BluetoothHostAddress.Equals(rootHub.Pads[index].HostAddress));
             }
 
             btnBoth.Enabled = btnLeft.Enabled = btnRight.Enabled = btnOff.Enabled = bSelected && btnStop.Enabled;
