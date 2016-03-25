@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -253,6 +254,12 @@ namespace ScpControl.ScpCore
         {
             get { return Settings.Default.ReservePadSlot; }
             set { Settings.Default.ReservePadSlot = value; }
+        }
+
+        public ProcessPriorityClass ServiceProcessPriority
+        {
+            get { return Settings.Default.ServiceProcessPriority; }
+            set { Settings.Default.ServiceProcessPriority = value; }
         }
 
         #endregion

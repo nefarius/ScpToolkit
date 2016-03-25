@@ -621,5 +621,18 @@ namespace ScpControl.Properties {
                 this["ReservePadSlot"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
+        public global::System.Diagnostics.ProcessPriorityClass ServiceProcessPriority {
+            get {
+                return ((global::System.Diagnostics.ProcessPriorityClass)(this["ServiceProcessPriority"]));
+            }
+            set {
+                this["ServiceProcessPriority"] = value;
+            }
+        }
     }
 }

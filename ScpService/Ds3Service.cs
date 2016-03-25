@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
@@ -11,10 +10,8 @@ using log4net;
 using ScpControl;
 using ScpControl.Bluetooth;
 using ScpControl.Database;
-using ScpControl.Driver;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
-using ScpControl.Usb;
 using ScpControl.Usb.Ds3;
 using ScpControl.Usb.Ds4;
 using ScpControl.Usb.Gamepads;
@@ -59,6 +56,9 @@ namespace ScpService
 
             Log.DebugFormat("Setting working directory to {0}", GlobalConfiguration.AppDirectory);
             Directory.SetCurrentDirectory(GlobalConfiguration.AppDirectory);
+
+            Log.DebugFormat("Setting process priority to {0}", GlobalConfiguration.Instance.ServiceProcessPriority);
+            Process.GetCurrentProcess().PriorityClass = GlobalConfiguration.Instance.ServiceProcessPriority;
 
             _mControlHandler = ServiceControlHandler;
             _mServiceHandle = ScpDevice.RegisterServiceCtrlHandlerEx(ServiceName, _mControlHandler, IntPtr.Zero);

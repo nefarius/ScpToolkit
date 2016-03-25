@@ -143,5 +143,8 @@
     <Setting Name="ReservePadSlot" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="ServiceProcessPriority" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Diagnostics.ProcessPriorityClass" Scope="User">
+      <Value Profile="(Default)">Normal</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
