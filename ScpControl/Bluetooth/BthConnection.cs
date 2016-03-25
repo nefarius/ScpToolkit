@@ -2,12 +2,13 @@
 using System.Net.NetworkInformation;
 using System.Reflection;
 using log4net;
+using ScpControl.Bluetooth.Ds4;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
 
 namespace ScpControl.Bluetooth
 {
-    public partial class BthConnection : IEquatable<BthConnection>, IComparable<BthConnection>
+    public class BthConnection : IEquatable<BthConnection>, IComparable<BthConnection>
     {
         #region IComparable<ScpBthConnection> Members
 
@@ -20,7 +21,7 @@ namespace ScpControl.Bluetooth
 
         #region Public methods
 
-        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte lsb, byte msb, ushort dcid = 0)
+        public byte[] SetConnectionType(L2CAP.PSM connectionType, byte lsb, byte msb, ushort dcid = 0)
         {
             switch (connectionType)
             {
@@ -54,7 +55,7 @@ namespace ScpControl.Bluetooth
             throw new ArgumentException("Invalid L2CAP Connection Type");
         }
 
-        public virtual byte[] SetConnectionType(L2CAP.PSM connectionType, byte[] handle)
+        public byte[] SetConnectionType(L2CAP.PSM connectionType, byte[] handle)
         {
             return SetConnectionType(connectionType, handle[0], handle[1]);
         }

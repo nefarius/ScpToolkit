@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
+using ScpControl.Bluetooth.Ds4;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;

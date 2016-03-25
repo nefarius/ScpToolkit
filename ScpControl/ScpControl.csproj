@@ -115,8 +115,8 @@
     <Compile Include="Bluetooth\BthConnection.cs" />
     <Compile Include="Bluetooth\BthDevice.cs" />
     <Compile Include="Bluetooth\BthDongle.cs" />
-    <Compile Include="Bluetooth\BthDs3.cs" />
-    <Compile Include="Bluetooth\BthDs4.cs" />
+    <Compile Include="Bluetooth\Ds3\BthDs3.cs" />
+    <Compile Include="Bluetooth\Ds4\BthDs4.cs" />
     <Compile Include="Bluetooth\BthHandle.cs" />
     <Compile Include="Bluetooth\BthHub.cs">
       <SubType>Component</SubType>

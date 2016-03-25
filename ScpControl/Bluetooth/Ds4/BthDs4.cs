@@ -5,7 +5,7 @@ using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
-namespace ScpControl.Bluetooth
+namespace ScpControl.Bluetooth.Ds4
 {
     /// <summary>
     ///     Supported HID input update rates.
@@ -28,8 +28,8 @@ namespace ScpControl.Bluetooth
         private const int R = 9; // Led Offsets
         private const int G = 10; // Led Offsets
         private const int B = 11; // Led Offsets
-        private byte _mBrightness = GlobalConfiguration.Instance.Brightness;
-        private bool _mFlash;
+        private byte _brightness = GlobalConfiguration.Instance.Brightness;
+        private bool _flash;
 
         #endregion
 
@@ -77,25 +77,25 @@ namespace ScpControl.Bluetooth
                     case DsPadId.One: // Blue
                         _hidReport[R] = 0x00;
                         _hidReport[G] = 0x00;
-                        _hidReport[B] = _mBrightness;
+                        _hidReport[B] = _brightness;
                         break;
                     case DsPadId.Two: // Green
                         _hidReport[R] = 0x00;
-                        _hidReport[G] = _mBrightness;
+                        _hidReport[G] = _brightness;
                         _hidReport[B] = 0x00;
                         break;
                     case DsPadId.Three: // Yellow
-                        _hidReport[R] = _mBrightness;
-                        _hidReport[G] = _mBrightness;
+                        _hidReport[R] = _brightness;
+                        _hidReport[G] = _brightness;
                         _hidReport[B] = 0x00;
                         break;
                     case DsPadId.Four: // Cyan
                         _hidReport[R] = 0x00;
-                        _hidReport[G] = _mBrightness;
-                        _hidReport[B] = _mBrightness;
+                        _hidReport[G] = _brightness;
+                        _hidReport[B] = _brightness;
                         break;
                     case DsPadId.None: // Red
-                        _hidReport[R] = _mBrightness;
+                        _hidReport[R] = _brightness;
                         _hidReport[G] = 0x00;
                         _hidReport[B] = 0x00;
                         break;
@@ -279,29 +279,29 @@ namespace ScpControl.Bluetooth
                 {
                     if (Battery < DsBattery.Medium)
                     {
-                        if (!_mFlash)
+                        if (!_flash)
                         {
                             _hidReport[12] = _hidReport[13] = 0x40;
 
-                            _mFlash = true;
+                            _flash = true;
                             m_Queued = 1;
                         }
                     }
                     else
                     {
-                        if (_mFlash)
+                        if (_flash)
                         {
                             _hidReport[12] = _hidReport[13] = 0x00;
 
-                            _mFlash = false;
+                            _flash = false;
                             m_Queued = 1;
                         }
                     }
                 }
 
-                if (GlobalConfiguration.Instance.Brightness != _mBrightness)
+                if (GlobalConfiguration.Instance.Brightness != _brightness)
                 {
-                    _mBrightness = GlobalConfiguration.Instance.Brightness;
+                    _brightness = GlobalConfiguration.Instance.Brightness;
                 }
 
                 if (XInputSlot.HasValue)

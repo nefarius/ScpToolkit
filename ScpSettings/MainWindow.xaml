@@ -5,13 +5,14 @@
         xmlns:customControls="clr-namespace:ScpSettings.Controls"
         xmlns:bluetooth="clr-namespace:ScpControl.Bluetooth;assembly=ScpControl"
         xmlns:valueConverters="clr-namespace:ScpControl.Value_Converters;assembly=ScpControl"
+        xmlns:ds4="clr-namespace:ScpControl.Bluetooth.Ds4;assembly=ScpControl"
         Title="ScpToolkit Global Configuration" Height="650" Width="480" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing" Initialized="Window_Initialized"
         Icon="settings.ico">
 
     <Grid Background="#FF1B1B1B">
         <Grid.Resources>
-            <bluetooth:BthDs4 x:Key="BthDs4" />
+            <ds4:BthDs4 x:Key="BthDs4" />
             <valueConverters:RadioBoolToIntConverter x:Key="RadioBoolToIntConverter" />
             <Style TargetType="{x:Type TextBlock}">
                 <Setter Property="TextWrapping" Value="Wrap" />

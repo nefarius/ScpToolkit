@@ -1,16 +1,15 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Threading;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
-namespace ScpControl.Bluetooth
+namespace ScpControl.Bluetooth.Ds3
 {
     /// <summary>
     ///     Represents a DualShock 3 controller connected via Bluetooth.
     /// </summary>
-    public partial class BthDs3 : BthDevice
+    public class BthDs3 : BthDevice
     {
         #region Private fields
 
