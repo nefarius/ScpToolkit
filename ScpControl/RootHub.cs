@@ -561,7 +561,6 @@ namespace ScpControl
         {
             // get current pad ID
             var serial = (int)e.PadId;
-            var userIndex = _scpBus.IndexToSerial((byte)serial);
 
             if (GlobalConfiguration.Instance.ProfilesEnabled)
             {
@@ -572,16 +571,16 @@ namespace ScpControl
             if (e.PadState == DsState.Connected)
             {
                 // translate current report to Xbox format and send it to bus device
-                XOutputWrapper.Instance.SetState(userIndex, _scpBus.Parse(e));
+                XOutputWrapper.Instance.SetState((uint) serial, _scpBus.Parse(e));
                 
                 // set currently assigned XInput slot
-                Pads[serial].XInputSlot = XOutputWrapper.Instance.GetRealIndex(userIndex);
+                Pads[serial].XInputSlot = XOutputWrapper.Instance.GetRealIndex((uint) serial);
 
                 byte largeMotor = 0;
                 byte smallMotor = 0;
 
                 // forward rumble request to pad
-                if (XOutputWrapper.Instance.GetState(userIndex, ref largeMotor, ref smallMotor) 
+                if (XOutputWrapper.Instance.GetState((uint) serial, ref largeMotor, ref smallMotor) 
                     && (largeMotor != _vibration[serial][0] || smallMotor != _vibration[serial][1]))
                 {
                     _vibration[serial][0] = largeMotor;

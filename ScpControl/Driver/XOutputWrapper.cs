@@ -16,23 +16,23 @@ namespace ScpControl.Driver
 
         #region Public methods
 
-        public void SetState(int userIndex, XINPUT_GAMEPAD gamepad)
+        public void SetState(uint userIndex, XINPUT_GAMEPAD gamepad)
         {
-            XOutputSetState((uint) userIndex, ref gamepad);
+            XOutputSetState(userIndex, ref gamepad);
         }
 
-        public bool GetState(int userIndex, ref byte largeMotor, ref byte smallMotor)
+        public bool GetState(uint userIndex, ref byte largeMotor, ref byte smallMotor)
         {
             byte vibrate = 0;
 
-            return (XOutputGetState((uint) userIndex, ref vibrate, ref largeMotor, ref smallMotor) == 0 && vibrate == 0x01);
+            return (XOutputGetState(userIndex, ref vibrate, ref largeMotor, ref smallMotor) == 0 && vibrate == 0x01);
         }
 
-        public uint GetRealIndex(int userIndex)
+        public uint GetRealIndex(uint userIndex)
         {
             uint realIndex = 0;
 
-            XOutputGetRealUserIndex((uint) userIndex, ref realIndex);
+            XOutputGetRealUserIndex(userIndex, ref realIndex);
 
             return realIndex;
         }
@@ -45,6 +45,11 @@ namespace ScpControl.Driver
         public bool UnPlug(int userIndex)
         {
             return (XOutputUnPlug((uint) userIndex) == 0);
+        }
+
+        public void UnPlugAll()
+        {
+            XOutputUnPlugAll();
         }
         
         #endregion
@@ -65,6 +70,9 @@ namespace ScpControl.Driver
 
         [DllImport("XOutput1_1.dll")]
         private static extern uint XOutputUnPlug(uint userIndex);
+
+        [DllImport("XOutput1_1.dll")]
+        private static extern uint XOutputUnPlugAll();
 
         #endregion
     }

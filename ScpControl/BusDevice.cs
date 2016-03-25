@@ -114,7 +114,7 @@ namespace ScpControl
                 while (items.Count > 0) Unplug(items.Dequeue());
 
                 // send un-plug-all to clean the bus from devices stuck in error state
-                XOutputWrapper.Instance.UnPlug(0);
+                XOutputWrapper.Instance.UnPlugAll();
 
                 _busState = DsState.Reserved;
             }
@@ -304,7 +304,7 @@ namespace ScpControl
             {
                 if (!_pluggedInDevices.Contains(serial))
                 {
-                    if (XOutputWrapper.Instance.PlugIn(serial))
+                    if (XOutputWrapper.Instance.PlugIn(serial - 1))
                     {
                         _pluggedInDevices.Add(serial);
                         retVal = true;
@@ -336,7 +336,7 @@ namespace ScpControl
             {
                 if (_pluggedInDevices.Contains(serial))
                 {
-                    if (XOutputWrapper.Instance.UnPlug(serial))
+                    if (XOutputWrapper.Instance.UnPlug(serial - 1))
                     {
                         _pluggedInDevices.Remove(serial);
                         retVal = true;
