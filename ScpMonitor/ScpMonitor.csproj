@@ -88,6 +88,7 @@
       <DependentUpon>ProfilesForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\CommonInfo.cs" />
+    <Compile Include="RegistryProvider.cs" />
     <Compile Include="ScpButton.cs">
       <SubType>Component</SubType>
     </Compile>
