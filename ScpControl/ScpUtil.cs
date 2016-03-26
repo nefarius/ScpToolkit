@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.Linq;
 using System.Net.NetworkInformation;
-using System.Windows.Forms;
-using Microsoft.Win32;
 using ScpControl.Bluetooth;
 using ScpControl.Shared.Core;
 
@@ -91,11 +85,6 @@ namespace ScpControl
             return true;
         }
 
-        public override string ToString()
-        {
-            return string.Format("Pad {0} : {1}", 1 + (int) PadId, DsState.Disconnected);
-        }
-        
         public ScpHidReport NewHidReport()
         {
             return new ScpHidReport();
@@ -105,21 +94,25 @@ namespace ScpControl
         {
             get { return PhysicalAddress.None; }
         }
-        
+
         public bool Pair(PhysicalAddress master)
         {
             return true;
         }
-
-
+        
         public uint? XInputSlot { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("Pad {0} : {1}", 1 + (int) PadId, DsState.Disconnected);
+        }
     }
 
     public class ArrivalEventArgs : EventArgs
     {
         public ArrivalEventArgs(IDsDevice device)
         {
-            this.Device = device;
+            Device = device;
         }
 
         public IDsDevice Device { get; private set; }
