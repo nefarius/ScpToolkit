@@ -8,7 +8,7 @@ Class=System
 ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
 Provider=%ManufacturerName%
 CatalogFile=ScpVBus.cat
-DriverVer=03/22/2016,19.27.17.23
+DriverVer=03/27/2016,15.12.59.934
 
 [DestinationDirs]
 DefaultDestDir = 12
