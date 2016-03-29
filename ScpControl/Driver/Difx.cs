@@ -23,18 +23,12 @@ namespace ScpControl.Driver
     }
 
     /// <summary>
-    ///     Driver Install Frameworks API (<see href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff544834(v=vs.85).aspx">DIFxAPI</see>)
+    ///     Driver Install Frameworks API (
+    ///     <see href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff544834(v=vs.85).aspx">DIFxAPI</see>)
     /// </summary>
     public class Difx : NativeLibraryWrapper<Difx>
     {
-        private delegate void DIFLOGCALLBACK(
-            DifxLog eventType,
-            int errorCode,
-            [MarshalAs(UnmanagedType.LPTStr)] string eventDescription,
-            IntPtr callbackContext
-            );
-
-        private DIFLOGCALLBACK _mLogCallback;
+        private readonly DIFLOGCALLBACK _mLogCallback;
 
         /// <summary>
         ///     Automatically loads the correct native library.
@@ -43,8 +37,8 @@ namespace ScpControl.Driver
         {
             LoadNativeLibrary("DIFxAPI", @"DIFxApi\x86\DIFxAPI.dll", @"DIFxApi\amd64\DIFxAPI.dll");
 
-            _mLogCallback = new DIFLOGCALLBACK(Logger);
-            
+            _mLogCallback = Logger;
+
             SetDifxLogCallback(_mLogCallback, IntPtr.Zero);
         }
 
@@ -89,16 +83,31 @@ namespace ScpControl.Driver
             return DriverPackageUninstall(infPath, (uint) flags, (IntPtr) 0, out rebootRequired);
         }
 
+        private delegate void DIFLOGCALLBACK(
+            DifxLog eventType,
+            int errorCode,
+            [MarshalAs(UnmanagedType.LPTStr)] string eventDescription,
+            IntPtr callbackContext
+            );
+
         #region P/Invoke
 
-        [DllImport("DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Winapi)]
-        private static extern uint DriverPackagePreinstall([MarshalAs(UnmanagedType.LPTStr)] string driverPackageInfPath, [MarshalAs(UnmanagedType.U4)] uint flags);
+        [DllImport("DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto,
+            CallingConvention = CallingConvention.Winapi)]
+        private static extern uint DriverPackagePreinstall(
+            [MarshalAs(UnmanagedType.LPTStr)] string driverPackageInfPath, [MarshalAs(UnmanagedType.U4)] uint flags);
 
-        [DllImport("DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Winapi)]
-        private static extern uint DriverPackageInstall([MarshalAs(UnmanagedType.LPTStr)] string driverPackageInfPath, [MarshalAs(UnmanagedType.U4)] uint flags, IntPtr pInstallerInfo, [MarshalAs(UnmanagedType.Bool)] out bool pNeedReboot);
+        [DllImport("DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto,
+            CallingConvention = CallingConvention.Winapi)]
+        private static extern uint DriverPackageInstall([MarshalAs(UnmanagedType.LPTStr)] string driverPackageInfPath,
+            [MarshalAs(UnmanagedType.U4)] uint flags, IntPtr pInstallerInfo,
+            [MarshalAs(UnmanagedType.Bool)] out bool pNeedReboot);
 
-        [DllImport("DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto, CallingConvention = CallingConvention.Winapi)]
-        private static extern uint DriverPackageUninstall([MarshalAs(UnmanagedType.LPTStr)] string driverPackageInfPath, [MarshalAs(UnmanagedType.U4)] uint flags, IntPtr pInstallerInfo, [MarshalAs(UnmanagedType.Bool)] out bool pNeedReboot);
+        [DllImport("DIFxAPI.dll", SetLastError = true, CharSet = CharSet.Auto,
+            CallingConvention = CallingConvention.Winapi)]
+        private static extern uint DriverPackageUninstall([MarshalAs(UnmanagedType.LPTStr)] string driverPackageInfPath,
+            [MarshalAs(UnmanagedType.U4)] uint flags, IntPtr pInstallerInfo,
+            [MarshalAs(UnmanagedType.Bool)] out bool pNeedReboot);
 
         [DllImport("DIFxAPI.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern void SetDifxLogCallback(DIFLOGCALLBACK logCallback, IntPtr callbackContext);
