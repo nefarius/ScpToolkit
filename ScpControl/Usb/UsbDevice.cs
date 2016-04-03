@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -16,7 +15,7 @@ namespace ScpControl.Usb
     /// <summary>
     ///     Represents a generic Usb device.
     /// </summary>
-    public partial class UsbDevice : ScpDevice, IDsDevice
+    public class UsbDevice : ScpDevice, IDsDevice
     {
         #region Private fields
 

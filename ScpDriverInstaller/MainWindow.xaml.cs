@@ -223,7 +223,6 @@ namespace ScpDriverInstaller
         private bool _ds3DriverConfigured;
         private bool _ds4DriverConfigured;
         private IntPtr _hWnd;
-        private Difx _installer;
         private bool _reboot;
         private Cursor _saved;
         private bool _scpServiceConfigured;
@@ -329,7 +328,7 @@ namespace ScpDriverInstaller
                             Log.Info("Virtual Bus Removed");
                             _busDeviceConfigured = true;
 
-                            _installer.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"),
+                            Difx.Instance.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"),
                                 DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
                                 out rebootRequired);
                             _reboot |= rebootRequired;
@@ -672,7 +671,7 @@ namespace ScpDriverInstaller
                         () => { MainBusyIndicator.BusyContent = "Installing driver on Virtual Bus"; });
 
                     // install Virtual Bus driver
-                    var result = _installer.Install(busInfPath,
+                    var result = Difx.Instance.Install(busInfPath,
                         DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT | DifxFlags.DRIVER_PACKAGE_FORCE,
                         out rebootRequired);
 
@@ -696,8 +695,6 @@ namespace ScpDriverInstaller
         {
             Log.InfoFormat("SCP Driver Installer {0} [Built: {1}]", Assembly.GetExecutingAssembly().GetName().Version,
                 AssemblyHelper.LinkerTimestamp);
-
-            _installer = Difx.Instance;
 
             Log.InfoFormat("{0} detected", OsInfoHelper.OsInfo);
         }

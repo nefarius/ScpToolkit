@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 namespace ScpControl.Driver
 {
     /// <summary>
-    ///     Managed wrapper for
-    ///     <see href="https://msdn.microsoft.com/en-us/library/windows/hardware/ff550897(v=vs.85).aspx">Setupapi</see>.
+    ///     Managed wrapper for SetupAPI.
     /// </summary>
+    /// <remarks>https://msdn.microsoft.com/en-us/library/windows/hardware/ff550897(v=vs.85).aspx</remarks>
     public static class Devcon
     {
         public static bool Find(Guid target, ref string path, ref string instanceId, int instance = 0)

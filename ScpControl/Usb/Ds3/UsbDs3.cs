@@ -13,7 +13,7 @@ namespace ScpControl.Usb.Ds3
     /// <summary>
     ///     Represents a DualShock 3 controller connected via Usb.
     /// </summary>
-    public partial class UsbDs3 : UsbDevice
+    public class UsbDs3 : UsbDevice
     {
         #region HID Reports
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Threading;
 using ScpControl.ScpCore;
@@ -11,7 +10,7 @@ namespace ScpControl.Usb.Ds4
     /// <summary>
     ///     Represents a DualShock 4 controller connected via Usb.
     /// </summary>
-    public sealed partial class UsbDs4 : UsbDevice
+    public sealed class UsbDs4 : UsbDevice
     {
         #region HID Report
 
