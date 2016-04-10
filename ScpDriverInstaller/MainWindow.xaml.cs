@@ -350,14 +350,14 @@ namespace ScpDriverInstaller
                         return;
                     }
 
-                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception) instex.InnerException);
+                                (Win32Exception)instex.InnerException);
                             break;
                     }
                 }
@@ -504,36 +504,59 @@ namespace ScpDriverInstaller
 
         #region Button events
 
-        private void InstallDsOnClick(object sender, RoutedEventArgs routedEventArgs)
+        private async void InstallDsOnClick(object sender, RoutedEventArgs routedEventArgs)
         {
-            WdiErrorCode ds3Result = WdiErrorCode.WDI_SUCCESS, ds4Result = WdiErrorCode.WDI_SUCCESS;
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
 
-            var ds3SToInstall =
-                DualShockStackPanelHidUsb.Children.Cast<TextBlock>()
-                    .Select(c => c.Tag)
-                    .Cast<WdiDeviceInfo>()
-                    .Where(d => d.VendorId == _hidUsbDs3.VendorId && d.ProductId == _hidUsbDs3.ProductId)
-                    .ToList();
+            var rebootRequired = false;
+            var failed = false;
+            uint result = 0;
+            var ds3InfPath = Path.Combine(GlobalConfiguration.AppDirectory, "WinUSB", "Ds3Controller.inf");
+            var ds4InfPath = Path.Combine(GlobalConfiguration.AppDirectory, "WinUSB", "Ds4Controller.inf");
 
-            if (ds3SToInstall.Any())
+            MainBusyIndicator.SetContentThreadSafe("Installing WinUSB driver on DualShock 3 Devices");
+
+            await Task.Run(() => result = Difx.Instance.Install(ds3InfPath,
+                DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT | DifxFlags.DRIVER_PACKAGE_FORCE, out rebootRequired));
+
+            // ERROR_NO_SUCH_DEVINST = 0xE000020B
+            if (result != 0 && result != 0xE000020B)
             {
-                ds3Result = DriverInstaller.InstallDualShock3Controller(ds3SToInstall.First(), _hWnd);
+                failed = true;
+
+                ExtendedMessageBox.Show(this,
+                    Properties.Resources.DsInstError_Title,
+                    Properties.Resources.DsInstError_Instruction,
+                    Properties.Resources.DsInstError_Content,
+                    string.Format(Properties.Resources.DsInstError_Verbose,
+                        new Win32Exception(Marshal.GetLastWin32Error()), Marshal.GetLastWin32Error()),
+                    Properties.Resources.DsInstError_Footer,
+                    TaskDialogIcon.Error);
             }
 
-            var ds4SToInstall =
-                DualShockStackPanelHidUsb.Children.Cast<TextBlock>()
-                    .Select(c => c.Tag)
-                    .Cast<WdiDeviceInfo>()
-                    .Where(d => d.VendorId == _hidUsbDs4.VendorId && d.ProductId == _hidUsbDs4.ProductId)
-                    .ToList();
+            MainBusyIndicator.SetContentThreadSafe("Installing WinUSB driver on DualShock 4 Devices");
 
-            if (ds4SToInstall.Any())
+            await Task.Run(() => result = Difx.Instance.Install(ds4InfPath,
+                DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT | DifxFlags.DRIVER_PACKAGE_FORCE, out rebootRequired));
+
+            // ERROR_NO_SUCH_DEVINST = 0xE000020B
+            if (result != 0 && result != 0xE000020B)
             {
-                ds4Result = DriverInstaller.InstallDualShock4Controller(ds4SToInstall.First(), _hWnd);
+                failed = true;
+
+                ExtendedMessageBox.Show(this,
+                    Properties.Resources.DsInstError_Title,
+                    Properties.Resources.DsInstError_Instruction,
+                    Properties.Resources.DsInstError_Content,
+                    string.Format(Properties.Resources.DsInstError_Verbose,
+                        new Win32Exception(Marshal.GetLastWin32Error()), Marshal.GetLastWin32Error()),
+                    Properties.Resources.DsInstError_Footer,
+                    TaskDialogIcon.Error);
             }
 
-            // display success or failure message
-            if (ds3Result == WdiErrorCode.WDI_SUCCESS && ds4Result == WdiErrorCode.WDI_SUCCESS)
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
+
+            if (!failed)
             {
                 ExtendedMessageBox.Show(this,
                     Properties.Resources.DsInstOk_Title,
@@ -543,71 +566,59 @@ namespace ScpDriverInstaller
                     Properties.Resources.DsInstOk_Footer,
                     TaskDialogIcon.Information);
             }
-            else
-            {
-                if (ds3Result != WdiErrorCode.WDI_SUCCESS)
-                {
-                    ExtendedMessageBox.Show(this,
-                        Properties.Resources.DsInstError_Title,
-                        Properties.Resources.DsInstError_Instruction,
-                        Properties.Resources.DsInstError_Content,
-                        string.Format(Properties.Resources.DsInstError_Verbose,
-                            WdiWrapper.Instance.GetErrorMessage(ds3Result), ds3Result),
-                        Properties.Resources.DsInstError_Footer,
-                        TaskDialogIcon.Error);
-                    return;
-                }
 
-                if (ds4Result != WdiErrorCode.WDI_SUCCESS)
-                {
-                    ExtendedMessageBox.Show(this,
-                        Properties.Resources.DsInstError_Title,
-                        Properties.Resources.DsInstError_Instruction,
-                        Properties.Resources.DsInstError_Content,
-                        string.Format(Properties.Resources.DsInstError_Verbose,
-                            WdiWrapper.Instance.GetErrorMessage(ds4Result), ds4Result),
-                        Properties.Resources.DsInstError_Footer,
-                        TaskDialogIcon.Error);
-                }
+            if (rebootRequired)
+            {
+                MessageBox.Show(this,
+                    Properties.Resources.DrvInstReboot_Content,
+                    Properties.Resources.DrvInstReboot_Title,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
         }
 
-        private void InstallBthHostOnClick(object sender, RoutedEventArgs e)
+        private async void InstallBthHostOnClick(object sender, RoutedEventArgs e)
         {
-            var bthResult = WdiErrorCode.WDI_SUCCESS;
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
 
-            var bthToInstall =
-                BluetoothStackPanelDefault.Children.Cast<TextBlock>()
-                    .Select(c => c.Tag)
-                    .Cast<WdiDeviceInfo>()
-                    .ToList();
+            var rebootRequired = false;
+            uint result = 0;
+            var bhInfPath = Path.Combine(GlobalConfiguration.AppDirectory, "WinUSB", "BluetoothHost.inf");
 
-            if (bthToInstall.Any())
-            {
-                bthResult = DriverInstaller.InstallBluetoothHost(bthToInstall.First(), _hWnd);
-            }
+            await Task.Run(() => result = Difx.Instance.Install(bhInfPath,
+                DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT | DifxFlags.DRIVER_PACKAGE_FORCE, out rebootRequired));
 
-            // display success or failure message
-            if (bthResult == WdiErrorCode.WDI_SUCCESS)
-            {
-                ExtendedMessageBox.Show(this,
-                    Properties.Resources.BthInstOk_Title,
-                    Properties.Resources.BthInstOk_Instruction,
-                    Properties.Resources.BthInstOk_Content,
-                    Properties.Resources.BthInstOk_Verbose,
-                    Properties.Resources.BthInstOk_Footer,
-                    TaskDialogIcon.Information);
-            }
-            else
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
+
+            // ERROR_NO_SUCH_DEVINST = 0xE000020B
+            if (result != 0 && result != 0xE000020B)
             {
                 ExtendedMessageBox.Show(this,
                     Properties.Resources.DsInstError_Title,
                     Properties.Resources.DsInstError_Instruction,
                     Properties.Resources.DsInstError_Content,
                     string.Format(Properties.Resources.DsInstError_Verbose,
-                        WdiWrapper.Instance.GetErrorMessage(bthResult), bthResult),
+                        new Win32Exception(Marshal.GetLastWin32Error()), Marshal.GetLastWin32Error()),
                     Properties.Resources.DsInstError_Footer,
                     TaskDialogIcon.Error);
+                return;
+            }
+
+            ExtendedMessageBox.Show(this,
+                Properties.Resources.BthInstOk_Title,
+                Properties.Resources.BthInstOk_Instruction,
+                Properties.Resources.BthInstOk_Content,
+                Properties.Resources.BthInstOk_Verbose,
+                Properties.Resources.BthInstOk_Footer,
+                TaskDialogIcon.Information);
+
+            if (rebootRequired)
+            {
+                MessageBox.Show(this,
+                    Properties.Resources.DrvInstReboot_Content,
+                    Properties.Resources.DrvInstReboot_Title,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
         }
 
@@ -624,27 +635,22 @@ namespace ScpDriverInstaller
                     var rebootRequired = false;
                     var busInfPath = Path.Combine(
                         GlobalConfiguration.AppDirectory,
-                        "ScpVBus", 
+                        "ScpVBus",
                         Environment.Is64BitOperatingSystem ? "amd64" : "x86",
                         "ScpVBus.inf");
                     Log.DebugFormat("ScpVBus.inf path: {0}", busInfPath);
-                    
+
                     // check for existance of Scp VBus
                     if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
                     {
-                        UiContext.InvokeOnUiThread(
-                            () =>
-                            {
-                                MainBusyIndicator.BusyContent = "Installing Virtual Bus Driver in Windows Driver Store";
-                            });
+                        MainBusyIndicator.SetContentThreadSafe("Installing Virtual Bus Driver in Windows Driver Store");
 
                         // if not detected, install Inf-file in Windows Driver Store
                         if (Devcon.Install(busInfPath, ref rebootRequired))
                         {
                             Log.Info("Virtual Bus Driver pre-installed in Windows Driver Store successfully");
 
-                            UiContext.InvokeOnUiThread(
-                                () => { MainBusyIndicator.BusyContent = "Creating Hardware ID for Virtual Bus"; });
+                            MainBusyIndicator.SetContentThreadSafe("Creating Hardware ID for Virtual Bus");
 
                             // create pseudo-device so the bus driver can attach to it later
                             if (Devcon.Create("System", new Guid("{4D36E97D-E325-11CE-BFC1-08002BE10318}"),
@@ -662,13 +668,12 @@ namespace ScpDriverInstaller
                         else
                         {
                             Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
-                                (uint) Marshal.GetLastWin32Error());
+                                (uint)Marshal.GetLastWin32Error());
                             return;
                         }
                     }
 
-                    UiContext.InvokeOnUiThread(
-                        () => { MainBusyIndicator.BusyContent = "Installing driver on Virtual Bus"; });
+                    MainBusyIndicator.SetContentThreadSafe("Installing driver on Virtual Bus");
 
                     // install Virtual Bus driver
                     var result = Difx.Instance.Install(busInfPath,
@@ -704,7 +709,7 @@ namespace ScpDriverInstaller
             // add popup-appender to all loggers
             foreach (var currentLogger in LogManager.GetCurrentLoggers())
             {
-                ((Logger) currentLogger.Logger).AddAppender(this);
+                ((Logger)currentLogger.Logger).AddAppender(this);
             }
 
             // link download progress to progress bar
@@ -726,7 +731,7 @@ namespace ScpDriverInstaller
             // remove popup-appender from all loggers
             foreach (var currentLogger in LogManager.GetCurrentLoggers())
             {
-                ((Logger) currentLogger.Logger).RemoveAppender(this);
+                ((Logger)currentLogger.Logger).RemoveAppender(this);
             }
 
             // unregister notifications
@@ -858,13 +863,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
                         break;
                 }
             }

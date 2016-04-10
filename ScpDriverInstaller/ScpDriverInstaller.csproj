@@ -106,6 +106,7 @@
     <Compile Include="Utilities\NotifyAppender.cs" />
     <Compile Include="Utilities\RedistPackageInstaller.cs" />
     <Compile Include="Utilities\UiContext.cs" />
+    <Compile Include="Utilities\WPFThreadingExtensions.cs" />
     <Compile Include="View Models\InstallationOptionsViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -124,6 +124,24 @@ namespace ScpDriverInstaller.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A reboot is required for the driver installation to complete. Please restart your machine after you finished this installation wizard..
+        /// </summary>
+        internal static string DrvInstReboot_Content {
+            get {
+                return ResourceManager.GetString("DrvInstReboot_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reboot required.
+        /// </summary>
+        internal static string DrvInstReboot_Title {
+            get {
+                return ResourceManager.GetString("DrvInstReboot_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You chose to install the DualShock 3 drivers but you didn&apos;t select one or more devices from the device list!.
         /// </summary>
         internal static string Ds3ListEmpty_Text {

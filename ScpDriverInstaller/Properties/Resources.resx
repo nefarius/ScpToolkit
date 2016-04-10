@@ -189,4 +189,10 @@ Sadly there are too many possibilities of why it failed to cram all suggested re
   <data name="BthInstOk_Verbose" xml:space="preserve">
     <value>Seriously, nothing to see here, everything is STILL fine! =)</value>
   </data>
+  <data name="DrvInstReboot_Content" xml:space="preserve">
+    <value>A reboot is required for the driver installation to complete. Please restart your machine after you finished this installation wizard.</value>
+  </data>
+  <data name="DrvInstReboot_Title" xml:space="preserve">
+    <value>Reboot required</value>
+  </data>
 </root>
