@@ -595,7 +595,7 @@ namespace ScpControl
                 _vibration[serial][0] = _vibration[serial][1] = 0;
                 _mNative[serial][0] = _mNative[serial][1] = 0;
 
-                if (GlobalConfiguration.Instance.AlwaysDisconnectVirtualBusDevice)
+                if (GlobalConfiguration.Instance.AlwaysUnPlugVirtualBusDevice)
                 {
                     _scpBus.Unplug(_scpBus.IndexToSerial((byte)e.PadId));
                 }

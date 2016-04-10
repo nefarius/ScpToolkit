@@ -245,10 +245,10 @@ namespace ScpControl.ScpCore
             set { Settings.Default.IsVBusDisabled = value; }
         }
 
-        public bool AlwaysDisconnectVirtualBusDevice
+        public bool AlwaysUnPlugVirtualBusDevice
         {
-            get { return Settings.Default.AlwaysDisconnectVirtualBusDevice; }
-            set { Settings.Default.AlwaysDisconnectVirtualBusDevice = value; }
+            get { return Settings.Default.AlwaysUnPlugVirtualBusDevice; }
+            set { Settings.Default.AlwaysUnPlugVirtualBusDevice = value; }
         }
 
         public bool ReservePadSlot

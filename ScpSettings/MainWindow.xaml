@@ -362,7 +362,7 @@
                                   Grid.Row="0" Margin="0,0,0,10">
                             <StackPanel>
                                 <TextBlock>
-                                    By checking one or more of the checkboxes below the service will check you device drivers on every start-up and re-applies the correct driver on your Bluetooth dongle or Usb-wired DualShock controllers to ensure proper communication with the software.
+                                    By checking one or more of the check-boxes below the service will check you device drivers on every start-up and re-applies the correct driver on your Bluetooth dongle or Usb-wired DualShock controllers to ensure proper communication with the software.
                                 </TextBlock>
                                 <CheckBox IsChecked="{Binding Path=ForceBluetoothDriverReinstallation}">Force Bluetooth driver installation</CheckBox>
                                 <CheckBox IsChecked="{Binding Path=ForceDs3DriverReinstallation}">Force DualShock 3 driver installation</CheckBox>
@@ -378,11 +378,11 @@
                                 </TextBlock>
                                 <CheckBox IsChecked="{Binding Path=IsVBusDisabled}">Disable Virtual Bus events</CheckBox>
                                 <TextBlock>
-                                    The default behavior of the virtual Xbox 360 controller device created by the virtual bus is to linger in a connected state even if the physical gamepad gets disconnected (turned off). If you'd like the virtual Xbox 360 controller to "disconnect" from the system when the physical pad gets shut off, tick the box below.
+                                    The default behavior of the virtual Xbox 360 controller device created by the virtual bus is to linger in a connected state even if the physical game-pad gets disconnected (turned off). If you'd like the virtual Xbox 360 controller to "disconnect" from the system when the physical pad gets shut off, tick the box below.
                                 </TextBlock>
-                                <CheckBox IsChecked="{Binding Path=AlwaysDisconnectVirtualBusDevice}">Always unplug virtual controller</CheckBox>
+                                <CheckBox IsChecked="{Binding Path=AlwaysUnPlugVirtualBusDevice}">Always unplug virtual controller</CheckBox>
                                 <TextBlock>
-                                    Reserves the slot of the controller to its MAC address if enabled. Usefull if you have a DualShock-only environment and want a fixed slot index for your pad.
+                                    Reserves the slot of the controller to its MAC address if enabled. Useful if you have a DualShock-only environment and want a fixed slot index for your pad.
                                 </TextBlock>
                                 <CheckBox IsChecked="{Binding Path=ReservePadSlot}">Reserve controller slot</CheckBox>
                             </StackPanel>

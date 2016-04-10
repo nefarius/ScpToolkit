@@ -574,12 +574,12 @@ namespace ScpControl.Properties {
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AlwaysDisconnectVirtualBusDevice {
+        public bool AlwaysUnPlugVirtualBusDevice {
             get {
-                return ((bool)(this["AlwaysDisconnectVirtualBusDevice"]));
+                return ((bool)(this["AlwaysUnPlugVirtualBusDevice"]));
             }
             set {
-                this["AlwaysDisconnectVirtualBusDevice"] = value;
+                this["AlwaysUnPlugVirtualBusDevice"] = value;
             }
         }
         

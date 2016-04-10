@@ -131,7 +131,7 @@
     <Setting Name="IsVBusDisabled" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="AlwaysDisconnectVirtualBusDevice" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
+    <Setting Name="AlwaysUnPlugVirtualBusDevice" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="UseAsyncHidReportProcessing" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
