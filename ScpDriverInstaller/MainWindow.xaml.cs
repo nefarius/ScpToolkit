@@ -12,9 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Navigation;
 using log4net;
 using log4net.Appender;
@@ -48,9 +46,6 @@ namespace ScpDriverInstaller
 
             AppDomain.CurrentDomain.UnhandledException +=
                 (sender, args) => { Log.FatalFormat("An unexpected exception occurred: {0}", args.ExceptionObject); };
-
-            _viewModel.UninstallButtonClicked += ViewModelOnUninstallButtonClicked;
-            _viewModel.ExitButtonClicked += ViewModelOnExitButtonClicked;
 
             InstallGrid.DataContext = _viewModel;
         }
@@ -218,7 +213,7 @@ namespace ScpDriverInstaller
             Process.Start("https://github.com/nefarius/ScpToolkit/wiki");
         }
 
-        private void BluetoothHyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(e.Uri.ToString());
         }
@@ -234,15 +229,7 @@ namespace ScpDriverInstaller
 
         #region Private fields
 
-        private bool _bthDriverConfigured;
-        private bool _busDeviceConfigured;
-        private bool _busDriverConfigured;
-        private bool _ds3DriverConfigured;
-        private bool _ds4DriverConfigured;
         private IntPtr _hWnd;
-        private bool _reboot;
-        private Cursor _saved;
-        private bool _scpServiceConfigured;
         private readonly UsbNotifier _hidUsbDs3 = new UsbNotifier(0x054C, 0x0268);
         private readonly UsbNotifier _winUsbDs3 = new UsbNotifier(0x054C, 0x0268, UsbDs3.DeviceClassGuid);
         private readonly UsbNotifier _hidUsbDs4 = new UsbNotifier(0x054C, 0x05C4);
@@ -256,163 +243,6 @@ namespace ScpDriverInstaller
             new UsbNotifier(Guid.Parse("{0850302A-B344-4fda-9BE9-90576B8D46F0}"));
 
         private readonly UsbNotifier _winUsbBluetoothHost = new UsbNotifier(BthDongle.DeviceClassGuid);
-
-        #endregion
-
-        #region View Model events
-
-        private void ViewModelOnExitButtonClicked(object sender, EventArgs eventArgs)
-        {
-            Log.Info("Closing installer");
-
-            Close();
-        }
-
-        private async void ViewModelOnUninstallButtonClicked(object sender, EventArgs eventArgs)
-        {
-            #region Pre-Installation
-
-            _saved = Cursor;
-            Cursor = Cursors.Wait;
-            InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
-
-            #endregion
-
-            #region Uninstallation
-
-            await Task.Run(() =>
-            {
-                string devPath = string.Empty, instanceId = string.Empty;
-
-                try
-                {
-                    var rebootRequired = false;
-                    _bthDriverConfigured = false;
-                    _ds3DriverConfigured = false;
-                    _ds4DriverConfigured = false;
-                    _busDriverConfigured = false;
-                    _busDeviceConfigured = false;
-
-                    if (_viewModel.InstallWindowsService)
-                    {
-                        IDictionary state = new Hashtable();
-                        var service =
-                            new AssemblyInstaller(Directory.GetCurrentDirectory() + @"\ScpService.exe", null);
-
-                        state.Clear();
-                        service.UseNewContext = true;
-
-                        if (StopService(Settings.Default.ScpServiceName))
-                        {
-                            Log.InfoFormat("{0} stopped", Settings.Default.ScpServiceName);
-                        }
-
-                        service.Uninstall(state);
-                        _scpServiceConfigured = true;
-                    }
-
-                    uint result = 0;
-
-                    if (_viewModel.InstallBluetoothDriver)
-                    {
-                        result = DriverInstaller.UninstallBluetoothDongles(ref rebootRequired);
-
-                        if (result > 0) _bthDriverConfigured = true;
-                        _reboot |= rebootRequired;
-                    }
-
-                    if (_viewModel.InstallDualShock3Driver)
-                    {
-                        result = DriverInstaller.UninstallDualShock3Controllers(ref rebootRequired);
-
-                        if (result > 0) _ds3DriverConfigured = true;
-                        _reboot |= rebootRequired;
-                    }
-
-                    if (_viewModel.InstallDualShock4Driver)
-                    {
-                        result = DriverInstaller.UninstallDualShock4Controllers(ref rebootRequired);
-
-                        if (result > 0) _ds4DriverConfigured = true;
-                        _reboot |= rebootRequired;
-                    }
-
-                    if (Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
-                    {
-                        if (Devcon.Remove(Settings.Default.VirtualBusClassGuid, devPath, instanceId))
-                        {
-                            Log.Info("Virtual Bus Removed");
-                            _busDeviceConfigured = true;
-
-                            Difx.Instance.Uninstall(Path.Combine(Settings.Default.InfFilePath, @"ScpVBus.inf"),
-                                DifxFlags.DRIVER_PACKAGE_DELETE_FILES,
-                                out rebootRequired);
-                            _reboot |= rebootRequired;
-
-                            _busDriverConfigured = true;
-                            _busDeviceConfigured = true;
-                        }
-                        else
-                        {
-                            Log.Error("Virtual Bus Removal Failure");
-                        }
-                    }
-                }
-                catch (InstallException instex)
-                {
-                    if (!(instex.InnerException is Win32Exception))
-                    {
-                        Log.ErrorFormat("Error during uninstallation: {0}", instex);
-                        return;
-                    }
-
-                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
-                    {
-                        case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
-                            Log.Warn("Service doesn't exist, maybe it was uninstalled before");
-                            break;
-                        default:
-                            Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception)instex.InnerException);
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.ErrorFormat("Error during uninstallation: {0}", ex);
-                }
-            });
-
-            #endregion
-
-            #region Post-Uninstallation
-
-            InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
-            Cursor = _saved;
-
-
-            if (_reboot)
-                Log.Info("[Reboot Required]");
-
-            Log.Info("-- Uninstall Summary --");
-
-            if (_scpServiceConfigured)
-                Log.Info("SCP DSx Service uninstalled");
-
-            if (_busDeviceConfigured)
-                Log.Info("Bus Device uninstalled");
-
-            if (_busDriverConfigured)
-                Log.Info("Bus Driver uninstalled");
-
-            if (_ds3DriverConfigured)
-                Log.Info("DS3 USB Driver uninstalled");
-
-            if (_bthDriverConfigured)
-                Log.Info("Bluetooth Driver uninstalled");
-
-            #endregion
-        }
 
         #endregion
 
@@ -577,7 +407,6 @@ namespace ScpDriverInstaller
                                 "root\\ScpVBus\0\0"))
                             {
                                 Log.Info("Virtual Bus Created");
-                                _busDeviceConfigured = true;
                             }
                             else
                             {
@@ -600,8 +429,10 @@ namespace ScpDriverInstaller
                         DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT | DifxFlags.DRIVER_PACKAGE_FORCE,
                         out rebootRequired);
 
-                    _reboot |= rebootRequired;
-                    if (result == 0) _busDriverConfigured = true;
+                    if (result != 0)
+                    {
+                        failed = true;
+                    }
                 }
                 catch (Exception ex)
                 {

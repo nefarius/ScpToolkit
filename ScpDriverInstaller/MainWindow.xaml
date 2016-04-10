@@ -24,10 +24,26 @@
                                  Title="Welcome to the ScpToolkit Driver Installer"
                                  Description="This Wizard will walk you though the process of installing your Sony DualShock 3/4 controller(s) and/or Bluetooth hosts on your system.">
                     <Grid>
-                        <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                            Greetings! This wizard will guide you through the installation process necessary to enjoy your Sony DualShock controller(s) on your Windows box 
-                            and play Xbox-compatible (XInput) games using the DualShock!
-                        </TextBlock>
+                        <StackPanel>
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
+                                Greetings! This wizard will guide you through the installation process necessary to enjoy your Sony DualShock controller(s) on your Windows box
+                                and play Xbox-compatible (XInput) games using the DualShock!
+                            </TextBlock>
+
+                            <!-- Xbox 360 Controller driver -->
+                            <Expander IsExpanded="{Binding Path=IsXbox360DriverNeeded, Mode=OneWay}"
+                                      Header="Microsoft Xbox 360 Controller driver">
+                                <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
+                                    On Windows Vista/7 the
+                                    <Hyperlink
+                                        NavigateUri="https://www.microsoft.com/hardware/en-US/d/xbox-360-controller-for-windows"
+                                        RequestNavigate="Hyperlink_OnRequestNavigate">
+                                        Microsoft Xbox 360 Controller driver
+                                    </Hyperlink>
+                                    is required to be installed separately. <LineBreak />Download and install the right edition before you continue this wizard.
+                                </TextBlock>
+                            </Expander>
+                        </StackPanel>
                     </Grid>
                 </xctk:WizardPage>
 
@@ -147,7 +163,7 @@
                                 If you're unsure what to do next,
                                 <Hyperlink
                                     NavigateUri="https://github.com/nefarius/ScpToolkit/wiki/Bluetooth-driver-pitfalls"
-                                    RequestNavigate="BluetoothHyperlink_OnRequestNavigate">
+                                    RequestNavigate="Hyperlink_OnRequestNavigate">
                                     please consult the documentation
                                 </Hyperlink>
                                 first!
@@ -172,7 +188,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="500" />
                         </Grid.ColumnDefinitions>
-                        
+
                         <!-- Main area -->
                         <StackPanel>
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
@@ -188,13 +204,13 @@
                                 Install virtual Xbox 360 Controller driver
                             </Button>
                         </StackPanel>
-                        
+
                         <StackPanel Grid.Row="1" Grid.Column="0">
                             <Image Source="Warning.png" Stretch="UniformToFill" />
 
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10" Foreground="#FFFF0000"
                                        FontWeight="Bold" FontSize="14">
-                                The Virtual Bus might also be used by other 3rd party tools running on your system (like DS4Windows, InputMapper, FreePIE, etc.), 
+                                The Virtual Bus might also be used by other 3rd party tools running on your system (like DS4Windows, InputMapper, FreePIE, etc.),
                                 please make sure they are all closed/shut down to avoid system reboot.
                             </TextBlock>
                         </StackPanel>
@@ -252,3 +268,4 @@
         </xctk:BusyIndicator>
     </Grid>
 </Window>
+    
