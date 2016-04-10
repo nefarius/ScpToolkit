@@ -46,7 +46,7 @@ namespace ScpDriverInstaller
             InitializeComponent();
 
             AppDomain.CurrentDomain.UnhandledException +=
-                (sender, args) => { Log.FatalFormat("An unhandled exception occured: {0}", args.ExceptionObject); };
+                (sender, args) => { Log.FatalFormat("An unexpected exception occurred: {0}", args.ExceptionObject); };
 
             _viewModel.InstallButtonClicked += ViewModelOnInstallButtonClicked;
             _viewModel.UninstallButtonClicked += ViewModelOnUninstallButtonClicked;
@@ -91,6 +91,7 @@ namespace ScpDriverInstaller
                         usbDevices.Where(
                             d => d.VendorId == _hidUsbDs3.VendorId
                                  && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
+                                 && !string.IsNullOrEmpty(d.CurrentDriver) 
                                  && d.CurrentDriver.Equals("HidUsb"))
                     )
                 {
@@ -115,6 +116,7 @@ namespace ScpDriverInstaller
                         usbDevices.Where(
                             d => d.VendorId == _hidUsbDs3.VendorId
                                  && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
+                                 && !string.IsNullOrEmpty(d.CurrentDriver)
                                  && d.CurrentDriver.Equals("WinUSB"))
                     )
                 {
@@ -133,6 +135,7 @@ namespace ScpDriverInstaller
                 var uninitialized =
                     usbDevices.Where(
                         d =>
+                            !string.IsNullOrEmpty(d.CurrentDriver) &&
                             d.CurrentDriver.Equals("BTHUSB") &&
                             supportedBluetoothDevices.Any(s => s.Contains(regex.Match(d.HardwareId).Value)));
 
@@ -158,6 +161,7 @@ namespace ScpDriverInstaller
                 var initialized =
                     usbDevices.Where(
                         d =>
+                            !string.IsNullOrEmpty(d.CurrentDriver) &&
                             d.CurrentDriver.Equals("WinUSB") &&
                             supportedBluetoothDevices.Any(s => s.Contains(regex.Match(d.HardwareId).Value)));
 
@@ -258,7 +262,6 @@ namespace ScpDriverInstaller
             _saved = Cursor;
             Cursor = Cursors.Wait;
             InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
-            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
 
             #endregion
 
@@ -371,7 +374,6 @@ namespace ScpDriverInstaller
 
             #region Post-Uninstallation
 
-            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
             InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
             Cursor = _saved;
 
@@ -406,7 +408,6 @@ namespace ScpDriverInstaller
             _saved = Cursor;
             Cursor = Cursors.Wait;
             InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
-            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
 
             #endregion
 
@@ -472,7 +473,6 @@ namespace ScpDriverInstaller
 
             #region Post-Installation
 
-            MainProgressBar.IsIndeterminate = !MainProgressBar.IsIndeterminate;
             InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
             Cursor = _saved;
 
@@ -585,6 +585,8 @@ namespace ScpDriverInstaller
             uint result = 0;
             var bhInfPath = Path.Combine(GlobalConfiguration.AppDirectory, "WinUSB", "BluetoothHost.inf");
 
+            MainBusyIndicator.SetContentThreadSafe("Installing WinUSB driver on Bluetooth Host Devices");
+
             await Task.Run(() => result = Difx.Instance.Install(bhInfPath,
                 DifxFlags.DRIVER_PACKAGE_ONLY_IF_DEVICE_PRESENT | DifxFlags.DRIVER_PACKAGE_FORCE, out rebootRequired));
 
@@ -593,6 +595,7 @@ namespace ScpDriverInstaller
             // ERROR_NO_SUCH_DEVINST = 0xE000020B
             if (result != 0 && result != 0xE000020B)
             {
+                // display error message
                 ExtendedMessageBox.Show(this,
                     Properties.Resources.DsInstError_Title,
                     Properties.Resources.DsInstError_Instruction,
@@ -604,6 +607,7 @@ namespace ScpDriverInstaller
                 return;
             }
 
+            // display success message
             ExtendedMessageBox.Show(this,
                 Properties.Resources.BthInstOk_Title,
                 Properties.Resources.BthInstOk_Instruction,
@@ -612,6 +616,7 @@ namespace ScpDriverInstaller
                 Properties.Resources.BthInstOk_Footer,
                 TaskDialogIcon.Information);
 
+            // display reboot required message
             if (rebootRequired)
             {
                 MessageBox.Show(this,
@@ -625,6 +630,8 @@ namespace ScpDriverInstaller
         private async void InstallVBusOnClick(object sender, RoutedEventArgs e)
         {
             MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
+            var failed = false;
+            var rebootRequired = false;
 
             await Task.Run(() =>
             {
@@ -632,7 +639,6 @@ namespace ScpDriverInstaller
 
                 try
                 {
-                    var rebootRequired = false;
                     var busInfPath = Path.Combine(
                         GlobalConfiguration.AppDirectory,
                         "ScpVBus",
@@ -640,7 +646,7 @@ namespace ScpDriverInstaller
                         "ScpVBus.inf");
                     Log.DebugFormat("ScpVBus.inf path: {0}", busInfPath);
 
-                    // check for existance of Scp VBus
+                    // check for existence of Scp VBus
                     if (!Devcon.Find(Settings.Default.VirtualBusClassGuid, ref devPath, ref instanceId))
                     {
                         MainBusyIndicator.SetContentThreadSafe("Installing Virtual Bus Driver in Windows Driver Store");
@@ -662,14 +668,14 @@ namespace ScpDriverInstaller
                             else
                             {
                                 Log.Fatal("Virtual Bus Device creation failed");
-                                return;
+                                failed = true;
                             }
                         }
                         else
                         {
                             Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
                                 (uint)Marshal.GetLastWin32Error());
-                            return;
+                            failed = true;
                         }
                     }
 
@@ -690,6 +696,39 @@ namespace ScpDriverInstaller
             });
 
             MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
+
+            // display error message
+            if (failed)
+            {
+                ExtendedMessageBox.Show(this,
+                    Properties.Resources.DsInstError_Title,
+                    Properties.Resources.DsInstError_Instruction,
+                    Properties.Resources.DsInstError_Content,
+                    string.Format(Properties.Resources.DsInstError_Verbose,
+                        new Win32Exception(Marshal.GetLastWin32Error()), Marshal.GetLastWin32Error()),
+                    Properties.Resources.DsInstError_Footer,
+                    TaskDialogIcon.Error);
+                return;
+            }
+
+            // display success message
+            ExtendedMessageBox.Show(this,
+                Properties.Resources.VBusInstOk_Title,
+                Properties.Resources.VBusInstOk_Instruction,
+                Properties.Resources.VBusInstOk_Content,
+                Properties.Resources.VBusInstOk_Verbose,
+                Properties.Resources.VBusInstOk_Footer,
+                TaskDialogIcon.Information);
+
+            // display reboot required message
+            if (rebootRequired)
+            {
+                MessageBox.Show(this,
+                    Properties.Resources.DrvInstReboot_Content,
+                    Properties.Resources.DrvInstReboot_Title,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
         }
 
         #endregion
@@ -712,6 +751,13 @@ namespace ScpDriverInstaller
                 ((Logger)currentLogger.Logger).AddAppender(this);
             }
 
+            // stop service if exists so no device is occupied
+            if (StopService(Settings.Default.ScpServiceName))
+            {
+                Log.InfoFormat("{0} stopped", Settings.Default.ScpServiceName);
+            }
+
+#if NOPE
             // link download progress to progress bar
             RedistPackageInstaller.Instance.ProgressChanged +=
                 (o, args) => { Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage); };
@@ -724,6 +770,7 @@ namespace ScpDriverInstaller
             {
                 LogTextBlock.DataContext = appender;
             }
+#endif
         }
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
@@ -741,6 +788,11 @@ namespace ScpDriverInstaller
                 _hidUsbDs4.UnregisterHandle();
                 _winUsbDs4.UnregisterHandle();
                 _genericBluetoothHost.UnregisterHandle();
+            }
+
+            if (StartService(Settings.Default.ScpServiceName))
+            {
+                Log.InfoFormat("{0} started", Settings.Default.ScpServiceName);
             }
         }
 

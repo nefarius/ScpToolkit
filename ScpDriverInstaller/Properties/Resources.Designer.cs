@@ -70,7 +70,7 @@ namespace ScpDriverInstaller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This installation was made possible by the great &lt;a href=&quot;https://github.com/pbatard/libwdi&quot;&gt;libwdi&lt;/a&gt; library..
+        ///   Looks up a localized string similar to .
         /// </summary>
         internal static string BthInstOk_Footer {
             get {
@@ -97,7 +97,7 @@ namespace ScpDriverInstaller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Seriously, nothing to see here, everything is STILL fine! =).
+        ///   Looks up a localized string similar to .
         /// </summary>
         internal static string BthInstOk_Verbose {
             get {
@@ -239,7 +239,7 @@ namespace ScpDriverInstaller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This installation was made possible by the great &lt;a href=&quot;https://github.com/pbatard/libwdi&quot;&gt;libwdi&lt;/a&gt; library..
+        ///   Looks up a localized string similar to .
         /// </summary>
         internal static string DsInstOk_Footer {
             get {
@@ -266,11 +266,56 @@ namespace ScpDriverInstaller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nothing to see here, everything is fine! =).
+        ///   Looks up a localized string similar to .
         /// </summary>
         internal static string DsInstOk_Verbose {
             get {
                 return ResourceManager.GetString("DsInstOk_Verbose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step..
+        /// </summary>
+        internal static string VBusInstOk_Content {
+            get {
+                return ResourceManager.GetString("VBusInstOk_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string VBusInstOk_Footer {
+            get {
+                return ResourceManager.GetString("VBusInstOk_Footer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Virtual Bus installed successfully.
+        /// </summary>
+        internal static string VBusInstOk_Instruction {
+            get {
+                return ResourceManager.GetString("VBusInstOk_Instruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation successful.
+        /// </summary>
+        internal static string VBusInstOk_Title {
+            get {
+                return ResourceManager.GetString("VBusInstOk_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string VBusInstOk_Verbose {
+            get {
+                return ResourceManager.GetString("VBusInstOk_Verbose", resourceCulture);
             }
         }
     }

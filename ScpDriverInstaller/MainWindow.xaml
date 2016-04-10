@@ -2,11 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
-        xmlns:utilities="clr-namespace:ScpDriverInstaller.Utilities"
-        xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Layout.Toolkit"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="ScpToolkit Driver Installer"
-        Width="1020" MinWidth="1020" 
+        Width="1020" MinWidth="1020"
         Height="700" MinHeight="700"
         WindowStartupLocation="CenterScreen" SizeToContent="Height"
         ResizeMode="CanMinimize"
@@ -15,133 +13,6 @@
         <Grid.DataContext>
             <viewModels:InstallationOptionsViewModel />
         </Grid.DataContext>
-        <Grid Margin="10" Visibility="Hidden">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <!-- Top control bar -->
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="200" />
-                </Grid.ColumnDefinitions>
-
-
-                <!-- Installation options -->
-                <controls:Accordion ExpandDirection="Right" MinHeight="220" Width="780">
-                    <!-- Driver section -->
-                    <controls:AccordionItem Header="Drivers">
-                        <Grid Margin="0,10,0,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <CheckBox Grid.Row="0" Grid.Column="0"
-                                      IsEnabled="False"
-                                      IsChecked="{Binding Path=InstallWindowsService}"
-                                      ToolTip="Install Windows Service running in the background (recommended)">
-                                Install Windows Service
-                            </CheckBox>
-
-                            <CheckBox Grid.Row="0" Grid.Column="1"
-                                      IsChecked="{Binding Path=InstallXbox360Driver}"
-                                      IsEnabled="{Binding Path=IsXbox360DriverNeeded}"
-                                      ToolTip="Install Microsoft Xbox 360 controller driver (Windows Vista/7 only)">
-                                Install Xbox 360 controller driver
-                            </CheckBox>
-
-                            <CheckBox Grid.Row="1" Grid.Column="0"
-                                      IsChecked="{Binding Path=InstallBluetoothDriver}"
-                                      ToolTip="Replace driver of selected Bluetooth dongle (not needed if controllers are only used wired)">
-                                Install Bluetooth driver
-                            </CheckBox>
-                            <CheckBox Grid.Row="2" Grid.Column="0"
-                                      IsChecked="{Binding Path=InstallDualShock3Driver}"
-                                      ToolTip="Replace driver on all selected DualShock 3 USB controllers">
-                                Install DualShock 3 driver
-                            </CheckBox>
-                            <CheckBox Grid.Row="3" Grid.Column="0"
-                                      IsChecked="{Binding Path=InstallDualShock4Driver}"
-                                      ToolTip="Replace driver on all selected DualShock 4 USB controllers">
-                                Install DualShock 4 driver
-                            </CheckBox>
-                            <CheckBox Grid.Row="4" Grid.Column="0"
-                                      IsChecked="{Binding Path=ForceDriverInstallation}"
-                                      ToolTip="Forces the installation of all drivers even if they are fine (most of the time not needed)">
-                                Force Driver Installation
-                            </CheckBox>
-
-                            <Expander Grid.Row="1" Grid.Column="1"
-                                      Margin="20,0,0,0"
-                                      Header="Choose Bluetooth dongles to install"
-                                      IsEnabled="{Binding Path=InstallBluetoothDriver}">
-                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel x:Name="BluetoothStackPanel" />
-                                </ScrollViewer>
-                            </Expander>
-                            <!-- <Expander Grid.Row="2" Grid.Column="1"
-                                      Margin="20,0,0,0"
-                                      Header="Choose DualShock 3 controllers to install"
-                                      IsEnabled="{Binding Path=InstallDualShock3Driver}">
-                            <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                <StackPanel x:Name="DualShock3StackPanel" />
-                            </ScrollViewer>
-                        </Expander> -->
-                            <Expander Grid.Row="3" Grid.Column="1"
-                                      Margin="20,0,0,0"
-                                      Header="Choose DualShock 4 controllers to install"
-                                      IsEnabled="{Binding Path=InstallDualShock4Driver}">
-                                <ScrollViewer MaxHeight="120" MaxWidth="400" HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel x:Name="DualShock4StackPanel" />
-                                </ScrollViewer>
-                            </Expander>
-                        </Grid>
-                    </controls:AccordionItem>
-                </controls:Accordion>
-
-                <!-- Buttons -->
-                <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                    <Button Margin="20,20,20,5" Command="{Binding InstallClickCommand}">Install</Button>
-                    <Button Margin="20,5" Command="{Binding UninstallClickCommand}">Uninstall</Button>
-                    <Button Margin="20,5,20,20" Command="{Binding ExitClickCommand}">Exit</Button>
-                </StackPanel>
-            </Grid>
-
-            <!-- Progress bar -->
-            <GroupBox Grid.Row="1" Margin="0,10"
-                      Header="Progress">
-                <ProgressBar x:Name="MainProgressBar" Height="20" />
-            </GroupBox>
-
-            <!-- Log section -->
-            <Expander Grid.Row="2" Header="Log"
-                      IsExpanded="True"
-                      ExpandDirection="Down"
-                      VerticalAlignment="Top">
-                <ScrollViewer Height="300">
-                    <TextBlock Text="{Binding Notification}"
-                               x:Name="LogTextBlock"
-                               FontFamily="Courier New"
-                               TextWrapping="Wrap">
-                        <TextBlock.DataContext>
-                            <utilities:NotifyAppender />
-                        </TextBlock.DataContext>
-                    </TextBlock>
-                </ScrollViewer>
-            </Expander>
-        </Grid>
 
         <xctk:BusyIndicator IsBusy="False" DisplayAfter="0" x:Name="MainBusyIndicator">
 
@@ -149,9 +20,9 @@
             <xctk:Wizard FinishButtonClosesWindow="True" Help="Wizard_OnHelp">
                 <!-- Welcome page -->
                 <xctk:WizardPage x:Name="IntroPage"
-                             NextPage="{Binding ElementName=DsInstPage}"
-                             Title="Welcome to the ScpToolkit Driver Installer"
-                             Description="This Wizard will walk you though the process of installing your Sony DualShock 3/4 controller(s) and/or Bluetooth hosts on your system.">
+                                 NextPage="{Binding ElementName=DsInstPage}"
+                                 Title="Welcome to the ScpToolkit Driver Installer"
+                                 Description="This Wizard will walk you though the process of installing your Sony DualShock 3/4 controller(s) and/or Bluetooth hosts on your system.">
                     <Grid>
                         <Label>LOOOL</Label>
                     </Grid>
@@ -159,10 +30,10 @@
 
                 <!-- Controller Installation Page -->
                 <xctk:WizardPage x:Name="DsInstPage" PageType="Interior"
-                             Title="Install DualShock 3/4 Controllers"
-                             Description="In this step you can initialize one or more DualShock 3/4 controllers."
-                             PreviousPage="{Binding ElementName=IntroPage}"
-                             NextPage="{Binding ElementName=BthInstPage}">
+                                 Title="Install DualShock 3/4 Controllers"
+                                 Description="In this step you can initialize one or more DualShock 3/4 controllers."
+                                 PreviousPage="{Binding ElementName=IntroPage}"
+                                 NextPage="{Binding ElementName=BthInstPage}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -176,22 +47,24 @@
 
                         <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                            If you haven't already please plug in your DualShock 3 (or 4) controller with the USB cable now and wait until it appears in the list on the right.
-                            <LineBreak /><LineBreak />
-                            If the device doesn't show up after a few seconds, it's either already equiped with the right driver or in a faulty state.
-                            <LineBreak /><LineBreak />
-                            Once your device becomes visible, hit the "Install" button to start the driver installation process for this particular controller.
+                                If you haven't already please plug in your DualShock 3 (or 4) controller with the USB cable now and wait until it appears in the list on the right.
+                                <LineBreak /><LineBreak />
+                                If the device doesn't show up after a few seconds, it's either already equipped with the right driver or in a faulty state.
+                                <LineBreak /><LineBreak />
+                                Once your device becomes visible, hit the button below to start the driver installation process for this particular controller.
                             </TextBlock>
+
+                            <!-- Install button -->
                             <Button IsEnabled="{Binding Path=InstallDs3ButtonEnabled}"
-                                Click="InstallDsOnClick" Margin="20,0">
+                                    Click="InstallDsOnClick" Margin="20,0">
                                 Initialize all connected devices as DualShock 3/4 Controllers
                             </Button>
                         </StackPanel>
 
                         <!-- Uninitialized -->
                         <GroupBox Grid.Row="0" Grid.Column="1"
-                              Margin="10,0,0,5"
-                              Header="Uninitialized DualShock Controllers">
+                                  Margin="10,0,0,5"
+                                  Header="Uninitialized DualShock Controllers">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="DualShockStackPanelHidUsb" />
                             </ScrollViewer>
@@ -199,8 +72,8 @@
 
                         <!-- Initialized -->
                         <GroupBox Grid.Row="1" Grid.Column="1"
-                              Margin="10,5,0,0"
-                              Header="Initialized DualShock Controllers">
+                                  Margin="10,5,0,0"
+                                  Header="Initialized DualShock Controllers">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="DualShockStackPanelWinUsb" />
                             </ScrollViewer>
@@ -210,10 +83,10 @@
 
                 <!-- Bluetooth Host Installation Page -->
                 <xctk:WizardPage x:Name="BthInstPage" PageType="Interior"
-                             Title="Install Bluetooth hosts"
-                             Description="In this step you can initialize one or more Bluetooth hosts."
-                             PreviousPage="{Binding ElementName=DsInstPage}"
-                             NextPage="{Binding ElementName=VBusInstPage}">
+                                 Title="Install Bluetooth hosts"
+                                 Description="In this step you can initialize one or more Bluetooth hosts."
+                                 PreviousPage="{Binding ElementName=DsInstPage}"
+                                 NextPage="{Binding ElementName=VBusInstPage}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition />
@@ -227,22 +100,24 @@
 
                         <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                            If you haven't already please plug in your DualShock 3 (or 4) controller with the USB cable now and wait until it appears in the list on the right.
-                            <LineBreak /><LineBreak />
-                            If the device doesn't show up after a few seconds, it's either already equiped with the right driver or in a faulty state.
-                            <LineBreak /><LineBreak />
-                            Once your device becomes visible, hit the "Install" button to start the driver installation process for this particular controller.
+                                If you haven't already please plug in your Bluetooth host device (a.k.a. Bluetooth dongle) now and wait until it appears in the list on the right.
+                                <LineBreak /><LineBreak />
+                                If the device doesn't show up after a few seconds, it's either already equipped with the right driver or in a faulty state.
+                                <LineBreak /><LineBreak />
+                                Once your device becomes visible, hit the button below to start the driver installation process for this particular controller.
                             </TextBlock>
+
+                            <!-- Install button -->
                             <Button IsEnabled="{Binding Path=InstallBthButtonEnabled}"
-                                Click="InstallBthHostOnClick"  Margin="20,0">
+                                    Click="InstallBthHostOnClick" Margin="20,0">
                                 Initialize all connected devices as Bluetooth Hosts
                             </Button>
                         </StackPanel>
 
                         <!-- Uninitialized -->
                         <GroupBox Grid.Row="0" Grid.Column="1"
-                              Margin="10,0,0,5"
-                              Header="Uninitialized Bluetooth Hosts">
+                                  Margin="10,0,0,5"
+                                  Header="Uninitialized Bluetooth Hosts">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="BluetoothStackPanelDefault" />
                             </ScrollViewer>
@@ -250,8 +125,8 @@
 
                         <!-- Initialized -->
                         <GroupBox Grid.Row="1" Grid.Column="1"
-                              Margin="10,5,0,0"
-                              Header="Initialized Bluetooth Hosts">
+                                  Margin="10,5,0,0"
+                                  Header="Initialized Bluetooth Hosts">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="BluetoothStackPanelWinUsb" />
                             </ScrollViewer>
@@ -261,19 +136,32 @@
 
                 <!-- ScpVBus Installation Page -->
                 <xctk:WizardPage x:Name="VBusInstPage" PageType="Interior"
-                             Title="Install Xbox 360 Controller emulator driver."
-                             Description="In this step you can install the virtual Xbox 360 Controller driver." 
-                             PreviousPage="{Binding ElementName=BthInstPage}"
-                             NextPage="{Binding ElementName=LastPage}">
+                                 Title="Install Xbox 360 Controller emulator driver."
+                                 Description="In this step you can install the virtual Xbox 360 Controller driver."
+                                 PreviousPage="{Binding ElementName=BthInstPage}"
+                                 NextPage="{Binding ElementName=LastPage}">
                     <Grid>
-                        <Button Click="InstallVBusOnClick">Install virtual Xbox 360 Controller driver</Button>
+                        <StackPanel Width="500" HorizontalAlignment="Left">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
+                                In this step we will attempt to install the virtual Xbox 360 Controller emulator driver (a.k.a. Scarlett.Crush Productions Virtual Bus Driver, ScpVBus or just Virtual Bus).
+                                <LineBreak /><LineBreak />
+                                If the virtual bus device is already present on your system (because you're upgrading from an older version of ScpServer/ScpToolkit or you've used tools like DS4Windows before), its driver will be automatically updated.
+                                <LineBreak /><LineBreak />
+                                Once your device becomes visible, hit the button below to start the driver installation process for this particular controller.
+                            </TextBlock>
+
+                            <!-- Install button -->
+                            <Button Click="InstallVBusOnClick" Margin="20,0">
+                                Install virtual Xbox 360 Controller driver
+                            </Button>
+                        </StackPanel>
                     </Grid>
                 </xctk:WizardPage>
 
                 <xctk:WizardPage x:Name="LastPage" PageType="Interior"
-                             Title="Last Page"
-                             Description="This is the last page in the process"
-                             CanFinish="True" />
+                                 Title="Last Page"
+                                 Description="This is the last page in the process"
+                                 CanFinish="True" />
             </xctk:Wizard>
 
         </xctk:BusyIndicator>

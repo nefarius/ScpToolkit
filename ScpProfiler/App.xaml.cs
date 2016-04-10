@@ -16,9 +16,9 @@ namespace ScpProfiler
         {
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
-                Log.FatalFormat("An unexpected error occured on application startup: {0}", args.ExceptionObject);
+                Log.FatalFormat("An unexpected error occurred on application startup: {0}", args.ExceptionObject);
 
-                MessageBox.Show("A fatal error occured. Consult the logs for details.",
+                MessageBox.Show("A fatal error occurred. Consult the logs for details.",
                     "Oh sh...", MessageBoxButton.OK, MessageBoxImage.Error);
             };
 

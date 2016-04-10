@@ -169,16 +169,16 @@ Sadly there are too many possibilities of why it failed to cram all suggested re
     <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
   </data>
   <data name="DsInstOk_Verbose" xml:space="preserve">
-    <value>Nothing to see here, everything is fine! =)</value>
+    <value/>
   </data>
   <data name="DsInstOk_Footer" xml:space="preserve">
-    <value>This installation was made possible by the great &lt;a href="https://github.com/pbatard/libwdi"&gt;libwdi&lt;/a&gt; library.</value>
+    <value/>
   </data>
   <data name="BthInstOk_Content" xml:space="preserve">
     <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
   </data>
   <data name="BthInstOk_Footer" xml:space="preserve">
-    <value>This installation was made possible by the great &lt;a href="https://github.com/pbatard/libwdi"&gt;libwdi&lt;/a&gt; library.</value>
+    <value/>
   </data>
   <data name="BthInstOk_Instruction" xml:space="preserve">
     <value>Bluetooth Hosts installed successfully</value>
@@ -187,12 +187,27 @@ Sadly there are too many possibilities of why it failed to cram all suggested re
     <value>Installation successful</value>
   </data>
   <data name="BthInstOk_Verbose" xml:space="preserve">
-    <value>Seriously, nothing to see here, everything is STILL fine! =)</value>
+    <value/>
   </data>
   <data name="DrvInstReboot_Content" xml:space="preserve">
     <value>A reboot is required for the driver installation to complete. Please restart your machine after you finished this installation wizard.</value>
   </data>
   <data name="DrvInstReboot_Title" xml:space="preserve">
     <value>Reboot required</value>
+  </data>
+  <data name="VBusInstOk_Title" xml:space="preserve">
+    <value>Installation successful</value>
+  </data>
+  <data name="VBusInstOk_Instruction" xml:space="preserve">
+    <value>Virtual Bus installed successfully</value>
+  </data>
+  <data name="VBusInstOk_Content" xml:space="preserve">
+    <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
+  </data>
+  <data name="VBusInstOk_Verbose" xml:space="preserve">
+    <value/>
+  </data>
+  <data name="VBusInstOk_Footer" xml:space="preserve">
+    <value/>
   </data>
 </root>
