@@ -57,6 +57,36 @@ namespace ScpDriverInstaller
 
         #endregion
 
+        #region Misc. Helpers
+
+        public void DoAppend(LoggingEvent loggingEvent)
+        {
+            if (!IsInitialized)
+                return;
+
+            var level = loggingEvent.Level;
+
+            if (level == Level.Info)
+            {
+                Dispatcher.Invoke(
+                    () => ShowPopup("Information", loggingEvent.RenderedMessage, NotificationType.Information));
+            }
+
+            if (level == Level.Warn)
+            {
+                Dispatcher.Invoke(
+                    () => ShowPopup("Warning", loggingEvent.RenderedMessage, NotificationType.Warning));
+            }
+
+            if (level == Level.Error)
+            {
+                Dispatcher.Invoke(
+                    () => ShowPopup("Error", loggingEvent.RenderedMessage, NotificationType.Error));
+            }
+        }
+
+        #endregion
+
         #region Private methods
 
         private void ShowPopup(string title, string message, NotificationType type)
@@ -91,7 +121,7 @@ namespace ScpDriverInstaller
                         usbDevices.Where(
                             d => d.VendorId == _hidUsbDs3.VendorId
                                  && (d.ProductId == _hidUsbDs3.ProductId || d.ProductId == _hidUsbDs4.ProductId)
-                                 && !string.IsNullOrEmpty(d.CurrentDriver) 
+                                 && !string.IsNullOrEmpty(d.CurrentDriver)
                                  && d.CurrentDriver.Equals("HidUsb"))
                     )
                 {
@@ -182,40 +212,19 @@ namespace ScpDriverInstaller
 
         #endregion
 
+        #region Wizard events
+
+        private void Wizard_OnHelp(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/nefarius/ScpToolkit/wiki/Welcome-to-the-ScpToolkit-documentation!");
+        }
+
+        #endregion
+
         #region Private static fields
 
         private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly InstallationOptionsViewModel _viewModel = new InstallationOptionsViewModel();
-
-        #endregion
-
-        #region Misc. Helpers
-
-        public void DoAppend(LoggingEvent loggingEvent)
-        {
-            if (!IsInitialized)
-                return;
-
-            var level = loggingEvent.Level;
-
-            if (level == Level.Info)
-            {
-                Dispatcher.Invoke(
-                    () => ShowPopup("Information", loggingEvent.RenderedMessage, NotificationType.Information));
-            }
-
-            if (level == Level.Warn)
-            {
-                Dispatcher.Invoke(
-                    () => ShowPopup("Warning", loggingEvent.RenderedMessage, NotificationType.Warning));
-            }
-
-            if (level == Level.Error)
-            {
-                Dispatcher.Invoke(
-                    () => ShowPopup("Error", loggingEvent.RenderedMessage, NotificationType.Error));
-            }
-        }
 
         #endregion
 
@@ -353,14 +362,14 @@ namespace ScpDriverInstaller
                         return;
                     }
 
-                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception)instex.InnerException);
+                                (Win32Exception) instex.InnerException);
                             break;
                     }
                 }
@@ -674,7 +683,7 @@ namespace ScpDriverInstaller
                         else
                         {
                             Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
-                                (uint)Marshal.GetLastWin32Error());
+                                (uint) Marshal.GetLastWin32Error());
                             failed = true;
                         }
                     }
@@ -748,7 +757,7 @@ namespace ScpDriverInstaller
             // add popup-appender to all loggers
             foreach (var currentLogger in LogManager.GetCurrentLoggers())
             {
-                ((Logger)currentLogger.Logger).AddAppender(this);
+                ((Logger) currentLogger.Logger).AddAppender(this);
             }
 
             // stop service if exists so no device is occupied
@@ -758,7 +767,7 @@ namespace ScpDriverInstaller
             }
 
 #if NOPE
-            // link download progress to progress bar
+    // link download progress to progress bar
             RedistPackageInstaller.Instance.ProgressChanged +=
                 (o, args) => { Dispatcher.Invoke(() => MainProgressBar.Value = args.CurrentProgressPercentage); };
 
@@ -778,7 +787,7 @@ namespace ScpDriverInstaller
             // remove popup-appender from all loggers
             foreach (var currentLogger in LogManager.GetCurrentLoggers())
             {
-                ((Logger)currentLogger.Logger).RemoveAppender(this);
+                ((Logger) currentLogger.Logger).RemoveAppender(this);
             }
 
             // unregister notifications
@@ -915,13 +924,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
                         break;
                 }
             }
@@ -931,15 +940,6 @@ namespace ScpDriverInstaller
             }
 
             return false;
-        }
-
-        #endregion
-
-        #region Wizard events
-
-        private void Wizard_OnHelp(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://github.com/nefarius/ScpToolkit/wiki/Welcome-to-the-ScpToolkit-documentation!");
         }
 
         #endregion
