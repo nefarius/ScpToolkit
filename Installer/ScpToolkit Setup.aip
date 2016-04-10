@@ -15,10 +15,10 @@
     <ROW Property="AppLogoIcon" Value="applogoicon" MultiBuildValue="DefaultBuild:DualShock.png" Type="1" MsiKey="AppLogoIcon"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Nefarius Software Solutions"/>
-    <ROW Property="ProductCode" Value="1033:{0D9126B8-5CC6-4F2C-9A5D-1A54C7B77E4A} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{8316FD79-8AC5-40F5-AB18-91FDDBA3D12C} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="ScpToolkit"/>
-    <ROW Property="ProductVersion" Value="1.7.273.16087" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.7.275.16101" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{541750FB-F05E-4F6A-AB9A-69A633D3D681}"/>
@@ -49,6 +49,8 @@
     <ROW Directory="ScpVBus_Dir" Directory_Parent="APPDIR" DefaultDir="ScpVBus"/>
     <ROW Directory="StartupFolder" Directory_Parent="TARGETDIR" DefaultDir="STARTU~1|StartupFolder" IsPseudoRoot="1"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="WinUSB_1_Dir" Directory_Parent="AI_Bin32_Dir" DefaultDir="WinUSB"/>
+    <ROW Directory="WinUSB_Dir" Directory_Parent="APPDIR" DefaultDir="WinUSB"/>
     <ROW Directory="XInput_Dir" Directory_Parent="APPDIR" DefaultDir="XInput" DirectoryOptions="8"/>
     <ROW Directory="XOutput_1_Dir" Directory_Parent="AI_Bin32_Dir" DefaultDir="XOutput"/>
     <ROW Directory="XOutput_Dir" Directory_Parent="APPDIR" DefaultDir="XOutput"/>
@@ -56,6 +58,7 @@
     <ROW Directory="amd64_2_Dir" Directory_Parent="ScpVBus_Dir" DefaultDir="amd64"/>
     <ROW Directory="amd64_3_Dir" Directory_Parent="libwdi_Dir" DefaultDir="amd64"/>
     <ROW Directory="amd64_4_Dir" Directory_Parent="XOutput_Dir" DefaultDir="amd64"/>
+    <ROW Directory="amd64_5_Dir" Directory_Parent="WinUSB_Dir" DefaultDir="amd64"/>
     <ROW Directory="amd64_Dir" Directory_Parent="DIFxAPI_Dir" DefaultDir="amd64"/>
     <ROW Directory="irrKlang_1_Dir" Directory_Parent="AI_Bin32_Dir" DefaultDir="irrKlang"/>
     <ROW Directory="irrKlang_Dir" Directory_Parent="APPDIR" DefaultDir="irrKlang"/>
@@ -67,6 +70,7 @@
     <ROW Directory="x86_3_Dir" Directory_Parent="ScpVBus_1_Dir" DefaultDir="x86"/>
     <ROW Directory="x86_4_Dir" Directory_Parent="libwdi_1_Dir" DefaultDir="x86"/>
     <ROW Directory="x86_5_Dir" Directory_Parent="XOutput_1_Dir" DefaultDir="x86"/>
+    <ROW Directory="x86_7_Dir" Directory_Parent="WinUSB_1_Dir" DefaultDir="x86"/>
     <ROW Directory="x86_Dir" Directory_Parent="XInput_Dir" DefaultDir="x86" DirectoryOptions="12"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
@@ -134,6 +138,8 @@
     <ROW Component="ScpVBus.sys" ComponentId="{16F69CCA-D576-417A-8F35-7AF6873AC919}" Directory_="amd64_2_Dir" Attributes="256" Condition="VersionNT64" KeyPath="ScpVBus.sys"/>
     <ROW Component="ScpVBus.sys_1" ComponentId="{06B7A0B0-8C5B-42C6-8BC4-9D5EC0B21EAC}" Directory_="x86_3_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="ScpVBus.sys_1"/>
     <ROW Component="Trinet.Core.IO.Ntfs.dll" ComponentId="{C0861836-4BE3-4080-8AB8-688926B94050}" Directory_="APPDIR" Attributes="0" KeyPath="Trinet.Core.IO.Ntfs.dll"/>
+    <ROW Component="WdfCoInstaller01011.dll" ComponentId="{804C1843-4550-4F49-B134-5509D083E573}" Directory_="amd64_5_Dir" Attributes="256" KeyPath="WdfCoInstaller01011.dll"/>
+    <ROW Component="WdfCoInstaller01011.dll_1" ComponentId="{0389CBFA-AC9A-4C79-8986-8191B6EAAA25}" Directory_="x86_7_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="WdfCoInstaller01011.dll_1"/>
     <ROW Component="WdfCoinstaller01009.dll" ComponentId="{17A55A2D-5632-46A5-88DD-B3F4B6BDB86C}" Directory_="amd64_2_Dir" Attributes="256" Condition="VersionNT64" KeyPath="WdfCoinstaller01009.dll"/>
     <ROW Component="WdfCoinstaller01009.dll_1" ComponentId="{BBD42507-2A6B-4AE3-B05E-74E495C3A22B}" Directory_="x86_3_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="WdfCoinstaller01009.dll_1"/>
     <ROW Component="WindowsInput.dll" ComponentId="{56AFC578-FE01-453E-ADE2-53F7C19EAEF7}" Directory_="APPDIR" Attributes="0" KeyPath="WindowsInput.dll"/>
@@ -145,6 +151,7 @@
     <ROW Component="XOutput1_1.dll" ComponentId="{9A0C9AEB-2EBC-4329-A6CF-A3139DDEEDE3}" Directory_="amd64_4_Dir" Attributes="256" KeyPath="XOutput1_1.dll"/>
     <ROW Component="XOutput1_1.dll_1" ComponentId="{E281656B-1384-4272-A69C-E553F405444E}" Directory_="x86_5_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="XOutput1_1.dll_1"/>
     <ROW Component="Xceed.Wpf.Toolkit.dll" ComponentId="{BC781330-B5EA-4609-88BA-89E4BD64A729}" Directory_="APPDIR" Attributes="0" KeyPath="Xceed.Wpf.Toolkit.dll"/>
+    <ROW Component="bluetoothhost.cat" ComponentId="{26D58422-C68F-4AB1-ACB0-814CFCA5940F}" Directory_="WinUSB_Dir" Attributes="0" KeyPath="bluetoothhost.cat" Type="0"/>
     <ROW Component="connect.wav" ComponentId="{FA6BF73F-2920-4BAE-9528-0FAA9FC7A940}" Directory_="Media_Dir" Attributes="0" KeyPath="connect.wav"/>
     <ROW Component="disconnect.flac" ComponentId="{F0603A63-D9FD-4FDF-8210-36194165D616}" Directory_="Media_Dir" Attributes="0" KeyPath="disconnect.flac"/>
     <ROW Component="ikpFlac.dll" ComponentId="{5164CCB1-A345-4121-87FF-9D51CF53311B}" Directory_="amd64_1_Dir" Attributes="256" Condition="VersionNT64" KeyPath="ikpFlac.dll"/>
@@ -160,13 +167,15 @@
     <ROW Component="startup.ogg" ComponentId="{34EB35FE-452C-440B-9DAE-98D59BBD5D46}" Directory_="Media_Dir" Attributes="0" KeyPath="startup.ogg"/>
     <ROW Component="wdisimple.exe" ComponentId="{3844AB9F-857E-4E0B-96B3-64729525E6BA}" Directory_="amd64_3_Dir" Attributes="256" Condition="VersionNT64" KeyPath="wdisimple.exe"/>
     <ROW Component="wdisimple.exe_1" ComponentId="{8AE6B517-0FD3-45EB-9AF6-631AE51A36D7}" Directory_="x86_4_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="wdisimple.exe_1"/>
+    <ROW Component="winusbcoinstaller2.dll" ComponentId="{D05637C3-5A6B-463C-A662-E13E3DF235B9}" Directory_="amd64_5_Dir" Attributes="256" KeyPath="winusbcoinstaller2.dll"/>
+    <ROW Component="winusbcoinstaller2.dll_1" ComponentId="{31562136-9FE7-4EBA-85B0-4483F9009D00}" Directory_="x86_7_Dir" Attributes="0" Condition="NOT VersionNT64" KeyPath="winusbcoinstaller2.dll_1"/>
     <ROW Component="x64" ComponentId="{744736C2-5A69-444B-9DD6-B4311858E9C3}" Directory_="x64_2_Dir" Attributes="0"/>
     <ROW Component="x86" ComponentId="{F911E38E-EDB0-4BF4-9B4A-AF868834DA66}" Directory_="x86_Dir" Attributes="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="AI32BitFiles" Title="32-bit" Description="32-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="AI64BitFiles" Title="64-bit" Description="64-bit Executables and Libraries" Display="0" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath"/>
-    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mono.CSharp.dll Newtonsoft.Json.dll Path SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpUpdater.exe ScpVBus.inf ScpVBus.inf_1 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WdfCoinstaller01009.dll WdfCoinstaller01009.dll_1 WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config XOutput1_1.dll XOutput1_1.dll_1 Xceed.Wpf.Toolkit.dll connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libwdi.dll libwdi.dll_1 scpvbus.cat scpvbus.cat_1 startup.ogg wdisimple.exe wdisimple.exe_1 x64 x86"/>
+    <ROW Feature="AIOtherFiles" Title="ScpToolkit Core Features" Description="Shared Resource and Regular Files" Display="3" Level="1" Directory_="APPDIR" Attributes="16" Components="AI_ExePath CSScriptLibrary.dll CsvHelper.dll DBreeze.dll DIFxAPI.dll DIFxAPI.dll_1 Hardcodet.Wpf.TaskbarNotification.dll LilyPad LilyPadScpr5875.dll Logs Mono.CSharp.dll Newtonsoft.Json.dll Path SHORTCUTDIR ScpControl.dll.config ScpControl.ini ScpDriverInstaller.exe ScpDriverInstaller.exe.config ScpService.exe ScpService.exe.config ScpSettings.exe ScpSettings.exe.config ScpUpdater.exe ScpVBus.inf ScpVBus.inf_1 ScpVBus.sys ScpVBus.sys_1 Trinet.Core.IO.Ntfs.dll WdfCoInstaller01011.dll WdfCoInstaller01011.dll_1 WdfCoinstaller01009.dll WdfCoinstaller01009.dll_1 WindowsInput.dll XInput XInput1_3.dll XInput1_3.dll_1 XInput1_3.exp XInput_log4net.config XOutput1_1.dll XOutput1_1.dll_1 Xceed.Wpf.Toolkit.dll bluetoothhost.cat connect.wav disconnect.flac ikpFlac.dll ikpFlac.dll_1 ikpMP3.dll ikpMP3.dll_1 irrKlang.NET4.dll irrKlang.NET4.dll_1 libwdi.dll libwdi.dll_1 scpvbus.cat scpvbus.cat_1 startup.ogg wdisimple.exe wdisimple.exe_1 winusbcoinstaller2.dll winusbcoinstaller2.dll_1 x64 x86"/>
     <ROW Feature="B63_41B8_9CB7_8C5E07C0FC18_" Title="Visual C++ 2010 SP1 x64 (MFC Security Update)" Description="Visual C++ 2010 SP1 x64 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CA62D813A4E74FA2AAE86A7D7B7B1493" Title="Visual C++ Redistributable for Visual Studio 2013 x64" Description="Visual C++ Redistributable for Visual Studio 2013 x64" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
     <ROW Feature="CB585686_DAA3_4384_BDDF_08ABA631E9F3_" Title="Visual C++ 2010 SP1 x86 (MFC Security Update)" Description="Visual C++ 2010 SP1 x86 (MFC Security Update)" Display="0" Level="1" Attributes="16" Components="AI_ExePath"/>
@@ -188,12 +197,15 @@
     <ATTRIBUTE name="CurrentFeature" value="AIOtherFiles"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="BluetoothHost.inf" Component_="bluetoothhost.cat" FileName="BLUETO~1.INF|BluetoothHost.inf" Attributes="0" SourcePath="..\..\bin\WinUSB\BluetoothHost.inf" SelfReg="false" NextFile="Ds3Controller.inf"/>
     <ROW File="CSScriptLibrary.dll" Component_="CSScriptLibrary.dll" FileName="CSSCRI~1.DLL|CSScriptLibrary.dll" Attributes="0" SourcePath="..\..\bin\CSScriptLibrary.dll" SelfReg="false" NextFile="Mono.CSharp.dll"/>
     <ROW File="CsvHelper.dll" Component_="CsvHelper.dll" FileName="CSVHEL~1.DLL|CsvHelper.dll" Attributes="0" SourcePath="..\..\bin\CsvHelper.dll" SelfReg="false" NextFile="CSScriptLibrary.dll"/>
     <ROW File="CsvHelper.pdb" Component_="CsvHelper.pdb" FileName="CSVHEL~1.PDB|CsvHelper.pdb" Attributes="0" SourcePath="..\..\bin\CsvHelper.pdb" SelfReg="false" NextFile="Hardcodet.Wpf.TaskbarNotification.pdb"/>
     <ROW File="DBreeze.dll" Component_="DBreeze.dll" FileName="DBreeze.dll" Attributes="0" SourcePath="..\..\bin\DBreeze.dll" SelfReg="false" NextFile="Newtonsoft.Json.dll"/>
     <ROW File="DIFxAPI.dll" Component_="DIFxAPI.dll" FileName="DIFxAPI.dll" Attributes="0" SourcePath="..\..\bin\DIFxAPI\amd64\DIFxAPI.dll" SelfReg="false" NextFile="ikpFlac.dll"/>
     <ROW File="DIFxAPI.dll_1" Component_="DIFxAPI.dll_1" FileName="DIFxAPI.dll" Attributes="0" SourcePath="..\..\bin\DIFxAPI\x86\DIFxAPI.dll" SelfReg="false" NextFile="ikpFlac.dll_1"/>
+    <ROW File="Ds3Controller.inf" Component_="bluetoothhost.cat" FileName="DS3CON~1.INF|Ds3Controller.inf" Attributes="0" SourcePath="..\..\bin\WinUSB\Ds3Controller.inf" SelfReg="false" NextFile="Ds4Controller.inf"/>
+    <ROW File="Ds4Controller.inf" Component_="bluetoothhost.cat" FileName="DS4CON~1.INF|Ds4Controller.inf" Attributes="0" SourcePath="..\..\bin\WinUSB\Ds4Controller.inf" SelfReg="false"/>
     <ROW File="Hardcodet.Wpf.TaskbarNotification.dll" Component_="Hardcodet.Wpf.TaskbarNotification.dll" FileName="HARDCO~1.DLL|Hardcodet.Wpf.TaskbarNotification.dll" Attributes="0" SourcePath="..\..\bin\Hardcodet.Wpf.TaskbarNotification.dll" SelfReg="false" NextFile="XInput_log4net.config"/>
     <ROW File="Hardcodet.Wpf.TaskbarNotification.pdb" Component_="Hardcodet.Wpf.TaskbarNotification.pdb" FileName="HARDCO~1.PDB|Hardcodet.Wpf.TaskbarNotification.pdb" Attributes="0" SourcePath="..\..\bin\Hardcodet.Wpf.TaskbarNotification.pdb" SelfReg="false" NextFile="HidSharp.pdb"/>
     <ROW File="HidSharp.dll" Component_="ScpService.exe" FileName="HidSharp.dll" Attributes="0" SourcePath="..\..\bin\HidSharp.dll" SelfReg="false" NextFile="Libarius.dll"/>
@@ -260,6 +272,8 @@
     <ROW File="System.Windows.Controls.Layout.Toolkit.dll" Component_="ScpService.exe" FileName="SYSTEM~6.DLL|System.Windows.Controls.Layout.Toolkit.dll" Attributes="0" SourcePath="..\..\bin\System.Windows.Controls.Layout.Toolkit.dll" SelfReg="false" NextFile="Trinet.Core.IO.Ntfs.dll"/>
     <ROW File="Trinet.Core.IO.Ntfs.dll" Component_="Trinet.Core.IO.Ntfs.dll" FileName="TRINET~1.DLL|Trinet.Core.IO.Ntfs.dll" Attributes="0" SourcePath="..\..\bin\Trinet.Core.IO.Ntfs.dll" SelfReg="false" NextFile="WPFToolkit.dll"/>
     <ROW File="WPFToolkit.dll" Component_="ScpService.exe" FileName="WPFTOO~1.DLL|WPFToolkit.dll" Attributes="0" SourcePath="..\..\bin\WPFToolkit.dll" SelfReg="false" NextFile="LilyPadScpr5875.dll"/>
+    <ROW File="WdfCoInstaller01011.dll" Component_="WdfCoInstaller01011.dll" FileName="WDFCOI~1.DLL|WdfCoInstaller01011.dll" Attributes="0" SourcePath="..\..\bin\WinUSB\amd64\WdfCoInstaller01011.dll" SelfReg="false" NextFile="winusbcoinstaller2.dll"/>
+    <ROW File="WdfCoInstaller01011.dll_1" Component_="WdfCoInstaller01011.dll_1" FileName="WDFCOI~1.DLL|WdfCoInstaller01011.dll" Attributes="0" SourcePath="..\..\bin\WinUSB\x86\WdfCoInstaller01011.dll" SelfReg="false" NextFile="winusbcoinstaller2.dll_1"/>
     <ROW File="WdfCoinstaller01009.dll" Component_="WdfCoinstaller01009.dll" FileName="WDFCOI~1.DLL|WdfCoinstaller01009.dll" Attributes="0" SourcePath="..\..\bin\ScpVBus\amd64\WdfCoinstaller01009.dll" SelfReg="false" NextFile="scpvbus.cat_1"/>
     <ROW File="WdfCoinstaller01009.dll_1" Component_="WdfCoinstaller01009.dll_1" FileName="WDFCOI~1.DLL|WdfCoinstaller01009.dll" Attributes="0" SourcePath="..\..\bin\ScpVBus\x86\WdfCoinstaller01009.dll" SelfReg="false" NextFile="ScpVBus.inf"/>
     <ROW File="WindowsInput.dll" Component_="WindowsInput.dll" FileName="WINDOW~1.DLL|WindowsInput.dll" Attributes="0" SourcePath="..\..\bin\WindowsInput.dll" SelfReg="false" NextFile="ScpProfiler.exe"/>
@@ -268,10 +282,13 @@
     <ROW File="XInput_log4net.config" Component_="XInput_log4net.config" FileName="XINPUT~1.CON|XInput_log4net.config" Attributes="0" SourcePath="..\..\bin\XInput\x86\XInput_log4net.config" SelfReg="false" NextFile="XInput1_3.dll_1"/>
     <ROW File="XInput_log4net.config_1" Component_="XInput1_3.exp" FileName="XINPUT~1.CON|XInput_log4net.config" Attributes="0" SourcePath="..\..\bin\XInput\x64\XInput_log4net.config" SelfReg="false" NextFile="ScpTrayApp.exe"/>
     <ROW File="XOutput1_1.dll" Component_="XOutput1_1.dll" FileName="XOUTPU~1.DLL|XOutput1_1.dll" Attributes="0" SourcePath="..\..\bin\XOutput\amd64\XOutput1_1.dll" SelfReg="false" NextFile="XOutput1_1.dll_1"/>
-    <ROW File="XOutput1_1.dll_1" Component_="XOutput1_1.dll_1" FileName="XOUTPU~1.DLL|XOutput1_1.dll" Attributes="0" SourcePath="..\..\bin\XOutput\x86\XOutput1_1.dll" SelfReg="false"/>
+    <ROW File="XOutput1_1.dll_1" Component_="XOutput1_1.dll_1" FileName="XOUTPU~1.DLL|XOutput1_1.dll" Attributes="0" SourcePath="..\..\bin\XOutput\x86\XOutput1_1.dll" SelfReg="false" NextFile="WdfCoInstaller01011.dll"/>
     <ROW File="Xceed.Wpf.Toolkit.dll" Component_="Xceed.Wpf.Toolkit.dll" FileName="XCEEDW~1.DLL|Xceed.Wpf.Toolkit.dll" Attributes="0" SourcePath="..\..\bin\Xceed.Wpf.Toolkit.dll" SelfReg="false" NextFile="ScpProfiler.exe.config"/>
+    <ROW File="bluetoothhost.cat" Component_="bluetoothhost.cat" FileName="BLUETO~1.CAT|bluetoothhost.cat" Attributes="0" SourcePath="..\..\bin\WinUSB\bluetoothhost.cat" SelfReg="false" NextFile="ds3controller.cat"/>
     <ROW File="connect.wav" Component_="connect.wav" FileName="connect.wav" Attributes="0" SourcePath="..\..\bin\Media\connect.wav" SelfReg="false" NextFile="disconnect.flac"/>
     <ROW File="disconnect.flac" Component_="disconnect.flac" FileName="DISCON~1.FLA|disconnect.flac" Attributes="0" SourcePath="..\..\bin\Media\disconnect.flac" SelfReg="false" NextFile="startup.ogg"/>
+    <ROW File="ds3controller.cat" Component_="bluetoothhost.cat" FileName="DS3CON~1.CAT|ds3controller.cat" Attributes="0" SourcePath="..\..\bin\WinUSB\ds3controller.cat" SelfReg="false" NextFile="ds4controller.cat"/>
+    <ROW File="ds4controller.cat" Component_="bluetoothhost.cat" FileName="DS4CON~1.CAT|ds4controller.cat" Attributes="0" SourcePath="..\..\bin\WinUSB\ds4controller.cat" SelfReg="false" NextFile="WdfCoInstaller01011.dll_1"/>
     <ROW File="ikpFlac.dll" Component_="ikpFlac.dll" FileName="ikpFlac.dll" Attributes="0" SourcePath="..\..\bin\irrKlang\amd64\ikpFlac.dll" SelfReg="false" NextFile="ikpMP3.dll"/>
     <ROW File="ikpFlac.dll_1" Component_="ikpFlac.dll_1" FileName="ikpFlac.dll" Attributes="0" SourcePath="..\..\bin\irrKlang\x86\ikpFlac.dll" SelfReg="false" NextFile="ikpMP3.dll_1"/>
     <ROW File="ikpMP3.dll" Component_="ikpMP3.dll" FileName="ikpMP3.dll" Attributes="0" SourcePath="..\..\bin\irrKlang\amd64\ikpMP3.dll" SelfReg="false" NextFile="irrKlang.NET4.dll"/>
@@ -287,6 +304,8 @@
     <ROW File="updater.exe" Component_="ScpUpdater.exe" FileName="SCPUPD~1.EXE|ScpUpdater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" NextFile="wdisimple.exe" DigSign="true"/>
     <ROW File="wdisimple.exe" Component_="wdisimple.exe" FileName="WDI-SI~1.EXE|wdi-simple.exe" Attributes="0" SourcePath="..\..\bin\libwdi\amd64\wdi-simple.exe" SelfReg="false" NextFile="wdisimple.exe_1" DigSign="true"/>
     <ROW File="wdisimple.exe_1" Component_="wdisimple.exe_1" FileName="WDI-SI~1.EXE|wdi-simple.exe" Attributes="0" SourcePath="..\..\bin\libwdi\x86\wdi-simple.exe" SelfReg="false" NextFile="scpvbus.cat" DigSign="true"/>
+    <ROW File="winusbcoinstaller2.dll" Component_="winusbcoinstaller2.dll" FileName="WINUSB~1.DLL|winusbcoinstaller2.dll" Attributes="0" SourcePath="..\..\bin\WinUSB\amd64\winusbcoinstaller2.dll" SelfReg="false" NextFile="bluetoothhost.cat"/>
+    <ROW File="winusbcoinstaller2.dll_1" Component_="winusbcoinstaller2.dll_1" FileName="WINUSB~1.DLL|winusbcoinstaller2.dll" Attributes="0" SourcePath="..\..\bin\WinUSB\x86\winusbcoinstaller2.dll" SelfReg="false" NextFile="BluetoothHost.inf"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="Setup Files" PackageFileName="ScpToolkit_Setup" Languages="en" InstallationType="4" CabsLocation="1" PackageType="1" FilesInsideExe="true" ExeIconPath="..\ScpControlPanel\Dual Shock 3.ico" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName] [|ProductVersion]\install" ExtUI="true" UseLargeSchema="true" MsiPackageType="AI_ALL"/>
