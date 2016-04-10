@@ -24,7 +24,10 @@
                                  Title="Welcome to the ScpToolkit Driver Installer"
                                  Description="This Wizard will walk you though the process of installing your Sony DualShock 3/4 controller(s) and/or Bluetooth hosts on your system.">
                     <Grid>
-                        <Label>LOOOL</Label>
+                        <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
+                            Greetings! This wizard will guide you through the installation process necessary to enjoy your Sony DualShock controller(s) on your Windows box 
+                            and play Xbox-compatible (XInput) games using the DualShock!
+                        </TextBlock>
                     </Grid>
                 </xctk:WizardPage>
 
@@ -98,6 +101,7 @@
                             <ColumnDefinition Width="500" />
                         </Grid.ColumnDefinitions>
 
+                        <!-- Main area -->
                         <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
                                 If you haven't already please plug in your Bluetooth host device (a.k.a. Bluetooth dongle) now and wait until it appears in the list on the right.
@@ -131,6 +135,24 @@
                                 <StackPanel x:Name="BluetoothStackPanelWinUsb" />
                             </ScrollViewer>
                         </GroupBox>
+
+                        <!-- Warning -->
+                        <StackPanel Grid.Row="1" Grid.Column="0">
+                            <Image Source="Warning.png" Stretch="UniformToFill" />
+
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10" Foreground="#FFFF0000"
+                                       FontWeight="Bold" FontSize="14">
+                                You need to sacrifice a dedicated Bluetooth dongle that will get reserved for use with wireless controllers only.
+                                If you're using a wireless mouse and/or keyboard via the listed dongle and install the driver, you will lose connection instantly and permanently!
+                                If you're unsure what to do next,
+                                <Hyperlink
+                                    NavigateUri="https://github.com/nefarius/ScpToolkit/wiki/Bluetooth-driver-pitfalls"
+                                    RequestNavigate="BluetoothHyperlink_OnRequestNavigate">
+                                    please consult the documentation
+                                </Hyperlink>
+                                first!
+                            </TextBlock>
+                        </StackPanel>
                     </Grid>
                 </xctk:WizardPage>
 
@@ -139,9 +161,20 @@
                                  Title="Install Xbox 360 Controller emulator driver."
                                  Description="In this step you can install the virtual Xbox 360 Controller driver."
                                  PreviousPage="{Binding ElementName=BthInstPage}"
-                                 NextPage="{Binding ElementName=LastPage}">
+                                 NextPage="{Binding ElementName=ServiceInstPage}">
                     <Grid>
-                        <StackPanel Width="500" HorizontalAlignment="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="500" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Main area -->
+                        <StackPanel>
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
                                 In this step we will attempt to install the virtual Xbox 360 Controller emulator driver (a.k.a. Scarlett.Crush Productions Virtual Bus Driver, ScpVBus or just Virtual Bus).
                                 <LineBreak /><LineBreak />
@@ -155,13 +188,65 @@
                                 Install virtual Xbox 360 Controller driver
                             </Button>
                         </StackPanel>
+                        
+                        <StackPanel Grid.Row="1" Grid.Column="0">
+                            <Image Source="Warning.png" Stretch="UniformToFill" />
+
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10" Foreground="#FFFF0000"
+                                       FontWeight="Bold" FontSize="14">
+                                The Virtual Bus might also be used by other 3rd party tools running on your system (like DS4Windows, InputMapper, FreePIE, etc.), 
+                                please make sure they are all closed/shut down to avoid system reboot.
+                            </TextBlock>
+                        </StackPanel>
                     </Grid>
                 </xctk:WizardPage>
 
+                <!-- Service Installation Page -->
+                <xctk:WizardPage x:Name="ServiceInstPage" PageType="Interior"
+                                 Title="Install Windows Service"
+                                 Description="In this step you can install the Windows Service."
+                                 PreviousPage="{Binding ElementName=VBusInstPage}"
+                                 NextPage="{Binding ElementName=LastPage}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="500" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Main area -->
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
+                                Handling USB/Bluetooth connections and translating data back and forth between controllers and the XInput emulator driver is done via a Windows Service.
+                                <LineBreak /><LineBreak />
+                                If the service is already installed, it will automatically get started after the Driver Installer has finished.
+                                <LineBreak /><LineBreak />
+                                This is basically the core logic of the toolkit so installation is necessary for everything to function correctly.
+                            </TextBlock>
+
+                            <!-- Install button -->
+                            <Button Click="InstallWindowsServiceOnClick" Margin="20,0">
+                                Install Windows Service
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </xctk:WizardPage>
+
+                <!-- Last Page -->
                 <xctk:WizardPage x:Name="LastPage" PageType="Interior"
-                                 Title="Last Page"
+                                 Title="Installation finished"
                                  Description="This is the last page in the process"
-                                 CanFinish="True" />
+                                 CanFinish="True">
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
+                        That's it! Wasn't so bad now was it? Enjoy your games!
+                        <LineBreak /><LineBreak />
+                        Once you finished this wizard, the main service will be started and your controllers connected automatically.
+                    </TextBlock>
+                </xctk:WizardPage>
             </xctk:Wizard>
 
         </xctk:BusyIndicator>

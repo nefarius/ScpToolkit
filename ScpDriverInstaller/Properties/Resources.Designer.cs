@@ -275,6 +275,33 @@ namespace ScpDriverInstaller.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Congratulations! It looks like the service was installed properly, please proceed to the next step..
+        /// </summary>
+        internal static string ServiceInstOk_Content {
+            get {
+                return ResourceManager.GetString("ServiceInstOk_Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service installed successfully.
+        /// </summary>
+        internal static string ServiceInstOk_Instruction {
+            get {
+                return ResourceManager.GetString("ServiceInstOk_Instruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Installation successful.
+        /// </summary>
+        internal static string ServiceInstOk_Title {
+            get {
+                return ResourceManager.GetString("ServiceInstOk_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step..
         /// </summary>
         internal static string VBusInstOk_Content {

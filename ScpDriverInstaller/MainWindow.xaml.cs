@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
@@ -48,7 +49,6 @@ namespace ScpDriverInstaller
             AppDomain.CurrentDomain.UnhandledException +=
                 (sender, args) => { Log.FatalFormat("An unexpected exception occurred: {0}", args.ExceptionObject); };
 
-            _viewModel.InstallButtonClicked += ViewModelOnInstallButtonClicked;
             _viewModel.UninstallButtonClicked += ViewModelOnUninstallButtonClicked;
             _viewModel.ExitButtonClicked += ViewModelOnExitButtonClicked;
 
@@ -94,7 +94,6 @@ namespace ScpDriverInstaller
             var popup = new ToastPopUp(title, message, type)
             {
                 Background = Background,
-                FontColor = Brushes.Bisque,
                 FontFamily = FontFamily
             };
 
@@ -216,7 +215,12 @@ namespace ScpDriverInstaller
 
         private void Wizard_OnHelp(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/nefarius/ScpToolkit/wiki/Welcome-to-the-ScpToolkit-documentation!");
+            Process.Start("https://github.com/nefarius/ScpToolkit/wiki");
+        }
+
+        private void BluetoothHyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.ToString());
         }
 
         #endregion
@@ -362,14 +366,14 @@ namespace ScpDriverInstaller
                         return;
                     }
 
-                    switch (((Win32Exception) instex.InnerException).NativeErrorCode)
+                    switch (((Win32Exception)instex.InnerException).NativeErrorCode)
                     {
                         case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                             Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                             break;
                         default:
                             Log.ErrorFormat("Win32-Error during uninstallation: {0}",
-                                (Win32Exception) instex.InnerException);
+                                (Win32Exception)instex.InnerException);
                             break;
                     }
                 }
@@ -406,105 +410,6 @@ namespace ScpDriverInstaller
 
             if (_bthDriverConfigured)
                 Log.Info("Bluetooth Driver uninstalled");
-
-            #endregion
-        }
-
-        private async void ViewModelOnInstallButtonClicked(object sender, EventArgs eventArgs)
-        {
-            #region Pre-Installation
-
-            _saved = Cursor;
-            Cursor = Cursors.Wait;
-            InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
-
-            #endregion
-
-            #region Driver Installation
-
-            await Task.Run(() =>
-            {
-                try
-                {
-                    if (_viewModel.InstallWindowsService)
-                    {
-                        IDictionary state = new Hashtable();
-                        var service =
-                            new AssemblyInstaller(Path.Combine(GlobalConfiguration.AppDirectory, "ScpService.exe"), null);
-
-                        state.Clear();
-                        service.UseNewContext = true;
-
-                        service.Install(state);
-                        service.Commit(state);
-
-                        if (StartService(Settings.Default.ScpServiceName))
-                        {
-                            Log.InfoFormat("{0} started", Settings.Default.ScpServiceName);
-                        }
-                        else
-                        {
-                            _reboot = true;
-                        }
-
-                        _scpServiceConfigured = true;
-                    }
-                }
-                catch (Win32Exception w32Ex)
-                {
-                    switch (w32Ex.NativeErrorCode)
-                    {
-                        case 1073: // ERROR_SERVICE_EXISTS
-                            Log.Info("Service already exists, attempting to restart...");
-
-                            StopService(Settings.Default.ScpServiceName);
-                            Log.Info("Service stopped successfully");
-
-                            StartService(Settings.Default.ScpServiceName);
-                            Log.Info("Service started successfully");
-                            break;
-                        default:
-                            Log.ErrorFormat("Win32-Error during installation: {0}", w32Ex);
-                            break;
-                    }
-                }
-                catch (InvalidOperationException iopex)
-                {
-                    Log.ErrorFormat("Error during installation: {0}", iopex.Message);
-                }
-                catch (Exception ex)
-                {
-                    Log.ErrorFormat("Error during installation: {0}", ex);
-                }
-            });
-
-            #endregion
-
-            #region Post-Installation
-
-            InstallGrid.IsEnabled = !InstallGrid.IsEnabled;
-            Cursor = _saved;
-
-            if (_reboot)
-                Log.InfoFormat("[Reboot Required]");
-
-            if (_scpServiceConfigured)
-                Log.Info("SCP DSx Service installed");
-
-            if (_busDeviceConfigured)
-                Log.Info("Bus Device installed");
-
-            if (_busDriverConfigured)
-                Log.Info("Bus Driver installed");
-
-            if (_ds3DriverConfigured)
-                Log.Info("DualShock 3 USB Driver installed");
-
-            if (_bthDriverConfigured)
-                Log.Info("Bluetooth Driver installed");
-
-            if (_ds4DriverConfigured)
-                Log.Info("DualShock 4 USB Driver installed");
 
             #endregion
         }
@@ -683,7 +588,7 @@ namespace ScpDriverInstaller
                         else
                         {
                             Log.FatalFormat("Virtual Bus Driver pre-installation failed with Win32 error {0}",
-                                (uint) Marshal.GetLastWin32Error());
+                                (uint)Marshal.GetLastWin32Error());
                             failed = true;
                         }
                     }
@@ -740,6 +645,98 @@ namespace ScpDriverInstaller
             }
         }
 
+        private async void InstallWindowsServiceOnClick(object sender, RoutedEventArgs e)
+        {
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
+            var failed = false;
+            var rebootRequired = false;
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    MainBusyIndicator.SetContentThreadSafe("Installing Windows Service");
+
+                    IDictionary state = new Hashtable();
+                    var service =
+                        new AssemblyInstaller(Path.Combine(GlobalConfiguration.AppDirectory, "ScpService.exe"), null);
+
+                    state.Clear();
+                    service.UseNewContext = true;
+
+                    service.Install(state);
+                    service.Commit(state);
+
+                    if (StartService(Settings.Default.ScpServiceName))
+                    {
+                        Log.InfoFormat("{0} started", Settings.Default.ScpServiceName);
+                    }
+                    else
+                    {
+                        rebootRequired = true;
+                    }
+                }
+                catch (Win32Exception w32Ex)
+                {
+                    switch (w32Ex.NativeErrorCode)
+                    {
+                        case 1073: // ERROR_SERVICE_EXISTS
+                            Log.Info("Service already exists");
+                            break;
+                        default:
+                            Log.ErrorFormat("Win32-Error during installation: {0}", w32Ex);
+                            failed = true;
+                            break;
+                    }
+                }
+                catch (InvalidOperationException iopex)
+                {
+                    Log.ErrorFormat("Error during installation: {0}", iopex.Message);
+                    failed = true;
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("Error during installation: {0}", ex);
+                    failed = true;
+                }
+            });
+
+            MainBusyIndicator.IsBusy = !MainBusyIndicator.IsBusy;
+
+            // display error message
+            if (failed)
+            {
+                ExtendedMessageBox.Show(this,
+                    Properties.Resources.DsInstError_Title,
+                    Properties.Resources.DsInstError_Instruction,
+                    Properties.Resources.DsInstError_Content,
+                    string.Format(Properties.Resources.DsInstError_Verbose,
+                        new Win32Exception(Marshal.GetLastWin32Error()), Marshal.GetLastWin32Error()),
+                    Properties.Resources.DsInstError_Footer,
+                    TaskDialogIcon.Error);
+                return;
+            }
+
+            // display success message
+            ExtendedMessageBox.Show(this,
+                Properties.Resources.ServiceInstOk_Title,
+                Properties.Resources.ServiceInstOk_Instruction,
+                Properties.Resources.ServiceInstOk_Content,
+                string.Empty,
+                string.Empty,
+                TaskDialogIcon.Information);
+
+            // display reboot required message
+            if (rebootRequired)
+            {
+                MessageBox.Show(this,
+                    Properties.Resources.DrvInstReboot_Content,
+                    Properties.Resources.DrvInstReboot_Title,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+        }
+
         #endregion
 
         #region Window events
@@ -757,7 +754,7 @@ namespace ScpDriverInstaller
             // add popup-appender to all loggers
             foreach (var currentLogger in LogManager.GetCurrentLoggers())
             {
-                ((Logger) currentLogger.Logger).AddAppender(this);
+                ((Logger)currentLogger.Logger).AddAppender(this);
             }
 
             // stop service if exists so no device is occupied
@@ -787,7 +784,7 @@ namespace ScpDriverInstaller
             // remove popup-appender from all loggers
             foreach (var currentLogger in LogManager.GetCurrentLoggers())
             {
-                ((Logger) currentLogger.Logger).RemoveAppender(this);
+                ((Logger)currentLogger.Logger).RemoveAppender(this);
             }
 
             // unregister notifications
@@ -924,13 +921,13 @@ namespace ScpDriverInstaller
                     return false;
                 }
 
-                switch (((Win32Exception) iopex.InnerException).NativeErrorCode)
+                switch (((Win32Exception)iopex.InnerException).NativeErrorCode)
                 {
                     case 1060: // ERROR_SERVICE_DOES_NOT_EXIST
                         Log.Warn("Service doesn't exist, maybe it was uninstalled before");
                         break;
                     default:
-                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception) iopex.InnerException);
+                        Log.ErrorFormat("Win32-Error: {0}", (Win32Exception)iopex.InnerException);
                         break;
                 }
             }

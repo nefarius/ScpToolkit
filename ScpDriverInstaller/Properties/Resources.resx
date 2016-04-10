@@ -210,4 +210,13 @@ Sadly there are too many possibilities of why it failed to cram all suggested re
   <data name="VBusInstOk_Footer" xml:space="preserve">
     <value/>
   </data>
+  <data name="ServiceInstOk_Title" xml:space="preserve">
+    <value>Installation successful</value>
+  </data>
+  <data name="ServiceInstOk_Instruction" xml:space="preserve">
+    <value>Service installed successfully</value>
+  </data>
+  <data name="ServiceInstOk_Content" xml:space="preserve">
+    <value>Congratulations! It looks like the service was installed properly, please proceed to the next step.</value>
+  </data>
 </root>
