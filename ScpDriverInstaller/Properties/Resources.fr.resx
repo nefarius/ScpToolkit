@@ -1,0 +1,337 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Précédent</value>
+  </data>
+  <data name="BluetoothSetupDescription" xml:space="preserve">
+    <value>Dans cette étape, vous pouvez installer le pilote Bluetooth</value>
+  </data>
+  <data name="BluetoothSetupInitialized" xml:space="preserve">
+    <value>Périphériques Bluetooth installés</value>
+  </data>
+  <data name="BluetoothSetupInstalling" xml:space="preserve">
+    <value>Installation du pilote Bluetooth...</value>
+  </data>
+  <data name="BluetoothSetupPleasePlugIn" xml:space="preserve">
+    <value>Si ce n'est pas déja fait, veuillez brancher votre périphérique Bluetooth et attendre qu'il apparaisse dans la section à droite.</value>
+  </data>
+  <data name="BluetoothSetupStartInstall" xml:space="preserve">
+    <value>Installer le pilote de périphérique Bluetooth</value>
+  </data>
+  <data name="BluetoothSetupSuccessInstruction" xml:space="preserve">
+    <value>Pilote de périphérique Bluetooth installé avec succès</value>
+  </data>
+  <data name="BluetoothSetupTitle" xml:space="preserve">
+    <value>Installation du pilote Bluetooth</value>
+  </data>
+  <data name="BluetoothSetupUninitialized" xml:space="preserve">
+    <value>Périphériques Bluetooth prêts à être installés</value>
+  </data>
+  <data name="BluetoothSetupWarningAfterLink" xml:space="preserve">
+    <value>.</value>
+  </data>
+  <data name="BluetoothSetupWarningBeforeLink" xml:space="preserve">
+    <value>Vous devez sacrifier un périphérique Bluetooth pour usage avec seulement des manettes. Si vous utilisez une souris ou un clavier sans fil avec le périphérique affiché à droite et installez le pilote, vous allez perdre la connection de manière instantanée et permanente! Si vous ne savez pas quoi faire,</value>
+  </data>
+  <data name="BluetoothSetupWarningLink" xml:space="preserve">
+    <value>veuillez consulter la documentation</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="DualShockSetupDescription" xml:space="preserve">
+    <value>Dans cette étape, vous pouvez installer le pilote de contrôleur DualShock</value>
+  </data>
+  <data name="DualShockSetupInitialized" xml:space="preserve">
+    <value>Contrôleurs installés</value>
+  </data>
+  <data name="DualShockSetupInstalling3" xml:space="preserve">
+    <value>Installation du pilote DualShock 3</value>
+  </data>
+  <data name="DualShockSetupInstalling4" xml:space="preserve">
+    <value>Installation du pilote DualShock 4</value>
+  </data>
+  <data name="DualShockSetupPleasePlugIn" xml:space="preserve">
+    <value>Si ce n'est pas déja fait, veuillez brancher vos manettes DualShock 3 ou 4 et attendre qu'ils apparaissent dans la section à droite.</value>
+  </data>
+  <data name="DualShockSetupStartInstall" xml:space="preserve">
+    <value>Installer le pilote de contrôleur</value>
+  </data>
+  <data name="DualShockSetupSuccessInstruction" xml:space="preserve">
+    <value>Pilote de contrôleur DualShock installé avec succès</value>
+  </data>
+  <data name="DualShockSetupTitle" xml:space="preserve">
+    <value>Installation du pilote de manette DualShock</value>
+  </data>
+  <data name="DualShockSetupUninitialized" xml:space="preserve">
+    <value>Contrôleurs prêts à être installés</value>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Terminer</value>
+  </data>
+  <data name="FinishedAutoService" xml:space="preserve">
+    <value>Une fois que vous fermerez cet assistant, le service va être démarré et vous pourrez commencer à jouer.</value>
+  </data>
+  <data name="FinishedDescription" xml:space="preserve">
+    <value>Ceci est la dernière page du processus</value>
+  </data>
+  <data name="FinishedThatsIt" xml:space="preserve">
+    <value>C'est tout! Ce n'était pas si pire, non?</value>
+  </data>
+  <data name="FinishedTitle" xml:space="preserve">
+    <value>Installation terminée</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Aide</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Suivant &gt;</value>
+  </data>
+  <data name="RebootRequiredContent" xml:space="preserve">
+    <value>Un redémarrage est nécéssaire afin de terminer complètement l'installation. Veuillez redémarrer votre ordinateur à la fin de cet assitant.</value>
+  </data>
+  <data name="RebootRequiredTitle" xml:space="preserve">
+    <value>Redémarrage nécéssaire</value>
+  </data>
+  <data name="ServiceSetupDescription" xml:space="preserve">
+    <value>Dans cette étape, vous pouvez installer le service Windows</value>
+  </data>
+  <data name="ServiceSetupIfAlreadyPresent" xml:space="preserve">
+    <value>Si le service est déjà installé, il sera automatiquement démarré à la fin de cet assistant.</value>
+  </data>
+  <data name="ServiceSetupInstallationRequired" xml:space="preserve">
+    <value>Ceci est la partie principale de ScpToolkit, son installation est donc requise afin que tout fonctionne correctement.</value>
+  </data>
+  <data name="ServiceSetupInstalling" xml:space="preserve">
+    <value>Installation du service Windows...</value>
+  </data>
+  <data name="ServiceSetupStartInstall" xml:space="preserve">
+    <value>Installer le service Windows</value>
+  </data>
+  <data name="ServiceSetupSuccessContent" xml:space="preserve">
+    <value>Félicitations! Le service a été installé correctement. Veuillez procéder à l'étape suivante.</value>
+  </data>
+  <data name="ServiceSetupSuccessInstruction" xml:space="preserve">
+    <value>Service installé avec succès!</value>
+  </data>
+  <data name="ServiceSetupTitle" xml:space="preserve">
+    <value>Installation du service Windows</value>
+  </data>
+  <data name="ServiceSetupWhyIsItNeeded" xml:space="preserve">
+    <value>La gestion des données entre la manette et le périphérique XInput virtuel est faite par un service Windows.</value>
+  </data>
+  <data name="SetupFailedContent" xml:space="preserve">
+    <value>Je suis désolé de vous informer que certaines composantes n'ont pu être installées correctement.
+
+Malheureusement, il y a trop de possibilitées pour donner toutes les solutions possibles dans une de ces boîtes, mais voici quelques suggestions:
+
+1. Rouvrez cet installateur et réessayez. Sérieusement.
+2. Redémarrez votre ordinateur. C'est Windows, donc ça pourrait aider.
+3. Vérifiez votre câblage. Votre chat a peut-être décidé que vos câbles feraient un bon jouet.
+4. Votre contrôleur est-t'il sous « Périphériques d'interface utilisateur » dans le gestionnaire de périphériques? Si non, il est possible qu'il soit équipé du mauvais pilote pour quelconque raison. Trouvez-le et remettez le pilote par défaut.
+5. ???
+6. Voyez? Cette liste est déja assez longue! Cliquez sur le lien ci-dessous pour obtenir plus d'assistance.</value>
+  </data>
+  <data name="SetupFailedFooter" xml:space="preserve">
+    <value>Si vous ne pouvez résoudre ce problème par vous-même, &lt;a href="https://github.com/nefarius/ScpToolkit/wiki"&gt;consultez la documentation en ligne&lt;/a&gt;.</value>
+  </data>
+  <data name="SetupFailedInstructions" xml:space="preserve">
+    <value>Certaines tâches d'installation ont échoués ou n'ont pas complétées.</value>
+  </data>
+  <data name="SetupFailedTitle" xml:space="preserve">
+    <value>Installation échouée</value>
+  </data>
+  <data name="SetupFailedVerbose" xml:space="preserve">
+    <value>Résultat de l'installation: {0} ({1})</value>
+  </data>
+  <data name="SetupIfNotShowingUp" xml:space="preserve">
+    <value>Si le périphérique ne s'affiche pas après quelques instants, il est soit déja installé avec le bon pilote ou dans un état défectueux.</value>
+  </data>
+  <data name="SetupPleaseStartInstall" xml:space="preserve">
+    <value>Lorsque votre périphérique apparaît, appuyer sur le bouton ci-dessous pour commencer l'installation pour ce périphérique particulier.</value>
+  </data>
+  <data name="SetupSuccessContent" xml:space="preserve">
+    <value>Félicitations! Les pilotes semblent être bien installés. Veuillez procéder à l'étape suivante.</value>
+  </data>
+  <data name="SetupSuccessTitle" xml:space="preserve">
+    <value>Installation réussie</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Installateur de pilote ScpToolkit</value>
+  </data>
+  <data name="VirtualBusSetupAddingDriverStore" xml:space="preserve">
+    <value>Mise en cache du pilote de bus virtuel...</value>
+  </data>
+  <data name="VirtualBusSetupCreating" xml:space="preserve">
+    <value>Création du bus virtuel...</value>
+  </data>
+  <data name="VirtualBusSetupDescription" xml:space="preserve">
+    <value>Dans cette étape, vous pouvez installer le bus virtuel</value>
+  </data>
+  <data name="VirtualBusSetupIfAlreadyPresent" xml:space="preserve">
+    <value>Si le bus virtuel est déja installé sur votre système (parce que vous mettez à jour ScpServer/ScpToolkit ou avez utilisé des outils comme DS4Windows avant), le pilote sera automatiquement mis à jour.</value>
+  </data>
+  <data name="VirtualBusSetupInstalling" xml:space="preserve">
+    <value>Installation du pilote de bus virtuel...</value>
+  </data>
+  <data name="VirtualBusSetupStartInstall" xml:space="preserve">
+    <value>Installer le pilote de manette virtuelle</value>
+  </data>
+  <data name="VirtualBusSetupSuccessInstruction" xml:space="preserve">
+    <value>Bus virtuel installé avec succès!</value>
+  </data>
+  <data name="VirtualBusSetupTitle" xml:space="preserve">
+    <value>Installation du pilote de manette virtuelle</value>
+  </data>
+  <data name="VirtualBusSetupToAvoidRestart" xml:space="preserve">
+    <value>Le bus virtuel peut aussi être utilisé par d'autre programme sur votre système (comme DS4Windows, InputMapper, FreePIE, etc.). Si c'est le cas, veuillez les fermer, afin d'éviter un rédémarrage de votre ordinateur.</value>
+  </data>
+  <data name="VirtualBusSetupWhatWeWillDo" xml:space="preserve">
+    <value>Dans cette étape, nous essaierons d'installer le pilote de manette Xbox 360 virtuelle (aussi appelé Scarlett.Crush Productions Virtual Bus Driver, ScpVBus ou juste Virtual Bus).</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\Warning.fr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="WelcomeDescription" xml:space="preserve">
+    <value>Cet assistant installera les pilotes DualShock 3/4 et Bluetooth sur votre système</value>
+  </data>
+  <data name="WelcomeGreetings" xml:space="preserve">
+    <value>Bonjour! Cet assistant vous aidera à utiliser vos manettes PlayStation pour jouer à des jeux compatibles avec XInput sur cet ordinateur.</value>
+  </data>
+  <data name="WelcomeTitle" xml:space="preserve">
+    <value>Bienvenue à l'installateur de pilote ScpToolkit</value>
+  </data>
+  <data name="Xbox360Driver" xml:space="preserve">
+    <value>Pilote de manette Xbox 360</value>
+  </data>
+  <data name="Xbox360DriverNeededAfterLink" xml:space="preserve">
+    <value>doit être installé séparément.</value>
+  </data>
+  <data name="Xbox360DriverNeededBeforeLink" xml:space="preserve">
+    <value>Sur Windows Vista et Windows 7, le</value>
+  </data>
+  <data name="Xbox360DriverNeededInstallBeforeContinuing" xml:space="preserve">
+    <value>Téléchargez et installez la bonne version avant de continuer avec cet assistant.</value>
+  </data>
+  <data name="Xbox360DriverNeededLink" xml:space="preserve">
+    <value>pilote de manette Xbox 360</value>
+  </data>
+</root>

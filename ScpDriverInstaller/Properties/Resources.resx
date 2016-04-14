@@ -117,34 +117,170 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BthListEmpty_Title" xml:space="preserve">
-    <value>No Bluetooth devices selected</value>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Back</value>
+    <comment>Back button</comment>
   </data>
-  <data name="BthListEmpty_Text" xml:space="preserve">
-    <value>You chose to install a Bluetooth dongle but have not selected one or more devices from the device list!</value>
+  <data name="BluetoothSetupDescription" xml:space="preserve">
+    <value>In this step you can initialize one or more Bluetooth hosts.</value>
+    <comment>Text directly visible under the title, showing a quick description of the Bluetooth driver setup</comment>
   </data>
-  <data name="Ds3ListEmpty_Title" xml:space="preserve">
-    <value>No DualShock 3 controllers selected</value>
+  <data name="BluetoothSetupInitialized" xml:space="preserve">
+    <value>Initialized Bluetooth Hosts</value>
+    <comment>Header of the group of Bluetooth hosts ready for usage</comment>
   </data>
-  <data name="Ds3ListEmpty_Text" xml:space="preserve">
-    <value>You chose to install the DualShock 3 drivers but you didn't select one or more devices from the device list!</value>
+  <data name="BluetoothSetupInstalling" xml:space="preserve">
+    <value>Installing WinUSB driver on Bluetooth Host Devices</value>
+    <comment>Text shown with the progress bar while installing the Bluetooth driver</comment>
   </data>
-  <data name="Ds4ListEmpty_Title" xml:space="preserve">
-    <value>No DualShock 4 controllers selected</value>
+  <data name="BluetoothSetupPleasePlugIn" xml:space="preserve">
+    <value>If you haven't already please plug in your Bluetooth host device (a.k.a. Bluetooth dongle) now and wait until it appears in the list on the right.</value>
+    <comment>Text asking the user to plug his Bluetooth dongle</comment>
   </data>
-  <data name="Ds4ListEmpty_Text" xml:space="preserve">
-    <value>You chose to install the DualShock 4 drivers but you didn't select one or more devices from the device list!</value>
+  <data name="BluetoothSetupStartInstall" xml:space="preserve">
+    <value>Initialize all connected devices as Bluetooth Hosts</value>
+    <comment>Button to start the setup</comment>
   </data>
-  <data name="DsInstError_Footer" xml:space="preserve">
-    <value>If you can't resolve this issue by yourself, &lt;a href="https://github.com/nefarius/ScpToolkit/wiki"&gt;check out the online documentation&lt;/a&gt;.</value>
+  <data name="BluetoothSetupSuccessInstruction" xml:space="preserve">
+    <value>Bluetooth Hosts installed successfully</value>
+    <comment>Instruction of the setup success dialog box</comment>
   </data>
-  <data name="DsInstError_Verbose" xml:space="preserve">
-    <value>Installer result: {0} ({1})</value>
+  <data name="BluetoothSetupTitle" xml:space="preserve">
+    <value>Install Bluetooth hosts</value>
+    <comment>Title shown on the Bluetooth driver install page</comment>
   </data>
-  <data name="DsInstError_Content" xml:space="preserve">
+  <data name="BluetoothSetupUninitialized" xml:space="preserve">
+    <value>Uninitialized Bluetooth Hosts</value>
+    <comment>Header of the group of Bluetooth hosts not ready for usage</comment>
+  </data>
+  <data name="BluetoothSetupWarningAfterLink" xml:space="preserve">
+    <value>first!</value>
+    <comment>The text shown after the link on the warning for the Bluetooth setup</comment>
+  </data>
+  <data name="BluetoothSetupWarningBeforeLink" xml:space="preserve">
+    <value>You need to sacrifice a dedicated Bluetooth dongle that will get reserved for use with wireless controllers only. If you're using a wireless mouse and/or keyboard via the listed dongle and install the driver, you will lose connection instantly and permanently! If you're unsure what to do next,</value>
+    <comment>The text shown before the link on the warning for the Bluetooth setup</comment>
+  </data>
+  <data name="BluetoothSetupWarningLink" xml:space="preserve">
+    <value>please consult the documentation</value>
+    <comment>The text shown on the warning for the Bluetooth setup, points to the documentation</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Cancel button</comment>
+  </data>
+  <data name="DualShockSetupDescription" xml:space="preserve">
+    <value>In this step you can initialize one or more DualShock 3/4 controllers.</value>
+    <comment>Text directly visible under the title, showing a quick description of the DualShock driver setup</comment>
+  </data>
+  <data name="DualShockSetupInitialized" xml:space="preserve">
+    <value>Initialized DualShock Controllers</value>
+    <comment>Header of the group of DualShock controllers ready for usage</comment>
+  </data>
+  <data name="DualShockSetupInstalling3" xml:space="preserve">
+    <value>Installing WinUSB driver on DualShock 3 Devices</value>
+    <comment>Text shown with the progress bar while installing the DualShock 3 driver</comment>
+  </data>
+  <data name="DualShockSetupInstalling4" xml:space="preserve">
+    <value>Installing WinUSB driver on DualShock 4 Devices</value>
+    <comment>Text shown with the progress bar while installing the DualShock 4 driver</comment>
+  </data>
+  <data name="DualShockSetupPleasePlugIn" xml:space="preserve">
+    <value>If you haven't already, please plug in your DualShock 3 (or 4) controller with the USB cable now and wait until it appears in the list on the right.</value>
+    <comment>Text asking the user to plug his controllers</comment>
+  </data>
+  <data name="DualShockSetupStartInstall" xml:space="preserve">
+    <value>Initialize all connected devices as DualShock 3/4 Controllers</value>
+    <comment>Button to start the setup</comment>
+  </data>
+  <data name="DualShockSetupSuccessInstruction" xml:space="preserve">
+    <value>DualShock controllers installed successfully</value>
+    <comment>Instruction of the setup success dialog box</comment>
+  </data>
+  <data name="DualShockSetupTitle" xml:space="preserve">
+    <value>Install DualShock 3/4 Controllers</value>
+    <comment>Title shown on the DualShock driver install page</comment>
+  </data>
+  <data name="DualShockSetupUninitialized" xml:space="preserve">
+    <value>Uninitialized DualShock Controllers</value>
+    <comment>Header of the group of DualShock controllers not ready for usage</comment>
+  </data>
+  <data name="Finish" xml:space="preserve">
+    <value>Finish</value>
+    <comment>Finish button</comment>
+  </data>
+  <data name="FinishedAutoService" xml:space="preserve">
+    <value>Once you finished this wizard, the main service will be started and your controllers connected automatically.</value>
+    <comment>Text saying that the service will start automatically when the installer is closed</comment>
+  </data>
+  <data name="FinishedDescription" xml:space="preserve">
+    <value>This is the last page in the process</value>
+    <comment>Text directly visible under the title, stating that this is the last page</comment>
+  </data>
+  <data name="FinishedThatsIt" xml:space="preserve">
+    <value>That's it! Wasn't so bad now was it? Enjoy your games!</value>
+    <comment>Little text saying that the process wasn't so bad</comment>
+  </data>
+  <data name="FinishedTitle" xml:space="preserve">
+    <value>Installation finished</value>
+    <comment>Title shown on the end page</comment>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+    <comment>Help button</comment>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next &gt;</value>
+    <comment>Next button</comment>
+  </data>
+  <data name="RebootRequiredContent" xml:space="preserve">
+    <value>A reboot is required for the driver installation to complete. Please restart your machine after you finished this installation wizard.</value>
+    <comment>Content of the reboot required dialog box</comment>
+  </data>
+  <data name="RebootRequiredTitle" xml:space="preserve">
+    <value>Reboot required</value>
+    <comment>Title of the reboot required dialog box</comment>
+  </data>
+  <data name="ServiceSetupDescription" xml:space="preserve">
+    <value>In this step you can install the Windows Service.</value>
+    <comment>Test directly visible under the title, showing a quick description of the Service setup</comment>
+  </data>
+  <data name="ServiceSetupIfAlreadyPresent" xml:space="preserve">
+    <value>If the service is already installed, it will automatically get started after the Driver Installer has finished.</value>
+    <comment>Explain what will be done if the Service is already installed</comment>
+  </data>
+  <data name="ServiceSetupInstallationRequired" xml:space="preserve">
+    <value>This is basically the core logic of the toolkit so installation is necessary for everything to function correctly.</value>
+    <comment>Explains that the service is required for ScpToolkit to work</comment>
+  </data>
+  <data name="ServiceSetupInstalling" xml:space="preserve">
+    <value>Installing Windows Service</value>
+    <comment>Text shown with the progress bar while installing the Windows Service</comment>
+  </data>
+  <data name="ServiceSetupStartInstall" xml:space="preserve">
+    <value>Install Windows Service</value>
+    <comment>Button to start the setup</comment>
+  </data>
+  <data name="ServiceSetupSuccessContent" xml:space="preserve">
+    <value>Congratulations! It looks like the service was installed properly, please proceed to the next step.</value>
+    <comment>Content of the setup success dialog box</comment>
+  </data>
+  <data name="ServiceSetupSuccessInstruction" xml:space="preserve">
+    <value>Service installed successfully</value>
+    <comment>Instruction of the setup success dialog box</comment>
+  </data>
+  <data name="ServiceSetupTitle" xml:space="preserve">
+    <value>Install Windows Service</value>
+    <comment>Title shown on the Windows Service install page</comment>
+  </data>
+  <data name="ServiceSetupWhyIsItNeeded" xml:space="preserve">
+    <value>Handling USB/Bluetooth connections and translating data back and forth between controllers and the XInput emulator driver is done via a Windows Service.</value>
+    <comment>Text explaining what does the Service do</comment>
+  </data>
+  <data name="SetupFailedContent" xml:space="preserve">
     <value>I'm sorry to inform you that some of your devices weren't installed properly.
 
-Sadly there are too many possibilities of why it failed to cram all suggested resolutions in one of these info boxes, but I can give you some hints on resolving the issue:
+Sadly, there are too many possibilities of why it failed to cram all suggested resolutions in one of these info boxes, but I can give you some hints on resolving the issue:
 
 1. Re-open this Driver Installer and simply try again. Seriously, try it.
 2. Reboot your machine. It's Windows, so it might help.
@@ -152,71 +288,118 @@ Sadly there are too many possibilities of why it failed to cram all suggested re
 4. Is your controller listen under "Human Interface Devices" in Device Manager? If not, it might be equipped with the wrong driver for whatever reason. Find it and revert to the default device driver.
 5. ???
 6. See what I meant? This list is already getting too long, click the link in the footer if you need more help!</value>
+    <comment>Troubleshooting steps for the setup failed dialog box</comment>
   </data>
-  <data name="DsInstError_Instruction" xml:space="preserve">
+  <data name="SetupFailedFooter" xml:space="preserve">
+    <value>If you can't resolve this issue by yourself, &lt;a href="https://github.com/nefarius/ScpToolkit/wiki"&gt;check out the online documentation&lt;/a&gt;.</value>
+    <comment>Refers to documentation in the setup failed dialog box</comment>
+  </data>
+  <data name="SetupFailedInstructions" xml:space="preserve">
     <value>One or more installation tasks failed or did not complete</value>
+    <comment>Little summary of the setup failed dialog box</comment>
   </data>
-  <data name="DsInstError_Title" xml:space="preserve">
+  <data name="SetupFailedTitle" xml:space="preserve">
     <value>Installation failed</value>
+    <comment>Title of the setup failed dialog box</comment>
   </data>
-  <data name="DsInstOk_Title" xml:space="preserve">
-    <value>Installation successful</value>
+  <data name="SetupFailedVerbose" xml:space="preserve">
+    <value>Installer result: {0} ({1})</value>
+    <comment>Details about why it failed in the setup failed dialog box</comment>
   </data>
-  <data name="DsInstOk_Instruction" xml:space="preserve">
-    <value>DualShock controllers installed successfully</value>
+  <data name="SetupIfNotShowingUp" xml:space="preserve">
+    <value>If the device doesn't show up after a few seconds, it's either already equipped with the right driver or in a faulty state.</value>
+    <comment>Text informing the user about why the device doesn't show up</comment>
   </data>
-  <data name="DsInstOk_Content" xml:space="preserve">
+  <data name="SetupPleaseStartInstall" xml:space="preserve">
+    <value>Once your device becomes visible, hit the button below to start the driver installation process for this particular device.</value>
+    <comment>Text prompting the user to start the setup</comment>
+  </data>
+  <data name="SetupSuccessContent" xml:space="preserve">
     <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
+    <comment>Success text for the setup success dialog box</comment>
   </data>
-  <data name="DsInstOk_Verbose" xml:space="preserve">
-    <value/>
-  </data>
-  <data name="DsInstOk_Footer" xml:space="preserve">
-    <value/>
-  </data>
-  <data name="BthInstOk_Content" xml:space="preserve">
-    <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
-  </data>
-  <data name="BthInstOk_Footer" xml:space="preserve">
-    <value/>
-  </data>
-  <data name="BthInstOk_Instruction" xml:space="preserve">
-    <value>Bluetooth Hosts installed successfully</value>
-  </data>
-  <data name="BthInstOk_Title" xml:space="preserve">
+  <data name="SetupSuccessTitle" xml:space="preserve">
     <value>Installation successful</value>
+    <comment>Title for the setup success dialog box</comment>
   </data>
-  <data name="BthInstOk_Verbose" xml:space="preserve">
-    <value/>
+  <data name="Title" xml:space="preserve">
+    <value>ScpToolkit Driver Installer</value>
+    <comment>Text shown on the status bar</comment>
   </data>
-  <data name="DrvInstReboot_Content" xml:space="preserve">
-    <value>A reboot is required for the driver installation to complete. Please restart your machine after you finished this installation wizard.</value>
+  <data name="VirtualBusSetupAddingDriverStore" xml:space="preserve">
+    <value>Installing Virtual Bus Driver in Windows Driver Store</value>
+    <comment>Text shown with the progress bar while adding the Virtual Bus driver to the Driver Store</comment>
   </data>
-  <data name="DrvInstReboot_Title" xml:space="preserve">
-    <value>Reboot required</value>
+  <data name="VirtualBusSetupCreating" xml:space="preserve">
+    <value>Creating Hardware ID for Virtual Bus</value>
+    <comment>Text shown with the progress bar while creating the Virtual Bus</comment>
   </data>
-  <data name="VBusInstOk_Title" xml:space="preserve">
-    <value>Installation successful</value>
+  <data name="VirtualBusSetupDescription" xml:space="preserve">
+    <value>In this step you can install the virtual Xbox 360 Controller driver.</value>
+    <comment>Text directly visible under the title, showing the user a quick desciption of the Virtual Bus setup</comment>
   </data>
-  <data name="VBusInstOk_Instruction" xml:space="preserve">
+  <data name="VirtualBusSetupIfAlreadyPresent" xml:space="preserve">
+    <value>If the virtual bus device is already present on your system (because you're upgrading from an older version of ScpServer/ScpToolkit or you've used tools like DS4Windows before), its driver will be automatically updated.</value>
+    <comment>Explains what will be done if the Virtual Bus is already installed</comment>
+  </data>
+  <data name="VirtualBusSetupInstalling" xml:space="preserve">
+    <value>Installing driver on Virtual Bus</value>
+    <comment>Text shown with the progress bar while installing the Virtual Bus driver</comment>
+  </data>
+  <data name="VirtualBusSetupStartInstall" xml:space="preserve">
+    <value>Install virtual Xbox 360 Controller driver</value>
+    <comment>Button to start the setup</comment>
+  </data>
+  <data name="VirtualBusSetupSuccessInstruction" xml:space="preserve">
     <value>Virtual Bus installed successfully</value>
+    <comment>Instruction of the setup success dialog box</comment>
   </data>
-  <data name="VBusInstOk_Content" xml:space="preserve">
-    <value>Congratulations! It looks like the necessary drivers are in their proper place, please proceed to the next step.</value>
+  <data name="VirtualBusSetupTitle" xml:space="preserve">
+    <value>Install Xbox 360 Controller emulator driver.</value>
+    <comment>Title shown on the Virtual Bus install page</comment>
   </data>
-  <data name="VBusInstOk_Verbose" xml:space="preserve">
-    <value/>
+  <data name="VirtualBusSetupToAvoidRestart" xml:space="preserve">
+    <value>The Virtual Bus might also be used by other 3rd party tools running on your system (like DS4Windows, InputMapper, FreePIE, etc.), please make sure they are all closed/shut down to avoid system reboot.</value>
+    <comment>Text saying that other apps using the Virtual Bus needs to be close to avoid a reboot</comment>
   </data>
-  <data name="VBusInstOk_Footer" xml:space="preserve">
-    <value/>
+  <data name="VirtualBusSetupWhatWeWillDo" xml:space="preserve">
+    <value>In this step we will attempt to install the virtual Xbox 360 Controller emulator driver (a.k.a. Scarlett.Crush Productions Virtual Bus Driver, ScpVBus or just Virtual Bus).</value>
+    <comment>A simple description of why we need to install the Virtual Bus</comment>
   </data>
-  <data name="ServiceInstOk_Title" xml:space="preserve">
-    <value>Installation successful</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\Warning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ServiceInstOk_Instruction" xml:space="preserve">
-    <value>Service installed successfully</value>
+  <data name="WelcomeDescription" xml:space="preserve">
+    <value>This Wizard will walk you though the process of installing your Sony DualShock 3/4 controller(s) and/or Bluetooth hosts on your system.</value>
+    <comment>Text directly visible under the title, showing a quick description of the wizard</comment>
   </data>
-  <data name="ServiceInstOk_Content" xml:space="preserve">
-    <value>Congratulations! It looks like the service was installed properly, please proceed to the next step.</value>
+  <data name="WelcomeGreetings" xml:space="preserve">
+    <value>Greetings! This wizard will guide you through the installation process necessary to enjoy your Sony DualShock controller(s) on your Windows box and play Xbox-compatible (XInput) games using the DualShock!</value>
+    <comment>Welcome text</comment>
+  </data>
+  <data name="WelcomeTitle" xml:space="preserve">
+    <value>Welcome to the ScpToolkit Driver Installer</value>
+    <comment>Title shown on the welcome page</comment>
+  </data>
+  <data name="Xbox360Driver" xml:space="preserve">
+    <value>Microsoft Xbox 360 Controller driver</value>
+    <comment>Localised name of the Xbox 360 driver</comment>
+  </data>
+  <data name="Xbox360DriverNeededAfterLink" xml:space="preserve">
+    <value>is required to be installed separately.</value>
+    <comment>Text shown after the link to the Xbox 360 driver installer</comment>
+  </data>
+  <data name="Xbox360DriverNeededBeforeLink" xml:space="preserve">
+    <value>On Windows Vista/7 the</value>
+    <comment>Text shown before the link to the Xbox 360 driver installer</comment>
+  </data>
+  <data name="Xbox360DriverNeededInstallBeforeContinuing" xml:space="preserve">
+    <value>Download and install the right edition before you continue this wizard.</value>
+    <comment>Text asking the user to install the Xbox 360 driver before going furter</comment>
+  </data>
+  <data name="Xbox360DriverNeededLink" xml:space="preserve">
+    <value>Microsoft Xbox 360 Controller driver</value>
+    <comment>Text that will bring the user to the Xbox 360 driver installer</comment>
   </data>
 </root>

@@ -3,12 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModels="clr-namespace:ScpDriverInstaller.View_Models"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="ScpToolkit Driver Installer"
+        xmlns:Properties="clr-namespace:ScpDriverInstaller.Properties"
+        xmlns:Utilities="clr-namespace:ScpDriverInstaller.Utilities"
+        Title="{x:Static Properties:Resources.Title}"
         Width="1020" MinWidth="1020"
         Height="700" MinHeight="700"
         WindowStartupLocation="CenterScreen" SizeToContent="Height"
         ResizeMode="CanMinimize"
         Icon="Usb.ico" Initialized="Window_Initialized" Loaded="Window_Loaded" Closing="MainWindow_OnClosing">
+
+    <Window.Resources>
+        <Utilities:BitmapToImageSource x:Key="BitmapToImageSource" />
+    </Window.Resources>
+
     <Grid x:Name="InstallGrid">
         <Grid.DataContext>
             <viewModels:InstallationOptionsViewModel />
@@ -17,30 +24,29 @@
         <xctk:BusyIndicator IsBusy="False" DisplayAfter="0" x:Name="MainBusyIndicator">
 
             <!-- A Wizard! -->
-            <xctk:Wizard FinishButtonClosesWindow="True" Help="Wizard_OnHelp">
+            <xctk:Wizard FinishButtonClosesWindow="True" Help="Wizard_OnHelp" CancelButtonContent="{x:Static Properties:Resources.Cancel}" BackButtonContent="{x:Static Properties:Resources.Back}" FinishButtonContent="{x:Static Properties:Resources.Finish}" HelpButtonContent="{x:Static Properties:Resources.Help}" NextButtonContent="{x:Static Properties:Resources.Next}">
                 <!-- Welcome page -->
                 <xctk:WizardPage x:Name="IntroPage"
                                  NextPage="{Binding ElementName=DsInstPage}"
-                                 Title="Welcome to the ScpToolkit Driver Installer"
-                                 Description="This Wizard will walk you though the process of installing your Sony DualShock 3/4 controller(s) and/or Bluetooth hosts on your system.">
+                                 Title="{x:Static Properties:Resources.WelcomeTitle}"
+                                 Description="{x:Static Properties:Resources.WelcomeDescription}">
                     <Grid>
                         <StackPanel>
-                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                                Greetings! This wizard will guide you through the installation process necessary to enjoy your Sony DualShock controller(s) on your Windows box
-                                and play Xbox-compatible (XInput) games using the DualShock!
-                            </TextBlock>
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10" Text="{x:Static Properties:Resources.WelcomeGreetings}" />
 
                             <!-- Xbox 360 Controller driver -->
                             <Expander IsExpanded="{Binding Path=IsXbox360DriverNeeded, Mode=OneWay}"
-                                      Header="Microsoft Xbox 360 Controller driver">
+                                      Header="{x:Static Properties:Resources.Xbox360Driver}">
                                 <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                                    On Windows Vista/7 the
+                                    <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.Xbox360DriverNeededBeforeLink}" />
                                     <Hyperlink
                                         NavigateUri="https://www.microsoft.com/hardware/en-US/d/xbox-360-controller-for-windows"
                                         RequestNavigate="Hyperlink_OnRequestNavigate">
-                                        Microsoft Xbox 360 Controller driver
+                                        <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.Xbox360DriverNeededLink}" />
                                     </Hyperlink>
-                                    is required to be installed separately. <LineBreak />Download and install the right edition before you continue this wizard.
+                                    <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.Xbox360DriverNeededAfterLink}" />
+                                    <LineBreak />
+                                    <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.Xbox360DriverNeededInstallBeforeContinuing}" />
                                 </TextBlock>
                             </Expander>
                         </StackPanel>
@@ -49,8 +55,8 @@
 
                 <!-- Controller Installation Page -->
                 <xctk:WizardPage x:Name="DsInstPage" PageType="Interior"
-                                 Title="Install DualShock 3/4 Controllers"
-                                 Description="In this step you can initialize one or more DualShock 3/4 controllers."
+                                 Title="{x:Static Properties:Resources.DualShockSetupTitle}"
+                                 Description="{x:Static Properties:Resources.DualShockSetupDescription}"
                                  PreviousPage="{Binding ElementName=IntroPage}"
                                  NextPage="{Binding ElementName=BthInstPage}">
                     <Grid>
@@ -66,24 +72,24 @@
 
                         <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                                If you haven't already please plug in your DualShock 3 (or 4) controller with the USB cable now and wait until it appears in the list on the right.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.DualShockSetupPleasePlugIn}" />
                                 <LineBreak /><LineBreak />
-                                If the device doesn't show up after a few seconds, it's either already equipped with the right driver or in a faulty state.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.SetupIfNotShowingUp}" />
                                 <LineBreak /><LineBreak />
-                                Once your device becomes visible, hit the button below to start the driver installation process for this particular controller.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.SetupPleaseStartInstall}" />
                             </TextBlock>
 
                             <!-- Install button -->
                             <Button IsEnabled="{Binding Path=InstallDs3ButtonEnabled}"
                                     Click="InstallDsOnClick" Margin="20,0">
-                                Initialize all connected devices as DualShock 3/4 Controllers
+                                <TextBlock Text="{x:Static Properties:Resources.DualShockSetupStartInstall}" />
                             </Button>
                         </StackPanel>
 
                         <!-- Uninitialized -->
                         <GroupBox Grid.Row="0" Grid.Column="1"
                                   Margin="10,0,0,5"
-                                  Header="Uninitialized DualShock Controllers">
+                                  Header="{x:Static Properties:Resources.DualShockSetupUninitialized}">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="DualShockStackPanelHidUsb" />
                             </ScrollViewer>
@@ -92,7 +98,7 @@
                         <!-- Initialized -->
                         <GroupBox Grid.Row="1" Grid.Column="1"
                                   Margin="10,5,0,0"
-                                  Header="Initialized DualShock Controllers">
+                                  Header="{x:Static Properties:Resources.DualShockSetupInitialized}">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="DualShockStackPanelWinUsb" />
                             </ScrollViewer>
@@ -102,8 +108,8 @@
 
                 <!-- Bluetooth Host Installation Page -->
                 <xctk:WizardPage x:Name="BthInstPage" PageType="Interior"
-                                 Title="Install Bluetooth hosts"
-                                 Description="In this step you can initialize one or more Bluetooth hosts."
+                                 Title="{x:Static Properties:Resources.BluetoothSetupTitle}"
+                                 Description="{x:Static Properties:Resources.BluetoothSetupDescription}"
                                  PreviousPage="{Binding ElementName=DsInstPage}"
                                  NextPage="{Binding ElementName=VBusInstPage}">
                     <Grid>
@@ -120,24 +126,24 @@
                         <!-- Main area -->
                         <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                                If you haven't already please plug in your Bluetooth host device (a.k.a. Bluetooth dongle) now and wait until it appears in the list on the right.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.BluetoothSetupPleasePlugIn}" />
                                 <LineBreak /><LineBreak />
-                                If the device doesn't show up after a few seconds, it's either already equipped with the right driver or in a faulty state.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.SetupIfNotShowingUp}" />
                                 <LineBreak /><LineBreak />
-                                Once your device becomes visible, hit the button below to start the driver installation process for this particular controller.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.SetupPleaseStartInstall}" />
                             </TextBlock>
 
                             <!-- Install button -->
                             <Button IsEnabled="{Binding Path=InstallBthButtonEnabled}"
                                     Click="InstallBthHostOnClick" Margin="20,0">
-                                Initialize all connected devices as Bluetooth Hosts
+                                <TextBlock Text="{x:Static Properties:Resources.BluetoothSetupStartInstall}" />
                             </Button>
                         </StackPanel>
 
                         <!-- Uninitialized -->
                         <GroupBox Grid.Row="0" Grid.Column="1"
                                   Margin="10,0,0,5"
-                                  Header="Uninitialized Bluetooth Hosts">
+                                  Header="{x:Static Properties:Resources.BluetoothSetupUninitialized}">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="BluetoothStackPanelDefault" />
                             </ScrollViewer>
@@ -146,7 +152,7 @@
                         <!-- Initialized -->
                         <GroupBox Grid.Row="1" Grid.Column="1"
                                   Margin="10,5,0,0"
-                                  Header="Initialized Bluetooth Hosts">
+                                  Header="{x:Static Properties:Resources.BluetoothSetupInitialized}">
                             <ScrollViewer HorizontalScrollBarVisibility="Auto">
                                 <StackPanel x:Name="BluetoothStackPanelWinUsb" />
                             </ScrollViewer>
@@ -154,19 +160,18 @@
 
                         <!-- Warning -->
                         <StackPanel Grid.Row="1" Grid.Column="0">
-                            <Image Source="Warning.png" Stretch="UniformToFill" />
+                            <!-- You can also use a localized warning picture. Simply put it in ScpDriverInstaller\Images\Warning.$Locale.png and add it to your .resx file as "Warning" -->
+                            <Image Source="{Binding Source={x:Static Properties:Resources.Warning}, Converter={StaticResource BitmapToImageSource}}"  Stretch="UniformToFill" />
 
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10" Foreground="#FFFF0000"
                                        FontWeight="Bold" FontSize="14">
-                                You need to sacrifice a dedicated Bluetooth dongle that will get reserved for use with wireless controllers only.
-                                If you're using a wireless mouse and/or keyboard via the listed dongle and install the driver, you will lose connection instantly and permanently!
-                                If you're unsure what to do next,
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.BluetoothSetupWarningBeforeLink}" />
                                 <Hyperlink
                                     NavigateUri="https://github.com/nefarius/ScpToolkit/wiki/Bluetooth-driver-pitfalls"
                                     RequestNavigate="Hyperlink_OnRequestNavigate">
-                                    please consult the documentation
+                                    <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.BluetoothSetupWarningLink}" />
                                 </Hyperlink>
-                                first!
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.BluetoothSetupWarningAfterLink}" />
                             </TextBlock>
                         </StackPanel>
                     </Grid>
@@ -174,8 +179,8 @@
 
                 <!-- ScpVBus Installation Page -->
                 <xctk:WizardPage x:Name="VBusInstPage" PageType="Interior"
-                                 Title="Install Xbox 360 Controller emulator driver."
-                                 Description="In this step you can install the virtual Xbox 360 Controller driver."
+                                 Title="{x:Static Properties:Resources.VirtualBusSetupTitle}"
+                                 Description="{x:Static Properties:Resources.VirtualBusSetupDescription}"
                                  PreviousPage="{Binding ElementName=BthInstPage}"
                                  NextPage="{Binding ElementName=ServiceInstPage}">
                     <Grid>
@@ -192,35 +197,32 @@
                         <!-- Main area -->
                         <StackPanel>
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                                In this step we will attempt to install the virtual Xbox 360 Controller emulator driver (a.k.a. Scarlett.Crush Productions Virtual Bus Driver, ScpVBus or just Virtual Bus).
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.VirtualBusSetupWhatWeWillDo}" />
                                 <LineBreak /><LineBreak />
-                                If the virtual bus device is already present on your system (because you're upgrading from an older version of ScpServer/ScpToolkit or you've used tools like DS4Windows before), its driver will be automatically updated.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.VirtualBusSetupIfAlreadyPresent}" />
                                 <LineBreak /><LineBreak />
-                                Once your device becomes visible, hit the button below to start the driver installation process for this particular controller.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.SetupPleaseStartInstall}" />
                             </TextBlock>
 
                             <!-- Install button -->
                             <Button Click="InstallVBusOnClick" Margin="20,0">
-                                Install virtual Xbox 360 Controller driver
+                                <TextBlock Text="{x:Static Properties:Resources.VirtualBusSetupStartInstall}" />
                             </Button>
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Grid.Column="0">
-                            <Image Source="Warning.png" Stretch="UniformToFill" />
+                            <Image Source="{Binding Source={x:Static Properties:Resources.Warning}, Converter={StaticResource BitmapToImageSource}}" Stretch="UniformToFill" />
 
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10" Foreground="#FFFF0000"
-                                       FontWeight="Bold" FontSize="14">
-                                The Virtual Bus might also be used by other 3rd party tools running on your system (like DS4Windows, InputMapper, FreePIE, etc.),
-                                please make sure they are all closed/shut down to avoid system reboot.
-                            </TextBlock>
+                                       FontWeight="Bold" FontSize="14" Text="{x:Static Properties:Resources.VirtualBusSetupToAvoidRestart}" />
                         </StackPanel>
                     </Grid>
                 </xctk:WizardPage>
 
                 <!-- Service Installation Page -->
                 <xctk:WizardPage x:Name="ServiceInstPage" PageType="Interior"
-                                 Title="Install Windows Service"
-                                 Description="In this step you can install the Windows Service."
+                                 Title="{x:Static Properties:Resources.ServiceSetupTitle}"
+                                 Description="{x:Static Properties:Resources.ServiceSetupDescription}"
                                  PreviousPage="{Binding ElementName=VBusInstPage}"
                                  NextPage="{Binding ElementName=LastPage}">
                     <Grid>
@@ -237,16 +239,16 @@
                         <!-- Main area -->
                         <StackPanel Grid.Row="0" Grid.Column="0">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                                Handling USB/Bluetooth connections and translating data back and forth between controllers and the XInput emulator driver is done via a Windows Service.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.ServiceSetupWhyIsItNeeded}" />
                                 <LineBreak /><LineBreak />
-                                If the service is already installed, it will automatically get started after the Driver Installer has finished.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.ServiceSetupIfAlreadyPresent}" />
                                 <LineBreak /><LineBreak />
-                                This is basically the core logic of the toolkit so installation is necessary for everything to function correctly.
+                                <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.ServiceSetupInstallationRequired}" />
                             </TextBlock>
 
                             <!-- Install button -->
                             <Button Click="InstallWindowsServiceOnClick" Margin="20,0">
-                                Install Windows Service
+                                <TextBlock Text="{x:Static Properties:Resources.ServiceSetupStartInstall}" />
                             </Button>
                         </StackPanel>
                     </Grid>
@@ -254,18 +256,16 @@
 
                 <!-- Last Page -->
                 <xctk:WizardPage x:Name="LastPage" PageType="Interior"
-                                 Title="Installation finished"
-                                 Description="This is the last page in the process"
+                                 Title="{x:Static Properties:Resources.FinishedTitle}"
+                                 Description="{x:Static Properties:Resources.FinishedDescription}"
                                  CanFinish="True">
                     <TextBlock TextWrapping="Wrap" TextAlignment="Justify" Margin="10">
-                        That's it! Wasn't so bad now was it? Enjoy your games!
+                        <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.FinishedThatsIt}" />
                         <LineBreak /><LineBreak />
-                        Once you finished this wizard, the main service will be started and your controllers connected automatically.
+                        <TextBlock TextWrapping="Wrap" Text="{x:Static Properties:Resources.FinishedAutoService}" />
                     </TextBlock>
                 </xctk:WizardPage>
             </xctk:Wizard>
-
         </xctk:BusyIndicator>
     </Grid>
 </Window>
-    
