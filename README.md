@@ -40,7 +40,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-US/download/details.aspx?id=5555)
  * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=40784)
  * [DirectX Runtime](https://www.microsoft.com/en-us/download/details.aspx?DisplayLang=en&id=35)
- * [Xbox 360 Controller driver](https://www.microsoft.com/hardware/en-US/d/xbox-360-controller-for-windows)
+ * [Xbox 360 Controller driver](https://www.microsoft.com/accessories/en-us/products/gaming/xbox-360-controller-for-windows/52a-00004#techspecs-connect)
   * Already integrated in Windows 8.x or greater
  * At least one supported Sony DualShock 3/4 controller (see **Compatible Controllers**)
  * Administrator rights *during driver setup*
