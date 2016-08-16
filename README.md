@@ -1,7 +1,7 @@
 # ScpToolkit
 Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
-[![Join the chat at https://gitter.im/nefarius/ScpToolkit](https://badges.gitter.im/nefarius/ScpServer.svg)](https://gitter.im/nefarius/ScpServer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=Follow&maxAge=2592000)](https://twitter.com/CNefarius) [![Join the chat at https://gitter.im/nefarius/ScpToolkit](https://badges.gitter.im/nefarius/ScpServer.svg)](https://gitter.im/nefarius/ScpServer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Credits
 ### Community
