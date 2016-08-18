@@ -1,7 +1,7 @@
 # ScpToolkit
 Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
-[![Join the chat at https://gitter.im/nefarius/ScpToolkit](https://badges.gitter.im/nefarius/ScpServer.svg)](https://gitter.im/nefarius/ScpServer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Twitter Follow](https://img.shields.io/twitter/follow/shields_io.svg?style=social&label=Follow&maxAge=2592000)](https://twitter.com/CNefarius) [![Join the chat at https://gitter.im/nefarius/ScpToolkit](https://badges.gitter.im/nefarius/ScpServer.svg)](https://gitter.im/nefarius/ScpServer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Credits
 ### Community
@@ -40,7 +40,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
  * [Microsoft Visual C++ 2010 Redistributable Package](http://www.microsoft.com/en-US/download/details.aspx?id=5555)
  * [Microsoft Visual C++ 2013 Runtime](https://www.microsoft.com/en-US/download/details.aspx?id=40784)
  * [DirectX Runtime](https://www.microsoft.com/en-us/download/details.aspx?DisplayLang=en&id=35)
- * [Xbox 360 Controller driver](https://www.microsoft.com/hardware/en-US/d/xbox-360-controller-for-windows)
+ * [Xbox 360 Controller driver](https://www.microsoft.com/accessories/en-us/products/gaming/xbox-360-controller-for-windows/52a-00004#techspecs-connect)
   * Already integrated in Windows 8.x or greater
  * At least one supported Sony DualShock 3/4 controller (see **Compatible Controllers**)
  * Administrator rights *during driver setup*
