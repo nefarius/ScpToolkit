@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -198,6 +199,42 @@ namespace ScpControl.ScpCore
             set { Settings.Default.Ds4Repair = value; }
         }
 
+        public bool Ds4ShowBatteryInfo
+        {
+            get { return Settings.Default.Ds4ShowBatteryInfo; }
+            set { Settings.Default.Ds4ShowBatteryInfo = value; }
+        }
+
+        public uint Ds4ColorFull
+        {
+            get { return Settings.Default.Ds4ColorFull; }
+            set { Settings.Default.Ds4ColorFull = value; }
+        }
+
+        public uint Ds4ColorHigh
+        {
+            get { return Settings.Default.Ds4ColorHigh; }
+            set { Settings.Default.Ds4ColorHigh = value; }
+        }
+
+        public uint Ds4ColorMedium
+        {
+            get { return Settings.Default.Ds4ColorMedium; }
+            set { Settings.Default.Ds4ColorMedium = value; }
+        }
+
+        public uint Ds4ColorLow
+        {
+            get { return Settings.Default.Ds4ColorLow; }
+            set { Settings.Default.Ds4ColorLow = value; }
+        }
+
+        public uint Ds4ColorDying
+        {
+            get { return Settings.Default.Ds4ColorDying; }
+            set { Settings.Default.Ds4ColorDying = value; }
+        }
+
         public byte[] BdLink
         {
             get { return MBdLink; }
@@ -264,7 +301,7 @@ namespace ScpControl.ScpCore
         }
 
         #endregion
-        
+
         #region Sound settings
 
         public bool SoundsEnabled
