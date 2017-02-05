@@ -147,7 +147,7 @@
       <Value Profile="(Default)">Normal</Value>
     </Setting>
     <Setting Name="Ds4ShowBatteryInfo" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Ds4ColorFull" Type="System.UInt32" Scope="User">
       <Value Profile="(Default)">0</Value>
