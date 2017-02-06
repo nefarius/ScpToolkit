@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using AutoDependencyPropertyMarker;
 using Ookii.Dialogs.Wpf;
-using WPFColorPickerLib;
+using ColorPickerControls.Dialogs;
 
 namespace ScpSettings.Controls
 {
@@ -48,9 +48,9 @@ namespace ScpSettings.Controls
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
-            // https://www.codeproject.com/articles/33001/wpf-a-simple-color-picker-with-preview
-            ColorDialog colorDialog = new ColorDialog();
-            colorDialog.SelectedColor = ((SolidColorBrush) this.lblColor.Background).Color;
+            // https://www.codeproject.com/Articles/131708/WPF-Color-Picker-Construction-Kit
+            ColorPickerStandardDialog colorDialog = new ColorPickerStandardDialog();
+            colorDialog.InitialColor = ((SolidColorBrush)this.lblColor.Background).Color;
 
             if (colorDialog.ShowDialog().GetValueOrDefault())
             {
