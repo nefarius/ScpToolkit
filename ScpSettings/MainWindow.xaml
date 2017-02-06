@@ -362,6 +362,7 @@
                                 <customControls:ColorChooserControl
                                     ColorText="Dying"
                                     Ds4BatteryColor="{Binding Path=Ds4ColorDying, Mode=TwoWay}" />
+                                <Button Margin="5" Click="ApplyButton_Click" >Apply</Button>
                             </StackPanel>
                         </GroupBox>
 

@@ -184,5 +184,13 @@ namespace ScpSettings
         }
 
         #endregion
+
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_proxy.IsActive || _config == null)
+                return;
+
+            _proxy.WriteConfig(_config);
+        }
     }
 }
