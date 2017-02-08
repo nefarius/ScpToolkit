@@ -127,6 +127,7 @@
                                     Defines the timespan after the controller gets shut off automatically if no input changes are received.
                                 </TextBlock>
                                 <Slider Maximum="30"
+                                        x:Name="IdleTimoutSlider"
                                         Value="{Binding Path=IdleTimeout}"
                                         ValueChanged="IdleTimoutSlider_ValueChanged"
                                         LargeChange="5" SmallChange="1" />
@@ -184,6 +185,7 @@
                                     Defines the minimal duration the rumble request will be sent to the controller until it stops.
                                 </TextBlock>
                                 <Slider LargeChange="1" Maximum="16"
+                                        x:Name="RumbleLatencySlider"
                                         Value="{Binding Path=Latency}" ValueChanged="Slider_ValueChanged" />
                             </StackPanel>
                         </GroupBox>
@@ -211,6 +213,7 @@
 
                                     <!-- Adjustment slider -->
                                     <Slider Grid.Column="1"
+                                            x:Name="LEDsFlashingPeriodSlider"
                                             TickFrequency="100" Maximum="2000" Minimum="300"
                                             IsSnapToTickEnabled="True"
                                             VerticalAlignment="Center"
@@ -336,6 +339,7 @@
                               Grid.Row="1">
                             <StackPanel>
                                 <Slider Maximum="255"
+                                    x:Name="BrightnessSlider"
                                     Value="{Binding Path=Brightness}" LargeChange="16"
                                     ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1" />
                                 <TextBlock>

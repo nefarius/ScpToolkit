@@ -33,6 +33,11 @@ namespace ScpSettings
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            Write_Config();
+        }
+
+        private void Write_Config()
+        {
             if (!_proxy.IsActive || _config == null)
                 return;
 
@@ -44,6 +49,11 @@ namespace ScpSettings
         }
 
         private void Window_Initialized(object sender, EventArgs e)
+        {
+            Load_Config();
+        }
+
+        private void Load_Config()
         {
             try
             {
@@ -183,14 +193,40 @@ namespace ScpSettings
             XInputModToggleButton.Content = "Enable";
         }
 
-        #endregion
+        private void Disable_Events()
+        {
+            IdleTimoutSlider.ValueChanged -= IdleTimoutSlider_ValueChanged;
+            BrightnessSlider.ValueChanged -= BrightnessSlider_ValueChanged;
+
+            RumbleLatencySlider.ValueChanged -= Slider_ValueChanged;
+            LEDsFlashingPeriodSlider.ValueChanged -= Slider_LEDsPeriodChanged;
+
+            XInputModToggleButton.Checked -= XInputModToggleButton_OnChecked;
+            XInputModToggleButton.Unchecked -= XInputModToggleButton_Unchecked;
+        }
+
+        private void Enable_Events()
+        {
+            IdleTimoutSlider.ValueChanged += IdleTimoutSlider_ValueChanged;
+            BrightnessSlider.ValueChanged += BrightnessSlider_ValueChanged;
+
+            RumbleLatencySlider.ValueChanged += Slider_ValueChanged;
+            LEDsFlashingPeriodSlider.ValueChanged += Slider_LEDsPeriodChanged;
+
+            XInputModToggleButton.Checked += XInputModToggleButton_OnChecked;
+            XInputModToggleButton.Unchecked += XInputModToggleButton_Unchecked;
+        }
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!_proxy.IsActive || _config == null)
-                return;
+            Disable_Events();
 
-            _proxy.WriteConfig(_config);
+            Write_Config();
+            Load_Config();
+
+            Enable_Events();
         }
+
+        #endregion
     }
 }
