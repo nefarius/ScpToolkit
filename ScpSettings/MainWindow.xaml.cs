@@ -33,10 +33,10 @@ namespace ScpSettings
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            Write_Config();
+            WriteConfig();
         }
 
-        private void Write_Config()
+        private void WriteConfig()
         {
             if (!_proxy.IsActive || _config == null)
                 return;
@@ -50,10 +50,10 @@ namespace ScpSettings
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            Load_Config();
+            LoadConfig();
         }
 
-        private void Load_Config()
+        private void LoadConfig()
         {
             try
             {
@@ -193,7 +193,7 @@ namespace ScpSettings
             XInputModToggleButton.Content = "Enable";
         }
 
-        private void Disable_Events()
+        private void DisableEvents()
         {
             IdleTimoutSlider.ValueChanged -= IdleTimoutSlider_ValueChanged;
             BrightnessSlider.ValueChanged -= BrightnessSlider_ValueChanged;
@@ -205,7 +205,7 @@ namespace ScpSettings
             XInputModToggleButton.Unchecked -= XInputModToggleButton_Unchecked;
         }
 
-        private void Enable_Events()
+        private void EnableEvents()
         {
             IdleTimoutSlider.ValueChanged += IdleTimoutSlider_ValueChanged;
             BrightnessSlider.ValueChanged += BrightnessSlider_ValueChanged;
@@ -219,12 +219,12 @@ namespace ScpSettings
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
-            Disable_Events();
+            DisableEvents();
 
-            Write_Config();
-            Load_Config();
+            WriteConfig();
+            LoadConfig();
 
-            Enable_Events();
+            EnableEvents();
         }
 
         #endregion
