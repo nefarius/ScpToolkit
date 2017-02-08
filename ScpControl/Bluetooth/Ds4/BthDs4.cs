@@ -337,9 +337,11 @@ namespace ScpControl.Bluetooth.Ds4
                             SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorMedium);
                             break;
                         case DsBattery.High:
+                        case DsBattery.Charging:
                             SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorHigh);
                             break;
                         case DsBattery.Full:
+                        case DsBattery.Charged:
                             SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorFull);
                             break;
                         default:
