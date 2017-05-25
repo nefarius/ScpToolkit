@@ -136,12 +136,12 @@ namespace ScpControl.Properties {
         [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("600000")]
-        public int IdleTimout {
+        public int IdleTimeout {
             get {
-                return ((int)(this["IdleTimout"]));
+                return ((int)(this["IdleTimeout"]));
             }
             set {
-                this["IdleTimout"] = value;
+                this["IdleTimeout"] = value;
             }
         }
         

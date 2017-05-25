@@ -72,23 +72,29 @@ namespace ScpSettings
 
             DataContext = null;
             DataContext = _config;
+
+            // Invoke Slider EventHandlers To Correctly Display GroupBox Headers
+            IdleTimeoutSlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, IdleTimeoutSlider.Value));
+            RumbleLatencySlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, RumbleLatencySlider.Value));
+            LEDsFlashingPeriodSlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, LEDsFlashingPeriodSlider.Value));
+            BrightnessSlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, BrightnessSlider.Value));
         }
 
-        private void IdleTimoutSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void IdleTimeoutSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var value = e.NewValue;
 
             if (value == 0)
             {
-                IdleTimoutGroupBox.Header = "Idle Timeout: Disabled";
+                IdleTimeoutGroupBox.Header = "Idle Timeout: Disabled";
             }
             else if (value == 1)
             {
-                IdleTimoutGroupBox.Header = "Idle Timeout: 1 minute";
+                IdleTimeoutGroupBox.Header = "Idle Timeout: 1 minute";
             }
             else
             {
-                IdleTimoutGroupBox.Header = string.Format("Idle Timeout: {0} minutes", value);
+                IdleTimeoutGroupBox.Header = string.Format("Idle Timeout: {0} minutes", value);
             }
         }
 
@@ -101,14 +107,14 @@ namespace ScpSettings
                 : string.Format("Light Bar Brightness: {0}%", (int)((value * 100) / 255));
         }
 
-        private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void RumbleLatencySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var value = ((int)e.NewValue) << 4;
 
             RumbleLatencyGroupBox.Header = string.Format("Rumble Latency: {0} ms", value);
         }
 
-        private void Slider_LEDsPeriodChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void LEDsFlashingPeriodSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             var value = (int)e.NewValue;
 
