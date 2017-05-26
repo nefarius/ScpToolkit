@@ -120,15 +120,19 @@ namespace ScpControl.Usb.Gamepads
 
         public override bool Open(string devicePath)
         {
+            short vid, pid;
+
+            GetHardwareId(devicePath, out vid, out pid);
+
             var loader = new HidDeviceLoader();
 
             // search for HID
-            _currentHidDevice = loader.GetDevices(VendorId, ProductId).FirstOrDefault();
+            _currentHidDevice = loader.GetDevices(vid, pid).FirstOrDefault();
 
             if (_currentHidDevice == null)
             {
                 Log.ErrorFormat("Couldn't find device with VID: {0}, PID: {1}",
-                    VendorId, ProductId);
+                    vid, pid);
                 return false;
             }
 

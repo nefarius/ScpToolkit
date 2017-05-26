@@ -33,7 +33,15 @@ namespace ScpProfiler
 
             MainGrid.DataContext = _vm;
 
-            _vm.Profiles = _proxy.GetProfiles().ToList();
+            var list = _proxy.GetProfiles();
+            if (list == null)
+            {
+                list = new List<DualShockProfile>();
+            }
+            else
+            {
+                _vm.Profiles = list.ToList();
+            }
         }
 
         private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)

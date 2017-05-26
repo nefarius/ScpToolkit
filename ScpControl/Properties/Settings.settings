@@ -29,7 +29,7 @@
     <Setting Name="DisableSecureSimplePairing" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="IdleTimout" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">
+    <Setting Name="IdleTimeout" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">600000</Value>
     </Setting>
     <Setting Name="Ds3RumbleLatency" Provider="ScpControl.Utilities.PortableSettingsProvider" Type="System.Int32" Scope="User">

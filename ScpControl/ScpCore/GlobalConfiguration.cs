@@ -136,13 +136,13 @@ namespace ScpControl.ScpCore
 
         public bool IdleDisconnect
         {
-            get { return Settings.Default.IdleTimout != 0; }
+            get { return Settings.Default.IdleTimeout != 0; }
         }
 
         public int IdleTimeout
         {
-            get { return Settings.Default.IdleTimout; }
-            set { Settings.Default.IdleTimout = value; }
+            get { return Settings.Default.IdleTimeout; }
+            set { Settings.Default.IdleTimeout = value; }
         }
 
         public int Latency

@@ -120,16 +120,16 @@
 
                         <!-- Idle Timeout -->
                         <GroupBox Header="Idle Timeout: 10 minutes"
-                                  x:Name="IdleTimoutGroupBox"
+                                  x:Name="IdleTimeoutGroupBox"
                                   Grid.Row="2">
                             <StackPanel>
                                 <TextBlock>
                                     Defines the timespan after the controller gets shut off automatically if no input changes are received.
                                 </TextBlock>
                                 <Slider Maximum="30"
-                                        x:Name="IdleTimoutSlider"
                                         Value="{Binding Path=IdleTimeout}"
-                                        ValueChanged="IdleTimoutSlider_ValueChanged"
+                                        ValueChanged="IdleTimeoutSlider_ValueChanged"
+                                        Name= "IdleTimeoutSlider"
                                         LargeChange="5" SmallChange="1" />
                             </StackPanel>
                         </GroupBox>
@@ -185,8 +185,9 @@
                                     Defines the minimal duration the rumble request will be sent to the controller until it stops.
                                 </TextBlock>
                                 <Slider LargeChange="1" Maximum="16"
-                                        x:Name="RumbleLatencySlider"
-                                        Value="{Binding Path=Latency}" ValueChanged="Slider_ValueChanged" />
+                                        Value="{Binding Path=Latency}"
+                                        ValueChanged="RumbleLatencySlider_ValueChanged"
+                                        Name= "RumbleLatencySlider" />
                             </StackPanel>
                         </GroupBox>
 
@@ -213,12 +214,12 @@
 
                                     <!-- Adjustment slider -->
                                     <Slider Grid.Column="1"
-                                            x:Name="LEDsFlashingPeriodSlider"
                                             TickFrequency="100" Maximum="2000" Minimum="300"
                                             IsSnapToTickEnabled="True"
                                             VerticalAlignment="Center"
                                             Value="{Binding Path=Ds3LEDsPeriod}"
-                                            ValueChanged="Slider_LEDsPeriodChanged" />
+                                            ValueChanged="LEDsFlashingPeriodSlider_ValueChanged"
+                                            Name= "LEDsFlashingPeriodSlider" />
 
                                     <!-- Maximum value -->
                                     <Label Grid.Column="2">
@@ -339,9 +340,9 @@
                               Grid.Row="1">
                             <StackPanel>
                                 <Slider Maximum="255"
-                                    x:Name="BrightnessSlider"
                                     Value="{Binding Path=Brightness}" LargeChange="16"
-                                    ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1" />
+                                    ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1"
+                                    Name="BrightnessSlider" />
                                 <TextBlock>
                                 Hint: move the slider all the way to the left to disable the Light Bar entirely.
                                 </TextBlock>
