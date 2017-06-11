@@ -6,7 +6,7 @@
         xmlns:bluetooth="clr-namespace:ScpControl.Bluetooth;assembly=ScpControl"
         xmlns:valueConverters="clr-namespace:ScpControl.Value_Converters;assembly=ScpControl"
         xmlns:ds4="clr-namespace:ScpControl.Bluetooth.Ds4;assembly=ScpControl"
-        Title="ScpToolkit Global Configuration" Height="650" Width="480" ResizeMode="NoResize"
+        Title="ScpToolkit Global Configuration" Height="750" Width="480" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing" Initialized="Window_Initialized"
         Icon="settings.ico">
 
@@ -302,56 +302,81 @@
 
             <!-- DualShock 4 specific -->
             <controls:AccordionItem Header="DualShock 4 specific">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition />
-                    </Grid.RowDefinitions>
+                <ScrollViewer>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
 
-                    <!-- HID Input update rate -->
-                    <GroupBox Header="HID Input update rate">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
+                        <!-- HID Input update rate -->
+                        <GroupBox Header="HID Input update rate">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0">
+                                <TextBlock Grid.Row="0">
                                 The DualShock 4 has the capability to alter the frequency it's sending input to the Bluetooth host. The default value is the highest possible rate the controller can utilize. Choose a lower value from the box below if you're experiencing high CPU consumption, leave it at the greatest value for maximum accuracy and lowest latency. If you change this setting, you have to re-connect your controller for it to take affect.
-                            </TextBlock>
+                                </TextBlock>
 
-                            <DockPanel Grid.Row="1">
-                                <Label HorizontalAlignment="Right">HID Input update rate:</Label>
-                                <ComboBox
+                                <DockPanel Grid.Row="1">
+                                    <Label HorizontalAlignment="Right">HID Input update rate:</Label>
+                                    <ComboBox
                                     ItemsSource="{Binding Source={StaticResource BthDs4}, Path=UpdateRates}"
                                     SelectedValue="{Binding Path=Ds4InputUpdateDelay, Mode=TwoWay}"
                                     DisplayMemberPath="Value"
                                     SelectedValuePath="Key" />
-                            </DockPanel>
-                        </Grid>
-                    </GroupBox>
+                                </DockPanel>
+                            </Grid>
+                        </GroupBox>
 
-                    <!-- Light Bar Brightness -->
-                    <GroupBox Header="Light Bar Brightness: 50%"
+                        <!-- Light Bar Brightness -->
+                        <GroupBox Header="Light Bar Brightness: 50%"
                               x:Name="BrightnessGroupBox"
                               Grid.Row="1">
-                        <StackPanel>
-                            <Slider Maximum="255"
+                            <StackPanel>
+                                <Slider Maximum="255"
                                     Value="{Binding Path=Brightness}" LargeChange="16"
                                     ValueChanged="BrightnessSlider_ValueChanged" SmallChange="1"
                                     Name="BrightnessSlider" />
-                            <TextBlock>
+                                <TextBlock>
                                 Hint: move the slider all the way to the left to disable the Light Bar entirely.
-                            </TextBlock>
-                        </StackPanel>
-                    </GroupBox>
+                                </TextBlock>
+                            </StackPanel>
+                        </GroupBox>
 
-                    <!-- Checkboxes -->
-                    <StackPanel Grid.Row="2" Margin="10">
-                        <CheckBox IsChecked="{Binding Path=Repair}">Always re-pair controller on Usb connection</CheckBox>
-                    </StackPanel>
-                </Grid>
+                        <GroupBox Header="Battery Colors" x:Name="Ds4BatteryGroupBox" Grid.Row="2">
+                            <StackPanel>
+                                <CheckBox IsChecked="{Binding Path=Ds4ShowBatteryInfo}">Show Battery Info instead of Pad ID</CheckBox>
+                                <customControls:ColorChooserControl
+                                    ColorText="Full"
+                                    Ds4BatteryColor="{Binding Path=Ds4ColorFull, Mode=TwoWay}" />
+                                <customControls:ColorChooserControl
+                                    ColorText="High"
+                                    Ds4BatteryColor="{Binding Path=Ds4ColorHigh, Mode=TwoWay}" />
+                                <customControls:ColorChooserControl
+                                    ColorText="Medium"
+                                    Ds4BatteryColor="{Binding Path=Ds4ColorMedium, Mode=TwoWay}" />
+                                <customControls:ColorChooserControl
+                                    ColorText="Low"
+                                    Ds4BatteryColor="{Binding Path=Ds4ColorLow, Mode=TwoWay}" />
+                                <customControls:ColorChooserControl
+                                    ColorText="Dying"
+                                    Ds4BatteryColor="{Binding Path=Ds4ColorDying, Mode=TwoWay}" />
+                                <Button Margin="5" Click="ApplyButton_Click" >Apply</Button>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <!-- Checkboxes -->
+                        <StackPanel Grid.Row="3" Margin="10">
+                            <CheckBox IsChecked="{Binding Path=Repair}">Always re-pair controller on Usb connection</CheckBox>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
             </controls:AccordionItem>
 
             <!-- Service settings -->

@@ -634,5 +634,83 @@ namespace ScpControl.Properties {
                 this["ServiceProcessPriority"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Ds4ShowBatteryInfo {
+            get {
+                return ((bool)(this["Ds4ShowBatteryInfo"]));
+            }
+            set {
+                this["Ds4ShowBatteryInfo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint Ds4ColorFull {
+            get {
+                return ((uint)(this["Ds4ColorFull"]));
+            }
+            set {
+                this["Ds4ColorFull"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint Ds4ColorHigh {
+            get {
+                return ((uint)(this["Ds4ColorHigh"]));
+            }
+            set {
+                this["Ds4ColorHigh"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint Ds4ColorMedium {
+            get {
+                return ((uint)(this["Ds4ColorMedium"]));
+            }
+            set {
+                this["Ds4ColorMedium"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint Ds4ColorLow {
+            get {
+                return ((uint)(this["Ds4ColorLow"]));
+            }
+            set {
+                this["Ds4ColorLow"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsProviderAttribute(typeof(ScpControl.Utilities.PortableSettingsProvider))]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint Ds4ColorDying {
+            get {
+                return ((uint)(this["Ds4ColorDying"]));
+            }
+            set {
+                this["Ds4ColorDying"] = value;
+            }
+        }
     }
 }

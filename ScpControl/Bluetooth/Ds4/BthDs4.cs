@@ -105,6 +105,25 @@ namespace ScpControl.Bluetooth.Ds4
             m_Queued = 1;
         }
 
+        private void SetLightBarColorUInt(uint value)
+        {
+            System.Drawing.Color color = System.Drawing.Color.FromArgb((int) value);
+            double brightness = (double) GlobalConfiguration.Instance.Brightness / (double) 255;
+
+            if (GlobalConfiguration.Instance.IsLightBarDisabled)
+            {
+                _hidReport[R] = _hidReport[G] = _hidReport[B] = _hidReport[12] = _hidReport[13] = 0x00;
+            }
+            else
+            {
+                _hidReport[R] = (byte)(color.R * brightness);
+                _hidReport[G] = (byte)(color.G * brightness);
+                _hidReport[B] = (byte)(color.B * brightness);
+            }
+
+            m_Queued = 1;
+        }
+
         #endregion
 
         #region Public methods
@@ -277,7 +296,7 @@ namespace ScpControl.Bluetooth.Ds4
 
                 if (!GlobalConfiguration.Instance.IsLightBarDisabled)
                 {
-                    if (Battery < DsBattery.Medium)
+                    if (Battery == DsBattery.Dying)
                     {
                         if (!_flash)
                         {
@@ -304,7 +323,33 @@ namespace ScpControl.Bluetooth.Ds4
                     _brightness = GlobalConfiguration.Instance.Brightness;
                 }
 
-                if (XInputSlot.HasValue)
+                if (GlobalConfiguration.Instance.Ds4ShowBatteryInfo)
+                {
+                    switch (Battery)
+                    {
+                        case DsBattery.Dying:
+                            SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorDying);
+                            break;
+                        case DsBattery.Low:
+                            SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorLow);
+                            break;
+                        case DsBattery.Medium:
+                            SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorMedium);
+                            break;
+                        case DsBattery.High:
+                        case DsBattery.Charging:
+                            SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorHigh);
+                            break;
+                        case DsBattery.Full:
+                        case DsBattery.Charged:
+                            SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorFull);
+                            break;
+                        default:
+                            SetLightBarColorUInt(GlobalConfiguration.Instance.Ds4ColorDying);
+                            break;
+                    }
+                }
+                else if (XInputSlot.HasValue)
                 {
                     SetLightBarColor((DsPadId) XInputSlot);
                 }

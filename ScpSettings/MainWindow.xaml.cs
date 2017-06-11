@@ -33,6 +33,11 @@ namespace ScpSettings
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
+            WriteConfig();
+        }
+
+        private void WriteConfig()
+        {
             if (!_proxy.IsActive || _config == null)
                 return;
 
@@ -44,6 +49,11 @@ namespace ScpSettings
         }
 
         private void Window_Initialized(object sender, EventArgs e)
+        {
+            LoadConfig();
+        }
+
+        private void LoadConfig()
         {
             try
             {
@@ -74,10 +84,10 @@ namespace ScpSettings
             DataContext = _config;
 
             // Invoke Slider EventHandlers To Correctly Display GroupBox Headers
-            IdleTimeoutSlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, IdleTimeoutSlider.Value));
-            RumbleLatencySlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, RumbleLatencySlider.Value));
-            LEDsFlashingPeriodSlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, LEDsFlashingPeriodSlider.Value));
-            BrightnessSlider_ValueChanged(sender, new RoutedPropertyChangedEventArgs<double> (0, BrightnessSlider.Value));
+            IdleTimeoutSlider_ValueChanged(null, new RoutedPropertyChangedEventArgs<double> (0, IdleTimeoutSlider.Value));
+            RumbleLatencySlider_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, RumbleLatencySlider.Value));
+            LEDsFlashingPeriodSlider_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, LEDsFlashingPeriodSlider.Value));
+            BrightnessSlider_ValueChanged(null, new RoutedPropertyChangedEventArgs<double>(0, BrightnessSlider.Value));
         }
 
         private void IdleTimeoutSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -187,6 +197,40 @@ namespace ScpSettings
             }
 
             XInputModToggleButton.Content = "Enable";
+        }
+
+        private void DisableEvents()
+        {
+            IdleTimeoutSlider.ValueChanged -= IdleTimeoutSlider_ValueChanged;
+            BrightnessSlider.ValueChanged -= BrightnessSlider_ValueChanged;
+
+            RumbleLatencySlider.ValueChanged -= RumbleLatencySlider_ValueChanged;
+            LEDsFlashingPeriodSlider.ValueChanged -= LEDsFlashingPeriodSlider_ValueChanged;
+
+            XInputModToggleButton.Checked -= XInputModToggleButton_OnChecked;
+            XInputModToggleButton.Unchecked -= XInputModToggleButton_Unchecked;
+        }
+
+        private void EnableEvents()
+        {
+            IdleTimeoutSlider.ValueChanged += IdleTimeoutSlider_ValueChanged;
+            BrightnessSlider.ValueChanged += BrightnessSlider_ValueChanged;
+
+            RumbleLatencySlider.ValueChanged += RumbleLatencySlider_ValueChanged;
+            LEDsFlashingPeriodSlider.ValueChanged += LEDsFlashingPeriodSlider_ValueChanged;
+
+            XInputModToggleButton.Checked += XInputModToggleButton_OnChecked;
+            XInputModToggleButton.Unchecked += XInputModToggleButton_Unchecked;
+        }
+
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            DisableEvents();
+
+            WriteConfig();
+            LoadConfig();
+
+            EnableEvents();
         }
 
         #endregion
