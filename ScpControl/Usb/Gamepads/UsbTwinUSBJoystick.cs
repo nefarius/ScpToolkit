@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using HidReport.Contract.Core;
+using HidReport.Contract.Enums;
 using ScpControl.Shared.Core;
 
 namespace ScpControl.Usb.Gamepads
@@ -13,25 +11,20 @@ namespace ScpControl.Usb.Gamepads
         {
             if (report[0] != 0x01) return;
 
-            var inputReport = NewHidReport();
+            HidReport.Core.HidReport inputReport = new HidReport.Core.HidReport();
 
             #region HID Report translation
 
             // no battery state since the Gamepad is Usb-powered
-            Battery = DsBattery.None;
+            inputReport.BatteryStatus = DsBattery.None;
 
             // packet counter
             inputReport.PacketCounter = ++PacketCounter;
 
-            // null button states
-            inputReport.ZeroPsButtonState();
-            inputReport.ZeroSelectStartButtonsState();
-            inputReport.ZeroShoulderButtonsState();
-
-            inputReport.Set(Ds3Button.Circle, IsBitSet(report[5], 5));
-            inputReport.Set(Ds3Button.Cross, IsBitSet(report[5], 6));
-            inputReport.Set(Ds3Button.Triangle, IsBitSet(report[5], 4));
-            inputReport.Set(Ds3Button.Triangle, IsBitSet(report[5], 7));
+            inputReport.Set(ButtonsEnum.Circle, IsBitSet(report[5], 5));
+            inputReport.Set(ButtonsEnum.Cross, IsBitSet(report[5], 6));
+            inputReport.Set(ButtonsEnum.Triangle, IsBitSet(report[5], 4));
+            inputReport.Set(ButtonsEnum.Triangle, IsBitSet(report[5], 7));
 
             // TODO: implement!
 

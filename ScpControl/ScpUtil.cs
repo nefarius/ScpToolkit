@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.NetworkInformation;
+using HidReport.Contract.Enums;
 using ScpControl.Bluetooth;
 using ScpControl.Shared.Core;
 
@@ -27,7 +28,6 @@ namespace ScpControl
         bool Rumble(byte large, byte small);
         bool Pair(PhysicalAddress master);
         bool Disconnect();
-        ScpHidReport NewHidReport();
     }
 
     public interface IBthDevice
@@ -87,7 +87,7 @@ namespace ScpControl
 
         public ScpHidReport NewHidReport()
         {
-            return new ScpHidReport();
+            return new ScpHidReport(DsConnection.None, DeviceAddress, DsModel.None, DsPadId.None, DsState.Connected, new HidReport.Core.HidReport());
         }
 
         public PhysicalAddress HostAddress

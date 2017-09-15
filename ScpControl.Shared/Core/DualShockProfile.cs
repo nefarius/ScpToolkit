@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using WindowsInput;
 using WindowsInput.Native;
+using HidReport.Contract.Enums;
 
 namespace ScpControl.Shared.Core
 {
@@ -70,25 +71,25 @@ namespace ScpControl.Shared.Core
         /// </summary>
         private void OnCreated()
         {
-            Ps = new DsButtonProfile(Ds3Button.Ps, Ds4Button.Ps);
-            Circle = new DsButtonProfile(Ds3Button.Circle, Ds4Button.Circle);
-            Cross = new DsButtonProfile(Ds3Button.Cross, Ds4Button.Cross);
-            Square = new DsButtonProfile(Ds3Button.Square, Ds4Button.Square);
-            Triangle = new DsButtonProfile(Ds3Button.Triangle, Ds4Button.Triangle);
-            Select = new DsButtonProfile(Ds3Button.Select, Ds4Button.Share);
-            Start = new DsButtonProfile(Ds3Button.Start, Ds4Button.Options);
-            LeftShoulder = new DsButtonProfile(Ds3Button.L1, Ds4Button.L1);
-            RightShoulder = new DsButtonProfile(Ds3Button.R1, Ds4Button.R1);
-            LeftTrigger = new DsButtonProfile(Ds3Button.L2, Ds4Button.L2);
-            RightTrigger = new DsButtonProfile(Ds3Button.R2, Ds4Button.R2);
-            LeftThumb = new DsButtonProfile(Ds3Button.L3, Ds4Button.L3);
-            RightThumb = new DsButtonProfile(Ds3Button.R3, Ds4Button.R3);
+            Ps            = new DsButtonProfile(ButtonsEnum.Ps);
+            Circle        = new DsButtonProfile(ButtonsEnum.Circle);
+            Cross         = new DsButtonProfile(ButtonsEnum.Cross);
+            Square        = new DsButtonProfile(ButtonsEnum.Square);
+            Triangle      = new DsButtonProfile(ButtonsEnum.Triangle);
+            Select        = new DsButtonProfile(ButtonsEnum.Share);
+            Start         = new DsButtonProfile(ButtonsEnum.Options);
+            LeftShoulder  = new DsButtonProfile(ButtonsEnum.L1);
+            RightShoulder = new DsButtonProfile(ButtonsEnum.R1);
+            LeftTrigger   = new DsButtonProfile(ButtonsEnum.L2);
+            RightTrigger  = new DsButtonProfile(ButtonsEnum.R2);
+            LeftThumb     = new DsButtonProfile(ButtonsEnum.L3);
+            RightThumb    = new DsButtonProfile(ButtonsEnum.R3);
 
             // D-Pad
-            Up = new DsButtonProfile(Ds3Button.Up, Ds4Button.Up);
-            Right = new DsButtonProfile(Ds3Button.Right, Ds4Button.Right);
-            Down = new DsButtonProfile(Ds3Button.Down, Ds4Button.Down);
-            Left = new DsButtonProfile(Ds3Button.Left, Ds4Button.Left);
+            Up            = new DsButtonProfile(ButtonsEnum.Up);
+            Right         = new DsButtonProfile(ButtonsEnum.Right);
+            Down          = new DsButtonProfile(ButtonsEnum.Down);
+            Left          = new DsButtonProfile(ButtonsEnum.Left);
         }
 
         #endregion
@@ -289,7 +290,7 @@ namespace ScpControl.Shared.Core
         ///     Creates a new button mapping profile.
         /// </summary>
         /// <param name="sources">A list of DualShock buttons which will be affected by this profile.</param>
-        public DsButtonProfile(params IDsButton[] sources) : this()
+        public DsButtonProfile(params ButtonsEnum[] sources) : this()
         {
             SourceButtons = sources;
         }
@@ -330,12 +331,13 @@ namespace ScpControl.Shared.Core
                         }
 
                         // if original isn't pressed we can ignore
-                        if (!report[button].IsPressed) continue;
+                        if (!report.HidReport[button].IsPressed) continue;
 
                         // unset original button
-                        report.Unset(button);
+                        //TODO: zzz rewrite mapper
+                        ((HidReport.Core.HidReport) report.HidReport).Unset(button);
                         // set new button
-                        report.Set(target);
+                        //((HidReport.Core.HidReport)report.HidReport).Set(target);
                     }
                     break;
                 case CommandType.Keystrokes:
@@ -343,7 +345,7 @@ namespace ScpControl.Shared.Core
                     {
                         var target = (VirtualKeyCode) Enum.ToObject(typeof(VirtualKeyCode), MappingTarget.CommandTarget);
 
-                        if (report[button].IsPressed)
+                        if (report.HidReport[button].IsPressed)
                         {
                             VirtualInput.Keyboard.KeyDown(target);
                         }
@@ -361,7 +363,7 @@ namespace ScpControl.Shared.Core
         #region Properties
 
         [DataMember]
-        private IEnumerable<IDsButton> SourceButtons { get; set; }
+        private IEnumerable<ButtonsEnum> SourceButtons { get; set; }
 
         [DataMember]
         public DsButtonMappingTarget MappingTarget { get; private set; }
@@ -417,14 +419,14 @@ namespace ScpControl.Shared.Core
         /// </summary>
         /// <param name="report">The HID report to manipulate.</param>
         /// <param name="button">The button to trigger turbo on.</param>
-        public void ApplyOn(ScpHidReport report, IDsButton button)
+        public void ApplyOn(ScpHidReport report, ButtonsEnum button)
         {
             // button type must match model, madness otherwise!
-            if ((report.Model != DsModel.DS3 || !(button is Ds3Button)) &&
-                (report.Model != DsModel.DS4 || !(button is Ds4Button))) return;
+            if ((report.Model != DsModel.DS3) &&
+                (report.Model != DsModel.DS4)) return;
 
             // if button got released...
-            if (_isActive && !report[button].IsPressed)
+            if (_isActive && !report.HidReport[button].IsPressed)
             {
                 // ...disable, reset and return
                 _isActive = false;
@@ -435,7 +437,7 @@ namespace ScpControl.Shared.Core
             }
 
             // if turbo is enabled and button is pressed...
-            if (!_isActive && report[button].IsPressed)
+            if (!_isActive && report.HidReport[button].IsPressed)
             {
                 // ...start calculating the activation delay...
                 if (!_delayedFrame.IsRunning) _delayedFrame.Restart();
@@ -449,7 +451,7 @@ namespace ScpControl.Shared.Core
             }
 
             // if the button was released...
-            if (!report[button].IsPressed)
+            if (!report.HidReport[button].IsPressed)
             {
                 // ...restore default states and skip processing
                 _isActive = false;
@@ -460,7 +462,7 @@ namespace ScpControl.Shared.Core
             if (!_engagedFrame.IsRunning) _engagedFrame.Restart();
 
             // ...do not change state while within frame and button is still pressed, then skip
-            if (_engagedFrame.ElapsedMilliseconds < Interval && report[button].IsPressed) return;
+            if (_engagedFrame.ElapsedMilliseconds < Interval && report.HidReport[button].IsPressed) return;
 
             // reset released time frame ("forecefully release") for button
             if (!_releasedFrame.IsRunning) _releasedFrame.Restart();
@@ -469,7 +471,8 @@ namespace ScpControl.Shared.Core
             if (_releasedFrame.ElapsedMilliseconds < Release)
             {
                 // ...re-set the button state to released
-                report.Unset(button);
+                //TODO: zzz
+                ((HidReport.Core.HidReport) report.HidReport).Unset(button);
             }
             else
             {

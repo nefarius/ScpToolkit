@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Threading;
+using HidReport.Contract.Enums;
+using ScpControl.HidParser;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
@@ -149,63 +151,16 @@ namespace ScpControl.Bluetooth.Ds4
         {
             m_Packet++;
 
-            var inputReport = NewHidReport();
-
-            Battery = (DsBattery) ((byte) ((report[41] + 2)/2));
-
+            var inputReport = new HidReport.Core.HidReport();
             inputReport.PacketCounter = m_Packet;
+            inputReport.ReportId = report[9];
 
-            var buttons = (report[16] << 0) | (report[17] << 8) | (report[18] << 16);
-            var trigger = false;
-
-            //++ Convert HAT to DPAD
-            report[16] &= 0xF0;
-
-            switch ((uint) buttons & 0xF)
-            {
-                case 0:
-                    report[16] |= (byte) Ds4Button.Up.Offset;
-                    break;
-                case 1:
-                    report[16] |= (byte) (Ds4Button.Up.Offset | Ds4Button.Right.Offset);
-                    break;
-                case 2:
-                    report[16] |= (byte) Ds4Button.Right.Offset;
-                    break;
-                case 3:
-                    report[16] |= (byte) (Ds4Button.Right.Offset | Ds4Button.Down.Offset);
-                    break;
-                case 4:
-                    report[16] |= (byte) Ds4Button.Down.Offset;
-                    break;
-                case 5:
-                    report[16] |= (byte) (Ds4Button.Down.Offset | Ds4Button.Left.Offset);
-                    break;
-                case 6:
-                    report[16] |= (byte) Ds4Button.Left.Offset;
-                    break;
-                case 7:
-                    report[16] |= (byte) (Ds4Button.Left.Offset | Ds4Button.Up.Offset);
-                    break;
-            }
-            //--
-
-            // copy controller data to report packet
-            Buffer.BlockCopy(report, 11, inputReport.RawBytes, 8, 76);
-
-            // set report ID
-            inputReport.RawBytes[8] = report[9];
+            var tmp = new byte[72];
+            Buffer.BlockCopy(report, 11, tmp, 8, 64);
+            HidParsers.Ds4Consts.ParseDs4(tmp, inputReport);
 
             // Quick Disconnect
-            if (inputReport[Ds4Button.L1].IsPressed
-                && inputReport[Ds4Button.R1].IsPressed
-                && inputReport[Ds4Button.Ps].IsPressed)
-            {
-                trigger = true;
-                // unset PS button
-                inputReport.Unset(Ds4Button.Ps);
-            }
-
+            var trigger = inputReport.IsQuickDisconnect();
             if (inputReport.IsPadActive)
             {
                 m_IsIdle = false;
@@ -298,7 +253,7 @@ namespace ScpControl.Bluetooth.Ds4
                 {
                     if (Battery == DsBattery.Dying)
                     {
-                        if (!_flash)
+                            if (!_flash)
                         {
                             _hidReport[12] = _hidReport[13] = 0x40;
 

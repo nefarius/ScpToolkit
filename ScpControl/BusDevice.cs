@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using HidReport.Contract.Enums;
 using ScpControl.Driver;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -155,131 +156,131 @@ namespace ScpControl
         /// </summary>
         /// <param name="inputReport">The <see cref="ScpHidReport"/> to translate.</param>
         /// <returns>The translated data as <see cref="XINPUT_GAMEPAD"/> structure.</returns>
-        public XINPUT_GAMEPAD Parse(ScpHidReport inputReport)
+        public XINPUT_GAMEPAD Parse(ScpHidReport inputReports)
         {
             var xButton = X360Button.None;
             var output = new XINPUT_GAMEPAD();
-
-            switch (inputReport.Model)
+            var inputReport = inputReports.HidReport;
+            switch (inputReports.Model)
             {
                 case DsModel.DS3:
                 {
                     // select & start
-                    if (inputReport[Ds3Button.Select].IsPressed) xButton |= X360Button.Back;
-                    if (inputReport[Ds3Button.Start].IsPressed) xButton |= X360Button.Start;
+                    if (inputReport[ButtonsEnum.Select].IsPressed) xButton |= X360Button.Back;
+                    if (inputReport[ButtonsEnum.Start].IsPressed) xButton |= X360Button.Start;
 
                     // d-pad
-                    if (inputReport[Ds3Button.Up].IsPressed) xButton |= X360Button.Up;
-                    if (inputReport[Ds3Button.Right].IsPressed) xButton |= X360Button.Right;
-                    if (inputReport[Ds3Button.Down].IsPressed) xButton |= X360Button.Down;
-                    if (inputReport[Ds3Button.Left].IsPressed) xButton |= X360Button.Left;
+                    if (inputReport[ButtonsEnum.Up].IsPressed) xButton |= X360Button.Up;
+                    if (inputReport[ButtonsEnum.Right].IsPressed) xButton |= X360Button.Right;
+                    if (inputReport[ButtonsEnum.Down].IsPressed) xButton |= X360Button.Down;
+                    if (inputReport[ButtonsEnum.Left].IsPressed) xButton |= X360Button.Left;
 
                     // shoulders
-                    if (inputReport[Ds3Button.L1].IsPressed) xButton |= X360Button.LB;
-                    if (inputReport[Ds3Button.R1].IsPressed) xButton |= X360Button.RB;
+                    if (inputReport[ButtonsEnum.L1].IsPressed) xButton |= X360Button.LB;
+                    if (inputReport[ButtonsEnum.R1].IsPressed) xButton |= X360Button.RB;
 
                     // face buttons
-                    if (inputReport[Ds3Button.Triangle].IsPressed) xButton |= X360Button.Y;
-                    if (inputReport[Ds3Button.Circle].IsPressed) xButton |= X360Button.B;
-                    if (inputReport[Ds3Button.Cross].IsPressed) xButton |= X360Button.A;
-                    if (inputReport[Ds3Button.Square].IsPressed) xButton |= X360Button.X;
+                    if (inputReport[ButtonsEnum.Triangle].IsPressed) xButton |= X360Button.Y;
+                    if (inputReport[ButtonsEnum.Circle].IsPressed) xButton |= X360Button.B;
+                    if (inputReport[ButtonsEnum.Cross].IsPressed) xButton |= X360Button.A;
+                    if (inputReport[ButtonsEnum.Square].IsPressed) xButton |= X360Button.X;
 
                     // PS/Guide
-                    if (inputReport[Ds3Button.Ps].IsPressed) xButton |= X360Button.Guide;
+                    if (inputReport[ButtonsEnum.Ps].IsPressed) xButton |= X360Button.Guide;
 
                     // thumbs
-                    if (inputReport[Ds3Button.L3].IsPressed) xButton |= X360Button.LS;
-                    if (inputReport[Ds3Button.R3].IsPressed) xButton |= X360Button.RS;
+                    if (inputReport[ButtonsEnum.L3].IsPressed) xButton |= X360Button.LS;
+                    if (inputReport[ButtonsEnum.R3].IsPressed) xButton |= X360Button.RS;
 
                     // face buttons
                     output.wButtons = (ushort) xButton;
 
                     // trigger
-                    output.bLeftTrigger = inputReport[Ds3Axis.L2].Value;
-                    output.bRightTrigger = inputReport[Ds3Axis.R2].Value;
+                    output.bLeftTrigger = inputReport[AxesEnum.L2].Value;
+                    output.bRightTrigger = inputReport[AxesEnum.R2].Value;
 
                     if (!DsMath.DeadZone(GlobalConfiguration.Instance.DeadZoneL, 
-                        inputReport[Ds3Axis.Lx].Value,
-                        inputReport[Ds3Axis.Ly].Value))
+                        inputReport[AxesEnum.Lx].Value,
+                        inputReport[AxesEnum.Ly].Value))
                         // Left Stick DeadZone
                     {
                         output.sThumbLX =
                             (short)
-                                +DsMath.Scale(inputReport[Ds3Axis.Lx].Value, GlobalConfiguration.Instance.FlipLX);
+                                +DsMath.Scale(inputReport[AxesEnum.Lx].Value, GlobalConfiguration.Instance.FlipLX);
                         output.sThumbLY =
                             (short)
-                                -DsMath.Scale(inputReport[Ds3Axis.Ly].Value, GlobalConfiguration.Instance.FlipLY);
+                                -DsMath.Scale(inputReport[AxesEnum.Ly].Value, GlobalConfiguration.Instance.FlipLY);
                     }
 
                     if (!DsMath.DeadZone(GlobalConfiguration.Instance.DeadZoneR,
-                        inputReport[Ds3Axis.Rx].Value,
-                        inputReport[Ds3Axis.Ry].Value))
+                        inputReport[AxesEnum.Rx].Value,
+                        inputReport[AxesEnum.Ry].Value))
                         // Right Stick DeadZone
                     {
                         output.sThumbRX =
                             (short)
-                                +DsMath.Scale(inputReport[Ds3Axis.Rx].Value, GlobalConfiguration.Instance.FlipRX);
+                                +DsMath.Scale(inputReport[AxesEnum.Rx].Value, GlobalConfiguration.Instance.FlipRX);
                         output.sThumbRY =
                             (short)
-                                -DsMath.Scale(inputReport[Ds3Axis.Ry].Value, GlobalConfiguration.Instance.FlipRY);
+                                -DsMath.Scale(inputReport[AxesEnum.Ry].Value, GlobalConfiguration.Instance.FlipRY);
                     }
                 }
                     break;
 
                 case DsModel.DS4:
                 {
-                    if (inputReport[Ds4Button.Share].IsPressed) xButton |= X360Button.Back;
-                    if (inputReport[Ds4Button.Options].IsPressed) xButton |= X360Button.Start;
+                    if (inputReport[ButtonsEnum.Share].IsPressed) xButton |= X360Button.Back;
+                    if (inputReport[ButtonsEnum.Options].IsPressed) xButton |= X360Button.Start;
 
-                    if (inputReport[Ds4Button.Up].IsPressed) xButton |= X360Button.Up;
-                    if (inputReport[Ds4Button.Right].IsPressed) xButton |= X360Button.Right;
-                    if (inputReport[Ds4Button.Down].IsPressed) xButton |= X360Button.Down;
-                    if (inputReport[Ds4Button.Left].IsPressed) xButton |= X360Button.Left;
+                    if (inputReport[ButtonsEnum.Up].IsPressed) xButton |= X360Button.Up;
+                    if (inputReport[ButtonsEnum.Right].IsPressed) xButton |= X360Button.Right;
+                    if (inputReport[ButtonsEnum.Down].IsPressed) xButton |= X360Button.Down;
+                    if (inputReport[ButtonsEnum.Left].IsPressed) xButton |= X360Button.Left;
 
-                    if (inputReport[Ds4Button.L1].IsPressed) xButton |= X360Button.LB;
-                    if (inputReport[Ds4Button.R1].IsPressed) xButton |= X360Button.RB;
+                    if (inputReport[ButtonsEnum.L1].IsPressed) xButton |= X360Button.LB;
+                    if (inputReport[ButtonsEnum.R1].IsPressed) xButton |= X360Button.RB;
 
-                    if (inputReport[Ds4Button.Triangle].IsPressed) xButton |= X360Button.Y;
-                    if (inputReport[Ds4Button.Circle].IsPressed) xButton |= X360Button.B;
-                    if (inputReport[Ds4Button.Cross].IsPressed) xButton |= X360Button.A;
-                    if (inputReport[Ds4Button.Square].IsPressed) xButton |= X360Button.X;
+                    if (inputReport[ButtonsEnum.Triangle].IsPressed) xButton |= X360Button.Y;
+                    if (inputReport[ButtonsEnum.Circle].IsPressed) xButton |= X360Button.B;
+                    if (inputReport[ButtonsEnum.Cross].IsPressed) xButton |= X360Button.A;
+                    if (inputReport[ButtonsEnum.Square].IsPressed) xButton |= X360Button.X;
 
-                    if (inputReport[Ds4Button.Ps].IsPressed) xButton |= X360Button.Guide;
+                    if (inputReport[ButtonsEnum.Ps].IsPressed) xButton |= X360Button.Guide;
 
-                    if (inputReport[Ds4Button.L3].IsPressed) xButton |= X360Button.LS;
-                    if (inputReport[Ds4Button.R3].IsPressed) xButton |= X360Button.RS;
+                    if (inputReport[ButtonsEnum.L3].IsPressed) xButton |= X360Button.LS;
+                    if (inputReport[ButtonsEnum.R3].IsPressed) xButton |= X360Button.RS;
 
                     // face buttons
                     output.wButtons = (ushort) xButton;
 
                     // trigger
-                    output.bLeftTrigger = inputReport[Ds4Axis.L2].Value;
-                    output.bRightTrigger = inputReport[Ds4Axis.R2].Value;
+                    output.bLeftTrigger = inputReport[AxesEnum.L2].Value;
+                    output.bRightTrigger = inputReport[AxesEnum.R2].Value;
 
                     if (!DsMath.DeadZone(GlobalConfiguration.Instance.DeadZoneL, 
-                        inputReport[Ds4Axis.Lx].Value,
-                        inputReport[Ds4Axis.Ly].Value))
+                        inputReport[AxesEnum.Lx].Value,
+                        inputReport[AxesEnum.Ly].Value))
                         // Left Stick DeadZone
                     {
                         output.sThumbLX =
                             (short)
-                                +DsMath.Scale(inputReport[Ds4Axis.Lx].Value, GlobalConfiguration.Instance.FlipLX);
+                                +DsMath.Scale(inputReport[AxesEnum.Lx].Value, GlobalConfiguration.Instance.FlipLX);
                         output.sThumbLY =
                             (short)
-                                -DsMath.Scale(inputReport[Ds4Axis.Ly].Value, GlobalConfiguration.Instance.FlipLY);
+                                -DsMath.Scale(inputReport[AxesEnum.Ly].Value, GlobalConfiguration.Instance.FlipLY);
                     }
 
                     if (!DsMath.DeadZone(GlobalConfiguration.Instance.DeadZoneR, 
-                        inputReport[Ds4Axis.Rx].Value,
-                        inputReport[Ds4Axis.Ry].Value))
+                        inputReport[AxesEnum.Rx].Value,
+                        inputReport[AxesEnum.Ry].Value))
                         // Right Stick DeadZone
                     {
                         output.sThumbRX =
                             (short)
-                                +DsMath.Scale(inputReport[Ds4Axis.Rx].Value, GlobalConfiguration.Instance.FlipRX);
+                                +DsMath.Scale(inputReport[AxesEnum.Rx].Value, GlobalConfiguration.Instance.FlipRX);
                         output.sThumbRY =
                             (short)
-                                -DsMath.Scale(inputReport[Ds4Axis.Ry].Value, GlobalConfiguration.Instance.FlipRY);
+                                -DsMath.Scale(inputReport[AxesEnum.Ry].Value, GlobalConfiguration.Instance.FlipRY);
                     }
                 }
                     break;

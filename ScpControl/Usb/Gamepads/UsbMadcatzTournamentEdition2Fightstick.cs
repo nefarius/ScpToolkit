@@ -1,4 +1,5 @@
-﻿using ScpControl.Shared.Core;
+﻿using HidReport.Contract.Enums;
+using ScpControl.Shared.Core;
 
 namespace ScpControl.Usb.Gamepads
 {
@@ -14,41 +15,37 @@ namespace ScpControl.Usb.Gamepads
         {
             PacketCounter++;
 
-            var inputReport = NewHidReport();
+            var inputReport = new HidReport.Core.HidReport();
 
             #region HID Report translation
 
             // no battery state since the Gamepad is Usb-powered
-            Battery = DsBattery.None;
+            inputReport.BatteryStatus = DsBattery.None;
 
             // packet counter
             inputReport.PacketCounter = PacketCounter;
 
-            // reset buttons
-            inputReport.ZeroSelectStartButtonsState();
-            inputReport.ZeroShoulderButtonsState();
-
             // circle
-            inputReport.Set(Ds3Button.Circle, IsBitSet(report[1], 2));
-            inputReport.Set(Ds3Axis.Circle, report[13]);
+            inputReport.Set(ButtonsEnum.Circle, IsBitSet(report[1], 2));
+            inputReport.Set(AxesEnum.Circle, report[13]);
 
             // cross
-            inputReport.Set(Ds3Button.Cross, IsBitSet(report[1], 1));
-            inputReport.Set(Ds3Axis.Cross, report[14]);
+            inputReport.Set(ButtonsEnum.Cross, IsBitSet(report[1], 1));
+            inputReport.Set(AxesEnum.Cross, report[14]);
 
             // triangle
-            inputReport.Set(Ds3Button.Triangle, IsBitSet(report[1], 3));
-            inputReport.Set(Ds3Axis.Triangle, report[12]);
+            inputReport.Set(ButtonsEnum.Triangle, IsBitSet(report[1], 3));
+            inputReport.Set(AxesEnum.Triangle, report[12]);
 
             // square
-            inputReport.Set(Ds3Button.Square, IsBitSet(report[1], 0));
-            inputReport.Set(Ds3Axis.Square, report[15]);
+            inputReport.Set(ButtonsEnum.Square, IsBitSet(report[1], 0));
+            inputReport.Set(AxesEnum.Square, report[15]);
 
             // select
-            inputReport.Set(Ds3Button.Select, IsBitSet(report[2], 0));
+            inputReport.Set(ButtonsEnum.Select, IsBitSet(report[2], 0));
 
             // start
-            inputReport.Set(Ds3Button.Start, IsBitSet(report[2], 1));
+            inputReport.Set(ButtonsEnum.Start, IsBitSet(report[2], 1));
 
 
 

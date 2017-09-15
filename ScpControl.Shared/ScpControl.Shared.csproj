@@ -68,6 +68,16 @@
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HidReport.Contract\HidReport.Contract.csproj">
+      <Project>{8D32247F-0FEC-4DAD-9572-7FC2247E0F21}</Project>
+      <Name>HidReport.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HidReport\HidReport.csproj">
+      <Project>{C39B2363-B4E8-4858-B6BB-6AA003FBAECA}</Project>
+      <Name>HidReport</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>Copy /Y /B "$(SolutionDir)\ScpControl\Properties\CommonInfo.cs" "$(ProjectDir)\Properties\CommonInfo.cs" &gt; nul:</PreBuildEvent>

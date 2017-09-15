@@ -153,6 +153,10 @@
     <Resource Include="Scp.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HidReport.Contract\HidReport.Contract.csproj">
+      <Project>{8d32247f-0fec-4dad-9572-7fc2247e0f21}</Project>
+      <Name>HidReport.Contract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScpControl.Shared\ScpControl.Shared.csproj">
       <Project>{dcc3a7cd-b7f3-42f0-b1ab-c55ad82c4593}</Project>
       <Name>ScpControl.Shared</Name>

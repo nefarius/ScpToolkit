@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Net.NetworkInformation;
 using System.Threading;
+using HidReport.Contract.Enums;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
+using HidReport.Core;
+using HidReport.DsActors;
+using ScpControl.HidParser;
 
 namespace ScpControl.Bluetooth.Ds3
 {
@@ -42,31 +46,19 @@ namespace ScpControl.Bluetooth.Ds3
             if (report[10] == 0xFF) return;
 
             m_PlugStatus = report[38];
-            Battery = (DsBattery) report[39];
             m_CableStatus = report[40];
 
             if (m_Packet == 0) Rumble(0, 0);
             m_Packet++;
 
-            var inputReport = NewHidReport();
-            
+            var inputReport = new HidReport.Core.HidReport();
             inputReport.PacketCounter = m_Packet;
+            var tmp = new byte[57];
+            Buffer.BlockCopy(report, 9, tmp, 8, 49);
 
-            // copy controller data to report packet
-            Buffer.BlockCopy(report, 9, inputReport.RawBytes, 8, 49);
+            HidParsers.Ds3Consts.ParseDs3(tmp, inputReport);
 
-            var trigger = false;
-
-            // Quick Disconnect
-            if (inputReport[Ds3Button.L1].IsPressed
-                && inputReport[Ds3Button.R1].IsPressed
-                && inputReport[Ds3Button.Ps].IsPressed)
-            {
-                trigger = true;
-                // unset PS button
-                inputReport.Unset(Ds3Button.Ps);
-            }
-
+            var trigger = inputReport.IsQuickDisconnect();
             if (inputReport.IsPadActive)
             {
                 m_IsIdle = false;

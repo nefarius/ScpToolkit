@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.NetworkInformation;
 using System.Threading;
+using HidReport.Contract.Enums;
+using ScpControl.HidParser;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
@@ -90,33 +92,6 @@ namespace ScpControl.Usb.Ds4
         #endregion
 
         #region Actions
-
-        private static byte MapBattery(byte value)
-        {
-            var mapped = (byte) DsBattery.None;
-
-            switch (value)
-            {
-                case 0x10:
-                case 0x11:
-                case 0x12:
-                case 0x13:
-                case 0x14:
-                case 0x15:
-                case 0x16:
-                case 0x17:
-                case 0x18:
-                case 0x19:
-                case 0x1A:
-                    mapped = (byte) DsBattery.Charging;
-                    break;
-                case 0x1B:
-                    mapped = (byte) DsBattery.Charged;
-                    break;
-            }
-
-            return mapped;
-        }
 
         public override bool Open(string devicePath)
         {
@@ -230,51 +205,12 @@ namespace ScpControl.Usb.Ds4
 
             PacketCounter++;
 
-            var inputReport = NewHidReport();
-
-            Battery = (DsBattery) MapBattery(report[30]);
-
+            var inputReport = new HidReport.Core.HidReport();
             inputReport.PacketCounter = PacketCounter;
 
-            var buttons = (report[5] << 0) | (report[6] << 8) | (report[7] << 16);
-
-            #region Convert HAT to DPAD
-
-            report[5] &= 0xF0;
-
-            switch ((uint) buttons & 0xF)
-            {
-                case 0:
-                    report[5] |= (byte) Ds4Button.Up.Offset;
-                    break;
-                case 1:
-                    report[5] |= (byte) (Ds4Button.Up.Offset | Ds4Button.Right.Offset);
-                    break;
-                case 2:
-                    report[5] |= (byte) Ds4Button.Right.Offset;
-                    break;
-                case 3:
-                    report[5] |= (byte) (Ds4Button.Right.Offset | Ds4Button.Down.Offset);
-                    break;
-                case 4:
-                    report[5] |= (byte) Ds4Button.Down.Offset;
-                    break;
-                case 5:
-                    report[5] |= (byte) (Ds4Button.Down.Offset | Ds4Button.Left.Offset);
-                    break;
-                case 6:
-                    report[5] |= (byte) Ds4Button.Left.Offset;
-                    break;
-                case 7:
-                    report[5] |= (byte) (Ds4Button.Left.Offset | Ds4Button.Up.Offset);
-                    break;
-            }
-
-            #endregion
-
-            // copy controller data to report packet
-            Buffer.BlockCopy(report, 0, inputReport.RawBytes, 8, 64);
-
+            var tmp = new byte[72];
+            Buffer.BlockCopy(report, 0, tmp, 8, 64);
+            HidParsers.Ds4Consts.ParseDs4(tmp, inputReport);
             OnHidReportReceived(inputReport);
         }
 

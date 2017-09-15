@@ -4,6 +4,8 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using HidReport.Contract.Core;
+using HidReport.Contract.Enums;
 using HidSharp.ReportDescriptors.Parser;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -27,6 +29,8 @@ namespace ScpControl.Usb
         private IDisposable _outputReportTask;
 
         private readonly TaskQueue _inputReportQueue = new TaskQueue();
+
+        private IScpHidReport _lastHidReport = new HidReport.Core.HidReport();
 
         #endregion
 
@@ -81,8 +85,10 @@ namespace ScpControl.Usb
 
         public event EventHandler<ScpHidReport> HidReportReceived;
 
-        protected void OnHidReportReceived(ScpHidReport report)
+        protected void OnHidReportReceived(HidReport.Core.HidReport hidReport)
         {
+            _lastHidReport = hidReport;
+            var report = NewHidReport(hidReport);
             if (GlobalConfiguration.Instance.UseAsyncHidReportProcessing)
             {
                 _inputReportQueue.Enqueue(() => Task.Run(() =>
@@ -142,7 +148,7 @@ namespace ScpControl.Usb
         /// <summary>
         ///     Battery charging level.
         /// </summary>
-        public virtual DsBattery Battery { get; protected set; }
+        public DsBattery Battery => _lastHidReport.BatteryStatus;
 
         public virtual PhysicalAddress DeviceAddress { get; protected set; }
 
@@ -156,17 +162,9 @@ namespace ScpControl.Usb
         ///     Crafts a new <see cref="ScpHidReport"/> with current devices meta data.
         /// </summary>
         /// <returns>The new HID <see cref="ScpHidReport"/>.</returns>
-        public ScpHidReport NewHidReport()
+        public ScpHidReport NewHidReport(HidReport.Core.HidReport hidReport)
         {
-            return new ScpHidReport
-            {
-                PadId = PadId,
-                PadState = State,
-                ConnectionType = Connection,
-                Model = Model,
-                PadMacAddress = DeviceAddress,
-                BatteryStatus = (byte) Battery
-            };
+            return new ScpHidReport(Connection, DeviceAddress, Model, PadId, State, hidReport);
         }
 
         public override bool Start()
@@ -236,7 +234,7 @@ namespace ScpControl.Usb
                 _hidCancellationTokenSource.Cancel();
                 _hidCancellationTokenSource = new CancellationTokenSource();
 
-                OnHidReportReceived(NewHidReport());
+                OnHidReportReceived(new HidReport.Core.HidReport());
             }
 
             return base.Stop();
@@ -253,7 +251,7 @@ namespace ScpControl.Usb
 
                 State = DsState.Disconnected;
 
-                OnHidReportReceived(NewHidReport());
+                OnHidReportReceived(new HidReport.Core.HidReport());
             }
 
             return !IsActive;

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
+using HidReport.Contract.Enums;
+using ScpControl.HidParser;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
@@ -223,29 +225,15 @@ namespace ScpControl.Usb.Ds3
 
             PacketCounter++;
 
-            var inputReport = NewHidReport();
-
-            // set battery level
-            Battery = (DsBattery) report[30];
-
-            // set packet counter
+            var inputReport = new HidReport.Core.HidReport();
             inputReport.PacketCounter = PacketCounter;
+            var tmp = new byte[57];
 
-            // copy controller data to report packet
-            Buffer.BlockCopy(report, 0, inputReport.RawBytes, 8, 49);
+            Buffer.BlockCopy(report, 0, tmp, 8, 49);
 
-            var trigger = false;
+            HidParsers.Ds3Consts.ParseDs3(tmp, inputReport);
 
-            // detect Quick Disconnect combo (L1, R1 and PS buttons pressed at the same time)
-            if (inputReport[Ds3Button.L1].IsPressed
-                && inputReport[Ds3Button.R1].IsPressed
-                && inputReport[Ds3Button.Ps].IsPressed)
-            {
-                trigger = true;
-                // unset PS button
-                inputReport.RawBytes[12] ^= 0x01;
-            }
-            
+            var trigger = inputReport.IsQuickDisconnect();
             if (trigger && !IsShutdown)
             {
                 IsShutdown = true;

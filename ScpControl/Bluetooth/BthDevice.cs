@@ -3,6 +3,8 @@ using System.Net.NetworkInformation;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using HidReport.Contract.Core;
+using HidReport.Contract.Enums;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 using ScpControl.Sound;
@@ -24,6 +26,7 @@ namespace ScpControl.Bluetooth
 
         private readonly TaskQueue _inputReportQueue = new TaskQueue();
 
+        private readonly IScpHidReport _lastHidReport = new HidReport.Core.HidReport();
         #endregion
 
         #region Protected fields
@@ -54,7 +57,10 @@ namespace ScpControl.Bluetooth
             get { return DsConnection.Bluetooth; }
         }
 
-        public DsBattery Battery { get; protected set; }
+        /// <summary>
+        ///     Battery charging level.
+        /// </summary>
+        public DsBattery Battery => _lastHidReport.BatteryStatus;
 
         public PhysicalAddress HostAddress { get; private set; }
 
@@ -66,17 +72,9 @@ namespace ScpControl.Bluetooth
 
         #region Public methods
 
-        public ScpHidReport NewHidReport()
+        public ScpHidReport NewHidReport(HidReport.Core.HidReport hidReport)
         {
-            return new ScpHidReport
-            {
-                PadId = PadId,
-                PadState = State,
-                ConnectionType = Connection,
-                Model = Model,
-                PadMacAddress = DeviceAddress,
-                BatteryStatus = (byte) Battery
-            };
+            return new ScpHidReport(Connection, DeviceAddress, Model, PadId, State, hidReport);
         }
 
         public virtual bool Start()
@@ -118,7 +116,7 @@ namespace ScpControl.Bluetooth
                 m_Packet = 0;
 
                 m_Publish = false;
-                OnHidReportReceived(NewHidReport());
+                OnHidReportReceived(new HidReport.Core.HidReport());
 
                 // play disconnect sound
                 if (GlobalConfiguration.Instance.IsBluetoothDisconnectSoundEnabled)
@@ -136,7 +134,7 @@ namespace ScpControl.Bluetooth
                 m_Packet = 0;
 
                 m_Publish = false;
-                OnHidReportReceived(NewHidReport());
+                OnHidReportReceived(new HidReport.Core.HidReport());
             }
 
             return State == DsState.Disconnected;
@@ -190,8 +188,9 @@ namespace ScpControl.Bluetooth
 
         public event EventHandler<ScpHidReport> HidReportReceived;
 
-        protected void OnHidReportReceived(ScpHidReport report)
+        protected void OnHidReportReceived(HidReport.Core.HidReport hidReport)
         {
+            var report = NewHidReport(hidReport);
             if (GlobalConfiguration.Instance.UseAsyncHidReportProcessing)
             {
                 _inputReportQueue.Enqueue(() => Task.Run(() =>

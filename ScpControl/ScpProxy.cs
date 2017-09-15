@@ -2,11 +2,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.ServiceModel;
+using HidReport.Contract.Enums;
 using log4net;
 using ReactiveSockets;
 using ScpControl.Properties;
@@ -41,6 +45,7 @@ namespace ScpControl
                 return extended;
             }
 
+            var hidReport = inputReport.HidReport;
             switch (inputReport.Model)
             {
                 case DsModel.None:
@@ -49,53 +54,53 @@ namespace ScpControl
                     // translate and wrap button/axis information
                     extended = new SCP_EXTN
                     {
-                        SCP_UP = inputReport[Ds3Axis.Up].Pressure,
-                        SCP_RIGHT = inputReport[Ds3Axis.Right].Pressure,
-                        SCP_DOWN = inputReport[Ds3Axis.Down].Pressure,
-                        SCP_LEFT = inputReport[Ds3Axis.Left].Pressure,
-                        SCP_LX = inputReport[Ds3Axis.Lx].Axis,
-                        SCP_LY = -inputReport[Ds3Axis.Ly].Axis,
-                        SCP_L1 = inputReport[Ds3Axis.L1].Pressure,
-                        SCP_L2 = inputReport[Ds3Axis.L2].Pressure,
-                        SCP_L3 = inputReport[Ds3Button.L3].Pressure,
-                        SCP_RX = inputReport[Ds3Axis.Rx].Axis,
-                        SCP_RY = -inputReport[Ds3Axis.Ry].Axis,
-                        SCP_R1 = inputReport[Ds3Axis.R1].Pressure,
-                        SCP_R2 = inputReport[Ds3Axis.R2].Pressure,
-                        SCP_R3 = inputReport[Ds3Button.R3].Pressure,
-                        SCP_T = inputReport[Ds3Axis.Triangle].Pressure,
-                        SCP_C = inputReport[Ds3Axis.Circle].Pressure,
-                        SCP_X = inputReport[Ds3Axis.Cross].Pressure,
-                        SCP_S = inputReport[Ds3Axis.Square].Pressure,
-                        SCP_SELECT = inputReport[Ds3Button.Select].Pressure,
-                        SCP_START = inputReport[Ds3Button.Start].Pressure,
-                        SCP_PS = inputReport[Ds3Button.Ps].Pressure
+                        SCP_UP     = hidReport [AxesEnum.Up].Value,
+                        SCP_RIGHT  = hidReport [AxesEnum.Right].Value,
+                        SCP_DOWN   = hidReport [AxesEnum.Down].Value,
+                        SCP_LEFT   = hidReport [AxesEnum.Left].Value,
+                        SCP_LX     = hidReport [AxesEnum.Lx].Axis,
+                        SCP_LY     = -hidReport[AxesEnum.Ly].Axis,
+                        SCP_L1     = hidReport [AxesEnum.L1].Value,
+                        SCP_L2     = hidReport [AxesEnum.L2].Value,
+                        SCP_L3     = hidReport [ButtonsEnum.L3].Value,
+                        SCP_RX     = hidReport [AxesEnum.Rx].Axis,
+                        SCP_RY     = -hidReport[AxesEnum.Ry].Axis,
+                        SCP_R1     = hidReport [AxesEnum.R1].Value,
+                        SCP_R2     = hidReport [AxesEnum.R2].Value,
+                        SCP_R3     = hidReport [ButtonsEnum.R3].Value,
+                        SCP_T      = hidReport [AxesEnum.Triangle].Value,
+                        SCP_C      = hidReport [AxesEnum.Circle].Value,
+                        SCP_X      = hidReport [AxesEnum.Cross].Value,
+                        SCP_S      = hidReport [AxesEnum.Square].Value,
+                        SCP_SELECT = hidReport [ButtonsEnum.Select].Value,
+                        SCP_START  = hidReport [ButtonsEnum.Start].Value,
+                        SCP_PS     = hidReport [ButtonsEnum.Ps].Value
                     };
                     break;
                 case DsModel.DS4:
                     extended = new SCP_EXTN
                     {
-                        SCP_UP = inputReport[Ds4Button.Up].Pressure,
-                        SCP_RIGHT = inputReport[Ds4Button.Right].Pressure,
-                        SCP_DOWN = inputReport[Ds4Button.Down].Pressure,
-                        SCP_LEFT = inputReport[Ds4Button.Left].Pressure,
-                        SCP_LX = inputReport[Ds4Axis.Lx].Value,
-                        SCP_LY = inputReport[Ds4Axis.Ly].Value,
-                        SCP_L1 = inputReport[Ds4Button.L1].Pressure,
-                        SCP_L2 = inputReport[Ds4Axis.L2].Pressure,
-                        SCP_L3 = inputReport[Ds4Button.L3].Pressure,
-                        SCP_RX = inputReport[Ds4Axis.Rx].Value,
-                        SCP_RY = inputReport[Ds4Axis.Ry].Value,
-                        SCP_R1 = inputReport[Ds4Button.R1].Pressure,
-                        SCP_R2 = inputReport[Ds4Axis.R2].Pressure,
-                        SCP_R3 = inputReport[Ds4Button.R3].Pressure,
-                        SCP_T = inputReport[Ds4Button.Triangle].Pressure,
-                        SCP_C = inputReport[Ds4Button.Circle].Pressure,
-                        SCP_X = inputReport[Ds4Button.Cross].Pressure,
-                        SCP_S = inputReport[Ds4Button.Square].Pressure,
-                        SCP_SELECT = inputReport[Ds4Button.Share].Pressure,
-                        SCP_START = inputReport[Ds4Button.Options].Pressure,
-                        SCP_PS = inputReport[Ds4Button.Ps].Pressure
+                        SCP_UP = hidReport[ButtonsEnum.Up].Value,
+                        SCP_RIGHT = hidReport[ButtonsEnum.Right].Value,
+                        SCP_DOWN = hidReport[ButtonsEnum.Down].Value,
+                        SCP_LEFT = hidReport[ButtonsEnum.Left].Value,
+                        SCP_LX = hidReport[AxesEnum.Lx].Value,
+                        SCP_LY = hidReport[AxesEnum.Ly].Value,
+                        SCP_L1 = hidReport[ButtonsEnum.L1].Value,
+                        SCP_L2 = hidReport[AxesEnum.L2].Value,
+                        SCP_L3 = hidReport[ButtonsEnum.L3].Value,
+                        SCP_RX = hidReport[AxesEnum.Rx].Value,
+                        SCP_RY = hidReport[AxesEnum.Ry].Value,
+                        SCP_R1 = hidReport[ButtonsEnum.R1].Value,
+                        SCP_R2 = hidReport[AxesEnum.R2].Value,
+                        SCP_R3 = hidReport[ButtonsEnum.R3].Value,
+                        SCP_T = hidReport[ButtonsEnum.Triangle].Value,
+                        SCP_C = hidReport[ButtonsEnum.Circle].Value,
+                        SCP_X = hidReport[ButtonsEnum.Cross].Value,
+                        SCP_S = hidReport[ButtonsEnum.Square].Value,
+                        SCP_SELECT = hidReport[ButtonsEnum.Share].Value,
+                        SCP_START = hidReport[ButtonsEnum.Options].Value,
+                        SCP_PS = hidReport[ButtonsEnum.Ps].Value
                     };
                     break;
             }
@@ -236,8 +241,13 @@ namespace ScpControl
                     {
                         if (buffer.Length <= 0)
                             return;
-
-                        OnFeedPacketReceived(new ScpHidReport(buffer));
+                        ScpHidReport report;
+                        using (var ms = new MemoryStream(buffer))
+                        {
+                            BinaryFormatter formatter = new BinaryFormatter();
+                            report = (ScpHidReport)formatter.Deserialize(ms);
+                        }
+                        OnFeedPacketReceived(report);
                     });
 
                     _rxFeedClient.ConnectAsync();

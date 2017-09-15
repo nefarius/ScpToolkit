@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -135,6 +135,7 @@
     <Compile Include="Driver\WinUsbWrapper.cs" />
     <Compile Include="Driver\XOutputWrapper.cs" />
     <Compile Include="Exceptions\RootHubAlreadyStartedException.cs" />
+    <Compile Include="HidParser\HidParsers.cs" />
     <Compile Include="Profiler\DualShockProfileManager.cs" />
     <Compile Include="Profiler\VirtualMouse.cs" />
     <Compile Include="Properties\CommonInfo.cs" />
@@ -357,6 +358,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HidReport.Contract\HidReport.Contract.csproj">
+      <Project>{8D32247F-0FEC-4DAD-9572-7FC2247E0F21}</Project>
+      <Name>HidReport.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HidReport\HidReport.csproj">
+      <Project>{c39b2363-b4e8-4858-b6bb-6aa003fbaeca}</Project>
+      <Name>HidReport</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScpControl.Shared\ScpControl.Shared.csproj">
       <Project>{dcc3a7cd-b7f3-42f0-b1ab-c55ad82c4593}</Project>
       <Name>ScpControl.Shared</Name>
