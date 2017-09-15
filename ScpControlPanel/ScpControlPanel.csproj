@@ -43,8 +43,8 @@
     <ApplicationIcon>Dual Shock 3.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoDependencyPropertyMarker">
-      <HintPath>..\packages\AutoDependencyProperty.Fody.1.2.2.0\lib\net40\AutoDependencyPropertyMarker.dll</HintPath>
+    <Reference Include="Bindables, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bindables.Fody.0.4.0\lib\net40\Bindables.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification">

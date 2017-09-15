@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using AutoDependencyPropertyMarker;
 using Ookii.Dialogs.Wpf;
+using Bindables;
 
 namespace ScpSettings.Controls
 {
@@ -17,10 +17,10 @@ namespace ScpSettings.Controls
             MainGrid.DataContext = this;
         }
 
-        [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
+        [DependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
         public string DirectoryPath { get; set; }
 
-        [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
+        [DependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
         public string Description { get; set; }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)

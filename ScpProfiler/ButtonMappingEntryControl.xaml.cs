@@ -8,9 +8,9 @@ using System.Windows.Data;
 using System.Windows.Media;
 using WindowsInput;
 using WindowsInput.Native;
-using AutoDependencyPropertyMarker;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
+using Bindables;
 
 namespace ScpProfiler
 {
@@ -157,10 +157,10 @@ namespace ScpProfiler
 
         #region Dependency properties
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public ImageSource IconSource { get; set; }
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public string IconToolTip { get; set; }
 
         public DsButtonProfile ButtonProfile
@@ -173,10 +173,10 @@ namespace ScpProfiler
             DependencyProperty.Register("ButtonProfile", typeof (DsButtonProfile),
                 typeof (ButtonMappingEntryControl));
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public ICollectionView CurrentCommandTypeView { get; set; }
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public ICollectionView CurrentCommandTargetView { get; set; }
 
         #endregion

@@ -6,10 +6,10 @@ using System.Windows;
 using System.Windows.Data;
 using WindowsInput;
 using WindowsInput.Native;
-using AutoDependencyPropertyMarker;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
 using CommandType = ScpControl.Shared.Core.CommandType;
+using Bindables;
 
 namespace ScpProfiler
 {
@@ -39,7 +39,7 @@ namespace ScpProfiler
 
         public ICollectionView CurrentCommandTargetView { get; set; }
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public DsButtonProfile CurrentButtonProfile { get; set; }
 
         public ButtonMappingViewModel() : this(null) { }
