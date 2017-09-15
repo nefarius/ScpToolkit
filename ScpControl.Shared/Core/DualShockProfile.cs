@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using WindowsInput;
 using WindowsInput.Native;
-using PropertyChanged;
 
 namespace ScpControl.Shared.Core
 {
@@ -24,7 +23,6 @@ namespace ScpControl.Shared.Core
     /// <summary>
     ///     Describes a mapping target.
     /// </summary>
-    [ImplementPropertyChanged]
     [DataContract]
     [KnownType(typeof (DsButtonMappingTarget))]
     public class DsButtonMappingTarget
@@ -43,7 +41,6 @@ namespace ScpControl.Shared.Core
     /// <summary>
     ///     Represents a DualShock button/axis mapping profile.
     /// </summary>
-    [ImplementPropertyChanged]
     [DataContract]
     [KnownType(typeof (Ds3Button))]
     [KnownType(typeof (Ds4Button))]
@@ -275,7 +272,6 @@ namespace ScpControl.Shared.Core
     /// <summary>
     ///     Describes details about individual buttons.
     /// </summary>
-    [ImplementPropertyChanged]
     [DataContract]
     public class DsButtonProfile
     {
@@ -400,7 +396,6 @@ namespace ScpControl.Shared.Core
     /// <summary>
     ///     Describes button turbo mode details.
     /// </summary>
-    [ImplementPropertyChanged]
     [DataContract]
     public class DsButtonProfileTurboSetting
     {

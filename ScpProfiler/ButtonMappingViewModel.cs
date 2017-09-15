@@ -7,14 +7,12 @@ using System.Windows.Data;
 using WindowsInput;
 using WindowsInput.Native;
 using AutoDependencyPropertyMarker;
-using PropertyChanged;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
 using CommandType = ScpControl.Shared.Core.CommandType;
 
 namespace ScpProfiler
 {
-    [ImplementPropertyChanged]
     public class ButtonMappingViewModel : DependencyObject
     {
         private static readonly IList<EnumMetaData> AvailableCommandTypes =

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using PropertyChanged;
 
 namespace ScpControlPanel.View_Models
 {
-    [ImplementPropertyChanged]
     public class PadStatsViewModel
     {
         public static IList<PadStatsViewModel> Pads

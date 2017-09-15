@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using PropertyChanged;
-using ScpControl.Bluetooth;
 using ScpControl.Bluetooth.Ds4;
 using ScpControl.Properties;
 
 namespace ScpControl.ScpCore
 {
-    [ImplementPropertyChanged]
     public class GlobalConfiguration : ICloneable
     {
         #region Private fields
