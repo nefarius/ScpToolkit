@@ -5,5 +5,5 @@
       WindowsBase
     </IncludeAssemblies>
   </LoadAssembliesOnStartup>
-  <AutoDependencyProperty/>
+  <Bindables />
 </Weavers>

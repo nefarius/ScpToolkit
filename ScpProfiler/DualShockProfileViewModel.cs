@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using PropertyChanged;
 using ScpControl.Shared.Core;
 
 namespace ScpProfiler
 {
-    [ImplementPropertyChanged]
     public class DualShockProfileViewModel
     {
         public DualShockProfileViewModel()

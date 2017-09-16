@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PropertyChanged;
 using ScpControl.Database;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
 
 namespace ScpControl.Profiler
 {
-    [ImplementPropertyChanged]
     public class DualShockProfileManager : SingletonBase<DualShockProfileManager>
     {
         private DualShockProfileManager()

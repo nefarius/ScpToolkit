@@ -1,9 +1,7 @@
-﻿using PropertyChanged;
-using ScpControl.Utilities;
+﻿using ScpControl.Utilities;
 
 namespace ScpDriverInstaller.View_Models
 {
-    [ImplementPropertyChanged]
     public class InstallationOptionsViewModel
     {
         public bool IsXbox360DriverNeeded

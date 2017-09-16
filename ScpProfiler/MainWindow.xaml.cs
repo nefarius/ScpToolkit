@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using HidReport.Contract.Enums;
 using ScpControl;
 using ScpControl.Shared.Core;
 using Xceed.Wpf.Toolkit;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 
 namespace ScpProfiler
@@ -33,69 +35,76 @@ namespace ScpProfiler
 
             MainGrid.DataContext = _vm;
 
-            var list = _proxy.GetProfiles();
+            IEnumerable<DualShockProfile> list = null;
+            try
+            {
+                list = _proxy.GetProfiles();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show($"Can't load profiles. Error {err.Message}");
+            }
             if (list == null)
             {
                 list = new List<DualShockProfile>();
             }
-            else
-            {
-                _vm.Profiles = list.ToList();
-            }
+            
+           _vm.Profiles = list.ToList();
         }
 
-        private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)
+        private void ProxyOnNativeFeedReceived(object sender, ScpHidReport scpHidReport)
         {
             if (_vm.CurrentProfile == null) return;
 
-            if(report.PadId != _currentPad) return;
+            if(scpHidReport.PadId != _currentPad) return;
 
-            _vm.CurrentProfile.Model = report.Model;
+            _vm.CurrentProfile.Model = scpHidReport.Model;
             _vm.CurrentProfile.MacAddress = string.Join(":",
-                (from z in report.PadMacAddress.GetAddressBytes() select z.ToString("X2")).ToArray());
-            _vm.CurrentProfile.PadId = report.PadId;
+                (from z in scpHidReport.PadMacAddress.GetAddressBytes() select z.ToString("X2")).ToArray());
+            _vm.CurrentProfile.PadId = scpHidReport.PadId;
 
-            _vm.CurrentProfile.Remap(report);
+            _vm.CurrentProfile.Remap(scpHidReport);
 
-            switch (report.Model)
+            var report = scpHidReport.HidReport;
+            switch (scpHidReport.Model)
             {
                 case DsModel.DS3:
-                    _vm.CurrentProfile.Ps.CurrentValue = report[Ds3Button.Ps].Value;
-                    _vm.CurrentProfile.Circle.CurrentValue = report[Ds3Button.Circle].Value;
-                    _vm.CurrentProfile.Cross.CurrentValue = report[Ds3Button.Cross].Value;
-                    _vm.CurrentProfile.Square.CurrentValue = report[Ds3Button.Square].Value;
-                    _vm.CurrentProfile.Triangle.CurrentValue = report[Ds3Button.Triangle].Value;
-                    _vm.CurrentProfile.Select.CurrentValue = report[Ds3Button.Select].Value;
-                    _vm.CurrentProfile.Start.CurrentValue = report[Ds3Button.Start].Value;
-                    _vm.CurrentProfile.LeftShoulder.CurrentValue = report[Ds3Button.L1].Value;
-                    _vm.CurrentProfile.RightShoulder.CurrentValue = report[Ds3Button.R1].Value;
-                    _vm.CurrentProfile.LeftTrigger.CurrentValue = report[Ds3Button.L2].Value;
-                    _vm.CurrentProfile.RightTrigger.CurrentValue = report[Ds3Button.R2].Value;
-                    _vm.CurrentProfile.LeftThumb.CurrentValue = report[Ds3Button.L3].Value;
-                    _vm.CurrentProfile.RightThumb.CurrentValue = report[Ds3Button.R3].Value;
-                    _vm.CurrentProfile.Up.CurrentValue = report[Ds3Button.Up].Value;
-                    _vm.CurrentProfile.Right.CurrentValue = report[Ds3Button.Right].Value;
-                    _vm.CurrentProfile.Down.CurrentValue = report[Ds3Button.Down].Value;
-                    _vm.CurrentProfile.Left.CurrentValue = report[Ds3Button.Left].Value;
+                    _vm.CurrentProfile.Ps.CurrentValue = report[ButtonsEnum.Ps].Value;
+                    _vm.CurrentProfile.Circle.CurrentValue = report[ButtonsEnum.Circle].Value;
+                    _vm.CurrentProfile.Cross.CurrentValue = report[ButtonsEnum.Cross].Value;
+                    _vm.CurrentProfile.Square.CurrentValue = report[ButtonsEnum.Square].Value;
+                    _vm.CurrentProfile.Triangle.CurrentValue = report[ButtonsEnum.Triangle].Value;
+                    _vm.CurrentProfile.Select.CurrentValue = report[ButtonsEnum.Select].Value;
+                    _vm.CurrentProfile.Start.CurrentValue = report[ButtonsEnum.Start].Value;
+                    _vm.CurrentProfile.LeftShoulder.CurrentValue = report[ButtonsEnum.L1].Value;
+                    _vm.CurrentProfile.RightShoulder.CurrentValue = report[ButtonsEnum.R1].Value;
+                    _vm.CurrentProfile.LeftTrigger.CurrentValue = report[ButtonsEnum.L2].Value;
+                    _vm.CurrentProfile.RightTrigger.CurrentValue = report[ButtonsEnum.R2].Value;
+                    _vm.CurrentProfile.LeftThumb.CurrentValue = report[ButtonsEnum.L3].Value;
+                    _vm.CurrentProfile.RightThumb.CurrentValue = report[ButtonsEnum.R3].Value;
+                    _vm.CurrentProfile.Up.CurrentValue = report[ButtonsEnum.Up].Value;
+                    _vm.CurrentProfile.Right.CurrentValue = report[ButtonsEnum.Right].Value;
+                    _vm.CurrentProfile.Down.CurrentValue = report[ButtonsEnum.Down].Value;
+                    _vm.CurrentProfile.Left.CurrentValue = report[ButtonsEnum.Left].Value;
                     break;
                 case DsModel.DS4:
-                    _vm.CurrentProfile.Ps.CurrentValue = report[Ds4Button.Ps].Value;
-                    _vm.CurrentProfile.Circle.CurrentValue = report[Ds4Button.Circle].Value;
-                    _vm.CurrentProfile.Cross.CurrentValue = report[Ds4Button.Cross].Value;
-                    _vm.CurrentProfile.Square.CurrentValue = report[Ds4Button.Square].Value;
-                    _vm.CurrentProfile.Triangle.CurrentValue = report[Ds4Button.Triangle].Value;
-                    _vm.CurrentProfile.Select.CurrentValue = report[Ds4Button.Share].Value;
-                    _vm.CurrentProfile.Start.CurrentValue = report[Ds4Button.Options].Value;
-                    _vm.CurrentProfile.LeftShoulder.CurrentValue = report[Ds4Button.L1].Value;
-                    _vm.CurrentProfile.RightShoulder.CurrentValue = report[Ds4Button.R1].Value;
-                    _vm.CurrentProfile.LeftTrigger.CurrentValue = report[Ds4Button.L2].Value;
-                    _vm.CurrentProfile.RightTrigger.CurrentValue = report[Ds4Button.R2].Value;
-                    _vm.CurrentProfile.LeftThumb.CurrentValue = report[Ds4Button.L3].Value;
-                    _vm.CurrentProfile.RightThumb.CurrentValue = report[Ds4Button.R3].Value;
-                    _vm.CurrentProfile.Up.CurrentValue = report[Ds4Button.Up].Value;
-                    _vm.CurrentProfile.Right.CurrentValue = report[Ds4Button.Right].Value;
-                    _vm.CurrentProfile.Down.CurrentValue = report[Ds4Button.Down].Value;
-                    _vm.CurrentProfile.Left.CurrentValue = report[Ds4Button.Left].Value;
+                    _vm.CurrentProfile.Ps.CurrentValue = report[ButtonsEnum.Ps].Value;
+                    _vm.CurrentProfile.Circle.CurrentValue = report[ButtonsEnum.Circle].Value;
+                    _vm.CurrentProfile.Cross.CurrentValue = report[ButtonsEnum.Cross].Value;
+                    _vm.CurrentProfile.Square.CurrentValue = report[ButtonsEnum.Square].Value;
+                    _vm.CurrentProfile.Triangle.CurrentValue = report[ButtonsEnum.Triangle].Value;
+                    _vm.CurrentProfile.Select.CurrentValue = report[ButtonsEnum.Share].Value;
+                    _vm.CurrentProfile.Start.CurrentValue = report[ButtonsEnum.Options].Value;
+                    _vm.CurrentProfile.LeftShoulder.CurrentValue = report[ButtonsEnum.L1].Value;
+                    _vm.CurrentProfile.RightShoulder.CurrentValue = report[ButtonsEnum.R1].Value;
+                    _vm.CurrentProfile.LeftTrigger.CurrentValue = report[ButtonsEnum.L2].Value;
+                    _vm.CurrentProfile.RightTrigger.CurrentValue = report[ButtonsEnum.R2].Value;
+                    _vm.CurrentProfile.LeftThumb.CurrentValue = report[ButtonsEnum.L3].Value;
+                    _vm.CurrentProfile.RightThumb.CurrentValue = report[ButtonsEnum.R3].Value;
+                    _vm.CurrentProfile.Up.CurrentValue = report[ButtonsEnum.Up].Value;
+                    _vm.CurrentProfile.Right.CurrentValue = report[ButtonsEnum.Right].Value;
+                    _vm.CurrentProfile.Down.CurrentValue = report[ButtonsEnum.Down].Value;
+                    _vm.CurrentProfile.Left.CurrentValue = report[ButtonsEnum.Left].Value;
                     break;
             }
         }

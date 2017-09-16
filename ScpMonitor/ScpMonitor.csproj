@@ -53,9 +53,8 @@
     <ApplicationIcon>Resources\Scp_All.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -141,6 +140,10 @@
     <Content Include="Resources\Scp_All.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HidReport.Contract\HidReport.Contract.csproj">
+      <Project>{8D32247F-0FEC-4DAD-9572-7FC2247E0F21}</Project>
+      <Name>HidReport.Contract</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ScpControl.Shared\ScpControl.Shared.csproj">
       <Project>{dcc3a7cd-b7f3-42f0-b1ab-c55ad82c4593}</Project>
       <Name>ScpControl.Shared</Name>

@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using WindowsInput;
 using WindowsInput.Native;
-using AutoDependencyPropertyMarker;
+using Bindables;
 using ScpControl.Shared.Core;
 using ScpControl.Utilities;
 
@@ -87,13 +87,13 @@ namespace ScpProfiler
 
         #region Dependency properties
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public ImageSource IconSource { get; set; }
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public string IconToolTip { get; set; }
 
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public DsButtonProfile ButtonProfile { get; set; }
 
         #endregion

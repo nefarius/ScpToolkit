@@ -2,10 +2,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.ServiceModel;
 using Libarius.System;
 using ReactiveSockets;
@@ -611,7 +614,14 @@ namespace ScpControl
             {
                 try
                 {
-                    channel.SendAsync(e.RawBytes);
+                    byte[] bytes;
+                    IFormatter formatter = new BinaryFormatter();
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        formatter.Serialize(stream, e);
+                        bytes = stream.ToArray();
+                    }
+                    channel.SendAsync(bytes);
                 }
                 catch (AggregateException)
                 {

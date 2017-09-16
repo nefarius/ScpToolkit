@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Controls;
-using AutoDependencyPropertyMarker;
+using Bindables;
 using ScpControl.Profiler;
 using ScpControl.ScpCore;
 using ScpControl.Shared.Core;
@@ -13,7 +13,7 @@ namespace ScpControlPanel.Controls
     /// </summary>
     public partial class PadEntryCollectionControl : UserControl
     {
-        [AutoDependencyProperty]
+        [DependencyProperty]
         public ObservableCollection<PadEntryControl> PadEntryCollection { get; set; }
 
         public PadEntryCollectionControl()

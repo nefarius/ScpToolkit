@@ -157,7 +157,7 @@ namespace ScpControl
             return BitConverter.ToUInt16(new[] { (byte)id, (byte)type }, 0);
         }
 
-        protected bool IsBitSet(byte value, int offset)
+        protected static bool IsBitSet(byte value, int offset)
         {
             return ((value >> offset) & 1) == 0x01;
         }

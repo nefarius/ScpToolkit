@@ -1,9 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using AutoDependencyPropertyMarker;
 using Ookii.Dialogs.Wpf;
 using ColorPickerControls.Dialogs;
+using Bindables;
 
 namespace ScpSettings.Controls
 {
@@ -19,7 +19,7 @@ namespace ScpSettings.Controls
             MainGrid.DataContext = this;
         }
 
-        [AutoDependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
+        [DependencyProperty(Options = FrameworkPropertyMetadataOptions.BindsTwoWayByDefault)]
         public uint Ds4BatteryColor { get; set; }
 
         public string ColorText
