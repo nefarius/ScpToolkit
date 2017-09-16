@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using ScpControl;
 using ScpControl.Shared.Core;
 using Xceed.Wpf.Toolkit;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 
 namespace ScpProfiler
@@ -33,15 +34,21 @@ namespace ScpProfiler
 
             MainGrid.DataContext = _vm;
 
-            var list = _proxy.GetProfiles();
+            IEnumerable<DualShockProfile> list = null;
+            try
+            {
+                list = _proxy.GetProfiles();
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show($"Can't load profiles. Error {err.Message}");
+            }
             if (list == null)
             {
                 list = new List<DualShockProfile>();
             }
-            else
-            {
-                _vm.Profiles = list.ToList();
-            }
+            
+           _vm.Profiles = list.ToList();
         }
 
         private void ProxyOnNativeFeedReceived(object sender, ScpHidReport report)
