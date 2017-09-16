@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using HidReport.Contract.Enums;
 using HidReport.DsActors;
 
@@ -83,6 +84,52 @@ namespace ScpControl.HidParser
                 inputReport.Set(AxesEnum.Circle  , report[31]);
                 inputReport.Set(AxesEnum.Cross   , report[32]);
                 inputReport.Set(AxesEnum.Square  , report[33]);
+
+                int accelerometerX = (report[49] << 8) | (report[50] << 0); //0-1023
+                Debug.Assert(accelerometerX >= 0);
+                Debug.Assert(accelerometerX <= 1023);
+                int accelerometerY = (report[51] << 8) | (report[52] << 0); //0-1023
+                Debug.Assert(accelerometerY >= 0);
+                Debug.Assert(accelerometerY <= 1023);
+                int accelerometerZ = (report[53] << 8) | (report[54] << 0); //0-1023
+                Debug.Assert(accelerometerZ >= 0);
+                Debug.Assert(accelerometerZ <= 1023);
+                int gyrometerX = (report[55] << 8) | (report[56] << 0); //0-1023
+                Debug.Assert(gyrometerX >= 0);
+                Debug.Assert(gyrometerX <= 1023);
+                accelerometerX -= 512;
+                accelerometerY -= 512;
+                accelerometerZ -= 512;
+                gyrometerX -= 498;
+
+                const int g1Value = 115;
+                int forceVectror = (int)
+                    Math.Sqrt(accelerometerX * accelerometerX + accelerometerY * accelerometerY +
+                              accelerometerZ * accelerometerZ);
+
+                // http://www.instructables.com/id/Accelerometer-Gyro-Tutorial/
+                //TODO: use Kalman filter
+                double yaw = 0;
+                double pitch = (Math.Atan2(accelerometerZ, accelerometerY) + Math.PI/2)/Math.PI*180;
+                double roll  = (Math.Atan2(accelerometerZ, accelerometerX) + Math.PI/2)/Math.PI*180;
+                accelerometerX -= (accelerometerX * g1Value) / forceVectror;
+                accelerometerY -= (accelerometerY * g1Value) / forceVectror;
+                accelerometerZ -= (accelerometerZ * g1Value) / forceVectror;
+
+                //Debug.Print($"Ax {accelerometerX:+0000;-0000} Ay {accelerometerY:+0000;-0000} Az {accelerometerZ:+0000;-0000} Pitch {pitch} Roll {roll} Gx {gyrometerX:+0000;-0000}");
+
+                inputReport.MotionMutable = new DsAccelerometer()
+                {
+                    X = (short)(accelerometerX),
+                    Y = (short)(accelerometerY),
+                    Z = (short)(accelerometerZ),
+                };
+                inputReport.OrientationMutable = new DsGyroscope()
+                {
+                    Yaw = (short) (yaw ),
+                    Pitch = (short) (pitch ),
+                    Roll = (short) (roll)
+                };
             }
         }
 
