@@ -1,9 +1,8 @@
 # ScpToolkit
 Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
-Follow development progress on [Twitter](https://twitter.com/CNefarius) and [YouTube](https://www.youtube.com/user/nefarius2k8)! Like my stuff? [Support me on Patreon](https://www.patreon.com/nefarius)!
-
-[<img src="https://img.shields.io/badge/rating-4%2B%20stars-brightgreen.svg">](https://recordnotfound.com/ScpServer-nefarius-597)
+## Archive statement
+**Dear community, it has been an amazing ride but the time has come to let go. The ScpToolkit has outgrown itself and won't be continued any longer. As we're speaking the team behind this solution is working on various successor projects so keep an eye open! Good bye!** 
 
 ## Credits
 ### Community
