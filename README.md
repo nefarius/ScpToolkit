@@ -12,7 +12,7 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
 👉 [Archival statement](https://forums.vigem.org/topic/252/here-is-the-news#scptoolkit-is-still-dead)
 
-👉 [**Removal guide**](https://forums.vigem.org/topic/250/scptoolkit-removal-guide)
+👉 [**Removal guide**](https://vigem.org/projects/ScpToolkit/ScpToolkit-Removal-Guide/)
 
 ## ⚠️ SHADY CLONES ⚠️
 
