@@ -4,6 +4,12 @@ Windows Driver and XInput Wrapper for Sony DualShock 3/4 Controllers
 
 ---
 
+## 🧟 DEAD SINCE 2016 🧟
+
+This project is **unmaintained since 2016**, let it rest! For Windows 10 (or greater), consider using [DsHidMini](https://vigem.org/projects/DsHidMini/) instead ❤️
+
+---
+
 ## 🔥 OBSOLESCENCE NOTICE 🔥
 
 > Dear community, it has been an amazing ride but the time has come to let go. The ScpToolkit has outgrown itself and won't be continued any longer. You're still welcome to continue using it if it fits your needs, just don't expect any support, fixes or new features from the original developers.
